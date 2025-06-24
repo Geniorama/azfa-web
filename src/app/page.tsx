@@ -1,5 +1,8 @@
+"use client";
+
 import Image from "next/image";
 import TipografiaDemo from "./tipografia-demo";
+import Button from "./utils/Button";
 
 export default function Home() {
   return (
@@ -15,7 +18,7 @@ export default function Home() {
             height={38}
             priority
           />
-          
+          <Button onClick={() => console.log("Button clicked")}>Click me</Button>
           {/* Ejemplo de uso de Inter Tight */}
           <div className="text-center sm:text-left">
             <h1 className="font-inter-tight text-3xl font-bold mb-4 text-h4">
