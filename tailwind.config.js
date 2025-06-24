@@ -9,7 +9,7 @@ const config = {
     extend: {
       fontFamily: {
         'inter-tight': ['var(--font-inter-tight)', 'sans-serif'],
-      },
+      }
     },
   },
   plugins: [],
