@@ -15,8 +15,7 @@ const geistMono = Geist_Mono({
 const interTight = Inter_Tight({
   variable: "--font-inter-tight",
   subsets: ["latin"],
-  // Puedes especificar pesos específicos si los necesitas
-  // weight: ["400", "500", "600", "700"],
+  weight: ["300", "400", "500"],
 });
 
 export const metadata: Metadata = {
