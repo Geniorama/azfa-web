@@ -18,17 +18,25 @@ export default function Home() {
             height={38}
             priority
           />
-          <Button onClick={() => console.log("Button clicked")}>Click me</Button>
+          <Button 
+            variant="primary" 
+            onClick={() => console.log("Button clicked")} 
+            icon
+            // disabled={true}
+            >
+            Click me
+          </Button>
           {/* Ejemplo de uso de Inter Tight */}
           <div className="text-center sm:text-left">
             <h1 className="font-inter-tight text-3xl font-bold mb-4 text-h4">
               ¡Bienvenido a tu proyecto con Inter Tight!
             </h1>
             <p className="font-inter-tight text-lg text-gray-600 dark:text-gray-300">
-              Esta es una demostración de la fuente Inter Tight configurada en tu proyecto.
+              Esta es una demostración de la fuente Inter Tight configurada en
+              tu proyecto.
             </p>
           </div>
-          
+
           <ol className="list-inside list-decimal text-sm/6 text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
             <li className="mb-2 tracking-[-.01em]">
               Get started by editing{" "}
