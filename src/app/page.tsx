@@ -3,6 +3,8 @@
 import Image from "next/image";
 import TipografiaDemo from "./tipografia-demo";
 import Button from "./utils/Button";
+import Link from "./utils/Link";
+import Pagination from "./components/Pagination";
 
 export default function Home() {
   return (
@@ -18,6 +20,10 @@ export default function Home() {
             height={38}
             priority
           />
+          <Link href="/" variant="primary" icon>
+            Click me
+          </Link>
+          <Pagination currentPage={1} totalPages={10} onPageChange={() => {}} />
           <Button 
             variant="primary" 
             onClick={() => console.log("Button clicked")} 
