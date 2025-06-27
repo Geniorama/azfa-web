@@ -7,6 +7,7 @@ import Link from "./utils/Link";
 import Pagination from "./components/Pagination";
 import SliderArrowLeft from "./utils/SliderArrowLeft";
 import SliderArrowRight from "./utils/SliderArrowRight";
+import SliderDots from "./utils/SliderDots";
 
 export default function Home() {
   return (
@@ -30,6 +31,7 @@ export default function Home() {
             <SliderArrowLeft onClick={() => console.log("SliderArrowLeft clicked")} />
             <SliderArrowRight onClick={() => console.log("SliderArrowRight clicked")} />
           </div>
+          <SliderDots slides={5} currentSlide={2} />
           <Button 
             variant="outline-primary" 
             onClick={() => console.log("Button clicked")} 
