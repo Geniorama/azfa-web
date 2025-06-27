@@ -44,13 +44,13 @@ export default function Button({
   return (
     <button
       type="button"
-      className={`${className} ${variant} ${size} font-medium text-body2 transition cursor-pointer p-3 px-5 rounded-tr-full rounded-br-full flex items-center gap-8 disabled:cursor-not-allowed disabled:pointer-events-none disabled:bg-background-2 disabled:text-text-secondary ${
+      className={`${className} ${variant} ${size} font-medium text-body2 transition cursor-pointer p-3 px-5 rounded-tr-full rounded-br-full flex items-center gap-8 disabled:cursor-not-allowed disabled:pointer-events-none disabled:bg-background-2 disabled:text-[#B4B4B4] disabled:border-background-2 ${
         variant === "primary"
           ? "bg-text-primary text-background-1 hover:bg-text-secondary"
           : variant === "secondary"
           ? "bg-text-primary text-background-1 hover:bg-text-secondary"
           : variant === "primary-blue"
-          ? "bg-secondary text-background-1 hover:bg-primary disabled:bg-secondary disabled:text-white"
+          ? "bg-secondary text-background-1 hover:bg-primary"
           : variant === "secondary-blue"
           ? "bg-details text-background-1"
           : variant === "outline-primary"
@@ -61,7 +61,13 @@ export default function Button({
       disabled={disabled}
     >
       {children}
-      {icon && <img src={iconSrc} alt="arrow-right-blue" className="w-6 h-6" />}
+      {icon && (
+        <img
+          src={iconSrc}
+          alt="arrow-right-blue"
+          className={`${disabled ? "grayscale" : ""}`}
+        />
+      )}
     </button>
   );
 }

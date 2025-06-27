@@ -35,8 +35,6 @@ export default function Home() {
           <Button 
             variant="outline-primary" 
             onClick={() => console.log("Button clicked")} 
-            // icon
-            // disabled={true}
             >
             Click me
           </Button>
@@ -44,8 +42,8 @@ export default function Home() {
           <Button 
             variant="secondary" 
             onClick={() => console.log("Button clicked")} 
+            disabled={true}
             icon
-            // disabled={true}
             >
             Click me
           </Button>
