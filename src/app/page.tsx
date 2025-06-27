@@ -5,6 +5,8 @@ import TipografiaDemo from "./tipografia-demo";
 import Button from "./utils/Button";
 import Link from "./utils/Link";
 import Pagination from "./components/Pagination";
+import SliderArrowLeft from "./utils/SliderArrowLeft";
+import SliderArrowRight from "./utils/SliderArrowRight";
 
 export default function Home() {
   return (
@@ -24,6 +26,10 @@ export default function Home() {
             Click me
           </Link>
           <Pagination currentPage={1} totalPages={10} onPageChange={() => {}} />
+          <div className="flex gap-4 bg-primary p-5">
+            <SliderArrowLeft onClick={() => console.log("SliderArrowLeft clicked")} />
+            <SliderArrowRight onClick={() => console.log("SliderArrowRight clicked")} />
+          </div>
           <Button 
             variant="outline-primary" 
             onClick={() => console.log("Button clicked")} 
