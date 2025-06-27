@@ -25,7 +25,16 @@ export default function Home() {
           </Link>
           <Pagination currentPage={1} totalPages={10} onPageChange={() => {}} />
           <Button 
-            variant="primary" 
+            variant="outline-primary" 
+            onClick={() => console.log("Button clicked")} 
+            // icon
+            // disabled={true}
+            >
+            Click me
+          </Button>
+
+          <Button 
+            variant="secondary" 
             onClick={() => console.log("Button clicked")} 
             icon
             // disabled={true}
