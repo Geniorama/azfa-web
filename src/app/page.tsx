@@ -8,7 +8,6 @@ import Pagination from "./components/Pagination";
 import SliderArrowLeft from "./utils/SliderArrowLeft";
 import SliderArrowRight from "./utils/SliderArrowRight";
 import SliderDots from "./utils/SliderDots";
-import Footer from "./components/Footer";
 
 export default function Home() {
   return (
@@ -99,7 +98,6 @@ export default function Home() {
           </div>
         </main>
       </div>
-      <Footer />
     </>
   );
 }
