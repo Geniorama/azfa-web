@@ -31,6 +31,14 @@ const navItems: NavItem[] = [
         label: "Nosotros",
         href: "/nosotros",
       },
+      {
+        label: "Nosotros",
+        href: "/nosotros",
+      },
+      {
+        label: "Nosotros",
+        href: "/nosotros",
+      },
     ],
   },
 
@@ -81,7 +89,20 @@ const navItems: NavItem[] = [
 
 export default function Header() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [openSubmenu, setOpenSubmenu] = useState<number | null>(null);
+  const [mobileOpenSubmenu, setMobileOpenSubmenu] = useState<number | null>(null);
   
+  const handleMouseEnter = (index: number) => {
+    setOpenSubmenu(index);
+  };
+
+  const handleMouseLeave = () => {
+    setOpenSubmenu(null);
+  };
+
+  const handleMobileSubmenuToggle = (index: number) => {
+    setMobileOpenSubmenu(mobileOpenSubmenu === index ? null : index);
+  };
   
   return (
     <header className="bg-white py-4 relative">
@@ -142,7 +163,12 @@ export default function Header() {
             <nav className="w-full lg:w-auto -mt-3 lg:mt-0 px-4 lg:px-0">
               <ul className="flex flex-col lg:flex-row items-center gap-0 lg:gap-6">
                 {navItems.map((item, index) => (
-                  <li className="w-full lg:w-auto" key={index}>
+                  <li 
+                    className="w-full lg:w-auto relative group" 
+                    key={index}
+                    onMouseEnter={() => handleMouseEnter(index)}
+                    onMouseLeave={handleMouseLeave}
+                  >
                     <Link
                       href={item.href}
                       className="flex items-center gap-2 text-black border-[#DDDDDD] border-b lg:border-transparent lg:border-b-2 py-5 lg:pb-1 mb-0 lg:-mb-1 hover:border-details transition justify-between"
@@ -154,12 +180,57 @@ export default function Header() {
                         {item.label}
                       </span>
                       {item.subItems && (
-                        <FaAngleDown className="text-details" />
+                        <button 
+                          className="lg:hidden text-details transition-transform duration-300"
+                          onClick={(e) => {
+                            e.preventDefault();
+                            handleMobileSubmenuToggle(index);
+                          }}
+                        >
+                          <FaAngleDown className={`transition-transform duration-300 ${mobileOpenSubmenu === index ? 'rotate-180' : ''}`} />
+                        </button>
+                      )}
+                      {item.subItems && (
+                        <FaAngleDown className={`text-details transition-transform duration-300 hidden lg:block ${openSubmenu === index ? 'rotate-180' : ''}`} />
                       )}
                     </Link>
+                    {item.subItems && (
+                      <>
+                        {/* Desktop submenu */}
+                        <div className={`absolute w-full min-w-[200px] shadow-lg left-0 mt-2 bg-background-1 transition-all duration-300 ease-in-out hidden lg:block ${
+                          openSubmenu === index 
+                            ? 'opacity-100 visible translate-y-0' 
+                            : 'opacity-0 invisible translate-y-[-10px]'
+                        }`}>
+                          <ul className="flex flex-col text-black">
+                            {item.subItems.map((subItem, subIndex) => (
+                              <li className="p-4 hover:bg-background-2 transition-all duration-300" key={subIndex}>
+                                <Link className="block" href={subItem.href}>{subItem.label}</Link>
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                        
+                        {/* Mobile submenu */}
+                        <div className={`w-full bg-background-1 lg:shadow-lg lg:hidden transition-all duration-300 ease-in-out ${
+                          mobileOpenSubmenu === index 
+                            ? 'max-h-96 opacity-100' 
+                            : 'max-h-0 opacity-0 overflow-hidden'
+                        }`}>
+                          <ul className="flex flex-col text-black">
+                            {item.subItems.map((subItem, subIndex) => (
+                              <li className="p-4 hover:bg-background-2 transition-all duration-300 border-b border-gray-200" key={subIndex}>
+                                <Link className="block" href={subItem.href}>{subItem.label}</Link>
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      </>
+                    )}
                   </li>
                 ))}
               </ul>
+
             </nav>
 
             {/* Heading Mobile */}
