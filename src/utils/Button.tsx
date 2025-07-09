@@ -1,7 +1,7 @@
 "use client";
 
-import ArrowRightBlue from "@/app/assets/img/btn-arrow-blue.svg";
-import ArrowRightGreen from "@/app/assets/img/btn-arrow-green.svg";
+import ArrowRightBlue from "@/assets/img/btn-arrow-blue.svg";
+import ArrowRightGreen from "@/assets/img/btn-arrow-green.svg";
 
 interface ButtonProps {
   children: React.ReactNode;

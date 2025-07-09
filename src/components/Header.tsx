@@ -1,13 +1,13 @@
 "use client";
 
-import LogoAzfa from "../../../public/logo-azfa.svg";
+import LogoAzfa from "../../public/logo-azfa.svg";
 import { FaBars } from "react-icons/fa";
 import { FaAngleDown } from "react-icons/fa6";
 import { GoHome } from "react-icons/go";
 import Link from "next/link";
-import Button from "@/app/utils/Button";
-import LogoAzfaBlanco from "@/app/assets/img/logo-azfa-blanco.svg";
-import CloseIcon from "@/app/assets/img/btn-close-icon.svg";
+import Button from "@/utils/Button";
+import LogoAzfaBlanco from "@/assets/img/logo-azfa-blanco.svg";
+import CloseIcon from "@/assets/img/btn-close-icon.svg";
 import { useState } from "react";
 
 interface NavItem {

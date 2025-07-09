@@ -2,12 +2,12 @@
 
 import Image from "next/image";
 import TipografiaDemo from "./tipografia-demo";
-import Button from "./utils/Button";
-import Link from "./utils/Link";
-import Pagination from "./components/Pagination";
-import SliderArrowLeft from "./utils/SliderArrowLeft";
-import SliderArrowRight from "./utils/SliderArrowRight";
-import SliderDots from "./utils/SliderDots";
+import Button from "../utils/Button";
+import Link from "../utils/Link";
+import Pagination from "../components/Pagination";
+import SliderArrowLeft from "../utils/SliderArrowLeft";
+import SliderArrowRight from "../utils/SliderArrowRight";
+import SliderDots from "../utils/SliderDots";
 
 export default function Home() {
   return (

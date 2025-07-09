@@ -1,6 +1,6 @@
-import FooterImgTop from "@/app/assets/img/footer-img.svg"
+import FooterImgTop from "@/assets/img/footer-img.svg"
 import { FaLinkedinIn, FaInstagram, FaXTwitter } from "react-icons/fa6";
-import LogoAzfaBlanco from "@/app/assets/img/logo-azfa-blanco.svg";
+import LogoAzfaBlanco from "@/assets/img/logo-azfa-blanco.svg";
 import { IoMailOutline } from "react-icons/io5";
 import { SlScreenSmartphone } from "react-icons/sl";
 import Link from "next/link";
