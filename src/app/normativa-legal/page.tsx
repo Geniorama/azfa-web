@@ -2,12 +2,12 @@
 
 import HeadingPage from "@/components/HeadingPage";
 import Cover from "@/assets/img/cover-normativa-legal.webp";
-import Mapa from "@/assets/img/azfa-mapa-normativa-legal.svg";
 import SearchInput from "@/utils/SearchInput";
 import { useState } from "react";
 import { FaHome } from "react-icons/fa";
 import { GoArrowDown } from "react-icons/go";
 import { IoClose } from "react-icons/io5";
+import MapOne from "@/utils/MapOne/MapOne";
 
 // Tipo para los países
 interface Pais {
@@ -42,6 +42,18 @@ const paises: Pais[] = [
     value: "republica-dominicana",
   },
   { id: "cuba", label: "Cuba", value: "cuba" },
+  { id: "puerto-rico", label: "Puerto Rico", value: "puerto-rico" },
+  { id: "haiti", label: "Haití", value: "haiti" },
+  { id: "canada", label: "Canadá", value: "canada" },
+  { id: "estados-unidos", label: "Estados Unidos", value: "estados-unidos" },
+  { id: "suriname", label: "Suriname", value: "suriname" },
+  { id: "guyana-francesa", label: "Guyana Francesa", value: "guyana-francesa" },
+  { id: "españa", label: "España", value: "españa" },
+  { id: "portugal", label: "Portugal", value: "portugal" },
+  { id: "francia", label: "Francia", value: "francia" },
+  { id: "alemania", label: "Alemania", value: "alemania" },
+  { id: "italia", label: "Italia", value: "italia" },
+  { id: "reino-unido", label: "Reino Unido", value: "reino-unido" },
 ];
 
 interface Item {
@@ -215,6 +227,91 @@ const infoPaises: InfoCountry[] = [
       },
     ],
   },
+  {
+    id: "puerto-rico",
+    label: "Puerto Rico",
+    value: "puerto-rico",
+    linkDownload: "https://www.puerto-rico.gov.co/normatividad/normativa-legal",
+    items: [
+      {
+        icon: <FaHome className="text-[14px]" />,
+        title: "Normativa Legal",
+        subitems: [
+          {
+            title: "Normativa Legal",
+          },
+        ],
+      },
+    ],
+  },
+  {
+    id: "haiti",
+    label: "Haití",
+    value: "haiti",
+    linkDownload: "https://www.haiti.gov.co/normatividad/normativa-legal",
+    items: [
+      {
+        icon: <FaHome className="text-[14px]" />,
+        title: "Normativa Legal",
+        subitems: [
+          {
+            title: "Normativa Legal",
+          },
+        ],
+      },
+    ],
+  },
+  {
+    id: "canada",
+    label: "Canadá",
+    value: "canada",
+    linkDownload: "https://www.canada.gov.co/normatividad/normativa-legal",
+    items: [
+      {
+        icon: <FaHome className="text-[14px]" />,
+        title: "Normativa Legal",
+        subitems: [
+          {
+            title: "Normativa Legal",
+          },
+        ],
+      },
+    ],
+  },
+  {
+    id: "estados-unidos",
+    label: "Estados Unidos",
+    value: "estados-unidos",
+    linkDownload: "https://www.estados-unidos.gov.co/normatividad/normativa-legal",
+    items: [
+      {
+        icon: <FaHome className="text-[14px]" />,
+        title: "Normativa Legal",
+        subitems: [
+          {
+            title: "Normativa Legal",
+          },
+        ],
+      },
+    ],
+  },
+  {
+    id: "españa",
+    label: "España",
+    value: "españa",
+    linkDownload: "https://www.españa.gov.co/normatividad/normativa-legal",
+    items: [
+      {
+        icon: <FaHome className="text-[14px]" />,
+        title: "Normativa Legal",
+        subitems: [
+          {
+            title: "Normativa Legal",
+          },
+        ],
+      },
+    ],
+  },
 ];
 
 export default function NormativaLegal() {
@@ -231,6 +328,40 @@ export default function NormativaLegal() {
     setExpandedPais(expandedPais === paisId ? null : paisId);
   };
 
+  const handleMapCountrySelect = (countryId: string) => {
+    // Mapeo de IDs del mapa a IDs de la lista de países
+    const mapToPaisId: { [key: string]: string } = {
+      'espana': 'españa',
+      'republicadominicana': 'republica-dominicana',
+      'costarica': 'costa-rica',
+      'elsalvador': 'el-salvador',
+      'estadosunidos': 'estados-unidos',
+      'puertorico': 'puerto-rico',
+      'surinam': 'suriname',
+      'guyana': 'guyana-francesa',
+      'reino-unido': 'reino-unido',
+      'francia': 'francia',
+      'alemania': 'alemania',
+      'italia': 'italia',
+      'portugal': 'portugal',
+      'canada': 'canada',
+      'haiti': 'haiti'
+    };
+
+    // Usar el mapeo si existe, sino usar el ID original
+    const paisId = mapToPaisId[countryId] || countryId;
+    
+    // Buscar el país en la lista de países
+    const paisEncontrado = paises.find(pais => pais.id === paisId);
+    if (paisEncontrado) {
+      setSelectedPais(paisEncontrado);
+      setExpandedPais(paisEncontrado.id);
+      console.log("País seleccionado desde el mapa:", paisEncontrado);
+    } else {
+      console.log("País no encontrado en la lista:", countryId, "->", paisId);
+    }
+  };
+
   return (
     <div>
       <HeadingPage
@@ -239,11 +370,9 @@ export default function NormativaLegal() {
         image={Cover.src}
       />
       <div className="flex h-screen min-h-full">
-        <div className="w-5/8 bg-[#73DAEB] flex justify-center items-start h-full">
-          <img
-            src={Mapa.src}
-            alt="Mapa Normativa Legal"
-            className="max-w-[60%] mapa-item"
+        <div className="w-5/8 bg-[#73DAEB] flex justify-center items-start h-full overflow-hidden">
+          <MapOne
+            onCountrySelect={handleMapCountrySelect}
           />
         </div>
         <div className="w-3/8 h-full">
