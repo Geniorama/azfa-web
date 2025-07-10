@@ -81,3 +81,22 @@ body {
   color: var(--foreground);
   font-family: var(--font-inter-tight), Arial, Helvetica, sans-serif;
 }
+
+
+/* .custom-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-text-secondary) var(--color-background-1);
+} */
+
+.custom-scrollbar::-webkit-scrollbar {
+  width: 8px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: #D9D9D9
+  /* border-radius: 0px !important; */
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background-color: #878787;
+}

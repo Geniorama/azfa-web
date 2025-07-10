@@ -1,7 +1,8 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { FaSearch, FaChevronDown, FaTimes } from "react-icons/fa";
+import { FaChevronDown, FaTimes } from "react-icons/fa";
+import SearchButton from "./SearchButton";
 
 interface SearchOption {
   id: string;
@@ -169,7 +170,7 @@ export default function SearchInput({
 
   return (
     <div className={`relative ${className}`}>
-      <div className="flex gap-2 items-center text-text-primary bg-white px-6 py-8 shadow-lg">
+      <div className="flex gap-2 items-center text-text-primary bg-white px-6 py-4 shadow-lg">
         <label className="inline-block" htmlFor="search-input">
           {label}
         </label>
@@ -207,9 +208,7 @@ export default function SearchInput({
             <FaChevronDown className={`transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`} />
           </button>
         </div>
-        <button className="inline-block text-details hover:text-details-hover transition-colors">
-          <FaSearch />
-        </button>
+        <SearchButton onClick={() => setIsOpen(!isOpen)} />
       </div>
 
       {/* Dropdown de resultados */}
