@@ -12,6 +12,8 @@ import IconIncentivo from "@/assets/icons/icon-normativa-legal_incentivo.svg";
 import IconLey from "@/assets/icons/icon-normativa-legal_ley.svg";
 import IconRegimen from "@/assets/icons/icon-normativa-legal_regimen.svg";
 import IconTipo from "@/assets/icons/icon-normativa-legal_tipo-zf.svg";
+import CoverDownloadExample from "@/assets/img/cover-download.webp";
+import Link from "@/utils/Link";
 
 // Tipo para los países
 interface Pais {
@@ -584,6 +586,22 @@ export default function NormativaLegal() {
           </div>
         </div>
       </div>
+
+      <section className="bg-white pt-16 text-text-primary">
+        <div className="container mx-auto px-4">
+          <div className="flex gap-4 items-center justify-center">
+            <div>
+              <img src={CoverDownloadExample.src} alt="Cover Download Example" className="w-full" />
+            </div>
+            <div className="flex flex-col gap-4">
+              <p className="text-h6">Descargue la guía legal completa</p>
+              <Link icon={true} href="/" download={true}>
+                Descargar
+              </Link>
+            </div>
+          </div>
+        </div>
+      </section>
     </div>
   );
 }

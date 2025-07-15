@@ -14,6 +14,7 @@ interface LinkProps extends React.AnchorHTMLAttributes<HTMLAnchorElement> {
   shallow?: boolean;
   icon?: boolean;
   variant?: "primary" | "secondary";
+  download?: boolean;
 }
 
 export default function Link({
@@ -28,6 +29,7 @@ export default function Link({
   shallow,
   variant = "primary",
   icon = false,
+  download = false,
 }: LinkProps) {
   const iconSrc =
     variant === "primary" ? ArrowRightBlue.src : ArrowRightGreen.src;
@@ -46,9 +48,10 @@ export default function Link({
       passHref={passHref}
       scroll={scroll}
       shallow={shallow}
+      download={download}
     >
       {children}
-      {icon && <img src={iconSrc} alt="arrow-right" className="w-6 h-6" />}
+      {icon && <img src={iconSrc} alt="arrow-right" className={`w-6 h-6 ${download ? "rotate-90 mt-2" : ""}`} />}
     </NextLink>
   );
 }
