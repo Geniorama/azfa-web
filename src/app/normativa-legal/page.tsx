@@ -8,6 +8,10 @@ import { FaHome } from "react-icons/fa";
 import { GoArrowDown } from "react-icons/go";
 import { IoClose } from "react-icons/io5";
 import MapOne from "@/utils/MapOne/MapOne";
+import IconIncentivo from "@/assets/icons/icon-normativa-legal_incentivo.svg";
+import IconLey from "@/assets/icons/icon-normativa-legal_ley.svg";
+import IconRegimen from "@/assets/icons/icon-normativa-legal_regimen.svg";
+import IconTipo from "@/assets/icons/icon-normativa-legal_tipo-zf.svg";
 
 // Tipo para los países
 interface Pais {
@@ -79,7 +83,7 @@ const infoPaises: InfoCountry[] = [
     linkDownload: "https://www.colombia.gov.co/normatividad/normativa-legal",
     items: [
       {
-        icon: <FaHome className="text-[14px]" />,
+        icon: IconTipo.src,
         title: "Normativa Legal",
         subitems: [
           {
@@ -94,7 +98,7 @@ const infoPaises: InfoCountry[] = [
         ],
       },
       {
-        icon: <FaHome className="text-[14px]" />,
+        icon: IconIncentivo.src,
         title: "Normativa Legal",
         subitems: [
           {
@@ -103,7 +107,7 @@ const infoPaises: InfoCountry[] = [
         ],
       },
       {
-        icon: <FaHome className="text-[14px]" />,
+        icon: IconLey.src,
         title: "Normativa Legal",
         subitems: [
           {
@@ -120,7 +124,7 @@ const infoPaises: InfoCountry[] = [
     linkDownload: "https://www.argentina.gov.co/normatividad/normativa-legal",
     items: [
       {
-        icon: <FaHome className="text-[14px]" />,
+        icon: IconRegimen.src,
         title: "Normativa Legal",
         subitems: [
           {
@@ -137,7 +141,7 @@ const infoPaises: InfoCountry[] = [
     linkDownload: "https://www.brasil.gov.co/normatividad/normativa-legal",
     items: [
       {
-        icon: <FaHome className="text-[14px]" />,
+        icon: IconTipo.src,
         title: "Normativa Legal",
         subitems: [
           {
@@ -160,7 +164,7 @@ const infoPaises: InfoCountry[] = [
     linkDownload: "https://www.chile.gov.co/normatividad/normativa-legal",
     items: [
       {
-        icon: <FaHome className="text-[14px]" />,
+        icon: IconTipo.src,
         title: "Normativa Legal",
         subitems: [
           {
@@ -177,7 +181,7 @@ const infoPaises: InfoCountry[] = [
     linkDownload: "https://www.peru.gov.co/normatividad/normativa-legal",
     items: [
       {
-        icon: <FaHome className="text-[14px]" />,
+        icon: IconTipo.src,
         title: "Normativa Legal",
         subitems: [
           {
@@ -194,7 +198,7 @@ const infoPaises: InfoCountry[] = [
     linkDownload: "https://www.ecuador.gov.co/normatividad/normativa-legal",
     items: [
       {
-        icon: <FaHome className="text-[14px]" />,
+        icon: IconTipo.src,
         title: "Normativa Legal",
         subitems: [
           {
@@ -211,7 +215,7 @@ const infoPaises: InfoCountry[] = [
     linkDownload: "https://www.venezuela.gov.co/normatividad/normativa-legal",
     items: [
       {
-        icon: <FaHome className="text-[14px]" />,
+        icon: IconTipo.src,
         title: "Normativa Legal",
         subitems: [
           {
@@ -234,7 +238,7 @@ const infoPaises: InfoCountry[] = [
     linkDownload: "https://www.puerto-rico.gov.co/normatividad/normativa-legal",
     items: [
       {
-        icon: <FaHome className="text-[14px]" />,
+        icon: IconTipo.src,
         title: "Normativa Legal",
         subitems: [
           {
@@ -251,7 +255,7 @@ const infoPaises: InfoCountry[] = [
     linkDownload: "https://www.haiti.gov.co/normatividad/normativa-legal",
     items: [
       {
-        icon: <FaHome className="text-[14px]" />,
+        icon: IconTipo.src,
         title: "Normativa Legal",
         subitems: [
           {
@@ -268,7 +272,7 @@ const infoPaises: InfoCountry[] = [
     linkDownload: "https://www.canada.gov.co/normatividad/normativa-legal",
     items: [
       {
-        icon: <FaHome className="text-[14px]" />,
+        icon: IconTipo.src,
         title: "Normativa Legal",
         subitems: [
           {
@@ -302,7 +306,7 @@ const infoPaises: InfoCountry[] = [
     linkDownload: "https://www.españa.gov.co/normatividad/normativa-legal",
     items: [
       {
-        icon: <FaHome className="text-[14px]" />,
+        icon: IconTipo.src,
         title: "Normativa Legal",
         subitems: [
           {

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">
+  <defs>
+    <style>
+      .cls-1, .cls-2 {
+        fill: none;
+      }
+
+      .cls-2 {
+        stroke: #000;
+        stroke-width: .9px;
+      }
+    </style>
+  </defs>
+  <g id="Capa_1" data-name="Capa 1">
+    <g>
+      <polyline class="cls-2" points="5.42 7.43 7.73 9.56 13.04 2.83"/>
+      <polyline class="cls-2" points="12.31 7.89 12.31 13.17 2.96 13.17 2.96 3.81 8.15 3.81"/>
+    </g>
+  </g>
+  <g id="Marco">
+    <rect class="cls-1" y="0" width="16" height="16"/>
+  </g>
+</svg>

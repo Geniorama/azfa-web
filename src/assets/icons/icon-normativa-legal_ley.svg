@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">
+  <defs>
+    <style>
+      .cls-1, .cls-2, .cls-3 {
+        fill: none;
+      }
+
+      .cls-2, .cls-3 {
+        stroke: #000;
+        stroke-width: .9px;
+      }
+
+      .cls-3 {
+        stroke-linejoin: round;
+      }
+    </style>
+  </defs>
+  <g id="Capa_1" data-name="Capa 1">
+    <g>
+      <line class="cls-2" x1="4.62" y1="14.31" x2="11.38" y2="14.31"/>
+      <line class="cls-2" x1="8" y1="1.69" x2="8" y2="14.31"/>
+      <g>
+        <line class="cls-2" x1="3.38" y1="3.26" x2="12.62" y2="3.26"/>
+        <g>
+          <path class="cls-3" d="M.98,8.85h4.79v.28c0,1.14-.93,2.07-2.07,2.07h-.66c-1.14,0-2.07-.93-2.07-2.07v-.28h0Z"/>
+          <polyline class="cls-2" points=".98 8.81 3.38 3.92 5.77 8.81"/>
+        </g>
+        <g>
+          <path class="cls-3" d="M10.23,8.85h4.79v.28c0,1.14-.93,2.07-2.07,2.07h-.66c-1.14,0-2.07-.93-2.07-2.07v-.28h0Z"/>
+          <polyline class="cls-2" points="10.23 8.81 12.62 3.92 15.02 8.81"/>
+        </g>
+      </g>
+    </g>
+  </g>
+  <g id="Marco">
+    <rect class="cls-1" y="0" width="16" height="16"/>
+  </g>
+</svg>

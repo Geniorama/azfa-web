@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">
+  <defs>
+    <style>
+      .cls-1, .cls-2 {
+        fill: none;
+      }
+
+      .cls-2 {
+        stroke: #000;
+        stroke-width: .9px;
+      }
+    </style>
+  </defs>
+  <g id="Capa_1" data-name="Capa 1">
+    <g>
+      <rect class="cls-2" x="1.91" y="3.03" width="12.18" height="10.87"/>
+      <g>
+        <line class="cls-2" x1="5.68" y1="1.57" x2="5.68" y2="4.49"/>
+        <line class="cls-2" x1="10.32" y1="1.57" x2="10.32" y2="4.49"/>
+      </g>
+      <line class="cls-2" x1="1.91" y1="6.58" x2="14.09" y2="6.58"/>
+    </g>
+  </g>
+  <g id="Marco">
+    <rect class="cls-1" y="0" width="16" height="16"/>
+  </g>
+</svg>
