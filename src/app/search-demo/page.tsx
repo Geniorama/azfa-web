@@ -36,7 +36,7 @@ interface Opcion {
 export default function SearchDemo() {
   const [selectedOption, setSelectedOption] = useState<Opcion | null>(null);
 
-  const handleSelect = (option: Opcion) => {
+  const handleSelect = (option: Opcion | null) => {
     setSelectedOption(option);
     console.log("Opción seleccionada:", option);
   };

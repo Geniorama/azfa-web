@@ -13,7 +13,7 @@ interface SearchOption {
 interface SearchInputProps {
   placeholder?: string;
   options: SearchOption[];
-  onSelect?: (option: SearchOption) => void;
+  onSelect?: (option: SearchOption | null) => void;
   className?: string;
   label?: string;
   selected?: SearchOption | null;
