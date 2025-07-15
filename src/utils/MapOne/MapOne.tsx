@@ -1,15 +1,43 @@
 "use client";
 
 import type { SVGProps } from "react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import styles from "./MapOne.module.css"
 
 interface MapOneProps extends SVGProps<SVGSVGElement> {
   onCountrySelect?: (country: string) => void;
+  expandedCountry?: string | null;
+  selectedCountryId?: string | null;
 }
 
-export default function MapOne({ onCountrySelect }: MapOneProps) {
+// Coordenadas aproximadas del centro de cada país en el SVG (ajustar si es necesario)
+const countryCenters: Record<string, { x: number; y: number }> = {
+  colombia: { x: 410, y: 320 },
+  brasil: { x: 520, y: 420 },
+  argentina: { x: 470, y: 600 },
+};
+
+// Zoom y radio de la máscara
+const ZOOM = 2.2;
+const MASK_RADIUS = 120;
+
+export default function MapOne({ onCountrySelect, expandedCountry, selectedCountryId }: MapOneProps) {
   const [selectedCountry, setSelectedCountry] = useState<string | null>(null);
+
+  // Determinar si hay que hacer zoom y centrar
+  const isZoomed = expandedCountry && countryCenters[expandedCountry];
+  const center = isZoomed ? countryCenters[expandedCountry!] : { x: 355, y: 425 };
+  const zoom = isZoomed ? ZOOM : 1;
+
+  // Estilo de transición para animar el zoom
+  const groupStyle = {
+    transition: 'transform 0.7s cubic-bezier(0.4,0,0.2,1)',
+    transform: `translate(${355 - center.x}px, ${425 - center.y}px) scale(${zoom})`,
+    transformOrigin: `${center.x}px ${center.y}px`,
+  };
+
+  // Para la máscara circular
+  const clipId = 'country-zoom-clip';
 
   const handleSvgClick = (event: React.MouseEvent<SVGSVGElement>) => {
     const target = event.target as SVGElement;
@@ -34,6 +62,21 @@ export default function MapOne({ onCountrySelect }: MapOneProps) {
     event.stopPropagation()
   };
 
+  // Efecto para marcar el país seleccionado desde fuera
+  useEffect(() => {
+    if (selectedCountryId) {
+      const paths = document.querySelectorAll("path");
+      paths.forEach((path) => {
+        if (path.id === selectedCountryId) {
+          path.classList.add(styles.selected);
+        } else {
+          path.classList.remove(styles.selected);
+        }
+      });
+      setSelectedCountry(selectedCountryId);
+    }
+  }, [selectedCountryId]);
+
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -42,9 +85,18 @@ export default function MapOne({ onCountrySelect }: MapOneProps) {
       onClick={handleSvgClick}
       style={{ cursor: "pointer" }}
       className={`w-auto max-w-[60%] ${styles.map}`}
-      
     >
       <defs>
+        {/* Máscara circular dinámica para el país expandido */}
+        {isZoomed && (
+          <clipPath id={clipId}>
+            <circle
+              cx={center.x}
+              cy={center.y}
+              r={MASK_RADIUS}
+            />
+          </clipPath>
+        )}
         <clipPath id="clippath">
           <path
             d="M560.3 303.2c65.5 0 118.5-53.1 118.5-118.5S625.7 66.2 560.3 66.2s-118.5 53.1-118.5 118.5 53.1 118.5 118.5 118.5Z"
@@ -68,7 +120,8 @@ export default function MapOne({ onCountrySelect }: MapOneProps) {
         />
         <g
           style={{
-            clipPath: "url(#clippath)",
+            clipPath: isZoomed ? `url(#${clipId})` : "url(#clippath)",
+            ...groupStyle,
           }}
         >
           <circle
@@ -445,6 +498,22 @@ export default function MapOne({ onCountrySelect }: MapOneProps) {
         d="m388.7 349.7 2.2 9-3.8.7.6-4.9-2.1-2.4c-.2-.2-.5-.4-.8-.4s-.6.1-.9.3l-2.6 2.5-10.5-.7c-.5 0-.9.3-1 .8l-.6 4.1 5.1.8c.4 0 .7.5.7.9l-.4 3.2c0 .5-.4.8-.9.8l-4.8.4c-.2 0-.5.1-.7.3-.2.2-.2.4-.2.7l.3 3.5c0 .2 0 .3.2.4l6.1 5.3c.3.2.4.6.3.9l-6.5 22-.2-4.2-4.6.7c-.2 0-.4 0-.5-.2s-.1-.4 0-.6l3.3-6.4c.2-.3.2-.7 0-1s-.4-.5-.8-.6l-6.7-1.3-10.8 1.2c-.4 0-.8-.2-.9-.5l-4-8.3-5.2-1.9-2.7-4.8c-.1-.2-.3-.4-.5-.5l-3-1.2-1.8-.7-4.3-3.1c-.2-.1-.4-.2-.6-.1s-.4.1-.5.3l-1.7 2.4c-.3.4-.8.6-1.3.4l-6.6-2.3c-.3 0-.5-.3-.6-.6l-1.1-3.1c-.1-.3-.3-.6-.6-.7l-8.4-4 1.5-6.3c.1-.5.5-.9 1-1l4.9-1.1c.3 0 .6-.3.9-.5l5.8-7.2c.4-.5.4-1.2 0-1.7l-2.4-3c-.2-.3-.4-.7-.3-1.1l1.2-15.8c0-.5-.2-.9-.5-1.2l-2.8-2.2 1.6-5.2 2.5-2.7c0 .4.3.7.7.9l1.7.7h.7c.2-.1.4-.3.4-.6l.5-1.9c0-.2 0-.5-.1-.7l-2-2.9c-.1-.2-.1-.4 0-.6l.4-1.1c0-.2.3-.4.5-.4l2.3-.2c.2 0 .4 0 .5-.2l5.9-4.2c.5-.4.7-1 .6-1.6l-.5-1.8c-.1-.4 0-.9.2-1.3l3.2-4.3c.2-.3.5-.5.9-.5s.7 0 1 .3l2.6 2c.4.3.9.3 1.3 0l.9-.8c.3-.3.5-.7.4-1.1l-.7-2.9c0-.2 0-.5.1-.6.1-.2.4-.3.6-.3h3.8l8.4-2.9c.5-.2.9-.6 1.1-1.1l.7-1.8 1.8-2.4c.2-.3.5-.4.8-.4h5.8c.2.1.4.3.4.5v2.8c0 .3-.1.6-.4.7l-4.8 3.2-4.3 1.2-5.6 6.7-.9 7.2c0 .5.2 1 .7 1.1l1.8.6 3.5 7.1v.6l-1.3 2.9c-.1.3 0 .6 0 .9l2.7 3.8c.3.4.7.6 1.2.6l12.3-.9c.5 0 1 .1 1.4.5l6.5 6.1 11.5.5c.4 0 .8.3.9.8l.8 3.9c.1.7-.2 1.4-.9 1.7l-2.6 1.1c-.4.2-.6.5-.6.9l.2 4.1 2.6 7.2-2.1 4.4c-.3.7-.1 1.4.5 1.9l3 2.1c.1.1.2.2.3.4h-.3Z"
         className="st2"
       />
+      {/* Borde del círculo encima de todo */}
+      {isZoomed && (
+        <circle
+          cx={center.x}
+          cy={center.y}
+          r={MASK_RADIUS}
+          fill="none"
+          stroke="#0A2B5A"
+          strokeWidth="8"
+          style={{
+            filter: 'drop-shadow(0 0 12px #0A2B5A66)',
+            transition: 'all 0.7s cubic-bezier(0.4,0,0.2,1)',
+            pointerEvents: 'none',
+          }}
+        />
+      )}
     </svg>
   );
 }

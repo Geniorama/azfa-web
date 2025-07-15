@@ -16,6 +16,7 @@ interface SearchInputProps {
   onSelect?: (option: SearchOption) => void;
   className?: string;
   label?: string;
+  selected?: SearchOption | null;
 }
 
 export default function SearchInput({
@@ -23,7 +24,8 @@ export default function SearchInput({
   options,
   onSelect,
   className = "",
-  label = "Buscar"
+  label = "Buscar",
+  selected = null
 }: SearchInputProps) {
   const [searchTerm, setSearchTerm] = useState("");
   const [isOpen, setIsOpen] = useState(false);
@@ -59,6 +61,17 @@ export default function SearchInput({
     setIsOpen(filtered.length > 0);
     setHighlightedIndex(-1);
   }, [searchTerm, options, selectedOption]);
+
+  // Sincronizar selección externa
+  useEffect(() => {
+    if (selected) {
+      setSelectedOption(selected);
+      setSearchTerm(selected.label);
+    } else {
+      setSelectedOption(null);
+      setSearchTerm("");
+    }
+  }, [selected]);
 
   // Manejar selección con teclado
   const handleKeyDown = (e: React.KeyboardEvent) => {
@@ -109,6 +122,7 @@ export default function SearchInput({
     setIsOpen(false);
     setHighlightedIndex(-1);
     setFilteredOptions([]);
+    onSelect?.(null);
   };
 
 

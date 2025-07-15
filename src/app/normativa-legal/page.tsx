@@ -3,7 +3,7 @@
 import HeadingPage from "@/components/HeadingPage";
 import Cover from "@/assets/img/cover-normativa-legal.webp";
 import SearchInput from "@/utils/SearchInput";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { FaHome } from "react-icons/fa";
 import { GoArrowDown } from "react-icons/go";
 import { IoClose } from "react-icons/io5";
@@ -317,23 +317,58 @@ const infoPaises: InfoCountry[] = [
 export default function NormativaLegal() {
   const [selectedPais, setSelectedPais] = useState<Pais | null>(null);
   const [expandedPais, setExpandedPais] = useState<string | null>(null);
+  const [scrollToPais, setScrollToPais] = useState<string | null>(null);
 
-  const handlePaisSelect = (pais: Pais) => {
+  useEffect(() => {
+    if (scrollToPais) {
+      setTimeout(() => {
+        const paisElement = document.getElementById(`pais-${scrollToPais}`);
+        const container = document.querySelector('.overflow-y-auto') as HTMLElement;
+        if (paisElement && container) {
+          const containerRect = container.getBoundingClientRect();
+          const elementRect = paisElement.getBoundingClientRect();
+          const offset = 100;
+          container.scrollTo({
+            top: container.scrollTop + elementRect.top - containerRect.top - offset,
+            behavior: 'smooth'
+          });
+        }
+        setScrollToPais(null); // Limpiar para futuros scrolls
+      }, 100);
+    }
+  }, [scrollToPais]);
+
+  const handlePaisSelect = (pais: Pais | null) => {
+    if (!pais) {
+      setSelectedPais(null);
+      setExpandedPais(null);
+      setScrollToPais(null);
+      // Habilitar el scroll por si estaba bloqueado
+      const container = document.querySelector('.overflow-y-auto') as HTMLElement;
+      if (container) {
+        container.style.overflow = 'auto';
+      }
+      return;
+    }
     setSelectedPais(pais);
-    setExpandedPais(pais.id);
-    
-    // Bloquear el scroll cuando se expande desde el buscador
+    setScrollToPais(pais.id); // Marcar que queremos hacer scroll a este país
+    // Bloquear el scroll cuando se selecciona desde el buscador
     const container = document.querySelector('.overflow-y-auto') as HTMLElement;
     if (container) {
       container.style.overflow = 'hidden';
     }
-    
     console.log("País seleccionado:", pais);
   };
 
   const handlePaisExpand = (paisId: string) => {
     const newExpandedPais = expandedPais === paisId ? null : paisId;
     setExpandedPais(newExpandedPais);
+
+    // Actualizar el país seleccionado para sincronizar mapa y buscador
+    if (newExpandedPais) {
+      const pais = paises.find(p => p.id === paisId);
+      if (pais) setSelectedPais(pais);
+    }
     
     // Obtener el contenedor de scroll
     const container = document.querySelector('.overflow-y-auto') as HTMLElement;
@@ -343,7 +378,6 @@ export default function NormativaLegal() {
       if (container) {
         container.style.overflow = 'hidden';
       }
-      
       // Hacer scroll hasta la parte superior
       setTimeout(() => {
         const paisElement = document.getElementById(`pais-${paisId}`);
@@ -351,7 +385,6 @@ export default function NormativaLegal() {
           const containerRect = container.getBoundingClientRect();
           const elementRect = paisElement.getBoundingClientRect();
           const offset = 100; // Offset de 100px desde la parte superior
-          
           container.scrollTo({
             top: container.scrollTop + elementRect.top - containerRect.top - offset,
             behavior: 'smooth'
@@ -430,6 +463,7 @@ export default function NormativaLegal() {
         <div className="w-5/8 bg-[#73DAEB] flex justify-center items-start h-full overflow-hidden">
           <MapOne
             onCountrySelect={handleMapCountrySelect}
+            selectedCountryId={selectedPais?.id}
           />
         </div>
         <div className="w-3/8 h-full">
@@ -437,8 +471,9 @@ export default function NormativaLegal() {
             <div className="absolute top-0 left-0 w-full z-10">
               <SearchInput
                 placeholder="Escriba el nombre del país..."
-                options={paises}
+                options={paises.filter(p => infoPaises.some(ip => ip.id === p.id))}
                 onSelect={handlePaisSelect}
+                selected={selectedPais}
                 label="Buscar por país"
               />
             </div>
@@ -484,7 +519,7 @@ export default function NormativaLegal() {
                                   container.style.overflow = 'auto';
                                 }
                               }}
-                              className="p-2 hover:bg-gray-200 rounded-full transition-colors"
+                              className="p-2 hover:bg-gray-200 hover:text-primary rounded-full transition-colors cursor-pointer"
                             >
                             <IoClose className="text-2xl" />
                           </button>
