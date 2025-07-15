@@ -184,8 +184,8 @@ export default function SearchInput({
 
   return (
     <div className={`relative ${className}`}>
-      <div className="flex gap-2 items-center text-text-primary bg-white px-6 py-4 shadow-lg">
-        <label className="inline-block" htmlFor="search-input">
+      <div className="flex gap-2 items-center text-text-primary bg-white px-6 py-4 shadow-lg flex-wrap">
+        <label className="block md:inline-block w-full md:w-auto" htmlFor="search-input">
           {label}
         </label>
         <div className="relative flex-grow">
@@ -222,7 +222,7 @@ export default function SearchInput({
             <FaChevronDown className={`transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`} />
           </button>
         </div>
-        <SearchButton onClick={() => setIsOpen(!isOpen)} />
+        <SearchButton className="hidden md:flex" onClick={() => setIsOpen(!isOpen)} />
       </div>
 
       {/* Dropdown de resultados */}

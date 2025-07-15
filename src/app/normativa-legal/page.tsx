@@ -465,16 +465,16 @@ export default function NormativaLegal() {
         description="Consulte la normativa legal de cada país"
         image={Cover.src}
       />
-      <div className="flex h-screen min-h-full">
-        <div className="w-5/8 bg-[#73DAEB] flex justify-center items-start h-full overflow-hidden">
+      <div className="flex flex-col-reverse md:flex-row h-screen min-h-full">
+        <div className="w-full md:w-5/8 bg-[#73DAEB] flex justify-center items-start h-full overflow-hidden">
           <MapOne
             onCountrySelect={handleMapCountrySelect}
             selectedCountryId={selectedPais?.id}
           />
         </div>
-        <div className="w-3/8 h-full">
+        <div className="w-full md:w-3/8 h-full">
           <div className="relative">
-            <div className="absolute top-0 left-0 w-full z-10">
+            <div className="absolute top-0 left-0 w-full">
               <SearchInput
                 placeholder="Escriba el nombre del país..."
                 options={paises.filter(p => infoPaises.some(ip => ip.id === p.id))}
