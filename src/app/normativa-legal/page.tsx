@@ -12,8 +12,9 @@ import IconIncentivo from "@/assets/icons/icon-normativa-legal_incentivo.svg";
 import IconLey from "@/assets/icons/icon-normativa-legal_ley.svg";
 import IconRegimen from "@/assets/icons/icon-normativa-legal_regimen.svg";
 import IconTipo from "@/assets/icons/icon-normativa-legal_tipo-zf.svg";
-import CoverDownloadExample from "@/assets/img/cover-download.webp";
 import Link from "@/utils/Link";
+import type { ContentType } from "@/types/contentType";
+import type { DownloadType } from "@/types/componentsType";
 
 // Tipo para los países
 interface Pais {
@@ -324,6 +325,37 @@ export default function NormativaLegal() {
   const [selectedPais, setSelectedPais] = useState<Pais | null>(null);
   const [expandedPais, setExpandedPais] = useState<string | null>(null);
   const [scrollToPais, setScrollToPais] = useState<string | null>(null);
+  const [pageContent, setPageContent] = useState<ContentType | null>(null);
+  const [downloadSection, setDownloadSection] = useState<DownloadType | null>(null);
+
+
+  const getContent = async (id: string) => {
+    const response = await fetch(`/api/getContent?id=${id}&populate[0]=heading.backgroundImg&populate[1]=sections.document&populate[2]=sections.cover`);
+    const data = await response.json();
+    setPageContent(data.data as ContentType);
+
+    if (data.data.sections && data.data.sections.length > 0) {
+      const sectionDownload = data.data.sections.find((section: unknown) => (section as { __component?: string }).__component === "sections.download");
+     
+      const downloadData: DownloadType = {
+        id: sectionDownload.id,
+        title: sectionDownload.title,
+        buttonText: sectionDownload.textButton,
+        documentUrl: sectionDownload.document.url,
+        cover: {
+          url: sectionDownload.cover.url,
+          alternativeText: sectionDownload.cover.alternativeText,
+        },
+        target: sectionDownload.target,
+      }
+
+      setDownloadSection(downloadData);
+    }
+  };
+
+  useEffect(() => {
+    getContent("ojn04v7g3reqt0jf06mkt0co");
+  }, []);
 
   useEffect(() => {
     if (scrollToPais) {
@@ -460,11 +492,14 @@ export default function NormativaLegal() {
 
   return (
     <div>
-      <HeadingPage
-        title="Normativa Legal"
-        description="Consulte la normativa legal de cada país"
-        image={Cover.src}
-      />
+      {pageContent?.heading && (
+        <HeadingPage
+          title={pageContent.heading.title}
+          smallTitle={pageContent.heading.smallTitle}
+          image={pageContent.heading.imageUrl || Cover.src}
+          textAlign={pageContent.heading.alignment}
+        />
+      )}
       <div className="flex flex-col-reverse md:flex-row h-screen min-h-full">
         <div className="w-full md:w-5/8 bg-[#73DAEB] flex justify-center items-start h-full overflow-hidden">
           <MapOne
@@ -587,21 +622,24 @@ export default function NormativaLegal() {
         </div>
       </div>
 
-      <section className="bg-white pt-16 text-text-primary">
-        <div className="container mx-auto px-4">
-          <div className="flex gap-4 items-center justify-center">
-            <div>
-              <img src={CoverDownloadExample.src} alt="Cover Download Example" className="w-full" />
-            </div>
-            <div className="flex flex-col gap-4">
-              <p className="text-h6">Descargue la guía legal completa</p>
-              <Link icon={true} href="/" download={true}>
-                Descargar
-              </Link>
+      {/* Section Download */}
+      {downloadSection && (
+        <section className="bg-white pt-16 text-text-primary">
+          <div className="container mx-auto px-4">
+            <div className="flex gap-4 items-center justify-center">
+              <div>
+                <img src={downloadSection.cover?.url} alt={downloadSection.cover?.alternativeText || ""} className="w-full" />
+              </div>
+              <div className="flex flex-col gap-4">
+                <p className="text-h6">{downloadSection.title}</p>
+                <Link icon={true} href={downloadSection.documentUrl || ""} download={true} target={downloadSection.target || "_self"}>
+                  {downloadSection.buttonText}
+                </Link>
+              </div>
             </div>
           </div>
-        </div>
-      </section>
+        </section>
+      )}
     </div>
   );
 }

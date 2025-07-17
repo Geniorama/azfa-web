@@ -1,6 +1,6 @@
 interface HeadingPageProps {
-  title: string;
-  description: string;
+  title?: string;
+  smallTitle?: string;
   image?: string;
   textAlign?: "left" | "center" | "right";
   className?: string;
@@ -8,7 +8,7 @@ interface HeadingPageProps {
 
 export default function HeadingPage({
   title,
-  description,
+  smallTitle,
   image,
   textAlign = "center",
   className,
@@ -27,7 +27,7 @@ export default function HeadingPage({
       <h1 className="text-background-1 text-h3 lg:text-6xl font-normal">
         {title}
       </h1>
-      <p className="text-details text-h6 lg:text-lg mt-4">{description}</p>
+      <p className="text-details text-h6 lg:text-lg mt-4">{smallTitle}</p>
     </div>
   );
 }
