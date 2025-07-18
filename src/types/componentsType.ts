@@ -6,7 +6,6 @@ export interface HeadingType {
     alignment?: "left" | "center" | "right";
     imageUrl?: string;
 }
-
 export interface DownloadType {
     id: number;
     title?: string;
@@ -17,4 +16,10 @@ export interface DownloadType {
         alternativeText?: string;
     };
     target?: string;
+}
+
+export interface OptionType {
+    id: string;
+    label: string;
+    value: string;
 }
