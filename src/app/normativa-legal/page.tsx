@@ -87,19 +87,21 @@ export default function NormativaLegal() {
             country.country.charAt(0).toUpperCase() + country.country.slice(1),
           value: country.country,
           linkDownload: country.document.document.url,
-          items: country.items.items?.map((item) => ({
-            id: item.id,
-            icon: country.items.headingList.icon.url,
-            title: country.items.headingList.title,
-            subitems: country.items.items?.map((subitem) => ({
+          items: country.items?.map((item, index) => ({
+            id: `item-${index}`,
+            icon: item.headingList?.icon?.url || '',
+            title: item.headingList?.title || '',
+            subitems: item.items?.map((subitem: { id: string; text: string; link: string }) => ({
               id: subitem.id,
               title: subitem.text,
               link: subitem.link,
-            })),
-          })),
+            })) || [],
+          })) || []
         };
       }
     );
+
+    console.log("countries", countries)
 
     setCountriesInfo(countries);
     setCountriesOptions(countries.map((country) => ({
@@ -154,6 +156,7 @@ export default function NormativaLegal() {
       return;
     }
     setSelectedPais(pais);
+    setExpandedPais(pais.id); // Expandir automáticamente el país seleccionado
     setScrollToPais(pais.id); // Marcar que queremos hacer scroll a este país
     // Bloquear el scroll cuando se selecciona desde el buscador
     const container = document.querySelector(".overflow-y-auto") as HTMLElement;
@@ -207,6 +210,7 @@ export default function NormativaLegal() {
   };
 
   const handleMapCountrySelect = (countryId: string) => {
+    console.log("countryId", countryId)
     // Mapeo de IDs del mapa a IDs de la lista de países
     const mapToPaisId: { [key: string]: string } = {
       espana: "españa",
@@ -295,53 +299,47 @@ export default function NormativaLegal() {
             </div>
 
             <div className="flex flex-col text-text-primary overflow-y-auto h-screen pt-26 custom-scrollbar">
-              {countriesInfo.map((pais, index) => {
-                const isExpanded = expandedPais === pais.id;
-                const isSelected = selectedPais?.id === pais.id;
+              {expandedPais ? (
+                // Si hay un país expandido, mostrar solo ese país
+                countriesInfo
+                  .filter((pais) => pais.id === expandedPais)
+                  .map((pais, index) => {
+                    console.log("pais expandido", pais);
 
-                console.log("isSelected", isSelected);
-
-                return (
-                  <div
-                    id={`pais-${pais.id}`}
-                    className={`grid grid-cols-2 transition hover:bg-primary hover:text-white`}
-                    key={index}
-                    onClick={() => handlePaisExpand(pais.id)}
-                    style={{ cursor: "pointer" }}
-                  >
-                    <div
-                      className={`flex flex-col gap-4 px-4 py-8 transition ${
-                        isExpanded ? "justify-start" : ""
-                      }`}
-                    >
+                    return (
+                                             <div
+                         id={`pais-${pais.id}`}
+                         className="grid grid-cols-2 h-full transition bg-primary text-white border-b border-gray-300"
+                         key={index}
+                         onClick={() => handlePaisExpand(pais.id)}
+                         style={{ cursor: "pointer" }}
+                       >
+                                         {/* Left column */}
+                     <div
+                       className="flex flex-col gap-4 px-4 py-8 transition justify-start h-full"
+                     >
                       <div className="flex justify-between items-start">
-                        <h3
-                          className={`text-h4 transition ${
-                            isExpanded ? "text-3xl" : ""
-                          }`}
-                        >
+                        <h3 className="text-h4 transition text-3xl">
                           {pais.label}
                         </h3>
-                        {isExpanded && (
-                          <button
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              setExpandedPais(null);
-                              setSelectedPais(null);
+                                                 <button
+                           onClick={(e) => {
+                               e.stopPropagation();
+                               setExpandedPais(null);
+                               setSelectedPais(null);
 
-                              // Habilitar el scroll cuando se cierra
-                              const container = document.querySelector(
-                                ".overflow-y-auto"
-                              ) as HTMLElement;
-                              if (container) {
-                                container.style.overflow = "auto";
-                              }
-                            }}
-                            className="p-2 hover:bg-gray-200 hover:text-primary rounded-full transition-colors cursor-pointer"
-                          >
-                            <IoClose className="text-2xl" />
-                          </button>
-                        )}
+                               // Habilitar el scroll cuando se cierra
+                               const container = document.querySelector(
+                                 ".overflow-y-auto"
+                               ) as HTMLElement;
+                               if (container) {
+                                 container.style.overflow = "auto";
+                               }
+                             }}
+                             className="p-2 hover:bg-gray-200 hover:text-primary rounded-full transition-colors cursor-pointer"
+                           >
+                             <IoClose className="text-2xl" />
+                           </button>
                       </div>
 
                       <a
@@ -356,9 +354,10 @@ export default function NormativaLegal() {
                         <GoArrowDown className="text-2xl" />
                       </a>
                     </div>
-                    <div className="flex flex-col gap-4 text-text-primary bg-[#FBFBFB] p-6 h-full border-b border-text-primary">
-                      {pais.items &&
-                        pais.items.map((item, index) => (
+
+                    {/* Right column */}
+                    <div className="flex flex-col gap-4 text-text-primary bg-[#FBFBFB] p-6 h-full overflow-y-auto">
+                      {pais.items?.map((item, index) => (
                           <div
                             className={`${
                               index === (pais.items?.length ?? 0) - 1
@@ -395,7 +394,82 @@ export default function NormativaLegal() {
                     </div>
                   </div>
                 );
-              })}
+              })
+            ) : (
+              // Si no hay país expandido, mostrar todos los países
+              countriesInfo.map((pais, index) => {
+                console.log("pais map", pais);
+
+                return (
+                  <div
+                    id={`pais-${pais.id}`}
+                    className="grid grid-cols-2 transition hover:bg-primary hover:text-white border-b border-gray-300"
+                    key={index}
+                    onClick={() => handlePaisExpand(pais.id)}
+                    style={{ cursor: "pointer" }}
+                  >
+                    {/* Left column */}
+                    <div className="flex flex-col gap-4 px-4 py-8 transition">
+                      <div className="flex justify-between items-start">
+                        <h3 className="text-h4 transition">
+                          {pais.label}
+                        </h3>
+                      </div>
+
+                      <a
+                        href={pais.linkDownload}
+                        target="_blank"
+                        className="inline-flex items-center gap-2 cursor-pointer hover:text-details mt-6 transition w-fit"
+                        onClick={(e) => e.stopPropagation()}
+                      >
+                        <span className="underline underline-offset-6">
+                          Descargar
+                        </span>
+                        <GoArrowDown className="text-2xl" />
+                      </a>
+                    </div>
+
+                    {/* Right column */}
+                    <div className="flex flex-col gap-4 text-text-primary bg-[#FBFBFB] p-6 h-full">
+                      {pais.items?.map((item, index) => (
+                          <div
+                            className={`${
+                              index === (pais.items?.length ?? 0) - 1
+                                ? ""
+                                : "border-b border-text-primary pb-4"
+                            }`}
+                            key={index}
+                          >
+                            <h4 className="text-button font-medium flex items-center gap-2">
+                              {item.icon && typeof item.icon === "string" ? (
+                                <img
+                                  src={item.icon}
+                                  alt={item.title}
+                                  className="w-5 h-5"
+                                />
+                              ) : (
+                                item.icon
+                              )}
+                              {item.title}
+                            </h4>
+                            {item.subitems && (
+                              <ul className="list-disc pl-7 mt-2 font-light">
+                                {item.subitems.map((subitem, index) => (
+                                  <li key={index}>
+                                    <p className="text-button">
+                                      {subitem.title}
+                                    </p>
+                                  </li>
+                                ))}
+                              </ul>
+                            )}
+                          </div>
+                        ))}
+                    </div>
+                  </div>
+                );
+              })
+            )}
             </div>
           </div>
         </div>

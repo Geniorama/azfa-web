@@ -21,5 +21,5 @@ export interface CountryResponse {
       text: string;
       link: string;
     }[];
-  };
+  }[];
 }
