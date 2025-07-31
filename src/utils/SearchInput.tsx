@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import { FaChevronDown, FaTimes } from "react-icons/fa";
-import SearchButton from "./SearchButton";
+import IconSearch from "@/assets/icons/search-icon.svg";
 
 interface SearchOption {
   id: string;
@@ -189,6 +189,7 @@ export default function SearchInput({
           {label}
         </label>
         <div className="relative flex-grow">
+          <img src={IconSearch.src} alt="search" className="w-4 h-4 absolute left-2 top-1/2 transform -translate-y-1/2" />
           <input
             ref={inputRef}
             id="search-input"
@@ -198,7 +199,7 @@ export default function SearchInput({
             onChange={handleInputChange}
             onKeyDown={handleInputKeyDown}
             onClick={handleInputClick}
-            className="border border-background-3 p-2 rounded-md w-full focus:outline-details focus:border-details transition-colors pr-16"
+            className="border border-background-3 p-2 rounded-md w-full focus:outline-details focus:border-details transition-colors pr-16 pl-8"
             autoComplete="off"
           />
           
@@ -222,7 +223,6 @@ export default function SearchInput({
             <FaChevronDown className={`transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`} />
           </button>
         </div>
-        <SearchButton className="hidden md:flex" onClick={() => setIsOpen(!isOpen)} />
       </div>
 
       {/* Dropdown de resultados */}
