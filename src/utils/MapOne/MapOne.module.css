@@ -1,4 +1,4 @@
-.map path:hover, .map path.selected, .map g:hover, .map g.selected {
+/* .map path:hover {
     transition: 0.3s;
     fill: var(--color-primary);
-}
+} */

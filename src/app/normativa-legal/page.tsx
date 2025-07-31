@@ -299,34 +299,24 @@ export default function NormativaLegal() {
                 const isExpanded = expandedPais === pais.id;
                 const isSelected = selectedPais?.id === pais.id;
 
+                console.log("isSelected", isSelected);
+
                 return (
                   <div
                     id={`pais-${pais.id}`}
-                    className={`grid grid-cols-2 transition-all duration-500 ease-in-out ${
-                      index % 2 === 0
-                        ? "bg-background-2"
-                        : "bg-primary text-white"
-                    } ${
-                      isExpanded
-                        ? "col-span-2 h-screen min-h-full"
-                        : "opacity-100 max-h-full min-h-auto"
-                    } ${
-                      isSelected && !isExpanded
-                        ? "ring-2 ring-blue-500 ring-opacity-50"
-                        : ""
-                    }`}
-                    key={pais.id}
+                    className={`grid grid-cols-2 transition hover:bg-primary hover:text-white`}
+                    key={index}
                     onClick={() => handlePaisExpand(pais.id)}
                     style={{ cursor: "pointer" }}
                   >
                     <div
-                      className={`flex flex-col gap-4 px-4 py-8 transition-all duration-500 ${
+                      className={`flex flex-col gap-4 px-4 py-8 transition ${
                         isExpanded ? "justify-start" : ""
                       }`}
                     >
                       <div className="flex justify-between items-start">
                         <h3
-                          className={`text-h4 transition-all duration-500 ${
+                          className={`text-h4 transition ${
                             isExpanded ? "text-3xl" : ""
                           }`}
                         >
