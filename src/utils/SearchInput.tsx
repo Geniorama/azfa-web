@@ -217,7 +217,14 @@ export default function SearchInput({
           {/* Botón de dropdown */}
           <button 
             className="absolute right-2 top-1/2 transform -translate-y-1/2 text-details hover:text-details-hover transition-colors"
-            onClick={() => setIsOpen(!isOpen)}
+            onClick={() => {
+              if (!isOpen) {
+                setFilteredOptions(options);
+                setIsOpen(true);
+              } else {
+                setIsOpen(false);
+              }
+            }}
             type="button"
           >
             <FaChevronDown className={`transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`} />
