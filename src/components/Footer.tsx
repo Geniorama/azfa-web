@@ -5,14 +5,20 @@ import { IoMailOutline } from "react-icons/io5";
 import { SlScreenSmartphone } from "react-icons/sl";
 import Link from "next/link";
 
-export default function Footer() {
+interface FooterProps {
+  showBanner?: boolean;
+}
+
+export default function Footer({ showBanner = true }: FooterProps) {
   return (
     <footer className='bg-text-primary text-white'>
-      <div className="bg-white">
-        <div className="container mx-auto">
-            <img className="w-full" src={FooterImgTop.src} alt="Footer Image" />
+      {showBanner && (
+        <div className="bg-white">
+          <div className="container mx-auto">
+              <img className="w-full" src={FooterImgTop.src} alt="Footer Image" />
+          </div>
         </div>
-      </div>
+      )}
 
       <div className="bg-secondary">
         <div className="container mx-auto py-10 px-4">
