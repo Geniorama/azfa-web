@@ -1,6 +1,6 @@
 "use client"
 
-import SelectorFilter from './SelectorFilter'
+import SelectorFilter from '../utils/SelectorFilter'
 import IconTipoOferta from "@/assets/img/icon-oferta.svg"
 import IconTipoInmueble from "@/assets/img/icon-inmueble.svg"
 import IconUsoInmueble from "@/assets/img/icon-uso.svg"
