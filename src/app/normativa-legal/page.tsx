@@ -12,6 +12,7 @@ import type { ContentType } from "@/types/contentType";
 import type { DownloadType } from "@/types/componentsType";
 import type { CountryResponse } from "@/types/responseTypes";
 import type { OptionType } from "@/types/componentsType";
+import MapResponsive from "@/assets/img/azfa-mapa-marco-legal-responsive.jpg"
 
 interface Item {
   id: string;
@@ -169,17 +170,26 @@ export default function NormativaLegal() {
       return;
     }
     setSelectedPais(pais);
-    setExpandedPais(pais.id); // Expandir automáticamente el país seleccionado
     setScrollToPais(pais.id); // Marcar que queremos hacer scroll a este país
-    // Bloquear el scroll cuando se selecciona desde el buscador
-    const container = document.querySelector(".overflow-y-auto") as HTMLElement;
-    if (container) {
-      container.style.overflow = "hidden";
+    
+    // Solo expandir automáticamente en pantallas grandes
+    if (window.innerWidth >= 768) {
+      setExpandedPais(pais.id);
+      // Bloquear el scroll cuando se selecciona desde el buscador
+      const container = document.querySelector(".overflow-y-auto") as HTMLElement;
+      if (container) {
+        container.style.overflow = "hidden";
+      }
     }
     console.log("País seleccionado:", pais);
   };
 
   const handlePaisExpand = (paisId: string) => {
+    // Solo ejecutar en pantallas medianas y grandes
+    if (window.innerWidth < 768) {
+      return;
+    }
+
     const newExpandedPais = expandedPais === paisId ? null : paisId;
     setExpandedPais(newExpandedPais);
     setCountryImageSelected(
@@ -248,9 +258,9 @@ export default function NormativaLegal() {
           textAlign={pageContent.heading.alignment}
         />
       )}
-      <div className="flex flex-col-reverse md:flex-row h-screen min-h-full">
+      <div className="flex flex-col md:flex-row md:h-screen min-h-full">
         <div
-          className={`w-full md:w-5/8 bg-[#73DAEB] flex justify-center ${
+          className={`hidden md:flex w-full md:w-5/8 bg-[#73DAEB] justify-center ${
             countryImageSelected ? "items-center" : "items-start"
           } h-full overflow-hidden`}
         >
@@ -263,6 +273,9 @@ export default function NormativaLegal() {
           ) : (
             <MapOne onCountrySelect={handleMapCountrySelect} />
           )}
+        </div>
+        <div className="flex md:hidden w-full h-full">
+          <img src={MapResponsive.src} alt="Mapa Responsive" className="w-full h-full object-cover" />
         </div>
         <div className="w-full md:w-3/8 h-full">
           <div className="relative">
@@ -285,7 +298,7 @@ export default function NormativaLegal() {
                       return (
                         <div
                           id={`pais-${pais.id}`}
-                          className="md:grid md:grid-cols-2 h-full transition bg-primary text-white border-b border-gray-300"
+                          className="hidden md:grid md:grid-cols-2 h-full transition bg-primary text-white border-b border-gray-300"
                           key={index}
                           onClick={() => handlePaisExpand(pais.id)}
                           style={{ cursor: "pointer" }}
@@ -376,25 +389,33 @@ export default function NormativaLegal() {
                   countriesInfo.map((pais, index) => {
 
                     return (
-                      <div
-                        id={`pais-${pais.id}`}
-                        className="md:grid md:grid-cols-2 transition hover:bg-primary border-b-2 md:border-b border-gray-300"
-                        key={index}
-                        onClick={() => handlePaisExpand(pais.id)}
-                        style={{ cursor: "pointer" }}
-                      >
+                                             <div
+                         id={`pais-${pais.id}`}
+                         className="md:grid md:grid-cols-2 transition hover:bg-primary border-b-2 md:border-b border-gray-300"
+                         key={index}
+                         onClick={() => handlePaisExpand(pais.id)}
+                         style={{ cursor: window.innerWidth >= 768 ? "pointer" : "default" }}
+                       >
                         {/* Left column */}
-                        <div className="flex flex-col md:gap-4 px-4 py-8 transition bg-[#EDEDED] hover:bg-primary hover:text-white">
+                                                 <div className={`flex flex-col md:gap-4 px-4 py-8 transition ${
+                           selectedPais?.id === pais.id 
+                             ? "bg-primary text-white" 
+                             : "bg-[#EDEDED] hover:bg-primary hover:text-white"
+                         }`}>
                           <div className="flex justify-center md:justify-between items-start">
                             <h3 className="text-h4 transition">{pais.label}</h3>
                           </div>
 
-                          <a
-                            href={pais.linkDownload}
-                            target="_blank"
-                            className="inline-flex w-full items-center gap-2 cursor-pointer hover:text-details mt-6 transition md:w-fit justify-center md:justify-start"
-                            onClick={(e) => e.stopPropagation()}
-                          >
+                                                     <a
+                             href={pais.linkDownload}
+                             target="_blank"
+                             className={`inline-flex w-full items-center gap-2 cursor-pointer mt-6 transition md:w-fit justify-center md:justify-start ${
+                               selectedPais?.id === pais.id 
+                                 ? "text-white hover:text-gray-200" 
+                                 : "hover:text-details"
+                             }`}
+                             onClick={(e) => e.stopPropagation()}
+                           >
                             <span className="underline underline-offset-6">
                               Descargar
                             </span>
