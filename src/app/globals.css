@@ -100,3 +100,21 @@ body {
 .custom-scrollbar::-webkit-scrollbar-thumb {
   background-color: #878787;
 }
+
+.swiper-custom{
+  padding: 0 50px !important;
+  .swiper-button-prev{
+    left: 0px;
+    &:after{
+      font-size: 20px;
+      color: var(--color-text-primary);
+    }
+  }
+  .swiper-button-next{
+    right: 0px;
+    &:after{
+      font-size: 20px;
+      color: var(--color-text-primary);
+    }
+  }
+}
