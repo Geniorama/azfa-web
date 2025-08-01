@@ -28,6 +28,7 @@ interface InfoCountry {
   linkDownload?: string;
   textButton?: string;
   items?: Item[];
+  countryImage?: string;
 }
 
 export default function NormativaLegal() {
@@ -40,6 +41,7 @@ export default function NormativaLegal() {
   );
   const [countriesOptions, setCountriesOptions] = useState<{id: string, label: string, value: string}[]>([]);
   const [countriesInfo, setCountriesInfo] = useState<InfoCountry[]>([]);
+  const [countryImageSelected, setCountryImageSelected] = useState<string | null>(null);
 
   const getContent = async (id: string) => {
     const response = await fetch(
@@ -73,7 +75,7 @@ export default function NormativaLegal() {
 
   const getCountries = async () => {
     const response = await fetch(
-      "/api/getMapCountries?populate[0]=document.document&populate[1]=items.headingList.icon&populate[2]=items.items"
+      "/api/getMapCountries?populate[0]=document.document&populate[1]=items.headingList.icon&populate[2]=items.items&populate[3]=countryImage"
     );
     const data = await response.json();
 
@@ -87,6 +89,7 @@ export default function NormativaLegal() {
             country.country.charAt(0).toUpperCase() + country.country.slice(1),
           value: country.country,
           linkDownload: country.document.document.url,
+          countryImage: country.countryImage?.url || '',
           items: country.items?.map((item, index) => ({
             id: `item-${index}`,
             icon: item.headingList?.icon?.url || '',
@@ -169,6 +172,7 @@ export default function NormativaLegal() {
   const handlePaisExpand = (paisId: string) => {
     const newExpandedPais = expandedPais === paisId ? null : paisId;
     setExpandedPais(newExpandedPais);
+    setCountryImageSelected(countriesInfo.find((p) => p.id === paisId)?.countryImage || null);
 
     // Actualizar el país seleccionado para sincronizar mapa y buscador
     if (newExpandedPais) {
@@ -210,64 +214,17 @@ export default function NormativaLegal() {
   };
 
   const handleMapCountrySelect = (countryId: string) => {
-    console.log("countryId", countryId)
-    // Mapeo de IDs del mapa a IDs de la lista de países
-    const mapToPaisId: { [key: string]: string } = {
-      espana: "españa",
-      republicadominicana: "republica-dominicana",
-      costarica: "costa-rica",
-      elsalvador: "el-salvador",
-      estadosunidos: "estados-unidos",
-      puertorico: "puerto-rico",
-      surinam: "suriname",
-      guyana: "guyana-francesa",
-      "reino-unido": "reino-unido",
-      francia: "francia",
-      alemania: "alemania",
-      italia: "italia",
-      portugal: "portugal",
-      canada: "canada",
-      haiti: "haiti",
-    };
+    const country = countriesInfo.find((p) => p.value === countryId);
 
-    // Usar el mapeo si existe, sino usar el ID original
-    const paisId = mapToPaisId[countryId] || countryId;
-
-    // Buscar el país en la lista de países
-    const paisEncontrado = countriesOptions.find((pais) => pais.id === paisId);
-    if (paisEncontrado) {
-      setSelectedPais(paisEncontrado);
-      // No expandir automáticamente, solo seleccionar
-      setExpandedPais(null);
-      console.log("País seleccionado desde el mapa:", paisEncontrado);
-
-      // Hacer scroll hasta el país seleccionado después de un pequeño delay
-      setTimeout(() => {
-        const paisElement = document.getElementById(
-          `pais-${paisEncontrado.id}`
-        );
-        if (paisElement) {
-          const container = paisElement.closest(".overflow-y-auto");
-          if (container) {
-            const containerRect = container.getBoundingClientRect();
-            const elementRect = paisElement.getBoundingClientRect();
-            const offset = 100; // Offset de 20px desde la parte superior
-
-            container.scrollTo({
-              top:
-                container.scrollTop +
-                elementRect.top -
-                containerRect.top -
-                offset,
-              behavior: "smooth",
-            });
-          }
-        }
-      }, 100);
-    } else {
-      console.log("País no encontrado en la lista:", countryId, "->", paisId);
-    }
+    setSelectedPais(country || null);
+    setCountryImageSelected(country?.countryImage || null)
+    setExpandedPais(country?.id || null);
+    setScrollToPais(country?.id || null);
   };
+
+  useEffect(() => {
+    console.log("countryImageSelected", countryImageSelected);
+  }, [countryImageSelected]);
 
   return (
     <div>
@@ -280,11 +237,14 @@ export default function NormativaLegal() {
         />
       )}
       <div className="flex flex-col-reverse md:flex-row h-screen min-h-full">
-        <div className="w-full md:w-5/8 bg-[#73DAEB] flex justify-center items-start h-full overflow-hidden">
-          <MapOne
-            onCountrySelect={handleMapCountrySelect}
-            selectedCountryId={selectedPais?.id}
-          />
+        <div className={`w-full md:w-5/8 bg-[#73DAEB] flex justify-center ${countryImageSelected ? 'items-center' : 'items-start'} h-full overflow-hidden`}>
+          {countryImageSelected ? (
+            <img src={countryImageSelected} alt="countryImageSelected" className="w-full max-w-lg border-2 border-white rounded-full" />
+          ) : (
+            <MapOne
+              onCountrySelect={handleMapCountrySelect}
+            />
+          )}
         </div>
         <div className="w-full md:w-3/8 h-full">
           <div className="relative">
@@ -298,13 +258,12 @@ export default function NormativaLegal() {
               />
             </div>
 
-            <div className="flex flex-col text-text-primary overflow-y-auto h-screen pt-26 custom-scrollbar">
+            <div className="flex flex-col text-text-primary overflow-y-auto h-screen md:pt-26 xl:pt-19 custom-scrollbar">
               {expandedPais ? (
                 // Si hay un país expandido, mostrar solo ese país
                 countriesInfo
                   .filter((pais) => pais.id === expandedPais)
                   .map((pais, index) => {
-                    console.log("pais expandido", pais);
 
                     return (
                                              <div
@@ -322,11 +281,13 @@ export default function NormativaLegal() {
                         <h3 className="text-h4 transition text-3xl">
                           {pais.label}
                         </h3>
-                                                 <button
+                           <button
                            onClick={(e) => {
                                e.stopPropagation();
                                setExpandedPais(null);
                                setSelectedPais(null);
+                               setCountryImageSelected(null);
+                               setScrollToPais(null);
 
                                // Habilitar el scroll cuando se cierra
                                const container = document.querySelector(

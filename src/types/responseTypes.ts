@@ -1,6 +1,10 @@
 export interface CountryResponse {
   id: string;
   country: string;
+  countryImage: {
+    url: string;
+    alternativeText: string;
+  };
   document: {
     id: string;
     document: {

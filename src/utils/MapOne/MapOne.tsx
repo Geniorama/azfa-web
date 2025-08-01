@@ -6,14 +6,10 @@ import styles from "./MapOne.module.css";
 
 interface MapOneProps extends SVGProps<SVGSVGElement> {
   onCountrySelect?: (country: string) => void;
-  expandedCountry?: string | null;
-  selectedCountryId?: string | null;
 }
 
 export default function MapOne({
   onCountrySelect,
-  expandedCountry,
-  selectedCountryId,
 }: MapOneProps) {
   const [selectedCountry, setSelectedCountry] = useState<string | null>(null);
 
