@@ -39,9 +39,13 @@ export default function NormativaLegal() {
   const [downloadSection, setDownloadSection] = useState<DownloadType | null>(
     null
   );
-  const [countriesOptions, setCountriesOptions] = useState<{id: string, label: string, value: string}[]>([]);
+  const [countriesOptions, setCountriesOptions] = useState<
+    { id: string; label: string; value: string }[]
+  >([]);
   const [countriesInfo, setCountriesInfo] = useState<InfoCountry[]>([]);
-  const [countryImageSelected, setCountryImageSelected] = useState<string | null>(null);
+  const [countryImageSelected, setCountryImageSelected] = useState<
+    string | null
+  >(null);
 
   const getContent = async (id: string) => {
     const response = await fetch(
@@ -89,29 +93,35 @@ export default function NormativaLegal() {
             country.country.charAt(0).toUpperCase() + country.country.slice(1),
           value: country.country,
           linkDownload: country.document.document.url,
-          countryImage: country.countryImage?.url || '',
-          items: country.items?.map((item, index) => ({
-            id: `item-${index}`,
-            icon: item.headingList?.icon?.url || '',
-            title: item.headingList?.title || '',
-            subitems: item.items?.map((subitem: { id: string; text: string; link: string }) => ({
-              id: subitem.id,
-              title: subitem.text,
-              link: subitem.link,
+          countryImage: country.countryImage?.url || "",
+          items:
+            country.items?.map((item, index) => ({
+              id: `item-${index}`,
+              icon: item.headingList?.icon?.url || "",
+              title: item.headingList?.title || "",
+              subitems:
+                item.items?.map(
+                  (subitem: { id: string; text: string; link: string }) => ({
+                    id: subitem.id,
+                    title: subitem.text,
+                    link: subitem.link,
+                  })
+                ) || [],
             })) || [],
-          })) || []
         };
       }
     );
 
-    console.log("countries", countries)
+    console.log("countries", countries);
 
     setCountriesInfo(countries);
-    setCountriesOptions(countries.map((country) => ({
-      id: country.id,
-      label: country.label,
-      value: country.value,
-    })));
+    setCountriesOptions(
+      countries.map((country) => ({
+        id: country.id,
+        label: country.label,
+        value: country.value,
+      }))
+    );
   };
 
   useEffect(() => {
@@ -172,7 +182,9 @@ export default function NormativaLegal() {
   const handlePaisExpand = (paisId: string) => {
     const newExpandedPais = expandedPais === paisId ? null : paisId;
     setExpandedPais(newExpandedPais);
-    setCountryImageSelected(countriesInfo.find((p) => p.id === paisId)?.countryImage || null);
+    setCountryImageSelected(
+      countriesInfo.find((p) => p.id === paisId)?.countryImage || null
+    );
 
     // Actualizar el país seleccionado para sincronizar mapa y buscador
     if (newExpandedPais) {
@@ -217,7 +229,7 @@ export default function NormativaLegal() {
     const country = countriesInfo.find((p) => p.value === countryId);
 
     setSelectedPais(country || null);
-    setCountryImageSelected(country?.countryImage || null)
+    setCountryImageSelected(country?.countryImage || null);
     setExpandedPais(country?.id || null);
     setScrollToPais(country?.id || null);
   };
@@ -237,13 +249,19 @@ export default function NormativaLegal() {
         />
       )}
       <div className="flex flex-col-reverse md:flex-row h-screen min-h-full">
-        <div className={`w-full md:w-5/8 bg-[#73DAEB] flex justify-center ${countryImageSelected ? 'items-center' : 'items-start'} h-full overflow-hidden`}>
+        <div
+          className={`w-full md:w-5/8 bg-[#73DAEB] flex justify-center ${
+            countryImageSelected ? "items-center" : "items-start"
+          } h-full overflow-hidden`}
+        >
           {countryImageSelected ? (
-            <img src={countryImageSelected} alt="countryImageSelected" className="w-full max-w-lg border-2 border-white rounded-full" />
-          ) : (
-            <MapOne
-              onCountrySelect={handleMapCountrySelect}
+            <img
+              src={countryImageSelected}
+              alt="countryImageSelected"
+              className="w-full max-w-lg border-2 border-white rounded-full"
             />
+          ) : (
+            <MapOne onCountrySelect={handleMapCountrySelect} />
           )}
         </div>
         <div className="w-full md:w-3/8 h-full">
@@ -258,179 +276,172 @@ export default function NormativaLegal() {
               />
             </div>
 
-            <div className="flex flex-col text-text-primary overflow-y-auto h-screen md:pt-26 xl:pt-19 custom-scrollbar">
-              {expandedPais ? (
-                // Si hay un país expandido, mostrar solo ese país
-                countriesInfo
-                  .filter((pais) => pais.id === expandedPais)
-                  .map((pais, index) => {
+            <div className="flex flex-col text-text-primary overflow-y-auto h-screen pt-26 md:pt-26 xl:pt-19 custom-scrollbar">
+              {expandedPais
+                ? // Si hay un país expandido, mostrar solo ese país
+                  countriesInfo
+                    .filter((pais) => pais.id === expandedPais)
+                    .map((pais, index) => {
+                      return (
+                        <div
+                          id={`pais-${pais.id}`}
+                          className="md:grid md:grid-cols-2 h-full transition bg-primary text-white border-b border-gray-300"
+                          key={index}
+                          onClick={() => handlePaisExpand(pais.id)}
+                          style={{ cursor: "pointer" }}
+                        >
+                          {/* Left column */}
+                          <div className="flex flex-col gap-4 px-4 py-8 transition justify-start h-full">
+                            <div className="flex justify-between items-start">
+                              <h3 className="text-h4 transition text-3xl">
+                                {pais.label}
+                              </h3>
+                              <button
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  setExpandedPais(null);
+                                  setSelectedPais(null);
+                                  setCountryImageSelected(null);
+                                  setScrollToPais(null);
+
+                                  // Habilitar el scroll cuando se cierra
+                                  const container = document.querySelector(
+                                    ".overflow-y-auto"
+                                  ) as HTMLElement;
+                                  if (container) {
+                                    container.style.overflow = "auto";
+                                  }
+                                }}
+                                className="p-2 hover:bg-gray-200 hover:text-primary rounded-full transition-colors cursor-pointer"
+                              >
+                                <IoClose className="text-2xl" />
+                              </button>
+                            </div>
+
+                            <a
+                              href={pais.linkDownload}
+                              target="_blank"
+                              className="inline-flex items-center gap-2 cursor-pointer hover:text-details mt-6 transition w-fit"
+                              onClick={(e) => e.stopPropagation()}
+                            >
+                              <span className="underline underline-offset-6">
+                                Descargar
+                              </span>
+                              <GoArrowDown className="text-2xl" />
+                            </a>
+                          </div>
+
+                          {/* Right column */}
+                          <div className="flex flex-col gap-4 text-text-primary bg-[#FBFBFB] p-6 h-full overflow-y-auto">
+                            {pais.items?.map((item, index) => (
+                              <div
+                                className={`${
+                                  index === (pais.items?.length ?? 0) - 1
+                                    ? ""
+                                    : "border-b border-text-primary pb-4"
+                                }`}
+                                key={index}
+                              >
+                                <h4 className="text-button font-medium flex items-center gap-2">
+                                  {item.icon &&
+                                  typeof item.icon === "string" ? (
+                                    <img
+                                      src={item.icon}
+                                      alt={item.title}
+                                      className="w-5 h-5"
+                                    />
+                                  ) : (
+                                    item.icon
+                                  )}
+                                  {item.title}
+                                </h4>
+                                {item.subitems && (
+                                  <ul className="list-disc pl-7 mt-2 font-light">
+                                    {item.subitems.map((subitem, index) => (
+                                      <li key={index}>
+                                        <p className="text-button">
+                                          {subitem.title}
+                                        </p>
+                                      </li>
+                                    ))}
+                                  </ul>
+                                )}
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      );
+                    })
+                : // Si no hay país expandido, mostrar todos los países
+                  countriesInfo.map((pais, index) => {
 
                     return (
-                                             <div
-                         id={`pais-${pais.id}`}
-                         className="grid grid-cols-2 h-full transition bg-primary text-white border-b border-gray-300"
-                         key={index}
-                         onClick={() => handlePaisExpand(pais.id)}
-                         style={{ cursor: "pointer" }}
-                       >
-                                         {/* Left column */}
-                     <div
-                       className="flex flex-col gap-4 px-4 py-8 transition justify-start h-full"
-                     >
-                      <div className="flex justify-between items-start">
-                        <h3 className="text-h4 transition text-3xl">
-                          {pais.label}
-                        </h3>
-                           <button
-                           onClick={(e) => {
-                               e.stopPropagation();
-                               setExpandedPais(null);
-                               setSelectedPais(null);
-                               setCountryImageSelected(null);
-                               setScrollToPais(null);
-
-                               // Habilitar el scroll cuando se cierra
-                               const container = document.querySelector(
-                                 ".overflow-y-auto"
-                               ) as HTMLElement;
-                               if (container) {
-                                 container.style.overflow = "auto";
-                               }
-                             }}
-                             className="p-2 hover:bg-gray-200 hover:text-primary rounded-full transition-colors cursor-pointer"
-                           >
-                             <IoClose className="text-2xl" />
-                           </button>
-                      </div>
-
-                      <a
-                        href={pais.linkDownload}
-                        target="_blank"
-                        className="inline-flex items-center gap-2 cursor-pointer hover:text-details mt-6 transition w-fit"
-                        onClick={(e) => e.stopPropagation()}
+                      <div
+                        id={`pais-${pais.id}`}
+                        className="md:grid md:grid-cols-2 transition hover:bg-primary hover:text-white border-b-2 md:border-b border-gray-300"
+                        key={index}
+                        onClick={() => handlePaisExpand(pais.id)}
+                        style={{ cursor: "pointer" }}
                       >
-                        <span className="underline underline-offset-6">
-                          Descargar
-                        </span>
-                        <GoArrowDown className="text-2xl" />
-                      </a>
-                    </div>
-
-                    {/* Right column */}
-                    <div className="flex flex-col gap-4 text-text-primary bg-[#FBFBFB] p-6 h-full overflow-y-auto">
-                      {pais.items?.map((item, index) => (
-                          <div
-                            className={`${
-                              index === (pais.items?.length ?? 0) - 1
-                                ? ""
-                                : "border-b border-text-primary pb-4"
-                            }`}
-                            key={index}
-                          >
-                            <h4 className="text-button font-medium flex items-center gap-2">
-                              {item.icon && typeof item.icon === "string" ? (
-                                <img
-                                  src={item.icon}
-                                  alt={item.title}
-                                  className="w-5 h-5"
-                                />
-                              ) : (
-                                item.icon
-                              )}
-                              {item.title}
-                            </h4>
-                            {item.subitems && (
-                              <ul className="list-disc pl-7 mt-2 font-light">
-                                {item.subitems.map((subitem, index) => (
-                                  <li key={index}>
-                                    <p className="text-button">
-                                      {subitem.title}
-                                    </p>
-                                  </li>
-                                ))}
-                              </ul>
-                            )}
+                        {/* Left column */}
+                        <div className="flex flex-col md:gap-4 px-4 py-8 transition bg-[#EDEDED]">
+                          <div className="flex justify-center md:justify-between items-start">
+                            <h3 className="text-h4 transition">{pais.label}</h3>
                           </div>
-                        ))}
-                    </div>
-                  </div>
-                );
-              })
-            ) : (
-              // Si no hay país expandido, mostrar todos los países
-              countriesInfo.map((pais, index) => {
-                console.log("pais map", pais);
 
-                return (
-                  <div
-                    id={`pais-${pais.id}`}
-                    className="grid grid-cols-2 transition hover:bg-primary hover:text-white border-b border-gray-300"
-                    key={index}
-                    onClick={() => handlePaisExpand(pais.id)}
-                    style={{ cursor: "pointer" }}
-                  >
-                    {/* Left column */}
-                    <div className="flex flex-col gap-4 px-4 py-8 transition">
-                      <div className="flex justify-between items-start">
-                        <h3 className="text-h4 transition">
-                          {pais.label}
-                        </h3>
+                          <a
+                            href={pais.linkDownload}
+                            target="_blank"
+                            className="inline-flex w-full items-center gap-2 cursor-pointer hover:text-details mt-6 transition md:w-fit justify-center md:justify-start"
+                            onClick={(e) => e.stopPropagation()}
+                          >
+                            <span className="underline underline-offset-6">
+                              Descargar
+                            </span>
+                            <GoArrowDown className="text-2xl" />
+                          </a>
+                        </div>
+
+                        {/* Right column */}
+                        <div className="flex flex-col gap-4 text-text-primary bg-[#FBFBFB] p-6 h-full">
+                          {pais.items?.map((item, index) => (
+                            <div
+                              className={`${
+                                index === (pais.items?.length ?? 0) - 1
+                                  ? ""
+                                  : "border-b border-text-primary pb-4"
+                              }`}
+                              key={index}
+                            >
+                              <h4 className="text-button font-medium flex items-center gap-2">
+                                {item.icon && typeof item.icon === "string" ? (
+                                  <img
+                                    src={item.icon}
+                                    alt={item.title}
+                                    className="w-5 h-5"
+                                  />
+                                ) : (
+                                  item.icon
+                                )}
+                                {item.title}
+                              </h4>
+                              {item.subitems && (
+                                <ul className="list-disc pl-7 mt-2 font-light">
+                                  {item.subitems.map((subitem, index) => (
+                                    <li key={index}>
+                                      <p className="text-button">
+                                        {subitem.title}
+                                      </p>
+                                    </li>
+                                  ))}
+                                </ul>
+                              )}
+                            </div>
+                          ))}
+                        </div>
                       </div>
-
-                      <a
-                        href={pais.linkDownload}
-                        target="_blank"
-                        className="inline-flex items-center gap-2 cursor-pointer hover:text-details mt-6 transition w-fit"
-                        onClick={(e) => e.stopPropagation()}
-                      >
-                        <span className="underline underline-offset-6">
-                          Descargar
-                        </span>
-                        <GoArrowDown className="text-2xl" />
-                      </a>
-                    </div>
-
-                    {/* Right column */}
-                    <div className="flex flex-col gap-4 text-text-primary bg-[#FBFBFB] p-6 h-full">
-                      {pais.items?.map((item, index) => (
-                          <div
-                            className={`${
-                              index === (pais.items?.length ?? 0) - 1
-                                ? ""
-                                : "border-b border-text-primary pb-4"
-                            }`}
-                            key={index}
-                          >
-                            <h4 className="text-button font-medium flex items-center gap-2">
-                              {item.icon && typeof item.icon === "string" ? (
-                                <img
-                                  src={item.icon}
-                                  alt={item.title}
-                                  className="w-5 h-5"
-                                />
-                              ) : (
-                                item.icon
-                              )}
-                              {item.title}
-                            </h4>
-                            {item.subitems && (
-                              <ul className="list-disc pl-7 mt-2 font-light">
-                                {item.subitems.map((subitem, index) => (
-                                  <li key={index}>
-                                    <p className="text-button">
-                                      {subitem.title}
-                                    </p>
-                                  </li>
-                                ))}
-                              </ul>
-                            )}
-                          </div>
-                        ))}
-                    </div>
-                  </div>
-                );
-              })
-            )}
+                    );
+                  })}
             </div>
           </div>
         </div>
