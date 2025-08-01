@@ -29,6 +29,12 @@ export default function SelectorFilter({ options, selected, onChange, label, ico
     setIsOpen(!isOpen);
   };
 
+  // First option is selected by default
+  useEffect(() => {
+    if (options.length > 0) {
+      setSelectedOption(options[0].label);
+    }
+  }, [options]);
 
 
   return (
