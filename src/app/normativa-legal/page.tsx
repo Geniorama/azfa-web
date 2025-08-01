@@ -378,13 +378,13 @@ export default function NormativaLegal() {
                     return (
                       <div
                         id={`pais-${pais.id}`}
-                        className="md:grid md:grid-cols-2 transition hover:bg-primary hover:text-white border-b-2 md:border-b border-gray-300"
+                        className="md:grid md:grid-cols-2 transition hover:bg-primary border-b-2 md:border-b border-gray-300"
                         key={index}
                         onClick={() => handlePaisExpand(pais.id)}
                         style={{ cursor: "pointer" }}
                       >
                         {/* Left column */}
-                        <div className="flex flex-col md:gap-4 px-4 py-8 transition bg-[#EDEDED]">
+                        <div className="flex flex-col md:gap-4 px-4 py-8 transition bg-[#EDEDED] hover:bg-primary hover:text-white">
                           <div className="flex justify-center md:justify-between items-start">
                             <h3 className="text-h4 transition">{pais.label}</h3>
                           </div>
