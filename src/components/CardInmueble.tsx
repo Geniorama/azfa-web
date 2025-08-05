@@ -7,10 +7,9 @@ import IconArea from "@/assets/img/icon-area.svg";
 import IconEstado from "@/assets/img/icon-nuevo-usado.svg";
 import PhotoExample from "@/assets/img/foto-ejemplo.jpg";
 import Button from "@/utils/Button";
-import IconStar from "@/assets/img/star.svg"
 import { useRouter } from "next/navigation";
 import { InmuebleType } from "@/types/inmuebleType";
-
+import PlatinumBadge from "@/utils/PlatinumBadge";
 
 
 export default function CardInmueble({
@@ -37,9 +36,8 @@ export default function CardInmueble({
           className="w-full h-60 object-cover"
         />
         {platinum && (
-          <div className="absolute shadow-lg top-3 left-0 bg-details text-background-1 text-button pl-2 pr-4 py-1 rounded-tr-2xl rounded-br-2xl flex items-center gap-1">
-            <img className="w-4 h-4" src={IconStar.src} alt="Icono" />
-            <span>Inmueble Platino</span>
+          <div className="absolute top-5 left-0">
+            <PlatinumBadge />
           </div>
         )}
       </div>
