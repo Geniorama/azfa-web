@@ -151,21 +151,21 @@ const optionsEstado: Option[] = [
 
 export default function AdvancedSearchBar() {
   return (
-    <div className='bg-white rounded-2xl shadow-lg p-5 border border-text-text-secondary'>
-        <div className='flex flex-col md:flex-row gap-4'>
-            <div className='border-r border-text-text-secondary pr-4 py-4 w-full'>
+    <div className='bg-white rounded-2xl shadow-lg p-5 md:border border-text-text-secondary'>
+        <div className='flex flex-col md:flex-row gap-2 md:gap-4'>
+            <div className='md:border-r border-text-text-secondary pr-4 py-4 w-full'>
                 <SelectorFilter options={optionsTipoOferta} selected={''} onChange={() => {}} label='Tipo de Oferta' icon={IconTipoOferta.src} />
             </div>
-            <div className='border-r border-text-text-secondary pr-4 py-4 w-full'>
+            <div className='md:border-r border-text-text-secondary pr-4 py-4 w-full'>
                 <SelectorFilter options={optionsTipoInmueble} selected={''} onChange={() => {}} label='Tipo de Inmueble' icon={IconTipoInmueble.src} />
             </div>
-            <div className='border-r border-text-text-secondary pr-4 py-4 w-full'>
+            <div className='md:border-r border-text-text-secondary pr-4 py-4 w-full'>
                 <SelectorFilter options={optionsUsoInmueble} selected={''} onChange={() => {}} label='Uso de inmueble' icon={IconUsoInmueble.src} />
             </div>
-            <div className='border-r border-text-text-secondary pr-4 py-4 w-full'>
+            <div className='md:border-r border-text-text-secondary pr-4 py-4 w-full'>
                 <SelectorFilter options={optionsCiudad} selected={''} onChange={() => {}} label='Ciudad' icon={IconCiudad.src} />
             </div>
-            <div className='border-r border-text-text-secondary pr-4 py-4 w-full'>
+            <div className='md:border-r border-text-text-secondary pr-4 py-4 w-full'>
                 <SelectorFilter options={optionsPais} selected={''} onChange={() => {}} label='País' icon={IconPais.src} />
             </div>
             <div className='pr-4 py-4 w-full'>
