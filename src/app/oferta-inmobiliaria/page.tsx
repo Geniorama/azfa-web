@@ -65,6 +65,7 @@ export default function OfertaInmobiliaria() {
               estado="Nuevo"
               area="3.000m2"
               platinum={true}
+              slug="casa-en-venta"
             />
             <CardInmueble
               id="2"
@@ -96,6 +97,7 @@ export default function OfertaInmobiliaria() {
               pais="Costa Rica"
               estado="Nuevo"
               area="3.000m2"
+              slug="casa-en-venta"
             />
             <CardInmueble
               id="5"
@@ -107,6 +109,7 @@ export default function OfertaInmobiliaria() {
               pais="Costa Rica"
               estado="Nuevo"
               area="3.000m2"
+              slug="casa-en-venta"
             />
             <CardInmueble
               id="6"
@@ -118,6 +121,7 @@ export default function OfertaInmobiliaria() {
               pais="Costa Rica"
               estado="Nuevo"
               area="3.000m2"
+              slug="casa-en-venta"
             />
           </div>
           
