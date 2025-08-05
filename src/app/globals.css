@@ -119,6 +119,28 @@ body {
   }
 }
 
+/* Responsive */
+@media (max-width: 768px) {
+  .swiper-custom{
+    padding: 0 20px !important;
+    padding-bottom: 50px !important;
+    .swiper-slide-active .swiper-slide-mobile {
+      filter: none !important;
+      transform: scale(1.2) !important;
+    }
+    .swiper-button-prev, .swiper-button-next{
+      bottom: 0px;
+      top: unset;
+    }
+    .swiper-button-prev{
+      left: calc(50% - 60px);
+    }
+    .swiper-button-next{
+      right: calc(50% - 60px);
+    }
+  }
+}
+
 .swiper-gallery{
   .swiper-button-prev, .swiper-button-next{
     left: unset;

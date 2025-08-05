@@ -40,20 +40,20 @@ export default function OfertaInmobiliaria() {
       </section>
 
       <section>
-        <div className="container mx-auto px-4 md:px-16 md:-mt-24 z-10 mb-6 relative">
+        <div className="container mx-auto px-4 md:px-16 md:-mt-24 z-1 mb-6 relative">
           <AdvancedSearchBar />
         </div>
       </section>
 
       <section>
-        <div className="container mx-auto pb-16 px-16">
+        <div className="container mx-auto pb-16 px-4 md:px-16">
           <p className="text-5 text-text-primary text-center my-10">
             Se encontraron <span className="font-bold">27</span> inmuebles que
             coinciden con su búsqueda
           </p>
 
           {/* Gird Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 md:gap-12">
             <CardInmueble
               id="1"
               title="Casa en venta"
@@ -129,13 +129,13 @@ export default function OfertaInmobiliaria() {
       </section>
 
       <section>
-        <div className="container mx-auto pb-16 px-16 flex justify-center">
-          <Pagination currentPage={1} totalPages={6} onPageChange={() => console.log('clicked')} />
+        <div className="container mx-auto pb-16 px-4 md:px-16 flex justify-center">
+          <Pagination currentPage={1} totalPages={3} onPageChange={() => console.log('clicked')} />
         </div>
       </section>
 
       <section>
-        <div className="container mx-auto pb-16 px-16 max-w-6xl">
+        <div className="container mx-auto pb-8 lg:pb-16 px-0 md:px-16 max-w-6xl">
           <TitleDecorative dividerColor="bg-[#94D133]">
             Proveedores
           </TitleDecorative>
@@ -147,34 +147,44 @@ export default function OfertaInmobiliaria() {
             className="mt-10 swiper-custom"
             autoplay={{ delay: 2500, disableOnInteraction: false }}
             navigation={true}
+            loop={true}
+            breakpoints={{
+              0: {
+                slidesPerView: 1.8,
+                centeredSlides: true,
+              },
+              768: {
+                slidesPerView: 3,
+              },
+            }}
           >
             <SwiperSlide>
-              <img className="w-full grayscale hover:grayscale-0 transition-all duration-300" src={LogoExample.src} alt="Logo" />
+              <img className="w-full max-w-fit mx-auto grayscale md:grayscale hover:grayscale-0 transition-all duration-300 swiper-slide-mobile" src={LogoExample.src} alt="Logo" />
             </SwiperSlide>  
             <SwiperSlide>
-              <img className="w-full grayscale hover:grayscale-0 transition-all duration-300" src={LogoExample.src} alt="Logo" />
+              <img className="w-full max-w-fit mx-auto grayscale md:grayscale hover:grayscale-0 transition-all duration-300 swiper-slide-mobile" src={LogoExample.src} alt="Logo" />
             </SwiperSlide>
             <SwiperSlide>
-              <img className="w-full grayscale hover:grayscale-0 transition-all duration-300" src={LogoExample.src} alt="Logo" />
+              <img className="w-full max-w-fit mx-auto grayscale md:grayscale hover:grayscale-0 transition-all duration-300 swiper-slide-mobile" src={LogoExample.src} alt="Logo" />
             </SwiperSlide>
             <SwiperSlide>
-              <img className="w-full grayscale hover:grayscale-0 transition-all duration-300" src={LogoExample.src} alt="Logo" />
+              <img className="w-full max-w-fit mx-auto grayscale md:grayscale hover:grayscale-0 transition-all duration-300 swiper-slide-mobile" src={LogoExample.src} alt="Logo" />
             </SwiperSlide>
             <SwiperSlide>
-              <img className="w-full grayscale hover:grayscale-0 transition-all duration-300" src={LogoExample.src} alt="Logo" />
+              <img className="w-full max-w-fit mx-auto grayscale md:grayscale hover:grayscale-0 transition-all duration-300 swiper-slide-mobile" src={LogoExample.src} alt="Logo" />
             </SwiperSlide>
             <SwiperSlide>
-              <img className="w-full grayscale hover:grayscale-0 transition-all duration-300" src={LogoExample.src} alt="Logo" />
+              <img className="w-full max-w-fit mx-auto grayscale md:grayscale hover:grayscale-0 transition-all duration-300 swiper-slide-mobile" src={LogoExample.src} alt="Logo" />
             </SwiperSlide>
             <SwiperSlide>
-              <img className="w-full grayscale hover:grayscale-0 transition-all duration-300" src={LogoExample.src} alt="Logo" />
+              <img className="w-full max-w-fit mx-auto grayscale md:grayscale hover:grayscale-0 transition-all duration-300 swiper-slide-mobile" src={LogoExample.src} alt="Logo" />
             </SwiperSlide>
           </Swiper>
         </div>
       </section>
 
       <section className="my-10">
-        <div className="container mx-auto pb-16 px-16 max-w-6xl">
+        <div className="container mx-auto pb-8 lg:pb-16 px-0 md:px-16 max-w-6xl">
           <TitleDecorative dividerColor="bg-[#94D133]">
             Consultores
           </TitleDecorative>
@@ -185,26 +195,46 @@ export default function OfertaInmobiliaria() {
             className="mt-10 swiper-custom"
             autoplay={{ delay: 2500, disableOnInteraction: false }}
             navigation={true}
+            loop={true}
+            breakpoints={{
+              0: {
+                slidesPerView: 1.8,
+                centeredSlides: true,
+              },
+              768: {
+                slidesPerView: 3,
+              },
+            }}
           >
             <SwiperSlide>
-              <img className="w-full grayscale hover:grayscale-0 transition-all duration-300" src={LogoExample.src} alt="Logo" />
+              <img className="w-full max-w-fit mx-auto grayscale md:grayscale hover:grayscale-0 transition-all duration-300 swiper-slide-mobile" src={LogoExample.src} alt="Logo" />
             </SwiperSlide>
             <SwiperSlide>
-              <img className="w-full grayscale hover:grayscale-0 transition-all duration-300" src={LogoExample.src} alt="Logo" />
+              <img className="w-full max-w-fit mx-auto grayscale md:grayscale hover:grayscale-0 transition-all duration-300 swiper-slide-mobile" src={LogoExample.src} alt="Logo" />
             </SwiperSlide>  
             <SwiperSlide>
-              <img className="w-full grayscale hover:grayscale-0 transition-all duration-300" src={LogoExample.src} alt="Logo" />
+              <img className="w-full max-w-fit mx-auto grayscale md:grayscale hover:grayscale-0 transition-all duration-300 swiper-slide-mobile" src={LogoExample.src} alt="Logo" />
             </SwiperSlide>
             <SwiperSlide>
-              <img className="w-full grayscale hover:grayscale-0 transition-all duration-300" src={LogoExample.src} alt="Logo" />
+              <img className="w-full max-w-fit mx-auto grayscale md:grayscale hover:grayscale-0 transition-all duration-300 swiper-slide-mobile" src={LogoExample.src} alt="Logo" />
             </SwiperSlide>
             <SwiperSlide>
-              <img className="w-full grayscale hover:grayscale-0 transition-all duration-300" src={LogoExample.src} alt="Logo" />
+              <img className="w-full max-w-fit mx-auto grayscale md:grayscale hover:grayscale-0 transition-all duration-300 swiper-slide-mobile" src={LogoExample.src} alt="Logo" />
             </SwiperSlide>
             <SwiperSlide>
-              <img className="w-full grayscale hover:grayscale-0 transition-all duration-300" src={LogoExample.src} alt="Logo" />
+              <img className="w-full max-w-fit mx-auto grayscale md:grayscale hover:grayscale-0 transition-all duration-300 swiper-slide-mobile" src={LogoExample.src} alt="Logo" />
             </SwiperSlide>
           </Swiper> 
+        </div>
+      </section>
+
+      <section>
+        <div className="flex md:hidden justify-center bg-white w-full overflow-hidden h-60">
+            <img
+              className="w-full h-full object-cover"
+              src={CiudadOfertaImg.src}
+              alt="Ciudad Oferta"
+            />
         </div>
       </section>
     </div>
