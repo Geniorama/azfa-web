@@ -9,39 +9,27 @@ import PhotoExample from "@/assets/img/foto-ejemplo.jpg";
 import Button from "@/utils/Button";
 import IconStar from "@/assets/img/star.svg"
 import { useRouter } from "next/navigation";
+import { InmuebleType } from "@/types/inmuebleType";
 
-interface CardInmuebleProps {
-  id: string;
-  title: string;
-  image?: string;
-  tipoOferta?: string;
-  tipoInmueble?: string;
-  usoInmueble?: string;
-  ciudad?: string;
-  pais?: string;
-  estado?: string;
-  area?: string;
-  platinum?: boolean;
-  slug?: string;
-}
+
 
 export default function CardInmueble({
   id,
   title,
   image,
-  tipoOferta,
-  tipoInmueble,
-  usoInmueble,
-  ciudad,
-  pais,
-  estado,
+  offerType,
+  propertyType,
+  propertyUse,
+  city,
+  country,
+  status,
   area,
   platinum,
   slug,
-}: CardInmuebleProps) {
+}: InmuebleType) {
   const router = useRouter();
   return (
-    <div className={`card-inmueble-${id} bg-white shadow-lg rounded-tr-2xl rounded-bl-2xl rounded-br-2xl overflow-hidden hover:shadow-2xl transition-all duration-300 ${slug ? "cursor-pointer" : ""}`}>
+    <div className={`card-inmueble-${id} bg-white shadow-lg rounded-tr-2xl rounded-bl-2xl rounded-br-2xl overflow-hidden hover:shadow-2xl transition-all duration-300}`}>
       <div className="relative">
         <img
           src={image || PhotoExample.src}
@@ -58,27 +46,27 @@ export default function CardInmueble({
       <div className="p-8 pb-2 text-text-primary">
         <h3 className="text-h5">{title}</h3>
         <p className="text-caption">
-          {ciudad}/{pais}
+            {city}/{country}
         </p>
         <hr className="my-4 border-slate-300" />
         {/* Features */}
         <ul className="flex flex-col gap-2">
-          {tipoOferta && (
+          {offerType && (
             <li className="flex items-center gap-1 text-body2">
               <img src={IconTipoOferta.src} alt="Icono" />
-              <p>{tipoOferta}</p>
+              <p>{offerType}</p>
             </li>
           )}
-          {tipoInmueble && (
+          {propertyType && (
             <li className="flex items-center gap-1 text-body2">
               <img src={IconTipoInmueble.src} alt="Icono" />
-              <p>{tipoInmueble}</p>
+              <p>{propertyType}</p>
             </li>
           )}
-          {usoInmueble && (
+          {propertyUse && (
             <li className="flex items-center gap-1 text-body2">
               <img src={IconUsoInmueble.src} alt="Icono" />
-              <p>{usoInmueble}</p>
+              <p>{propertyUse}</p>
             </li>
           )}
           {area && (
@@ -87,10 +75,10 @@ export default function CardInmueble({
               <p>{area}</p>
             </li>
           )}
-          {estado && (
+          {status && (
             <li className="flex items-center gap-1 text-body2">
               <img src={IconEstado.src} alt="Icono" />
-              <p>{estado}</p>
+              <p>{status}</p>
             </li>
           )}
         </ul>

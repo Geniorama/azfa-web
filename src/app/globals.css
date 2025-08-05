@@ -118,3 +118,32 @@ body {
     }
   }
 }
+
+.swiper-gallery{
+  .swiper-button-prev, .swiper-button-next{
+    left: unset;
+    right: 80px;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    border: 1px solid white;
+    bottom: 20px;
+    top: unset;
+    box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.1);
+    &:hover{
+      background-color: white;
+      transition: .3s;
+      &:after{
+        color: var(--color-details);
+      }
+    }
+    &:after{
+      font-size: 15px;
+      color: white;
+    }
+  }
+  .swiper-button-next{
+    left: unset;
+    right: 20px;
+  }
+}
