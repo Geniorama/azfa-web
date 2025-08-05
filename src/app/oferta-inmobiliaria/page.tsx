@@ -229,7 +229,7 @@ export default function OfertaInmobiliaria() {
       </section>
 
       <section>
-        <div className="flex md:hidden justify-center bg-white w-full overflow-hidden h-60">
+        <div className="flex md:hidden justify-center bg-white w-full overflow-hidden h-100">
             <img
               className="w-full h-full object-cover"
               src={CiudadOfertaImg.src}
