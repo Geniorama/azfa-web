@@ -14,8 +14,8 @@ export default function Footer({ showBanner = true }: FooterProps) {
     <footer className='bg-text-primary text-white'>
       {showBanner && (
         <div className="bg-white">
-          <div className="container mx-auto">
-              <img className="w-full" src={FooterImgTop.src} alt="Footer Image" />
+          <div className="container mx-auto h-100 md:h-auto">
+              <img className="w-full h-full object-cover md:object-contain" src={FooterImgTop.src} alt="Footer Image" />
           </div>
         </div>
       )}
