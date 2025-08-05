@@ -8,6 +8,7 @@ import IconEstado from "@/assets/img/icon-nuevo-usado.svg";
 import PhotoExample from "@/assets/img/foto-ejemplo.jpg";
 import Button from "@/utils/Button";
 import IconStar from "@/assets/img/star.svg"
+import { useRouter } from "next/navigation";
 
 interface CardInmuebleProps {
   id: string;
@@ -21,6 +22,7 @@ interface CardInmuebleProps {
   estado?: string;
   area?: string;
   platinum?: boolean;
+  slug?: string;
 }
 
 export default function CardInmueble({
@@ -35,9 +37,11 @@ export default function CardInmueble({
   estado,
   area,
   platinum,
+  slug,
 }: CardInmuebleProps) {
+  const router = useRouter();
   return (
-    <div className="bg-white shadow-lg rounded-tr-2xl rounded-bl-2xl rounded-br-2xl overflow-hidden hover:shadow-2xl transition-all duration-300">
+    <div className={`card-inmueble-${id} bg-white shadow-lg rounded-tr-2xl rounded-bl-2xl rounded-br-2xl overflow-hidden hover:shadow-2xl transition-all duration-300 ${slug ? "cursor-pointer" : ""}`}>
       <div className="relative">
         <img
           src={image || PhotoExample.src}
@@ -92,7 +96,7 @@ export default function CardInmueble({
         </ul>
         <hr className="my-4 border-slate-300" />
         <Button
-          onClick={() => console.log(id)}
+          onClick={() => router.push(`/oferta-inmobiliaria/${slug}`)}
           icon={true}
           fullWidth={true}
           className="mt-4 bg-white text-text-primary hover:bg-text-secondary hover:text-white"
