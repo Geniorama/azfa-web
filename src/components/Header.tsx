@@ -110,11 +110,13 @@ export default function Header() {
         <div className="flex flex-col lg:flex-row justify-between items-center">
           <div className="w-full lg:w-1/3 flex justify-between items-center gap-4 px-4 lg:px-0">
             <div>
-              <img
-                className="max-w-[130px] lg:max-w-none"
-                src={LogoAzfa.src}
-                alt="Logo Azfa"
-              />
+              <Link href="/">
+                <img
+                  className="max-w-[130px] lg:max-w-none"
+                  src={LogoAzfa.src}
+                  alt="Logo Azfa"
+                />
+              </Link>
             </div>
             <button className="text-2xl bg-details-hover text-white rounded-lg p-2 lg:hidden" onClick={() => setIsMobileMenuOpen(true)}>
               <FaBars />
