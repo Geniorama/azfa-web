@@ -41,12 +41,14 @@ export default function SelectorFilter({ options, selected, onChange, label, ico
     <div>
         <div className='flex flex-col items-start gap-2 relative'>
             <div 
-                className='flex items-center gap-2 cursor-pointer' 
+                className='flex items-center gap-2 cursor-pointer w-full justify-between md:justify-start' 
                 ref={dropdownRef} 
                 onClick={handleToggleDropdown}
             >
-                {icon && typeof icon === 'string' ? <img src={icon} alt={label} className='w-5 h-5' /> : icon}
-                <p className='text-md text-text-primary'>{label}</p>
+                <div className="flex items-center gap-2">
+                    {icon && typeof icon === 'string' ? <img src={icon} alt={label} className='w-5 h-5 hidden md:block' /> : icon}
+                    <p className='text-caption md:text-md text-text-primary'>{label}</p>
+                </div>
                 <FaChevronDown className='w-4 h-4 text-details' />
             </div>
             {isOpen && (
@@ -70,7 +72,7 @@ export default function SelectorFilter({ options, selected, onChange, label, ico
                 </div>
             )}
         </div>
-        <p className=' text-text-primary pl-7.5 text-lg mt-1'>{selectedOption}</p>
+        <p className=' text-text-primary md:pl-7.5 text-body md:text-lg mt-1 font-medium'>{selectedOption}</p>
     </div>
   )
 }
