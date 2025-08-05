@@ -35,6 +35,7 @@ export default function OfertaInmobiliariaSingle() {
     area: "3.000m2",
     slug: "casa-en-venta",
     gallery: [ImgGallery1.src, ImgGallery2.src],
+    platinum: true,
     description:
       "El Parque Industrial Villanueva es uno de los líderes en el desarrollo de Zona Franca en Centroamérica. Cada uno de nuestros edificios tiene un potencial de expansión de hasta 10,000 ó 23,000 metros cuadrados, también ofrecemos lotes de 5,000 metros cuadrados o mas. 'Built to Suit', 'Turn-Key projects' y financiamiento disponible. Generamos mas de 12,000 empleos directos con exportaciones a los Estados Unidos, Canadá, Europa, Japón y Australia. Área total construida del parque 300,000 mts2.",
     certificates: [
@@ -72,14 +73,14 @@ export default function OfertaInmobiliariaSingle() {
           <AdvancedSearchBar />
         </div>
       </section>
-      <article className="py-12 pt-24 text-text-primary">
+      <article className="pb-0 pt-12 lg:pb-12 lg:pt-24 text-text-primary">
         <div className="container mx-auto px-4">
-          <div className="flex flex-col md:flex-row gap-4 items-center">
+          <div className="flex flex-col md:flex-row lg:gap-4 items-center">
             {/* Left side */}
             <div className="w-full md:w-1/2 relative">
               {exampleInmueble.gallery && (
-                <div className="relative top-0 -right-12 w-full h-full">
-                  <SliderGallery images={exampleInmueble.gallery} />
+                <div className="relative top-0 lg:-right-12 w-full h-full">
+                  <SliderGallery images={exampleInmueble.gallery} isPlatinum={exampleInmueble.platinum} />
                 </div>
               )}
             </div>
@@ -166,11 +167,11 @@ export default function OfertaInmobiliariaSingle() {
               )}
 
               {/* Contact */}
-              <div className="mt-10 flex flex-row gap-4">
-                <Button onClick={() => {}} variant="outline-primary" icon>
+              <div className="mt-10 flex flex-col md:flex-row gap-4">
+                <Button className="justify-between lg:justify-start" onClick={() => {}} variant="outline-primary" icon>
                   Ver incentivos del país
                 </Button>
-                <Button onClick={() => {}} variant="primary" icon>
+                <Button className="justify-between lg:justify-start" onClick={() => {}} variant="primary" icon>
                   Solicitar información
                 </Button>
               </div>
