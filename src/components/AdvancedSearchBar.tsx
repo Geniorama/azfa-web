@@ -171,7 +171,7 @@ export default function AdvancedSearchBar() {
             <div className='pr-4 py-4 w-full'>
                 <SelectorFilter options={optionsEstado} selected={''} onChange={() => {}} label='Estado' icon={IconEstado.src} />
             </div>
-            <div className='w-20 h-20 flex flex-grow justify-end'>
+            <div className='w-full md:w-20 md:h-20 flex flex-grow justify-end'>
                 <SearchButton />
             </div>
         </div>
