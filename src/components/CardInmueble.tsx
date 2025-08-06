@@ -44,7 +44,7 @@ export default function CardInmueble({
       <div className="p-8 pb-2 text-text-primary">
         <h3 className="text-h5">{title}</h3>
         <p className="text-caption">
-            {city}/{country}
+            {city} / {country}
         </p>
         <hr className="my-4 border-slate-300" />
         {/* Features */}

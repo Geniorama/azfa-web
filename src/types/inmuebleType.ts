@@ -7,6 +7,7 @@ export interface InmuebleType {
     propertyUse?: string;
     city?: string;
     country?: string;
+    region?: string;
     status?: string;
     area?: string;
     slug?: string;

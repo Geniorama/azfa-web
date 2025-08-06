@@ -11,8 +11,42 @@ import "swiper/css";
 import "swiper/css/autoplay";
 import "swiper/css/navigation";
 import LogoExample from "@/assets/img/Logo-AEZO 5.png";
+import { useRealStateOffers } from "@/hooks/useRealStateOffers";
+import { useState } from "react";
 
 export default function OfertaInmobiliaria() {
+  const [currentPage, setCurrentPage] = useState(1);
+  const pageSize = 9; // 3x3 grid
+  
+  const { offers, loading, error, pagination } = useRealStateOffers(currentPage, pageSize);
+
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+    // Scroll to top when page changes
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-primary mx-auto"></div>
+          <p className="mt-4 text-text-primary">Cargando ofertas inmobiliarias...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <p className="text-red-500">Error: {error}</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div>
       <section className="py-16">
@@ -48,91 +82,50 @@ export default function OfertaInmobiliaria() {
       <section>
         <div className="container mx-auto pb-16 px-4 md:px-16">
           <p className="text-5 text-text-primary text-center my-10">
-            Se encontraron <span className="font-bold">27</span> inmuebles que
+            Se encontraron <span className="font-bold">{pagination.total}</span> inmuebles que
             coinciden con su búsqueda
           </p>
 
-          {/* Gird Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 md:gap-12">
-            <CardInmueble
-              id="1"
-              title="Casa en venta"
-              offerType="Venta"
-              propertyType="Casa"
-              propertyUse="Terreno"
-              city="San José"
-              country="Costa Rica"
-              status="Nuevo"
-              area="3.000m2"
-              platinum={true}
-              slug="casa-en-venta"
-            />
-            <CardInmueble
-              id="2"
-              title="Casa en venta"
-              offerType="Venta"
-              propertyType="Casa"
-              propertyUse="Terreno"
-              city="San José"
-              country="Costa Rica"
-              status="Nuevo"
-              area="3.000m2"
-            />
-            <CardInmueble
-              id="3"
-              title="Casa en venta"
-              offerType="Venta"
-              propertyType="Casa"
-              propertyUse="Terreno"
-              city="San José"
-              country="Costa Rica"
-              status="Nuevo"
-              area="3.000m2"
-              platinum={true}
-            />
-            <CardInmueble
-              id="4"
-              title="Casa en venta"
-              offerType="Venta"
-              country="Costa Rica"
-              status="Nuevo"
-              area="3.000m2"
-              slug="casa-en-venta"
-            />
-            <CardInmueble
-              id="5"
-              title="Casa en venta"
-              offerType="Venta"
-              propertyType="Casa"
-              propertyUse="Terreno"
-              city="San José"
-              country="Costa Rica"
-              status="Nuevo"
-              area="3.000m2"
-              slug="casa-en-venta"
-            />
-            <CardInmueble
-              id="6"
-              title="Casa en venta"
-              offerType="Venta"
-              propertyType="Casa"
-              propertyUse="Terreno"
-              city="San José"
-              country="Costa Rica"
-              status="Nuevo"
-              area="3.000m2"
-              slug="casa-en-venta"
-            />
-          </div>
+          {/* Grid Cards */}
+          {offers.length > 0 ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 md:gap-12">
+              {offers.map((offer) => (
+                <CardInmueble
+                  key={offer.id}
+                  id={offer.id}
+                  title={offer.title}
+                  offerType={offer.offerType}
+                  propertyType={offer.propertyType}
+                  propertyUse={offer.propertyUse}
+                  city={offer.city}
+                  country={offer.country}
+                  status="Nuevo"
+                  area={offer.area}
+                  platinum={offer.platinum}
+                  slug={offer.slug}
+                />
+              ))}
+            </div>
+          ) : (
+            <div className="text-center py-16">
+              <p className="text-text-primary text-lg">No se encontraron ofertas inmobiliarias</p>
+            </div>
+          )}
           
         </div>
       </section>
 
-      <section>
-        <div className="container mx-auto pb-16 px-4 md:px-16 flex justify-center">
-          <Pagination currentPage={1} totalPages={3} onPageChange={() => console.log('clicked')} />
-        </div>
-      </section>
+      {pagination.pageCount > 1 && (
+        <section>
+          <div className="container mx-auto pb-16 px-4 md:px-16 flex justify-center">
+            <Pagination 
+              currentPage={pagination.page} 
+              totalPages={pagination.pageCount} 
+              onPageChange={handlePageChange} 
+            />
+          </div>
+        </section>
+      )}
 
       <section>
         <div className="container mx-auto pb-8 lg:pb-16 px-0 md:px-16 max-w-6xl">
