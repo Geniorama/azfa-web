@@ -4,6 +4,7 @@ import CiudadOfertaImg from "@/assets/img/ciudad-oferta-inmobiliaria.svg";
 import AdvancedSearchBar from "@/components/AdvancedSearchBar";
 import CardInmueble from "@/components/CardInmueble";
 import Pagination from "@/components/Pagination";
+import LoadingSpinner from "@/components/LoadingSpinner";
 import TitleDecorative from "@/utils/TitleDecorative";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay, Navigation } from "swiper/modules";
@@ -27,14 +28,7 @@ export default function OfertaInmobiliaria() {
   };
 
   if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-primary mx-auto"></div>
-          <p className="mt-4 text-text-primary">Cargando ofertas inmobiliarias...</p>
-        </div>
-      </div>
-    );
+    return <LoadingSpinner message="Cargando ofertas inmobiliarias..." />;
   }
 
   if (error) {

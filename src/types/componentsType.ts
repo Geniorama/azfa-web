@@ -23,3 +23,10 @@ export interface OptionType {
     label: string;
     value: string;
 }
+
+export interface StrapiButtonType {
+    id?: string;
+    text?: string;
+    link?: string;
+    target?: string;
+}

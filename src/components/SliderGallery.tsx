@@ -6,7 +6,10 @@ import "swiper/css/scrollbar";
 import PlatinumBadge from "@/utils/PlatinumBadge";
 
 interface SliderGalleryProps {
-  images: string[];
+  images: {
+    url: string;
+    alternativeText?: string;
+  }[];
   isPlatinum?: boolean;
 }
 
@@ -30,7 +33,7 @@ export default function SliderGallery({ images, isPlatinum = false }: SliderGall
       >
         {images.map((image, index) => (
           <SwiperSlide key={index}>
-            <img src={image} alt="Slider Gallery" />
+            <img src={image.url} alt={image.alternativeText || "Slider Gallery"} />
           </SwiperSlide>
         ))}
       </Swiper>
