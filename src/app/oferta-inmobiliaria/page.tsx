@@ -13,13 +13,17 @@ import "swiper/css/autoplay";
 import "swiper/css/navigation";
 import LogoExample from "@/assets/img/Logo-AEZO 5.png";
 import { useRealStateOffers } from "@/hooks/useRealStateOffers";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 export default function OfertaInmobiliaria() {
   const [currentPage, setCurrentPage] = useState(1);
   const pageSize = 9; // 3x3 grid
   
   const { offers, loading, error, pagination } = useRealStateOffers(currentPage, pageSize);
+
+  useEffect(() => {
+    console.log(offers);
+  }, [offers]);
 
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
@@ -30,6 +34,8 @@ export default function OfertaInmobiliaria() {
   if (loading) {
     return <LoadingSpinner message="Cargando ofertas inmobiliarias..." />;
   }
+
+  
 
   if (error) {
     return (
@@ -93,10 +99,11 @@ export default function OfertaInmobiliaria() {
                   propertyUse={offer.propertyUse}
                   city={offer.city}
                   country={offer.country}
-                  status="Nuevo"
+                  propertyStatus={offer.propertyStatus}
                   area={offer.area}
                   platinum={offer.platinum}
                   slug={offer.slug}
+                  image={offer.image}
                 />
               ))}
             </div>
