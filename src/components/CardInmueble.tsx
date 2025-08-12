@@ -21,7 +21,7 @@ export default function CardInmueble({
   propertyUse,
   city,
   country,
-  status,
+  propertyStatus,
   area,
   platinum,
   slug,
@@ -73,10 +73,10 @@ export default function CardInmueble({
               <p>{area}</p>
             </li>
           )}
-          {status && (
+          {propertyStatus && (
             <li className="flex items-center gap-1 text-body2">
               <img src={IconEstado.src} alt="Icono" />
-              <p>{status}</p>
+              <p>{propertyStatus}</p>
             </li>
           )}
         </ul>

@@ -102,7 +102,6 @@ export default function OfertaInmobiliariaSingle() {
         `${process.env.NEXT_PUBLIC_STRAPI_URL}/real-state-offers?filters[slug][$eq]=${slug}&populate[imgGallery]=true`
       );
       const data = await response.json();
-      console.log(data.data[0]);
 
       if (!data.data[0]) return;
 
@@ -116,7 +115,6 @@ export default function OfertaInmobiliariaSingle() {
         }) || [],
       };
 
-      console.log(dataWithGallery);
       setInmueble(dataWithGallery);
     };
     fetchInmueble();

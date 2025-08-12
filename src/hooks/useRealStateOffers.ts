@@ -4,33 +4,8 @@ import { InmuebleType } from '@/types/inmuebleType';
 interface StrapiResponse {
   data: Array<{
     id: string;
-    attributes?: {
-      title: string;
-      slug: string;
-      propertyType?: string;
-      offerType?: string;
-      propertyUse?: string;
-      area?: string;
-      city?: string;
-      country?: string;
-      region?: string;
-      platinum?: boolean;
-      imgGallery?: {
-        data: Array<{
-          id: string;
-          attributes: {
-            url: string;
-            alternativeText?: string;
-          };
-        }>;
-      };
-      createdAt: string;
-      updatedAt: string;
-      publishedAt: string;
-    };
-    // También puede venir directamente sin attributes
-    title?: string;
-    slug?: string;
+    title: string;
+    slug: string;
     propertyType?: string;
     offerType?: string;
     propertyUse?: string;
@@ -39,18 +14,14 @@ interface StrapiResponse {
     country?: string;
     region?: string;
     platinum?: boolean;
-    imgGallery?: {
-      data: Array<{
-        id: string;
-        attributes: {
-          url: string;
-          alternativeText?: string;
-        };
-      }>;
-    };
-    createdAt?: string;
-    updatedAt?: string;
-    publishedAt?: string;
+    propertyStatus?: string;
+    imgGallery?: Array<{
+      url: string;
+      alternativeText?: string;
+    }>;
+    createdAt: string;
+    updatedAt: string;
+    publishedAt: string;
   }>;
   meta: {
     pagination: {
@@ -99,56 +70,34 @@ export const useRealStateOffers = (page: number = 1, pageSize: number = 9) => {
         // Transformar los datos de Strapi al formato esperado
         if (data && data.data && Array.isArray(data.data)) {
           const transformedOffers: InmuebleType[] = data.data.map((item) => {
-            // Verificar si tiene estructura attributes o es directa
-            const attributes = item.attributes || item;
-            
+            // Los datos vienen directamente sin attributes
             console.log('Processing item:', item);
-            console.log('Attributes:', attributes);
-            
-            // Validar que attributes existe y tiene las propiedades necesarias
-            if (!attributes) {
-              console.warn('Item has no attributes:', item);
-              return {
-                id: (item as { id?: string })?.id || '',
-                title: '',
-                slug: '',
-                propertyType: undefined,
-                offerType: undefined,
-                propertyUse: undefined,
-                area: undefined,
-                city: undefined,
-                country: undefined,
-                region: undefined,
-                platinum: false,
-                image: undefined,
-                gallery: [],
-                createdAt: undefined,
-                updatedAt: undefined,
-                publishedAt: undefined,
-              };
-            }
             
             // Validar que las propiedades necesarias existen
-            const title = attributes?.title || '';
-            const slug = attributes?.slug || '';
+            const title = item?.title || '';
+            const slug = item?.slug || '';
             
             return {
-              id: (item as { id?: string })?.id || '',
+              id: item?.id || '',
               title,
               slug,
-              propertyType: attributes?.propertyType,
-              offerType: attributes?.offerType,
-              propertyUse: attributes?.propertyUse,
-              area: attributes?.area,
-              city: attributes?.city,
-              country: attributes?.country,
-              region: attributes?.region,
-              platinum: attributes?.platinum || false,
-              image: attributes?.imgGallery?.data?.[0]?.attributes?.url,
-              gallery: attributes?.imgGallery?.data?.map((img: { attributes: { url: string } }) => img.attributes.url) || [],
-              createdAt: attributes?.createdAt,
-              updatedAt: attributes?.updatedAt,
-              publishedAt: attributes?.publishedAt,
+              propertyType: item?.propertyType,
+              offerType: item?.offerType,
+              propertyUse: item?.propertyUse,
+              area: item?.area,
+              city: item?.city,
+              country: item?.country,
+              region: item?.region,
+              platinum: item?.platinum || false,
+              image: item?.imgGallery?.[0]?.url,
+              imgGallery: item?.imgGallery?.map((img) => ({
+                url: img.url,
+                alternativeText: img.alternativeText,
+              })) || [],
+              createdAt: item?.createdAt,
+              updatedAt: item?.updatedAt,
+              publishedAt: item?.publishedAt,
+              propertyStatus: item?.propertyStatus,
             };
           });
           
