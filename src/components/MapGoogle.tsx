@@ -1,7 +1,7 @@
 "use client";
 
 import { Loader } from "@googlemaps/js-api-loader";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import type { Marker } from "@/app/nuestros-afiliados/page";
 
 interface GoogleMapsProps {
@@ -11,7 +11,6 @@ interface GoogleMapsProps {
 
 export default function MapGoogle({ markers, onMarkerClick }: GoogleMapsProps) {
   const mapRef = useRef<HTMLDivElement | null>(null);
-  const [selectedMarker, setSelectedMarker] = useState<Marker | null>(null);
   const markersRef = useRef<google.maps.marker.AdvancedMarkerElement[]>([]);
 
   useEffect(() => {
@@ -52,8 +51,6 @@ export default function MapGoogle({ markers, onMarkerClick }: GoogleMapsProps) {
         // Agregar evento de clic al marcador
         marker.addListener("click", () => {
           console.log("Marcador clickeado:", markerData);
-          setSelectedMarker(markerData);
-          
           // Llamar a la función callback si existe
           if (onMarkerClick) {
             onMarkerClick(markerData);
@@ -73,22 +70,6 @@ export default function MapGoogle({ markers, onMarkerClick }: GoogleMapsProps) {
   return (
     <div className="relative">
       <div ref={mapRef} className="w-full h-screen" />
-      
-      {/* Panel de información del marcador seleccionado */}
-      {selectedMarker && (
-        <div className="absolute top-4 right-4 bg-white p-4 rounded-lg shadow-lg max-w-xs">
-          <h3 className="font-bold text-lg mb-2">{selectedMarker.title}</h3>
-          <p className="text-gray-600 mb-2">
-            Lat: {selectedMarker.lat.toFixed(6)}, Lng: {selectedMarker.lng.toFixed(6)}
-          </p>
-          <button 
-            onClick={() => setSelectedMarker(null)}
-            className="bg-blue-500 text-white px-3 py-1 rounded text-sm hover:bg-blue-600"
-          >
-            Cerrar
-          </button>
-        </div>
-      )}
     </div>
   )
 }
