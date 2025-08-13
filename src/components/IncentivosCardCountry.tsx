@@ -17,7 +17,7 @@ export default function IncentivosCardCountry({ index, country, numberZones, num
   return (
     <div className="pb-6">
        <div className='flex flex-row items-center bg-[#E3EAF4] h-12'>
-          <span className='flex items-center bg-primary text-white flex items-center justify-center p-3'>{index + 1}</span>
+          <span className='flex items-center bg-primary text-white justify-center p-3'>{index + 1}</span>
           <span className='flex items-center text-text-primary px-3 text-[24px] flex-grow'>{country}</span>
           {/* Country flag */}
           <span className='flex items-center text-white justify-center p-3'>

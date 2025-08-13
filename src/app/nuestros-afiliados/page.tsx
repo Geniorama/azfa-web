@@ -9,6 +9,8 @@ import colombiaFlag from "@/assets/img/flags/colombia.svg";
 import brasilFlag from "@/assets/img/flags/brazil.svg";
 import AfiliadosCard from "@/components/AfiliadosCard";
 import LogoCodevi from "@/assets/img/CODEVI 2.png";
+import { Suspense } from "react";
+import { useSearchParams } from "next/navigation";
 
 export interface Marker {
   id: string;
@@ -157,12 +159,15 @@ const markers: Marker[] = [
   },
 ];
 
-export default function NuestrosAfiliados() {
+function NuestrosAfiliadosContent() {
   const [selectedTab, setSelectedTab] = useState("incentivos");
   const [selectedCountry, setSelectedCountry] = useState<Marker | null>(null);
   const [afiliados, setAfiliados] = useState<Afiliado[]>(afiliadosExample);
   const [incentivos, setIncentivos] = useState<Marker[]>(markers);
+  const params = useSearchParams();
 
+  const countryParam = params.get("country");
+  const tabParam = params.get("tab");
 
   useEffect(() => {
     if (selectedCountry) {
@@ -176,7 +181,19 @@ export default function NuestrosAfiliados() {
     }
   }, [selectedCountry]);
 
-  
+  useEffect(() => {
+    if (tabParam) {
+      setSelectedTab(tabParam);
+
+      if (countryParam) {
+        const countryId = countryParam;
+        const filteredAfiliados = afiliadosExample.filter((afiliado) => afiliado.country.value === countryId);
+        setAfiliados(filteredAfiliados);
+        const filteredIncentivos = markers.filter((marker) => marker.id === countryId);
+        setIncentivos(filteredIncentivos);
+      }
+    }
+  }, [tabParam, countryParam]);
 
   
 
@@ -270,5 +287,13 @@ export default function NuestrosAfiliados() {
         </div>
       </section>
     </div>
+  );
+}
+
+export default function NuestrosAfiliados() {
+  return (
+    <Suspense fallback={<div>Cargando...</div>}>
+      <NuestrosAfiliadosContent />
+    </Suspense>
   );
 }
