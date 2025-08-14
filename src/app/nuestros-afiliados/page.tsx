@@ -338,7 +338,7 @@ function NuestrosAfiliadosContent() {
           </div>
           <div className="w-full lg:w-1/3 bg-white">
             <div className="h-screen overflow-y-scroll">
-              <div className="sticky top-0 z-10">
+              <div className="sticky top-0 z-1">
                 <div className="flex flex-row">
                   <div className="w-1/2">
                     <button
