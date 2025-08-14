@@ -16,7 +16,7 @@ export default function HeadingPage({
   return (
     <div
       style={{ backgroundImage: `url(${image || ""})` }}
-      className={`bg-primary bg-cover bg-center bg-no-repeat py-16 px-12 relative ${
+      className={`bg-primary bg-cover bg-center bg-no-repeat py-16 px-12 relative flex flex-col items-center justify-center ${
         textAlign === "left"
           ? "text-left"
           : textAlign === "center"

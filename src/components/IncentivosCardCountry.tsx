@@ -25,8 +25,8 @@ export default function IncentivosCardCountry({ index, country, numberZones, num
           </span>
         </div>
 
-        <div className="flex flex-row items-center justify-between">
-            <div className="p-7 flex flex-col items-center justify-center gap-2 text-text-primary">
+        <div className="flex flex-row items-start justify-between bg-[#F5F8FC]">
+            <div className="w-1/3 p-3 lg:p-7 flex flex-col items-center justify-center gap-2 text-text-primary">
                 <span className="block w-5 h-5 rounded-full bg-details-hover">
                     {/* Circle */}
                 </span> 
@@ -36,7 +36,7 @@ export default function IncentivosCardCountry({ index, country, numberZones, num
                 <p className="text-h6 font-medium">{numberZones}</p>
             </div>
 
-            <div className="p-7 flex flex-col items-center justify-center gap-2 text-text-primary">
+            <div className="w-1/3 p-3 lg:p-7 flex flex-col items-center justify-center gap-2 text-text-primary">
                 <span className="block w-5 h-5 rounded-full bg-secondary">
                     {/* Circle */}
                 </span> 
@@ -46,19 +46,19 @@ export default function IncentivosCardCountry({ index, country, numberZones, num
                 <p className="text-h6 font-medium">{numberCompanies}</p>
             </div>
 
-            <div className="p-7 flex flex-col items-center justify-center gap-2 text-text-primary">
+            <div className="w-1/3 p-3 lg:p-7 flex flex-col items-center justify-center gap-2 text-text-primary">
                 <span className="block w-5 h-5 rounded-full bg-details">
                     {/* Circle */}
                 </span> 
                 <h5 className="text-text-primary text-[14px] text-center">
-                    Empleos directos
+                    Empleos <br className="lg:hidden" /> directos
                 </h5>
                 <p className="text-h6 font-medium">{directJobs}</p>
             </div>
         </div> 
 
         {/* List */}
-        <ul className="text-text-primary px-10">
+        <ul className="text-text-primary px-5 lg:px-10">
             {list && list.map((item, index) => (
                 <li key={index} className={`flex flex-row items-start py-2 border-b border-gray-200 ${index === list.length - 1 ? "border-b-0" : ""}`}>
                     <span className="block w-1/2 font-medium">{item.name}</span>
