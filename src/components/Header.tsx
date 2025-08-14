@@ -74,15 +74,6 @@ const navItems: NavItem[] = [
     href: "/",
   },
 
-  {
-    label: "Mapa Interactivo",
-    href: "/mapa-demo",
-  },
-  {
-    label: "Debug Mapa",
-    href: "/debug-mapa",
-  },
-
   // Lenguaje
   {
     label: "Esp",
