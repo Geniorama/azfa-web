@@ -11,6 +11,7 @@ import AfiliadosCard from "@/components/AfiliadosCard";
 import LogoCodevi from "@/assets/img/CODEVI 2.png";
 import { Suspense } from "react";
 import { useSearchParams } from "next/navigation";
+import CoverDefault from "../../../public/Frame_56.jpg";
 
 export interface Marker {
   id: string;
@@ -93,6 +94,91 @@ const afiliadosExample: Afiliado[] = [
     email: "fernando.jaar@codevi.com",
     website: "www.codevi.com",
   },
+
+  {
+    id: "4",
+    title: "Villanueva Industrial Park",
+    name: "Fernando J. Jaar",
+    position: "Presidente - CEO",
+    city: {
+      value: "bogota",
+      label: "Bogotá",
+    },
+    country: {
+      value: "colombia",
+      label: "Colombia",
+    },
+  },
+  {
+    id: "5",
+    title: "Villanueva Industrial Park",
+    name: "Fernando J. Jaar",
+    position: "Presidente - CEO",
+    city: {
+      value: "bogota",
+      label: "Bogotá",
+    },
+    country: {
+      value: "colombia",
+      label: "Colombia",
+    },
+  },
+  {
+    id: "6",
+    title: "Villanueva Industrial Park",
+    name: "Fernando J. Jaar",
+    position: "Presidente - CEO",
+    city: {
+      value: "bogota",
+      label: "Bogotá",
+    },
+    country: {
+      value: "colombia",
+      label: "Colombia",
+    },
+  },
+  {
+    id: "7",
+    title: "Villanueva Industrial Park",
+    name: "Fernando J. Jaar",
+    position: "Presidente - CEO",
+    city: {
+      value: "bogota",
+      label: "Bogotá",
+    },
+    country: {
+      value: "colombia",
+      label: "Colombia",
+    },
+  },
+  {
+    id: "8",
+    title: "Villanueva Industrial Park",
+    name: "Fernando J. Jaar",
+    position: "Presidente - CEO",
+    city: {
+      value: "bogota",
+      label: "Bogotá",
+    },
+    country: {
+      value: "colombia",
+      label: "Colombia",
+    },
+  },
+  {
+    id: "9",
+    title: "Villanueva Industrial Park",
+    name: "Fernando J. Jaar",
+    position: "Presidente - CEO",
+    city: {
+      value: "bogota",
+      label: "Bogotá",
+    },
+    country: {
+      value: "colombia",
+      label: "Colombia",
+    },
+  },
 ];
 
 const markers: Marker[] = [
@@ -169,6 +255,33 @@ function NuestrosAfiliadosContent() {
   const countryParam = params.get("country");
   const tabParam = params.get("tab");
 
+  // Crear opciones de países para el campo de búsqueda
+  const countryOptions = markers.map(marker => ({
+    id: marker.id,
+    label: marker.title,
+    value: marker.id
+  }));
+
+  // Función para manejar la selección de país desde el campo de búsqueda
+  const handleCountrySelect = (option: { id: string; label: string; value: string } | null) => {
+    if (option) {
+      const selectedMarker = markers.find(marker => marker.id === option.id);
+      if (selectedMarker) {
+        setSelectedCountry(selectedMarker);
+      }
+    } else {
+      setSelectedCountry(null);
+    }
+  };
+
+  // Función para obtener la opción seleccionada actualmente
+  const getSelectedCountryOption = () => {
+    if (selectedCountry) {
+      return countryOptions.find(option => option.id === selectedCountry.id) || null;
+    }
+    return null;
+  };
+
   useEffect(() => {
     if (selectedCountry) {
       const countryId = selectedCountry.id;
@@ -178,6 +291,9 @@ function NuestrosAfiliadosContent() {
         const filteredIncentivos = markers.filter((marker) => marker.id === countryId);
         setIncentivos(filteredIncentivos);
       }
+    } else {
+      setAfiliados(afiliadosExample);
+      setIncentivos(markers);
     }
   }, [selectedCountry]);
 
@@ -195,11 +311,14 @@ function NuestrosAfiliadosContent() {
     }
   }, [tabParam, countryParam]);
 
-  
-
   const handleGetCountry = (dataCountry: Marker): void => {
     if (!dataCountry) return;
     setSelectedCountry(dataCountry);
+  };
+
+  const handleGetTab = (dataTab: string): void => {
+    setSelectedCountry(null);
+    setSelectedTab(dataTab);
   };
 
   return (
@@ -207,15 +326,17 @@ function NuestrosAfiliadosContent() {
       <HeadingPage
         title="Nuestros Afiliados"
         smallTitle="Conozca aquí nuestros Afiliados y haga parte de AZFA"
+        className="min-h-[45vh] md:min-h-auto items-center"
+        image={CoverDefault.src}
       />
 
       <section>
         <div className="flex flex-row">
-          <div className="w-full md:w-1/2 lg:w-2/3 bg-primary">
+          <div className="hidden lg:block w-full lg:w-2/3 bg-primary">
             {/* Map Google for countries*/}
             <MapGoogle markers={markers} onMarkerClick={handleGetCountry} />
           </div>
-          <div className="w-full md:w-1/2 lg:w-1/3 bg-white">
+          <div className="w-full lg:w-1/3 bg-white">
             <div className="h-screen overflow-y-scroll">
               <div className="sticky top-0 z-10">
                 <div className="flex flex-row">
@@ -226,7 +347,7 @@ function NuestrosAfiliadosContent() {
                           ? "bg-primary text-white"
                           : ""
                       }`}
-                      onClick={() => setSelectedTab("incentivos")}
+                      onClick={() => handleGetTab("incentivos")}
                     >
                       Incentivos
                     </button>
@@ -238,7 +359,7 @@ function NuestrosAfiliadosContent() {
                           ? "bg-details-hover text-white"
                           : ""
                       }`}
-                      onClick={() => setSelectedTab("afiliados")}
+                      onClick={() => handleGetTab("afiliados")}
                     >
                       Afiliados
                     </button>
@@ -246,7 +367,11 @@ function NuestrosAfiliadosContent() {
                 </div>
                 <SearchInput
                   className="border border-r-gray-600 border-l-gray-600"
-                  options={[]}
+                  options={countryOptions}
+                  onSelect={handleCountrySelect}
+                  selected={getSelectedCountryOption()}
+                  placeholder="Seleccione un país..."
+                  label="País"
                 />
               </div>
 
