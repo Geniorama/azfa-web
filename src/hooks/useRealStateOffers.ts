@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { InmuebleType } from '@/types/inmuebleType';
+import { getCountryCode } from '@/utils/countryMapping';
 
 interface StrapiResponse {
   data: Array<{
@@ -86,7 +87,7 @@ export const useRealStateOffers = (page: number = 1, pageSize: number = 9) => {
               propertyUse: item?.propertyUse,
               area: item?.area,
               city: item?.city,
-              country: item?.country,
+              country: item?.country ? getCountryCode(item.country) : undefined,
               region: item?.region,
               platinum: item?.platinum || false,
               image: item?.imgGallery?.[0]?.url,

@@ -7,7 +7,7 @@ import IconUsoInmueble from "@/assets/img/icon-uso.svg"
 import IconCiudad from "@/assets/img/icon-ciudad.svg"
 import IconPais from "@/assets/img/icon-pais.svg"
 import IconEstado from "@/assets/img/icon-nuevo-usado.svg"
-import SearchButton from '@/utils/SearchButton'
+import SearchButton from '@/utils/SearchButton';
 
 interface Option {
     label: string;
@@ -129,9 +129,32 @@ const optionsPais: Option[] = [
     },
     {
         label: 'Costa Rica',
-        value: 'costa-rica'
+        value: 'CR'
     },
-    
+    {
+        label: 'Colombia',
+        value: 'CO'
+    },
+    {
+        label: 'Brasil',
+        value: 'BR'
+    },
+    {
+        label: 'Argentina',
+        value: 'AR'
+    },
+    {
+        label: 'Chile',
+        value: 'CL'
+    },
+    {
+        label: 'México',
+        value: 'MX'
+    },
+    {
+        label: 'Perú',
+        value: 'PE'
+    }
 ]
 
 const optionsEstado: Option[] = [   
