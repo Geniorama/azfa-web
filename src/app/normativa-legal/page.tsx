@@ -12,7 +12,8 @@ import type { ContentType } from "@/types/contentType";
 import type { DownloadType } from "@/types/componentsType";
 import type { CountryResponse } from "@/types/responseTypes";
 import type { OptionType } from "@/types/componentsType";
-import MapResponsive from "@/assets/img/azfa-mapa-marco-legal-responsive.jpg"
+import MapResponsive from "@/assets/img/azfa-mapa-marco-legal-responsive.jpg";
+import { getCountryCode, getCountryName } from "@/utils/countryMapping";
 
 interface Item {
   id: string;
@@ -31,6 +32,8 @@ interface InfoCountry {
   items?: Item[];
   countryImage?: string;
 }
+
+
 
 export default function NormativaLegal() {
   const [selectedPais, setSelectedPais] = useState<OptionType | null>(null);
@@ -88,11 +91,14 @@ export default function NormativaLegal() {
 
     const countries: InfoCountry[] = data.data.map(
       (country: CountryResponse) => {
+        // Obtener el código ISO y nombre del país usando las funciones de utilidad
+        const countryCode = getCountryCode(country.country);
+        const countryName = getCountryName(countryCode);
+        
         return {
           id: country.id,
-          label:
-            country.country.charAt(0).toUpperCase() + country.country.slice(1),
-          value: country.country,
+          label: countryName,
+          value: countryCode, // Usar el código ISO del plugin
           linkDownload: country.document.document.url,
           countryImage: country.countryImage?.url || "",
           items:
@@ -169,19 +175,24 @@ export default function NormativaLegal() {
       }
       return;
     }
-    setSelectedPais(pais);
-    setScrollToPais(pais.id); // Marcar que queremos hacer scroll a este país
     
-    // Solo expandir automáticamente en pantallas grandes
-    if (window.innerWidth >= 768) {
-      setExpandedPais(pais.id);
-      // Bloquear el scroll cuando se selecciona desde el buscador
-      const container = document.querySelector(".overflow-y-auto") as HTMLElement;
-      if (container) {
-        container.style.overflow = "hidden";
+    // Buscar el país por el código ISO en countriesInfo
+    const selectedCountryInfo = countriesInfo.find(country => country.value === pais.value);
+    if (selectedCountryInfo) {
+      setSelectedPais(pais);
+      setScrollToPais(selectedCountryInfo.id); // Usar el ID del país encontrado
+      
+      // Solo expandir automáticamente en pantallas grandes
+      if (window.innerWidth >= 768) {
+        setExpandedPais(selectedCountryInfo.id);
+        // Bloquear el scroll cuando se selecciona desde el buscador
+        const container = document.querySelector(".overflow-y-auto") as HTMLElement;
+        if (container) {
+          container.style.overflow = "hidden";
+        }
       }
+      console.log("País seleccionado:", pais);
     }
-    console.log("País seleccionado:", pais);
   };
 
   const handlePaisExpand = (paisId: string) => {
@@ -236,12 +247,17 @@ export default function NormativaLegal() {
   };
 
   const handleMapCountrySelect = (countryId: string) => {
+    // Buscar el país por el ID del mapa (que ahora es el código ISO)
     const country = countriesInfo.find((p) => p.value === countryId);
 
-    setSelectedPais(country || null);
-    setCountryImageSelected(country?.countryImage || null);
-    setExpandedPais(country?.id || null);
-    setScrollToPais(country?.id || null);
+    if (country) {
+      // Encontrar la opción correspondiente en countriesOptions
+      const countryOption = countriesOptions.find((p) => p.value === country.value);
+      setSelectedPais(countryOption || null);
+      setCountryImageSelected(country.countryImage || null);
+      setExpandedPais(country.id || null);
+      setScrollToPais(country.id || null);
+    }
   };
 
   useEffect(() => {

@@ -18,6 +18,7 @@ import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 import { useParams } from "next/navigation";
 import { StrapiButtonType } from "@/types/componentsType";
+import { getCountryCode, getCountryName } from "@/utils/countryMapping";
 
 // Función para convertir bloques de Strapi a HTML
 interface StrapiBlock {
@@ -84,9 +85,12 @@ export default function OfertaInmobiliariaSingle() {
 
   const handleGetCountry = (country?: string) => {
     if (!country) return;
-    const normalizedCountry = country.toLowerCase().replace(/\s+/g, "-");
-
-    router.push(`/nuestros-afiliados?country=${normalizedCountry}`);
+    
+    // Si el país ya es un código ISO, usarlo directamente
+    // Si no, convertirlo usando la función de utilidad
+    const countryCode = getCountryCode(country);
+    
+    router.push(`/nuestros-afiliados?country=${countryCode}`);
   };
 
   const handleGetCtaButton = (ctaButton?: StrapiButtonType) => {
@@ -148,7 +152,7 @@ export default function OfertaInmobiliariaSingle() {
                 <h1 className="text-h3 font-light">{inmueble.title}</h1>
                 <span className="h-0.5 w-10 bg-details block mb-4"></span>
                 <h5 className="text-h6">
-                  {inmueble.city} / {inmueble.country}
+                  {inmueble.city} / {getCountryName(inmueble.country || '')}
                 </h5>
                 {/* Features */}
                 <div className="flex flex-row space-y-3 mt-10 flex-wrap">

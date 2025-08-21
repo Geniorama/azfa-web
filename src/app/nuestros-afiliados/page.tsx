@@ -56,7 +56,7 @@ const afiliadosExample: Afiliado[] = [
       label: "Bogotá",
     },
     country: {
-      value: "colombia",
+      value: "CO",
       label: "Colombia",
     },
     email: "fernando.jaar@codevi.com",
@@ -72,7 +72,7 @@ const afiliadosExample: Afiliado[] = [
       label: "São Paulo",
     },
     country: {
-      value: "brazil",
+      value: "BR",
       label: "Brasil",
     },
     email: "fernando.jaar@codevi.com",
@@ -88,7 +88,7 @@ const afiliadosExample: Afiliado[] = [
       label: "Buenos Aires",
     },
     country: {
-      value: "argentina",
+      value: "AR",
       label: "Argentina",
     },  
     email: "fernando.jaar@codevi.com",
@@ -105,7 +105,7 @@ const afiliadosExample: Afiliado[] = [
       label: "Bogotá",
     },
     country: {
-      value: "colombia",
+      value: "CO",
       label: "Colombia",
     },
   },
@@ -119,7 +119,7 @@ const afiliadosExample: Afiliado[] = [
       label: "Bogotá",
     },
     country: {
-      value: "colombia",
+      value: "CO",
       label: "Colombia",
     },
   },
@@ -133,7 +133,7 @@ const afiliadosExample: Afiliado[] = [
       label: "Bogotá",
     },
     country: {
-      value: "colombia",
+      value: "CO",
       label: "Colombia",
     },
   },
@@ -147,7 +147,7 @@ const afiliadosExample: Afiliado[] = [
       label: "Bogotá",
     },
     country: {
-      value: "colombia",
+      value: "CO",
       label: "Colombia",
     },
   },
@@ -161,7 +161,7 @@ const afiliadosExample: Afiliado[] = [
       label: "Bogotá",
     },
     country: {
-      value: "colombia",
+      value: "CO",
       label: "Colombia",
     },
   },
@@ -175,7 +175,7 @@ const afiliadosExample: Afiliado[] = [
       label: "Bogotá",
     },
     country: {
-      value: "colombia",
+      value: "CO",
       label: "Colombia",
     },
   },
@@ -184,7 +184,7 @@ const afiliadosExample: Afiliado[] = [
 const markers: Marker[] = [
   // Colombia
   {
-    id: "colombia",
+    id: "CO",
     lat: 4.570868,
     lng: -74.297332,
     title: "Colombia",
@@ -228,7 +228,7 @@ const markers: Marker[] = [
 
   // Brasil
   {
-    id: "brazil",
+    id: "BR",
     lat: -15.793889,
     lng: -47.882777,
     title: "Brasil",
