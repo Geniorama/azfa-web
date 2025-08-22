@@ -30,3 +30,35 @@ export interface StrapiButtonType {
     link?: string;
     target?: string;
 }
+
+export interface AffiliateType {
+  id: number;
+  attributes: {
+    title: string;
+    logo?: {
+      data: {
+        id: number;
+        attributes: {
+          url: string;
+          alternativeText?: string;
+        };
+      };
+    };
+    country: {
+      code: string;
+      name: string;
+    };
+    city: string;
+    type: "organizacion" | "empresa" | "zonaFranca";
+    contactInfo?: {
+      id: number;
+      name?: string;
+      position?: string;
+      email?: string;
+      website?: string;
+    };
+    createdAt: string;
+    updatedAt: string;
+    publishedAt: string;
+  };
+}

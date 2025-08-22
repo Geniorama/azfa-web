@@ -1,7 +1,7 @@
 "use client";
 
 import { Loader } from "@googlemaps/js-api-loader";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useImperativeHandle, forwardRef } from "react";
 import type { Marker } from "@/app/nuestros-afiliados/page";
 
 interface GoogleMapsProps {
@@ -9,9 +9,40 @@ interface GoogleMapsProps {
   onMarkerClick?: (marker: Marker) => void;
 }
 
-export default function MapGoogle({ markers, onMarkerClick }: GoogleMapsProps) {
+export interface MapGoogleRef {
+  resetZoom: () => void;
+  zoomToCountry: (lat: number, lng: number) => void;
+}
+
+const MapGoogle = forwardRef<MapGoogleRef, GoogleMapsProps>(({ markers, onMarkerClick }, ref) => {
   const mapRef = useRef<HTMLDivElement | null>(null);
+  const mapInstanceRef = useRef<google.maps.Map | null>(null);
   const markersRef = useRef<google.maps.marker.AdvancedMarkerElement[]>([]);
+
+  // Exponer funciones al componente padre
+  useImperativeHandle(ref, () => ({
+    resetZoom: () => {
+      if (mapInstanceRef.current) {
+        mapInstanceRef.current.setCenter({ lat: 4.570868, lng: -74.297332 });
+        mapInstanceRef.current.setZoom(3);
+      }
+    },
+    zoomToCountry: (lat: number, lng: number) => {
+      console.log("zoomToCountry llamado con:", lat, lng);
+      if (mapInstanceRef.current) {
+        // Usar setTimeout para asegurar que el mapa esté completamente renderizado
+        setTimeout(() => {
+          if (mapInstanceRef.current) {
+            console.log("Aplicando zoom al mapa");
+            mapInstanceRef.current.setCenter({ lat, lng });
+            mapInstanceRef.current.setZoom(6);
+          }
+        }, 100);
+      } else {
+        console.log("mapInstanceRef.current no está disponible");
+      }
+    }
+  }));
 
   useEffect(() => {
     const initMap = async () => {
@@ -33,6 +64,7 @@ export default function MapGoogle({ markers, onMarkerClick }: GoogleMapsProps) {
       }
 
       const map = new Map(mapRef.current!, options);
+      mapInstanceRef.current = map;
       
       //   Marker
       const { AdvancedMarkerElement } = await loader.importLibrary("marker") as google.maps.MarkerLibrary;
@@ -51,6 +83,7 @@ export default function MapGoogle({ markers, onMarkerClick }: GoogleMapsProps) {
         // Agregar evento de clic al marcador
         marker.addListener("click", () => {
           console.log("Marcador clickeado:", markerData);
+          
           // Llamar a la función callback si existe
           if (onMarkerClick) {
             onMarkerClick(markerData);
@@ -72,5 +105,9 @@ export default function MapGoogle({ markers, onMarkerClick }: GoogleMapsProps) {
       <div ref={mapRef} className="w-full h-screen" />
     </div>
   )
-}
+});
+
+MapGoogle.displayName = 'MapGoogle';
+
+export default MapGoogle;
  
