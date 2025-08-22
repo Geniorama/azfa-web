@@ -2,7 +2,7 @@
 
 import HeadingPage from "@/components/HeadingPage";
 import MapGoogle from "@/components/MapGoogle";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef, useCallback } from "react";
 import SearchInput from "@/utils/SearchInput";
 import IncentivosCardCountry from "@/components/IncentivosCardCountry";
 import colombiaFlag from "@/assets/img/flags/colombia.svg";
@@ -12,6 +12,28 @@ import LogoCodevi from "@/assets/img/CODEVI 2.png";
 import { Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import CoverDefault from "../../../public/Frame_56.jpg";
+import { useAffiliates } from "@/hooks/useAffiliates";
+import LoadingSpinner from "@/components/LoadingSpinner";
+import type { MapGoogleRef } from "@/components/MapGoogle";
+
+
+// Función para obtener el nombre del país a partir del código
+const getCountryName = (countryCode: string): string => {
+  const countryNames: Record<string, string> = {
+    'AR': 'Argentina',
+    'CO': 'Colombia',
+    'BR': 'Brasil',
+    'MX': 'México',
+    'PE': 'Perú',
+    'CL': 'Chile',
+    'EC': 'Ecuador',
+    'UY': 'Uruguay',
+    'PY': 'Paraguay',
+    'BO': 'Bolivia',
+    'VE': 'Venezuela'
+  };
+  return countryNames[countryCode] || countryCode;
+};
 
 export interface Marker {
   id: string;
@@ -29,155 +51,186 @@ export interface Marker {
 }
 
 export interface Afiliado {
-  id: string;
+  id: number;
   title: string;
-  name: string;
-  position: string;
-  city: {
-    value: string;
-    label: string;
-  };
+  logo?: string;
+  logoAlt?: string;
   country: {
-    value: string;
-    label: string;
+    code: string;
+    name: string;
   };
-  email?: string;
-  website?: string;
+  city: string;
+  type: "organizacion" | "empresa" | "zonaFranca";
+  contactInfo?: {
+    id: number;
+    name?: string;
+    position?: string;
+    email?: string;
+    website?: string;
+  };
+  createdAt: string;
+  updatedAt: string;
 }
 
 const afiliadosExample: Afiliado[] = [
   {
-    id: "1",
+    id: 1,
     title: "Villanueva Industrial Park",
-    name: "Fernando J. Jaar",
-    position: "Presidente - CEO",
-    city: {
-      value: "bogota",
-      label: "Bogotá",
-    },
+    city: "Bogotá",
     country: {
-      value: "CO",
-      label: "Colombia",
+      code: "CO",
+      name: "Colombia",
     },
-    email: "fernando.jaar@codevi.com",
-    website: "www.codevi.com",
+    type: "zonaFranca",
+    contactInfo: {
+      id: 1,
+      name: "Fernando J. Jaar",
+      position: "Presidente - CEO",
+      email: "fernando.jaar@codevi.com",
+      website: "www.codevi.com",
+    },
+    createdAt: "2024-01-01T00:00:00.000Z",
+    updatedAt: "2024-01-01T00:00:00.000Z",
   },
   {
-    id: "2",
+    id: 2,
     title: "Villanueva Industrial Park",
-    name: "Fernando J. Jaar",
-    position: "Presidente - CEO",
-    city: {
-      value: "sao-paulo",
-      label: "São Paulo",
-    },
+    city: "São Paulo",
     country: {
-      value: "BR",
-      label: "Brasil",
+      code: "BR",
+      name: "Brasil",
     },
-    email: "fernando.jaar@codevi.com",
-    website: "www.codevi.com",
+    type: "zonaFranca",
+    contactInfo: {
+      id: 2,
+      name: "Fernando J. Jaar",
+      position: "Presidente - CEO",
+      email: "fernando.jaar@codevi.com",
+      website: "www.codevi.com",
+    },
+    createdAt: "2024-01-01T00:00:00.000Z",
+    updatedAt: "2024-01-01T00:00:00.000Z",
   },
   {
-    id: "3",
+    id: 3,
     title: "Villanueva Industrial Park",
-    name: "Fernando J. Jaar",
-    position: "Presidente - CEO", 
-    city: {
-      value: "buenos-aires",
-      label: "Buenos Aires",
-    },
+    city: "Buenos Aires",
     country: {
-      value: "AR",
-      label: "Argentina",
-    },  
-    email: "fernando.jaar@codevi.com",
-    website: "www.codevi.com",
-  },
-
-  {
-    id: "4",
-    title: "Villanueva Industrial Park",
-    name: "Fernando J. Jaar",
-    position: "Presidente - CEO",
-    city: {
-      value: "bogota",
-      label: "Bogotá",
+      code: "AR",
+      name: "Argentina",
     },
-    country: {
-      value: "CO",
-      label: "Colombia",
+    type: "zonaFranca",
+    contactInfo: {
+      id: 3,
+      name: "Fernando J. Jaar",
+      position: "Presidente - CEO",
+      email: "fernando.jaar@codevi.com",
+      website: "www.codevi.com",
     },
+    createdAt: "2024-01-01T00:00:00.000Z",
+    updatedAt: "2024-01-01T00:00:00.000Z",
   },
   {
-    id: "5",
+    id: 4,
     title: "Villanueva Industrial Park",
-    name: "Fernando J. Jaar",
-    position: "Presidente - CEO",
-    city: {
-      value: "bogota",
-      label: "Bogotá",
-    },
+    city: "Bogotá",
     country: {
-      value: "CO",
-      label: "Colombia",
+      code: "CO",
+      name: "Colombia",
     },
+    type: "zonaFranca",
+    contactInfo: {
+      id: 4,
+      name: "Fernando J. Jaar",
+      position: "Presidente - CEO",
+    },
+    createdAt: "2024-01-01T00:00:00.000Z",
+    updatedAt: "2024-01-01T00:00:00.000Z",
   },
   {
-    id: "6",
+    id: 5,
     title: "Villanueva Industrial Park",
-    name: "Fernando J. Jaar",
-    position: "Presidente - CEO",
-    city: {
-      value: "bogota",
-      label: "Bogotá",
-    },
+    city: "Bogotá",
     country: {
-      value: "CO",
-      label: "Colombia",
+      code: "CO",
+      name: "Colombia",
     },
+    type: "zonaFranca",
+    contactInfo: {
+      id: 5,
+      name: "Fernando J. Jaar",
+      position: "Presidente - CEO",
+    },
+    createdAt: "2024-01-01T00:00:00.000Z",
+    updatedAt: "2024-01-01T00:00:00.000Z",
   },
   {
-    id: "7",
+    id: 6,
     title: "Villanueva Industrial Park",
-    name: "Fernando J. Jaar",
-    position: "Presidente - CEO",
-    city: {
-      value: "bogota",
-      label: "Bogotá",
-    },
+    city: "Bogotá",
     country: {
-      value: "CO",
-      label: "Colombia",
+      code: "CO",
+      name: "Colombia",
     },
+    type: "zonaFranca",
+    contactInfo: {
+      id: 6,
+      name: "Fernando J. Jaar",
+      position: "Presidente - CEO",
+    },
+    createdAt: "2024-01-01T00:00:00.000Z",
+    updatedAt: "2024-01-01T00:00:00.000Z",
   },
   {
-    id: "8",
+    id: 7,
     title: "Villanueva Industrial Park",
-    name: "Fernando J. Jaar",
-    position: "Presidente - CEO",
-    city: {
-      value: "bogota",
-      label: "Bogotá",
-    },
+    city: "Bogotá",
     country: {
-      value: "CO",
-      label: "Colombia",
+      code: "CO",
+      name: "Colombia",
     },
+    type: "zonaFranca",
+    contactInfo: {
+      id: 7,
+      name: "Fernando J. Jaar",
+      position: "Presidente - CEO",
+    },
+    createdAt: "2024-01-01T00:00:00.000Z",
+    updatedAt: "2024-01-01T00:00:00.000Z",
   },
   {
-    id: "9",
+    id: 8,
     title: "Villanueva Industrial Park",
-    name: "Fernando J. Jaar",
-    position: "Presidente - CEO",
-    city: {
-      value: "bogota",
-      label: "Bogotá",
-    },
+    city: "Bogotá",
     country: {
-      value: "CO",
-      label: "Colombia",
+      code: "CO",
+      name: "Colombia",
     },
+    type: "zonaFranca",
+    contactInfo: {
+      id: 8,
+      name: "Fernando J. Jaar",
+      position: "Presidente - CEO",
+    },
+    createdAt: "2024-01-01T00:00:00.000Z",
+    updatedAt: "2024-01-01T00:00:00.000Z",
+  },
+  {
+    id: 9,
+    title: "Villanueva Industrial Park",
+    city: "Bogotá",
+    country: {
+      code: "CO",
+      name: "Colombia",
+    },
+    type: "zonaFranca",
+    contactInfo: {
+      id: 9,
+      name: "Fernando J. Jaar",
+      position: "Presidente - CEO",
+    },
+    createdAt: "2024-01-01T00:00:00.000Z",
+    updatedAt: "2024-01-01T00:00:00.000Z",
   },
 ];
 
@@ -206,7 +259,7 @@ const markers: Marker[] = [
 
   // Argentina
   {
-    id: "argentina",
+    id: "AR",
     lat: -34.603722,
     lng: -58.381559,
     title: "Argentina",
@@ -248,9 +301,14 @@ const markers: Marker[] = [
 function NuestrosAfiliadosContent() {
   const [selectedTab, setSelectedTab] = useState("incentivos");
   const [selectedCountry, setSelectedCountry] = useState<Marker | null>(null);
-  const [afiliados, setAfiliados] = useState<Afiliado[]>(afiliadosExample);
   const [incentivos, setIncentivos] = useState<Marker[]>(markers);
   const params = useSearchParams();
+  const mapRef = useRef<MapGoogleRef>(null);
+   
+  // Usar la API real de afiliados
+  const { affiliates: apiAffiliates, loading, error } = useAffiliates(1, 50);
+  const [afiliados, setAfiliados] = useState<Afiliado[]>([]);
+  const [allAffiliates, setAllAffiliates] = useState<Afiliado[]>([]); // Datos completos sin filtrar
 
   const countryParam = params.get("country");
   const tabParam = params.get("tab");
@@ -263,39 +321,92 @@ function NuestrosAfiliadosContent() {
   }));
 
   // Función para manejar la selección de país desde el campo de búsqueda
-  const handleCountrySelect = (option: { id: string; label: string; value: string } | null) => {
+  const handleCountrySelect = useCallback((option: { id: string; label: string; value: string } | null) => {
+    console.log("handleCountrySelect llamado con:", option);
     if (option) {
       const selectedMarker = markers.find(marker => marker.id === option.id);
       if (selectedMarker) {
+        console.log("Marcador encontrado:", selectedMarker);
         setSelectedCountry(selectedMarker);
+        // Hacer zoom al país seleccionado
+        console.log("Llamando a zoomToCountry...");
+        mapRef.current?.zoomToCountry(selectedMarker.lat, selectedMarker.lng);
       }
     } else {
       setSelectedCountry(null);
+      // Restablecer zoom del mapa cuando se deselecciona un país
+      mapRef.current?.resetZoom();
     }
-  };
+  }, [markers]);
 
   // Función para obtener la opción seleccionada actualmente
-  const getSelectedCountryOption = () => {
+  const getSelectedCountryOption = useCallback(() => {
     if (selectedCountry) {
       return countryOptions.find(option => option.id === selectedCountry.id) || null;
     }
     return null;
-  };
+  }, [selectedCountry, countryOptions]);
+
+  // Sincronizar datos de la API con el estado local
+  useEffect(() => {
+    if (apiAffiliates && apiAffiliates.length > 0) {
+      // Transformar los datos de la API al formato esperado
+      const transformedAffiliates: Afiliado[] = apiAffiliates.map(affiliate => {
+        // Extraer la URL del logo - la estructura real es logo.url directamente
+        let logoUrl = LogoCodevi.src; // Logo por defecto
+        if (affiliate.logo && affiliate.logo.url) {
+          logoUrl = affiliate.logo.url;
+        }
+        
+        return {
+          id: affiliate.id,
+          title: affiliate.title,
+          logo: logoUrl,
+          logoAlt: affiliate.logo?.alternativeText || "",
+          country: {
+            code: affiliate.country,
+            name: getCountryName(affiliate.country)
+          },
+          city: affiliate.city,
+          type: affiliate.type,
+          contactInfo: {
+            id: affiliate.contactInfo?.id || 0,
+            name: affiliate.contactInfo?.fullName || "",
+            position: affiliate.contactInfo?.position || "",
+            email: affiliate.contactInfo?.email || "",
+            website: affiliate.contactInfo?.website || ""
+          },
+          createdAt: affiliate.createdAt,
+          updatedAt: affiliate.updatedAt
+        };
+      });
+      
+      setAllAffiliates(transformedAffiliates); // Guardar todos los datos
+      setAfiliados(transformedAffiliates); // Mostrar todos los datos inicialmente
+    } else {
+      // Si no hay datos de la API, usar los datos de ejemplo
+      setAllAffiliates(afiliadosExample);
+      setAfiliados(afiliadosExample);
+    }
+  }, [apiAffiliates]);
 
   useEffect(() => {
     if (selectedCountry) {
       const countryId = selectedCountry.id;
       if (countryId) {
-        const filteredAfiliados = afiliadosExample.filter((afiliado) => afiliado.country.value === countryId);
-        setAfiliados(filteredAfiliados);
+        // Filtrar los afiliados por país seleccionado usando allAffiliates
+        const filteredAffiliates = allAffiliates.filter((afiliado) => afiliado.country.code === countryId);
+        setAfiliados(filteredAffiliates);
+        
         const filteredIncentivos = markers.filter((marker) => marker.id === countryId);
         setIncentivos(filteredIncentivos);
       }
     } else {
-      setAfiliados(afiliadosExample);
+      // Si no hay país seleccionado, restaurar todos los datos
+      setAfiliados(allAffiliates);
       setIncentivos(markers);
     }
-  }, [selectedCountry]);
+  }, [selectedCountry, allAffiliates]);
 
   useEffect(() => {
     if (tabParam) {
@@ -303,23 +414,28 @@ function NuestrosAfiliadosContent() {
 
       if (countryParam) {
         const countryId = countryParam;
-        const filteredAfiliados = afiliadosExample.filter((afiliado) => afiliado.country.value === countryId);
-        setAfiliados(filteredAfiliados);
+        // Usar allAffiliates para el filtrado
+        const filteredAffiliates = allAffiliates.filter((afiliado) => afiliado.country.code === countryId);
+        setAfiliados(filteredAffiliates);
         const filteredIncentivos = markers.filter((marker) => marker.id === countryId);
         setIncentivos(filteredIncentivos);
       }
     }
-  }, [tabParam, countryParam]);
+  }, [tabParam, countryParam, allAffiliates]);
 
-  const handleGetCountry = (dataCountry: Marker): void => {
+  const handleGetCountry = useCallback((dataCountry: Marker): void => {
     if (!dataCountry) return;
+    console.log("handleGetCountry llamado con:", dataCountry);
     setSelectedCountry(dataCountry);
-  };
+    // Hacer zoom al país seleccionado desde el mapa
+    console.log("Llamando a zoomToCountry desde handleGetCountry...");
+    mapRef.current?.zoomToCountry(dataCountry.lat, dataCountry.lng);
+  }, []);
 
-  const handleGetTab = (dataTab: string): void => {
-    setSelectedCountry(null);
+  const handleGetTab = useCallback((dataTab: string): void => {
     setSelectedTab(dataTab);
-  };
+    // Ya no se resetea el país ni el zoom al cambiar de tab|
+  }, []);
 
   return (
     <div>
@@ -333,8 +449,12 @@ function NuestrosAfiliadosContent() {
       <section>
         <div className="flex flex-row">
           <div className="hidden lg:block w-full lg:w-2/3 bg-primary">
-            {/* Map Google for countries*/}
-            <MapGoogle markers={markers} onMarkerClick={handleGetCountry} />
+                         {/* Map Google for countries*/}
+             <MapGoogle 
+               ref={mapRef}
+               markers={markers} 
+               onMarkerClick={handleGetCountry} 
+             />
           </div>
           <div className="w-full lg:w-1/3 bg-white">
             <div className="h-screen overflow-y-scroll">
@@ -391,20 +511,36 @@ function NuestrosAfiliadosContent() {
 
               {selectedTab === "afiliados" && (
                 <>
-                  {afiliados.map((afiliado, index) => (
-                    <AfiliadosCard
-                      index={index}
-                      logo={LogoCodevi.src}
-                      title={afiliado.title}
-                      name={afiliado.name}
-                      position={afiliado.position}
-                      city={afiliado.city.label}
-                      country={afiliado.country.label}
-                      email={afiliado.email}
-                      website={afiliado.website}
-                      key={afiliado.id}
-                    />
-                  ))}
+                  {loading ? (
+                    <div className="flex justify-center items-center p-8">
+                      <LoadingSpinner />
+                    </div>
+                  ) : error ? (
+                    <div className="text-center p-8">
+                      <p className="text-red-600 mb-4">Error al cargar los afiliados: {error}</p>
+                      <p className="text-gray-600">Mostrando datos de ejemplo...</p>
+                    </div>
+                  ) : (
+                    <>
+
+                      
+                      {/* Lista de afiliados */}
+                      {afiliados.map((afiliado, index) => (
+                        <AfiliadosCard
+                          index={index}
+                          logo={afiliado.logo || LogoCodevi.src}
+                          title={afiliado.title}
+                          name={afiliado.contactInfo?.name || ""}
+                          position={afiliado.contactInfo?.position || ""}
+                          city={afiliado.city}
+                          country={afiliado.country.name}
+                          email={afiliado.contactInfo?.email}
+                          website={afiliado.contactInfo?.website}
+                          key={afiliado.id}
+                        />
+                      ))}
+                    </>
+                  )}
                 </>
               )}
             </div>
