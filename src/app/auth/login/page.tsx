@@ -4,6 +4,7 @@ import Link from '@/utils/Link'
 import { IoEyeOutline, IoEyeOffOutline } from "react-icons/io5";
 import { useState } from 'react';
 import Button from '@/utils/Button';
+import BgImage from '@/assets/img/Frame 115.jpg'
 
 
 export default function Login() {
@@ -11,21 +12,25 @@ export default function Login() {
   
   return (
     <div>
-        <section className='bg-primary py-20'>
-            <div className='container mx-auto'>
-               <div className='flex flex-row'>
-                    <div className='w-full lg:w-1/2 pr-80 space-y-6'>
-                        <h1 className='text-white text-h1'>Ingrese al portal afiliados</h1>
-                        <p className='text-white text-h5'>
+        <section className='bg-primary lg:py-20 py-16 px-4 relative overflow-hidden'>
+            {/* Background Image */}
+            <img src={BgImage.src} alt="Background Image" className='absolute top-0 left-0 w-full h-full object-cover' />
+
+            {/* Content */}
+            <div className='container mx-auto relative'>
+               <div className='flex flex-row flex-wrap'>
+                    <div className='w-full lg:w-1/2 lg:pr-80 space-y-6'>
+                        <h1 className='text-white text-5xl lg:text-h1'>Ingrese al portal afiliados</h1>
+                        <p className='text-white text-h6 lg:text-h5'>
                             Acceda a información estratégica, exclusiva para miembros de AZFA.
                             Si aún no cuenta con sus credenciales, por favor comuníquese con nuestro equipo.
                         </p>
-                        <Link href='mailto:info@azfa.org' className='text-white text-h6 underline underline-offset-8 transition-all duration-300 mb-5'>
+                        <Link href='mailto:info@azfa.org' className='text-white text-h6 underline underline-offset-8 transition-all duration-300 mb-10 lg:mb-5'>
                            Contactar al equipo AZFA
                         </Link>
                     </div>
                     <div className='w-full lg:w-1/2'>
-                        <div className='bg-white p-10 rounded-lg space-y-4 max-w-lg'>
+                        <div className='bg-white lg:p-10 p-6 rounded-lg space-y-4 max-w-lg'>
                             <h2 className='text-h3 text-text-primary text-h2'>Acceso a Afiliados</h2>
                             <p className='text-caption text-text-primary'>
                                 Los campos marcados con asterisco (*) son obligatorios.
