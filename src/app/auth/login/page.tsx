@@ -5,10 +5,52 @@ import { IoEyeOutline, IoEyeOffOutline } from "react-icons/io5";
 import { useState } from 'react';
 import Button from '@/utils/Button';
 import BgImage from '@/assets/img/Frame 115.jpg'
-
+import { useAuth } from '@/hooks/useAuth'
+import { useRouter } from 'next/navigation'
+import { useEffect } from 'react'
 
 export default function Login() {
   const [showPassword, setShowPassword] = useState(false);
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  
+  const { login, isAuthenticated } = useAuth();
+  const router = useRouter();
+
+  // Redirigir si ya está autenticado
+  useEffect(() => {
+    if (isAuthenticated) {
+      router.push('/');
+    }
+  }, [isAuthenticated, router]);
+
+  // No mostrar el formulario si ya está autenticado
+  if (isAuthenticated) {
+    return null;
+  }
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError('');
+    setIsSubmitting(true);
+
+    try {
+      const result = await login(email, password);
+      
+      if (result.success) {
+        // Redirigir al dashboard o página principal
+        router.push('/');
+      } else {
+        setError(result.error || 'Error al iniciar sesión');
+      }
+    } catch {
+      setError('Error inesperado. Intente nuevamente.');
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
   
   return (
     <div>
@@ -35,12 +77,26 @@ export default function Login() {
                             <p className='text-caption text-text-primary'>
                                 Los campos marcados con asterisco (*) son obligatorios.
                             </p>
-                            <form className='space-y-4 text-text-primary'>
+                            <form onSubmit={handleSubmit} className='space-y-4 text-text-primary'>
+                                {error && (
+                                    <div className='bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-md'>
+                                        {error}
+                                    </div>
+                                )}
+                                
                                 <div className='space-y-2'>
                                     <label htmlFor='email' className='text-body text-text-primary block'>
                                         Correo electrónico *
                                     </label>
-                                    <input type='email' id='email' className='w-full p-2 rounded-md border border-gray-300' />
+                                    <input 
+                                        type='email' 
+                                        id='email' 
+                                        value={email}
+                                        onChange={(e) => setEmail(e.target.value)}
+                                        required
+                                        disabled={isSubmitting}
+                                        className='w-full p-2 rounded-md border border-gray-300 disabled:opacity-50' 
+                                    />
                                 </div>
                                 
                                 <div className='space-y-2'>
@@ -50,14 +106,22 @@ export default function Login() {
                                         </label>
 
                                         <div onClick={() => setShowPassword(!showPassword)} className='flex flex-row items-center gap-1 cursor-pointer'>
-                                            <button type='button'>
+                                            <button type='button' disabled={isSubmitting}>
                                                 {showPassword ? <IoEyeOutline className='w-4 h-4' /> : <IoEyeOffOutline className='w-4 h-4' />}
                                             </button>
                                             <span className='text-caption text-text-primary'>{showPassword ? 'Ocultar' : 'Mostrar'}</span>
                                         </div>
                                     </div>
 
-                                    <input type={showPassword ? 'text' : 'password'} id='password' className='w-full p-2 rounded-md border border-gray-300' />
+                                    <input 
+                                        type={showPassword ? 'text' : 'password'} 
+                                        id='password' 
+                                        value={password}
+                                        onChange={(e) => setPassword(e.target.value)}
+                                        required
+                                        disabled={isSubmitting}
+                                        className='w-full p-2 rounded-md border border-gray-300 disabled:opacity-50' 
+                                    />
 
                                     <small className='text-caption text-text-primary block text-right w-full'>
                                         <Link href='/auth/forgot-password' className='text-text-primary underline underline-offset-8 transition-all duration-300 inline-block'>
@@ -67,8 +131,16 @@ export default function Login() {
                                 </div>
 
                                 <div className='mt-5'>
-                                    <Button type='submit' variant='primary-blue' onClick={() => {}} fullWidth icon className='bg-primary text-white px-4 py-2 rounded-md justify-center'>
-                                        Iniciar sesión
+                                    <Button 
+                                        type='submit' 
+                                        variant='primary-blue' 
+                                        disabled={isSubmitting}
+                                        fullWidth 
+                                        icon 
+                                        onClick={() => {}}
+                                        className='bg-primary text-white px-4 py-2 rounded-md justify-center disabled:opacity-50'
+                                    >
+                                        {isSubmitting ? 'Iniciando sesión...' : 'Iniciar sesión'}
                                     </Button>
                                 </div>
                             </form>
