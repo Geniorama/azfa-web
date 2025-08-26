@@ -5,6 +5,7 @@ import "./globals.css";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 import { usePathname } from "next/navigation";
+import { AuthProvider } from "../context/AuthContext";
 
 const interTight = Inter_Tight({
   variable: "--font-inter-tight",
@@ -30,9 +31,11 @@ export default function RootLayout({
       <body
         className={`${interTight.variable} antialiased bg-background-1`}
       >
-        <Header />
-        {children}
-        <Footer showBanner={showBanner} />
+        <AuthProvider>
+          <Header />
+          {children}
+          <Footer showBanner={showBanner} />
+        </AuthProvider>
       </body>
     </html>
   );

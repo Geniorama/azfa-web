@@ -4,11 +4,14 @@ import LogoAzfa from "../../public/logo-azfa.svg";
 import { FaBars } from "react-icons/fa";
 import { FaAngleDown } from "react-icons/fa6";
 import { GoHome } from "react-icons/go";
+import { FaUser, FaSignOutAlt } from "react-icons/fa";
 import Link from "next/link";
 import Button from "@/utils/Button";
 import LogoAzfaBlanco from "@/assets/img/logo-azfa-blanco.svg";
 import CloseIcon from "@/assets/img/btn-close-icon.svg";
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
+import { useAuth } from "@/hooks/useAuth";
+import { useRouter } from "next/navigation";
 
 interface NavItem {
   icon?: React.ReactNode;
@@ -91,6 +94,25 @@ export default function Header() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [openSubmenu, setOpenSubmenu] = useState<number | null>(null);
   const [mobileOpenSubmenu, setMobileOpenSubmenu] = useState<number | null>(null);
+  const [showUserMenu, setShowUserMenu] = useState(false);
+  
+  const { user, isAuthenticated, logout } = useAuth();
+  const router = useRouter();
+  const userMenuRef = useRef<HTMLDivElement>(null);
+
+  // Cerrar menú de usuario al hacer clic fuera
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (userMenuRef.current && !userMenuRef.current.contains(event.target as Node)) {
+        setShowUserMenu(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
   
   const handleMouseEnter = (index: number) => {
     setOpenSubmenu(index);
@@ -102,6 +124,16 @@ export default function Header() {
 
   const handleMobileSubmenuToggle = (index: number) => {
     setMobileOpenSubmenu(mobileOpenSubmenu === index ? null : index);
+  };
+
+  const handleLogin = () => {
+    router.push('/auth/login');
+  };
+
+  const handleLogout = () => {
+    logout();
+    setShowUserMenu(false);
+    router.push('/');
   };
   
   return (
@@ -127,13 +159,46 @@ export default function Header() {
             {/* Top bar */}
             <div className="flex items-center gap-4 mt-5 lg:mt-0 px-4 lg:px-0">
               <div className="flex flex-row items-start lg:items-center space-x-1 space-y-5 lg:space-y-0 lg:space-x-4 flex-wrap justify-between">
-                <Button
-                  className="py-2 w-[48%] lg:w-auto"
-                  variant="outline-primary"
-                  onClick={() => {}}
-                >
-                  Portal afiliados
-                </Button>
+                {isAuthenticated ? (
+                  <>
+                    <div className="relative" ref={userMenuRef}>
+                      <Button
+                        className="py-2 w-[48%] lg:w-auto"
+                        variant="outline-primary"
+                        onClick={() => setShowUserMenu(!showUserMenu)}
+                      >
+                        <FaUser className="mr-2" />
+                        {user?.username || user?.email}
+                      </Button>
+                      
+                      {/* User dropdown menu */}
+                      {showUserMenu && (
+                        <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg z-50 border">
+                          <div className="py-1">
+                            <div className="px-4 py-2 text-sm text-gray-700 border-b">
+                              {user?.email}
+                            </div>
+                            <button
+                              onClick={handleLogout}
+                              className="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                            >
+                              <FaSignOutAlt className="mr-2" />
+                              Cerrar sesión
+                            </button>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  </>
+                ) : (
+                  <Button
+                    className="py-2 w-[48%] lg:w-auto"
+                    variant="outline-primary"
+                    onClick={handleLogin}
+                  >
+                    Portal afiliados
+                  </Button>
+                )}
 
                 <Button
                   className="py-2 w-[48%] lg:w-auto"
