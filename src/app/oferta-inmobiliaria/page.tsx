@@ -24,26 +24,34 @@ export default function OfertaInmobiliaria() {
   const { offers, loading, error, pagination } = useRealStateOffers(currentPage, pageSize);
 
   const getPageContentBySlug = async (slug: string) => {
-    const response = await fetch(`/api/getContentBySlug?slug=${slug}&populate[0]=heading.backgroundImg&populate[1]=sections.images`);
-    const data = await response.json();
-    return data;
+    try {
+      const response = await fetch(`/api/getContentBySlug?slug=${slug}&populate[0]=heading.backgroundImg&populate[1]=sections.images`);
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      console.error("Error al obtener el contenido:", error);
+      return { success: false, error: "Error de conexión" };
+    }
   };
 
   useEffect(() => {
     const fetchPageContent = async () => {
       const data = await getPageContentBySlug("oferta-inmobiliaria");
 
-      if (data.success) {
+      if (data.success && data.data?.data?.[0]) {
         console.log('data', data);
         const content = data.data.data[0];
         const transformedData: ContentType = {
           ...content,
           heading: {
             ...content.heading,
-            imageUrl: content.heading.backgroundImg ? content.heading.backgroundImg.url : ''
+            imageUrl: content.heading?.backgroundImg?.url || ''
           }
         }
         setPageContent(transformedData);
+      } else {
+        console.error("Error al obtener el contenido:", data.error || "No se encontró contenido");
+        setPageContent(null);
       }
     };
     fetchPageContent();
@@ -70,6 +78,17 @@ export default function OfertaInmobiliaria() {
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
           <p className="text-red-500">Error: {error}</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!pageContent) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <p className="text-red-500 text-lg">Error al cargar el contenido</p>
+          <p className="text-gray-600 mt-2">No se pudo cargar la información de oferta inmobiliaria</p>
         </div>
       </div>
     );

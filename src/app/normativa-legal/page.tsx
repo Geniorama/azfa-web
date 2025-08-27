@@ -3,6 +3,7 @@
 import HeadingPage from "@/components/HeadingPage";
 import Cover from "@/assets/img/cover-normativa-legal.webp";
 import SearchInput from "@/utils/SearchInput";
+import LoadingSpinner from "@/components/LoadingSpinner";
 import { useState, useEffect } from "react";
 import { GoArrowDown } from "react-icons/go";
 import { IoClose } from "react-icons/io5";
@@ -50,85 +51,115 @@ export default function NormativaLegal() {
   const [countryImageSelected, setCountryImageSelected] = useState<
     string | null
   >(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   const getContent = async (id: string) => {
-    const response = await fetch(
-      `/api/getContent?id=${id}&populate[0]=heading.backgroundImg&populate[1]=sections.document&populate[2]=sections.cover`
-    );
-    const data = await response.json();
-    setPageContent(data.data as ContentType);
-
-    if (data.data.sections && data.data.sections.length > 0) {
-      const sectionDownload = data.data.sections.find(
-        (section: unknown) =>
-          (section as { __component?: string }).__component ===
-          "sections.download"
+    try {
+      const response = await fetch(
+        `/api/getContent?id=${id}&populate[0]=heading.backgroundImg&populate[1]=sections.document&populate[2]=sections.cover`
       );
+      const data = await response.json();
+      
+      if (data.data) {
+        setPageContent(data.data as ContentType);
 
-      const downloadData: DownloadType = {
-        id: sectionDownload.id,
-        title: sectionDownload.title,
-        buttonText: sectionDownload.textButton,
-        documentUrl: sectionDownload.document.url,
-        cover: {
-          url: sectionDownload.cover.url,
-          alternativeText: sectionDownload.cover.alternativeText,
-        },
-        target: sectionDownload.target,
-      };
+        if (data.data.sections && data.data.sections.length > 0) {
+          const sectionDownload = data.data.sections.find(
+            (section: unknown) =>
+              (section as { __component?: string }).__component ===
+              "sections.download"
+          );
 
-      setDownloadSection(downloadData);
+          if (sectionDownload) {
+            const downloadData: DownloadType = {
+              id: sectionDownload.id,
+              title: sectionDownload.title,
+              buttonText: sectionDownload.textButton,
+              documentUrl: sectionDownload.document?.url || '',
+              cover: {
+                url: sectionDownload.cover?.url || '',
+                alternativeText: sectionDownload.cover?.alternativeText || '',
+              },
+              target: sectionDownload.target,
+            };
+
+            setDownloadSection(downloadData);
+          }
+        }
+      } else {
+        console.error("Error al obtener el contenido:", data.error || "No se encontró contenido");
+        setPageContent(null);
+      }
+    } catch (error) {
+      console.error("Error al obtener el contenido:", error);
+      setPageContent(null);
+    } finally {
+      setIsLoading(false);
     }
   };
 
   const getCountries = async () => {
-    const response = await fetch(
-      "/api/getMapCountries?populate[0]=document.document&populate[1]=items.headingList.icon&populate[2]=items.items&populate[3]=countryImage"
-    );
-    const data = await response.json();
+    try {
+      const response = await fetch(
+        "/api/getMapCountries?populate[0]=document.document&populate[1]=items.headingList.icon&populate[2]=items.items&populate[3]=countryImage"
+      );
+      const data = await response.json();
 
-    console.log("data", data);
+      console.log("data", data);
 
-    const countries: InfoCountry[] = data.data.map(
-      (country: CountryResponse) => {
-        // Obtener el código ISO y nombre del país usando las funciones de utilidad
-        const countryCode = getCountryCode(country.country);
-        const countryName = getCountryName(countryCode);
-        
-        return {
-          id: country.id,
-          label: countryName,
-          value: countryCode, // Usar el código ISO del plugin
-          linkDownload: country.document.document.url,
-          countryImage: country.countryImage?.url || "",
-          items:
-            country.items?.map((item, index) => ({
-              id: `item-${index}`,
-              icon: item.headingList?.icon?.url || "",
-              title: item.headingList?.title || "",
-              subitems:
-                item.items?.map(
-                  (subitem: { id: string; text: string; link: string }) => ({
-                    id: subitem.id,
-                    title: subitem.text,
-                    link: subitem.link,
-                  })
-                ) || [],
-            })) || [],
-        };
+      if (data.data && Array.isArray(data.data)) {
+        const countries: InfoCountry[] = data.data.map(
+          (country: CountryResponse) => {
+            // Obtener el código ISO y nombre del país usando las funciones de utilidad
+            const countryCode = getCountryCode(country.country);
+            const countryName = getCountryName(countryCode);
+            
+            return {
+              id: country.id,
+              label: countryName,
+              value: countryCode, // Usar el código ISO del plugin
+              linkDownload: country.document?.document?.url || "",
+              countryImage: country.countryImage?.url || "",
+              items:
+                country.items?.map((item, index) => ({
+                  id: `item-${index}`,
+                  icon: item.headingList?.icon?.url || "",
+                  title: item.headingList?.title || "",
+                  subitems:
+                    item.items?.map(
+                      (subitem: { id: string; text: string; link: string }) => ({
+                        id: subitem.id,
+                        title: subitem.text,
+                        link: subitem.link,
+                      })
+                    ) || [],
+                })) || [],
+            };
+          }
+        );
+
+        console.log("countries", countries);
+
+        setCountriesInfo(countries);
+        setCountriesOptions(
+          countries.map((country) => ({
+            id: country.id,
+            label: country.label,
+            value: country.value,
+          }))
+        );
+      } else {
+        console.error("Error al obtener países:", data.error || "No se encontraron países");
+        setCountriesInfo([]);
+        setCountriesOptions([]);
       }
-    );
-
-    console.log("countries", countries);
-
-    setCountriesInfo(countries);
-    setCountriesOptions(
-      countries.map((country) => ({
-        id: country.id,
-        label: country.label,
-        value: country.value,
-      }))
-    );
+    } catch (error) {
+      console.error("Error al obtener países:", error);
+      setCountriesInfo([]);
+      setCountriesOptions([]);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   useEffect(() => {
@@ -263,6 +294,21 @@ export default function NormativaLegal() {
   useEffect(() => {
     console.log("countryImageSelected", countryImageSelected);
   }, [countryImageSelected]);
+
+  if (isLoading) {
+    return <LoadingSpinner message="Cargando normativa legal..." />;
+  }
+
+  if (!pageContent) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <p className="text-red-500 text-lg">Error al cargar el contenido</p>
+          <p className="text-gray-600 mt-2">No se pudo cargar la información de normativa legal</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div>
