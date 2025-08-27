@@ -318,7 +318,13 @@ function NuestrosAfiliadosContent() {
     // Ya no se resetea el país ni el zoom al cambiar de tab|
   }, []);
 
-  if (!pageContent) return null;
+  if (!pageContent){
+    return (
+      <div>
+        <LoadingSpinner />
+      </div>
+    )
+  }
 
   return (
     <div>
