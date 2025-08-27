@@ -156,12 +156,22 @@ function NuestrosAfiliadosContent() {
   }));
 
   const getContentBySlug = async (slug: string) => {
-    const response = await fetch(`/api/getContent?slug=${slug}`);
+    const response = await fetch(`/api/getContentBySlug?slug=${slug}&populate[0]=heading.backgroundImg`);
     const data = await response.json();
     console.log("data", data);
     if (data.success) {
-      setPageContent(data.data);
-      console.log("pageContent", pageContent);
+      console.log("data", data);
+      const content = data.data.data[0];
+      const transformedData: ContentType = {
+        ...content,
+        heading: {
+          ...content.heading,
+          imageUrl: content.heading.backgroundImg.url
+        }
+      }
+
+      console.log("transformedData", transformedData);
+      setPageContent(transformedData);
     } else {
       console.error("Error al obtener el contenido:", data.error);
     }
@@ -170,6 +180,12 @@ function NuestrosAfiliadosContent() {
   useEffect(() => {
     getContentBySlug("nuestros-afiliados");
   }, []);
+
+  useEffect(() => {
+    if (pageContent) {
+      console.log("pageContent", pageContent);
+    }
+  }, [pageContent]);
 
   // Función para manejar la selección de país desde el campo de búsqueda
   const handleCountrySelect = useCallback((option: { id: string; label: string; value: string } | null) => {
@@ -305,10 +321,10 @@ function NuestrosAfiliadosContent() {
   return (
     <div>
       <HeadingPage
-        title="Nuestros Afiliados"
-        smallTitle="Conozca aquí nuestros Afiliados y haga parte de AZFA"
+        title={pageContent?.heading?.title}
+        smallTitle={pageContent?.heading?.smallTitle}
         className="min-h-[45vh] md:min-h-auto items-center"
-        image={CoverDefault.src}
+        image={pageContent?.heading?.imageUrl || CoverDefault.src}
       />
 
       <section>
