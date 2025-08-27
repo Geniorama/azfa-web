@@ -1,5 +1,3 @@
-import colombia from "@/assets/img/flags/colombia.svg"
-
 interface IncentivosCardCountryProps {
   index: number;
   country: string;
@@ -7,7 +5,7 @@ interface IncentivosCardCountryProps {
   numberCompanies: number;
   directJobs: number;
   list: {
-    name: string;
+    label: string;
     value: string;
   }[];
   imgFlag?: string;
@@ -20,9 +18,11 @@ export default function IncentivosCardCountry({ index, country, numberZones, num
           <span className='flex items-center bg-primary text-white justify-center p-3'>{index + 1}</span>
           <span className='flex items-center text-text-primary px-3 text-[24px] flex-grow'>{country}</span>
           {/* Country flag */}
-          <span className='flex items-center text-white justify-center p-3'>
-            <img src={imgFlag || colombia.src} alt="colombia" className='w-10 h-auto' />
-          </span>
+          {imgFlag && (
+            <span className='flex items-center text-white justify-center p-3'>
+              <img src={imgFlag} alt={country} className='w-10 h-auto' />
+            </span>
+          )}
         </div>
 
         <div className="flex flex-row items-start justify-between bg-[#F5F8FC]">
@@ -61,7 +61,7 @@ export default function IncentivosCardCountry({ index, country, numberZones, num
         <ul className="text-text-primary px-5 lg:px-10">
             {list && list.map((item, index) => (
                 <li key={index} className={`flex flex-row items-start py-2 border-b border-gray-200 ${index === list.length - 1 ? "border-b-0" : ""}`}>
-                    <span className="block w-1/2 font-medium">{item.name}</span>
+                    <span className="block w-1/2 font-medium">{item.label}</span>
                     <span className="block w-1/2 font-light">{item.value}</span>
                 </li>
             ))}

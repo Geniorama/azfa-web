@@ -13,8 +13,11 @@ import { Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import CoverDefault from "../../../public/Frame_56.jpg";
 import { useAffiliates } from "@/hooks/useAffiliates";
+import { useIncentives } from "@/hooks/useIncentives";
 import LoadingSpinner from "@/components/LoadingSpinner";
 import type { MapGoogleRef } from "@/components/MapGoogle";
+import type { Incentive, IncentiveMarker } from "@/types/incentiveType";
+import type { ContentType } from "@/types/contentType";
 
 
 // Función para obtener el nombre del país a partir del código
@@ -35,6 +38,51 @@ const getCountryName = (countryCode: string): string => {
   return countryNames[countryCode] || countryCode;
 };
 
+// Función para transformar incentivos de Strapi al formato del mapa
+const transformIncentivesToMarkers = (incentives: Incentive[]): IncentiveMarker[] => {
+  // Coordenadas de fallback para países (solo si no hay ubicación en Strapi)
+  const fallbackCoordinates: Record<string, { lat: number; lng: number; flag?: string }> = {
+    'CO': { lat: 4.570868, lng: -74.297332, flag: colombiaFlag.src },
+    'AR': { lat: -34.603722, lng: -58.381559 },
+    'BR': { lat: -15.793889, lng: -47.882777, flag: brasilFlag.src },
+    'MX': { lat: 19.432608, lng: -99.133208 },
+    'PE': { lat: -12.046374, lng: -77.042793 },
+    'CL': { lat: -33.448890, lng: -70.669265 },
+    'EC': { lat: -0.180653, lng: -78.467838 },
+    'UY': { lat: -34.901113, lng: -56.164531 },
+    'PY': { lat: -25.263740, lng: -57.575926 },
+    'BO': { lat: -16.290154, lng: -63.588653 },
+    'VE': { lat: 10.480594, lng: -66.903606 },
+  };
+
+  return incentives.map(incentive => {
+    const fallbackCoords = fallbackCoordinates[incentive.country];
+    const countryName = getCountryName(incentive.country);
+    
+    // Usar las coordenadas de Google Maps desde Strapi si están disponibles, sino usar las de fallback
+    const lat = incentive.googleMapsLocation?.latitude || fallbackCoords?.lat || 0;
+    const lng = incentive.googleMapsLocation?.longitude || fallbackCoords?.lng || 0;
+    
+    // Usar la imagen de la bandera de Strapi si está disponible, sino usar la hardcodeada
+    const flagImage = incentive.flag?.url || fallbackCoords?.flag;
+    
+    return {
+      id: incentive.country,
+      lat: lat,
+      lng: lng,
+      title: countryName,
+      imgFlag: flagImage,
+      numberZones: incentive.freeZones,
+      numberCompanies: incentive.companies,
+      directJobs: incentive.directJobs,
+      list: incentive.incentivesListItem.map(item => ({
+        label: item.label,
+        value: item.value
+      }))
+    };
+  });
+};
+
 export interface Marker {
   id: string;
   lat: number;
@@ -45,7 +93,7 @@ export interface Marker {
   numberCompanies?: number;
   directJobs?: number;
   list?: {
-    name: string;
+    label: string; // Cambiado de 'name' a 'label' para coincidir con Strapi
     value: string;
   }[];
 }
@@ -72,236 +120,19 @@ export interface Afiliado {
   updatedAt: string;
 }
 
+// Los afiliados se cargan dinámicamente desde Strapi
 const afiliadosExample: Afiliado[] = [
-  {
-    id: 1,
-    title: "Villanueva Industrial Park",
-    city: "Bogotá",
-    country: {
-      code: "CO",
-      name: "Colombia",
-    },
-    type: "zonaFranca",
-    contactInfo: {
-      id: 1,
-      name: "Fernando J. Jaar",
-      position: "Presidente - CEO",
-      email: "fernando.jaar@codevi.com",
-      website: "www.codevi.com",
-    },
-    createdAt: "2024-01-01T00:00:00.000Z",
-    updatedAt: "2024-01-01T00:00:00.000Z",
-  },
-  {
-    id: 2,
-    title: "Villanueva Industrial Park",
-    city: "São Paulo",
-    country: {
-      code: "BR",
-      name: "Brasil",
-    },
-    type: "zonaFranca",
-    contactInfo: {
-      id: 2,
-      name: "Fernando J. Jaar",
-      position: "Presidente - CEO",
-      email: "fernando.jaar@codevi.com",
-      website: "www.codevi.com",
-    },
-    createdAt: "2024-01-01T00:00:00.000Z",
-    updatedAt: "2024-01-01T00:00:00.000Z",
-  },
-  {
-    id: 3,
-    title: "Villanueva Industrial Park",
-    city: "Buenos Aires",
-    country: {
-      code: "AR",
-      name: "Argentina",
-    },
-    type: "zonaFranca",
-    contactInfo: {
-      id: 3,
-      name: "Fernando J. Jaar",
-      position: "Presidente - CEO",
-      email: "fernando.jaar@codevi.com",
-      website: "www.codevi.com",
-    },
-    createdAt: "2024-01-01T00:00:00.000Z",
-    updatedAt: "2024-01-01T00:00:00.000Z",
-  },
-  {
-    id: 4,
-    title: "Villanueva Industrial Park",
-    city: "Bogotá",
-    country: {
-      code: "CO",
-      name: "Colombia",
-    },
-    type: "zonaFranca",
-    contactInfo: {
-      id: 4,
-      name: "Fernando J. Jaar",
-      position: "Presidente - CEO",
-    },
-    createdAt: "2024-01-01T00:00:00.000Z",
-    updatedAt: "2024-01-01T00:00:00.000Z",
-  },
-  {
-    id: 5,
-    title: "Villanueva Industrial Park",
-    city: "Bogotá",
-    country: {
-      code: "CO",
-      name: "Colombia",
-    },
-    type: "zonaFranca",
-    contactInfo: {
-      id: 5,
-      name: "Fernando J. Jaar",
-      position: "Presidente - CEO",
-    },
-    createdAt: "2024-01-01T00:00:00.000Z",
-    updatedAt: "2024-01-01T00:00:00.000Z",
-  },
-  {
-    id: 6,
-    title: "Villanueva Industrial Park",
-    city: "Bogotá",
-    country: {
-      code: "CO",
-      name: "Colombia",
-    },
-    type: "zonaFranca",
-    contactInfo: {
-      id: 6,
-      name: "Fernando J. Jaar",
-      position: "Presidente - CEO",
-    },
-    createdAt: "2024-01-01T00:00:00.000Z",
-    updatedAt: "2024-01-01T00:00:00.000Z",
-  },
-  {
-    id: 7,
-    title: "Villanueva Industrial Park",
-    city: "Bogotá",
-    country: {
-      code: "CO",
-      name: "Colombia",
-    },
-    type: "zonaFranca",
-    contactInfo: {
-      id: 7,
-      name: "Fernando J. Jaar",
-      position: "Presidente - CEO",
-    },
-    createdAt: "2024-01-01T00:00:00.000Z",
-    updatedAt: "2024-01-01T00:00:00.000Z",
-  },
-  {
-    id: 8,
-    title: "Villanueva Industrial Park",
-    city: "Bogotá",
-    country: {
-      code: "CO",
-      name: "Colombia",
-    },
-    type: "zonaFranca",
-    contactInfo: {
-      id: 8,
-      name: "Fernando J. Jaar",
-      position: "Presidente - CEO",
-    },
-    createdAt: "2024-01-01T00:00:00.000Z",
-    updatedAt: "2024-01-01T00:00:00.000Z",
-  },
-  {
-    id: 9,
-    title: "Villanueva Industrial Park",
-    city: "Bogotá",
-    country: {
-      code: "CO",
-      name: "Colombia",
-    },
-    type: "zonaFranca",
-    contactInfo: {
-      id: 9,
-      name: "Fernando J. Jaar",
-      position: "Presidente - CEO",
-    },
-    createdAt: "2024-01-01T00:00:00.000Z",
-    updatedAt: "2024-01-01T00:00:00.000Z",
-  },
+
 ];
 
-const markers: Marker[] = [
-  // Colombia
-  {
-    id: "CO",
-    lat: 4.570868,
-    lng: -74.297332,
-    title: "Colombia",
-    imgFlag: colombiaFlag.src,
-    numberZones: 10,
-    numberCompanies: 10,
-    directJobs: 10,
-    list: [
-      {
-        name: "IVA ZF",
-        value: "0%",
-      },
-      {
-        name: "IVA ZF",
-        value: "0%",
-      },
-    ],
-  },
-
-  // Argentina
-  {
-    id: "AR",
-    lat: -34.603722,
-    lng: -58.381559,
-    title: "Argentina",
-    numberZones: 10,
-    numberCompanies: 10,
-    directJobs: 10,
-    list: [
-      {
-        name: "IVA ZF",
-        value: "0%",
-      },
-      {
-        name: "Procesamientos Parciales",
-        value:
-          "Posibilidad de realizar procesamientos parciales fuera de la ZF hasta por 9 meses",
-      },
-    ],
-  },
-
-  // Brasil
-  {
-    id: "BR",
-    lat: -15.793889,
-    lng: -47.882777,
-    title: "Brasil",
-    imgFlag: brasilFlag.src,
-    numberZones: 10,
-    numberCompanies: 10,
-    directJobs: 10,
-    list: [
-      {
-        name: "IVA ZF",
-        value: "0%",
-      },
-    ],
-  },
-];
+// Los marcadores se cargan dinámicamente desde Strapi
+const markers: Marker[] = [];
 
 function NuestrosAfiliadosContent() {
   const [selectedTab, setSelectedTab] = useState("incentivos");
   const [selectedCountry, setSelectedCountry] = useState<Marker | null>(null);
   const [incentivos, setIncentivos] = useState<Marker[]>(markers);
+  const [pageContent, setPageContent] = useState<ContentType | null>(null); 
   const params = useSearchParams();
   const mapRef = useRef<MapGoogleRef>(null);
    
@@ -310,21 +141,41 @@ function NuestrosAfiliadosContent() {
   const [afiliados, setAfiliados] = useState<Afiliado[]>([]);
   const [allAffiliates, setAllAffiliates] = useState<Afiliado[]>([]); // Datos completos sin filtrar
 
+  // Usar la API real de incentivos
+  const { incentives: apiIncentives, loading: incentivesLoading, error: incentivesError } = useIncentives();
+  const [allIncentives, setAllIncentives] = useState<Marker[]>([]); // Datos completos sin filtrar
+
   const countryParam = params.get("country");
   const tabParam = params.get("tab");
 
-  // Crear opciones de países para el campo de búsqueda
-  const countryOptions = markers.map(marker => ({
+  // Crear opciones de países para el campo de búsqueda usando los incentivos
+  const countryOptions = allIncentives.map(marker => ({
     id: marker.id,
     label: marker.title,
     value: marker.id
   }));
 
+  const getContentBySlug = async (slug: string) => {
+    const response = await fetch(`/api/getContent?slug=${slug}`);
+    const data = await response.json();
+    console.log("data", data);
+    if (data.success) {
+      setPageContent(data.data);
+      console.log("pageContent", pageContent);
+    } else {
+      console.error("Error al obtener el contenido:", data.error);
+    }
+  };
+
+  useEffect(() => {
+    getContentBySlug("nuestros-afiliados");
+  }, []);
+
   // Función para manejar la selección de país desde el campo de búsqueda
   const handleCountrySelect = useCallback((option: { id: string; label: string; value: string } | null) => {
     console.log("handleCountrySelect llamado con:", option);
     if (option) {
-      const selectedMarker = markers.find(marker => marker.id === option.id);
+      const selectedMarker = allIncentives.find(marker => marker.id === option.id);
       if (selectedMarker) {
         console.log("Marcador encontrado:", selectedMarker);
         setSelectedCountry(selectedMarker);
@@ -337,7 +188,7 @@ function NuestrosAfiliadosContent() {
       // Restablecer zoom del mapa cuando se deselecciona un país
       mapRef.current?.resetZoom();
     }
-  }, [markers]);
+  }, [allIncentives]);
 
   // Función para obtener la opción seleccionada actualmente
   const getSelectedCountryOption = useCallback(() => {
@@ -390,6 +241,20 @@ function NuestrosAfiliadosContent() {
     }
   }, [apiAffiliates]);
 
+  // Sincronizar datos de incentivos de la API con el estado local
+  useEffect(() => {
+    if (apiIncentives && apiIncentives.length > 0) {
+      // Transformar los datos de incentivos de la API al formato esperado
+      const transformedIncentives = transformIncentivesToMarkers(apiIncentives);
+      setAllIncentives(transformedIncentives); // Guardar todos los datos
+      setIncentivos(transformedIncentives); // Mostrar todos los datos inicialmente
+    } else {
+      // Si no hay datos de la API, usar los datos de ejemplo
+      setAllIncentives(markers);
+      setIncentivos(markers);
+    }
+  }, [apiIncentives]);
+
   useEffect(() => {
     if (selectedCountry) {
       const countryId = selectedCountry.id;
@@ -398,15 +263,15 @@ function NuestrosAfiliadosContent() {
         const filteredAffiliates = allAffiliates.filter((afiliado) => afiliado.country.code === countryId);
         setAfiliados(filteredAffiliates);
         
-        const filteredIncentivos = markers.filter((marker) => marker.id === countryId);
+        const filteredIncentivos = allIncentives.filter((marker) => marker.id === countryId);
         setIncentivos(filteredIncentivos);
       }
     } else {
       // Si no hay país seleccionado, restaurar todos los datos
       setAfiliados(allAffiliates);
-      setIncentivos(markers);
+      setIncentivos(allIncentives);
     }
-  }, [selectedCountry, allAffiliates]);
+  }, [selectedCountry, allAffiliates, allIncentives]);
 
   useEffect(() => {
     if (tabParam) {
@@ -414,14 +279,14 @@ function NuestrosAfiliadosContent() {
 
       if (countryParam) {
         const countryId = countryParam;
-        // Usar allAffiliates para el filtrado
+        // Usar allAffiliates y allIncentives para el filtrado
         const filteredAffiliates = allAffiliates.filter((afiliado) => afiliado.country.code === countryId);
         setAfiliados(filteredAffiliates);
-        const filteredIncentivos = markers.filter((marker) => marker.id === countryId);
+        const filteredIncentivos = allIncentives.filter((marker) => marker.id === countryId);
         setIncentivos(filteredIncentivos);
       }
     }
-  }, [tabParam, countryParam, allAffiliates]);
+  }, [tabParam, countryParam, allAffiliates, allIncentives]);
 
   const handleGetCountry = useCallback((dataCountry: Marker): void => {
     if (!dataCountry) return;
@@ -452,7 +317,7 @@ function NuestrosAfiliadosContent() {
                          {/* Map Google for countries*/}
              <MapGoogle 
                ref={mapRef}
-               markers={markers} 
+               markers={allIncentives} 
                onMarkerClick={handleGetCountry} 
              />
           </div>
@@ -495,19 +360,33 @@ function NuestrosAfiliadosContent() {
                 />
               </div>
 
-              {selectedTab === "incentivos" &&
-                incentivos.map((marker, index) => (
-                  <IncentivosCardCountry
-                    index={index}
-                    country={marker.title}
-                    numberZones={marker.numberZones || 0}
-                    numberCompanies={marker.numberCompanies || 0}
-                    directJobs={marker.directJobs || 0}
-                    list={marker.list || []}
-                    imgFlag={marker.imgFlag}
-                    key={marker.title}
-                  />
-                ))}
+              {selectedTab === "incentivos" && (
+                <>
+                  {incentivesLoading ? (
+                    <div className="flex justify-center items-center p-8">
+                      <LoadingSpinner />
+                    </div>
+                  ) : incentivesError ? (
+                    <div className="text-center p-8">
+                      <p className="text-red-600 mb-4">Error al cargar los incentivos: {incentivesError}</p>
+                      <p className="text-gray-600">Mostrando datos de ejemplo...</p>
+                    </div>
+                  ) : (
+                    incentivos.map((marker, index) => (
+                      <IncentivosCardCountry
+                        index={index}
+                        country={marker.title}
+                        numberZones={marker.numberZones || 0}
+                        numberCompanies={marker.numberCompanies || 0}
+                        directJobs={marker.directJobs || 0}
+                        list={marker.list || []}
+                        imgFlag={marker.imgFlag}
+                        key={marker.title}
+                      />
+                    ))
+                  )}
+                </>
+              )}
 
               {selectedTab === "afiliados" && (
                 <>
