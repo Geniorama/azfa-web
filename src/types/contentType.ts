@@ -1,5 +1,15 @@
 import { HeadingType } from "./componentsType";
 
+interface SectionType {
+  id: number;
+  title: string;
+  images: Array<{
+    id: number;
+    url: string;
+    alternativeText?: string;
+  }>;
+}
+
 export interface ContentType {
     id: number;
     slug: string;
@@ -11,5 +21,5 @@ export interface ContentType {
     locale: string;
     documentId: string;
     heading?: HeadingType;
-    sections?: [];
+    sections?: SectionType[];
 }
