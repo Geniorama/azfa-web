@@ -24,7 +24,7 @@ export default function AfiliadosCard({ index, logo, title, name, position, city
         <img
           src={logo || LogoCodevi.src}
           alt="company brand"
-          className="w-full max-w-fit mx-auto flex-grow p-4"
+          className="w-full max-w-fit max-h-[120px] mx-auto flex-grow p-4"
         />
       </div>
       <div className="p-8 text-text-primary">
