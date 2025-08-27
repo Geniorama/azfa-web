@@ -11,15 +11,43 @@ import { Autoplay, Navigation } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/autoplay";
 import "swiper/css/navigation";
-import LogoExample from "@/assets/img/Logo-AEZO 5.png";
+
 import { useRealStateOffers } from "@/hooks/useRealStateOffers";
 import { useState, useEffect } from "react";
+import { ContentType } from "@/types/contentType";
 
 export default function OfertaInmobiliaria() {
   const [currentPage, setCurrentPage] = useState(1);
+  const [pageContent, setPageContent] = useState<ContentType | null>(null);
   const pageSize = 9; // 3x3 grid
   
   const { offers, loading, error, pagination } = useRealStateOffers(currentPage, pageSize);
+
+  const getPageContentBySlug = async (slug: string) => {
+    const response = await fetch(`/api/getContentBySlug?slug=${slug}&populate[0]=heading.backgroundImg&populate[1]=sections.images`);
+    const data = await response.json();
+    return data;
+  };
+
+  useEffect(() => {
+    const fetchPageContent = async () => {
+      const data = await getPageContentBySlug("oferta-inmobiliaria");
+
+      if (data.success) {
+        console.log('data', data);
+        const content = data.data.data[0];
+        const transformedData: ContentType = {
+          ...content,
+          heading: {
+            ...content.heading,
+            imageUrl: content.heading.backgroundImg ? content.heading.backgroundImg.url : ''
+          }
+        }
+        setPageContent(transformedData);
+      }
+    };
+    fetchPageContent();
+  }, []);
 
   useEffect(() => {
     console.log(offers);
@@ -53,14 +81,12 @@ export default function OfertaInmobiliaria() {
         <div className="container mx-auto px-4 text-center flex flex-col gap-2 md:gap-6">
           <div>
             <h5 className="text-h6 md:text-h4 text-text-secondary">
-              Invierta en Zonas Francas
+              {pageContent?.heading?.smallTitle}
             </h5>
-            <h1 className="text-h3 md:text-h1 text-primary">Oferta Inmobiliaria</h1>
+            <h1 className="text-h3 md:text-h1 text-primary">{pageContent?.heading?.title}</h1>
           </div>
           <p className="text-body md:text-h6 text-text-primary">
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Rerum,
-            asperiores sit nam facere consequuntur dolore quo repellendus enim
-            eligendi dolor.
+            {pageContent?.heading?.description}
           </p>
 
           <div className="hidden md:flex justify-center bg-white mt-16 pb-16 pt-8 px-5">
@@ -128,99 +154,40 @@ export default function OfertaInmobiliaria() {
         </section>
       )}
 
-      <section>
-        <div className="container mx-auto pb-8 lg:pb-16 px-0 md:px-16 max-w-6xl">
-          <TitleDecorative dividerColor="bg-[#94D133]">
-            Proveedores
-          </TitleDecorative>
+      {pageContent?.sections?.map((section) => (
+        <section className="mb-10" key={section.id}>
+          <div className="container mx-auto pb-8 lg:pb-16 px-0 md:px-16 max-w-6xl">
+            <TitleDecorative dividerColor="bg-[#94D133]">
+              {section.title}
+            </TitleDecorative>
 
-          <Swiper
-            modules={[Autoplay, Navigation]}
-            spaceBetween={50}
-            slidesPerView={5}
-            className="mt-10 swiper-custom"
-            autoplay={{ delay: 2500, disableOnInteraction: false }}
-            navigation={true}
-            loop={true}
-            breakpoints={{
-              0: {
-                slidesPerView: 1.8,
-                centeredSlides: true,
-              },
-              768: {
-                slidesPerView: 3,
-              },
-            }}
-          >
-            <SwiperSlide>
-              <img className="w-full max-w-fit mx-auto grayscale md:grayscale hover:grayscale-0 transition-all duration-300 swiper-slide-mobile" src={LogoExample.src} alt="Logo" />
-            </SwiperSlide>  
-            <SwiperSlide>
-              <img className="w-full max-w-fit mx-auto grayscale md:grayscale hover:grayscale-0 transition-all duration-300 swiper-slide-mobile" src={LogoExample.src} alt="Logo" />
-            </SwiperSlide>
-            <SwiperSlide>
-              <img className="w-full max-w-fit mx-auto grayscale md:grayscale hover:grayscale-0 transition-all duration-300 swiper-slide-mobile" src={LogoExample.src} alt="Logo" />
-            </SwiperSlide>
-            <SwiperSlide>
-              <img className="w-full max-w-fit mx-auto grayscale md:grayscale hover:grayscale-0 transition-all duration-300 swiper-slide-mobile" src={LogoExample.src} alt="Logo" />
-            </SwiperSlide>
-            <SwiperSlide>
-              <img className="w-full max-w-fit mx-auto grayscale md:grayscale hover:grayscale-0 transition-all duration-300 swiper-slide-mobile" src={LogoExample.src} alt="Logo" />
-            </SwiperSlide>
-            <SwiperSlide>
-              <img className="w-full max-w-fit mx-auto grayscale md:grayscale hover:grayscale-0 transition-all duration-300 swiper-slide-mobile" src={LogoExample.src} alt="Logo" />
-            </SwiperSlide>
-            <SwiperSlide>
-              <img className="w-full max-w-fit mx-auto grayscale md:grayscale hover:grayscale-0 transition-all duration-300 swiper-slide-mobile" src={LogoExample.src} alt="Logo" />
-            </SwiperSlide>
-          </Swiper>
-        </div>
-      </section>
-
-      <section className="my-10">
-        <div className="container mx-auto pb-8 lg:pb-16 px-0 md:px-16 max-w-6xl">
-          <TitleDecorative dividerColor="bg-[#94D133]">
-            Consultores
-          </TitleDecorative>
-          <Swiper
-            modules={[Autoplay, Navigation]}
-            spaceBetween={50}
-            slidesPerView={5}
-            className="mt-10 swiper-custom"
-            autoplay={{ delay: 2500, disableOnInteraction: false }}
-            navigation={true}
-            loop={true}
-            breakpoints={{
-              0: {
-                slidesPerView: 1.8,
-                centeredSlides: true,
-              },
-              768: {
-                slidesPerView: 3,
-              },
-            }}
-          >
-            <SwiperSlide>
-              <img className="w-full max-w-fit mx-auto grayscale md:grayscale hover:grayscale-0 transition-all duration-300 swiper-slide-mobile" src={LogoExample.src} alt="Logo" />
-            </SwiperSlide>
-            <SwiperSlide>
-              <img className="w-full max-w-fit mx-auto grayscale md:grayscale hover:grayscale-0 transition-all duration-300 swiper-slide-mobile" src={LogoExample.src} alt="Logo" />
-            </SwiperSlide>  
-            <SwiperSlide>
-              <img className="w-full max-w-fit mx-auto grayscale md:grayscale hover:grayscale-0 transition-all duration-300 swiper-slide-mobile" src={LogoExample.src} alt="Logo" />
-            </SwiperSlide>
-            <SwiperSlide>
-              <img className="w-full max-w-fit mx-auto grayscale md:grayscale hover:grayscale-0 transition-all duration-300 swiper-slide-mobile" src={LogoExample.src} alt="Logo" />
-            </SwiperSlide>
-            <SwiperSlide>
-              <img className="w-full max-w-fit mx-auto grayscale md:grayscale hover:grayscale-0 transition-all duration-300 swiper-slide-mobile" src={LogoExample.src} alt="Logo" />
-            </SwiperSlide>
-            <SwiperSlide>
-              <img className="w-full max-w-fit mx-auto grayscale md:grayscale hover:grayscale-0 transition-all duration-300 swiper-slide-mobile" src={LogoExample.src} alt="Logo" />
-            </SwiperSlide>
-          </Swiper> 
-        </div>
-      </section>
+            <Swiper
+              modules={[Autoplay, Navigation]}
+              spaceBetween={50}
+              slidesPerView={5}
+              className="mt-10 swiper-custom"
+              autoplay={{ delay: 2500, disableOnInteraction: false }}
+              navigation={true}
+              loop={true}
+              breakpoints={{
+                0: {
+                  slidesPerView: 1.8,
+                  centeredSlides: true,
+                },
+                768: {
+                  slidesPerView: 3,
+                },
+              }}
+            >
+              {section.images.map((image) => (
+                <SwiperSlide key={image.id}>
+                  <img className="w-full h-24 object-contain max-w-fit mx-auto grayscale md:grayscale hover:grayscale-0 transition-all duration-300 swiper-slide-mobile" src={image.url} alt="Logo" />
+                </SwiperSlide>
+              ))}
+            </Swiper>
+          </div>
+        </section>
+      ))}
 
       <section>
         <div className="flex md:hidden justify-center bg-white w-full overflow-hidden h-100">

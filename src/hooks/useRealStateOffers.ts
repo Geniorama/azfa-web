@@ -66,13 +66,9 @@ export const useRealStateOffers = (page: number = 1, pageSize: number = 9) => {
 
         const data: StrapiResponse = await response.json();
         
-        console.log('Response data:', data);
-        
         // Transformar los datos de Strapi al formato esperado
         if (data && data.data && Array.isArray(data.data)) {
           const transformedOffers: InmuebleType[] = data.data.map((item) => {
-            // Los datos vienen directamente sin attributes
-            console.log('Processing item:', item);
             
             // Validar que las propiedades necesarias existen
             const title = item?.title || '';
@@ -102,7 +98,6 @@ export const useRealStateOffers = (page: number = 1, pageSize: number = 9) => {
             };
           });
           
-          console.log('Transformed offers:', transformedOffers);
           setOffers(transformedOffers);
           
           // Actualizar información de paginación
