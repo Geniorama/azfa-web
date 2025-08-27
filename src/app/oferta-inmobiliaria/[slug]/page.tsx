@@ -4,7 +4,6 @@ import HeadingPage from "@/components/HeadingPage";
 import AdvancedSearchBar from "@/components/AdvancedSearchBar";
 import { InmuebleType } from "@/types/inmuebleType";
 import SliderGallery from "@/components/SliderGallery";
-import LoadingSpinner from "@/components/LoadingSpinner";
 // import icons
 import IconArea from "@/assets/img/icon-area.svg";
 import IconEstado from "@/assets/img/icon-nuevo-usado.svg";
@@ -102,29 +101,46 @@ export default function OfertaInmobiliariaSingle() {
 
   useEffect(() => {
     const fetchInmueble = async () => {
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_STRAPI_URL}/real-state-offers?filters[slug][$eq]=${slug}&populate[imgGallery]=true`
-      );
-      const data = await response.json();
+      try {
+        const response = await fetch(
+          `${process.env.NEXT_PUBLIC_STRAPI_URL}/real-state-offers?filters[slug][$eq]=${slug}&populate[imgGallery]=true`
+        );
+        const data = await response.json();
 
-      if (!data.data[0]) return;
-
-      const dataWithGallery = {
-        ...data.data[0],
-        imgGallery: data.data[0].imgGallery?.map((img: { url: string; alternativeText?: string }) => {
-          return {
-            url: img.url,
-            alternativeText: img.alternativeText,
+        if (data.data && data.data[0]) {
+          const dataWithGallery = {
+            ...data.data[0],
+            imgGallery: data.data[0].imgGallery?.map((img: { url: string; alternativeText?: string }) => {
+              return {
+                url: img.url,
+                alternativeText: img.alternativeText,
+              };
+            }) || [],
           };
-        }) || [],
-      };
 
-      setInmueble(dataWithGallery);
+          setInmueble(dataWithGallery);
+        } else {
+          console.error("Error al obtener el inmueble:", "No se encontró el inmueble");
+          setInmueble(null);
+        }
+      } catch (error) {
+        console.error("Error al obtener el inmueble:", error);
+        setInmueble(null);
+      }
     };
     fetchInmueble();
   }, [slug]);
 
-  if (!inmueble) return <LoadingSpinner />;
+  if (!inmueble) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <p className="text-red-500 text-lg">Error al cargar el inmueble</p>
+          <p className="text-gray-600 mt-2">No se pudo cargar la información del inmueble solicitado</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div>
