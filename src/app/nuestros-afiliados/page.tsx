@@ -156,24 +156,30 @@ function NuestrosAfiliadosContent() {
   }));
 
   const getContentBySlug = async (slug: string) => {
-    const response = await fetch(`/api/getContentBySlug?slug=${slug}&populate[0]=heading.backgroundImg`);
-    const data = await response.json();
-    console.log("data", data);
-    if (data.success) {
+    try {
+      const response = await fetch(`/api/getContentBySlug?slug=${slug}&populate[0]=heading.backgroundImg`);
+      const data = await response.json();
       console.log("data", data);
-      const content = data.data.data[0];
-      const transformedData: ContentType = {
-        ...content,
-        heading: {
-          ...content.heading,
-          imageUrl: content.heading.backgroundImg.url
+      if (data.success && data.data?.data?.[0]) {
+        console.log("data", data);
+        const content = data.data.data[0];
+        const transformedData: ContentType = {
+          ...content,
+          heading: {
+            ...content.heading,
+            imageUrl: content.heading?.backgroundImg?.url || ''
+          }
         }
-      }
 
-      console.log("transformedData", transformedData);
-      setPageContent(transformedData);
-    } else {
-      console.error("Error al obtener el contenido:", data.error);
+        console.log("transformedData", transformedData);
+        setPageContent(transformedData);
+      } else {
+        console.error("Error al obtener el contenido:", data.error || "No se encontró contenido");
+        setPageContent(null);
+      }
+    } catch (error) {
+      console.error("Error al obtener el contenido:", error);
+      setPageContent(null);
     }
   };
 
