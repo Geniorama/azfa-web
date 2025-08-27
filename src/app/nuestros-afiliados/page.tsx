@@ -318,11 +318,13 @@ function NuestrosAfiliadosContent() {
     // Ya no se resetea el país ni el zoom al cambiar de tab|
   }, []);
 
+  if (!pageContent) return null;
+
   return (
     <div>
       <HeadingPage
-        title={pageContent?.heading?.title}
-        smallTitle={pageContent?.heading?.smallTitle}
+        title={pageContent.heading?.title}
+        smallTitle={pageContent.heading?.smallTitle}
         className="min-h-[45vh] md:min-h-auto items-center"
         image={pageContent?.heading?.imageUrl || CoverDefault.src}
       />
