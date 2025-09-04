@@ -8,6 +8,7 @@ import { useState } from "react";
 import { RxReload } from "react-icons/rx";
 import CardInfoPortal from "@/components/CardInfoPortal";
 import CoverImage from "@/assets/img/cover.jpg";
+import Pagination from "@/components/Pagination";
 
 export default function EstudiosAzfa() {
   const [filters, setFilters] = useState({
@@ -138,6 +139,26 @@ export default function EstudiosAzfa() {
                 label: "Descargar",
                 onClick: () => {} 
               }}
+            />
+
+            <CardInfoPortal
+              image={CoverImage.src}
+              title="Guía Legal de Zonas Francas de Iberoamérica 2024"
+              description="¿Está interesado en las normativas y regulaciones que rigen las zonas francas en Iberoamérica? La Guía Legal de las Zonas Francas de Iberoamérica es un recurso esencial que proporciona un panorama completo de los marcos jurídicos, beneficios y obligaciones en cada país de la región."
+              tags={["Tag 1", "Tag 2", "Tag 3"]}
+              button={{
+                label: "Descargar",
+                onClick: () => {} 
+              }}
+            />
+          </div>
+
+          {/* Pagination */}
+          <div className="flex justify-center mt-16">
+            <Pagination 
+              currentPage={1} 
+              totalPages={10} 
+              onPageChange={() => {}} 
             />
           </div>
         </div>
