@@ -27,7 +27,7 @@ export default function EstudiosAzfa() {
       {/* Filters */}
       <section className="bg-white">
         <div className="container mx-auto px-4">
-          <div className="flex flex-row gap-8 py-6 text-text-primary justify-center">
+          <div className="flex flex-col md:flex-row gap-4 md:gap-8 py-6 text-text-primary justify-center">
             <CustomSelect
               options={[
                 { label: "Publicación", value: "publicacion" },
@@ -69,10 +69,10 @@ export default function EstudiosAzfa() {
             <button
               disabled={filters.tipoPublicacion === "" && filters.anioPublicacion === ""}
               onClick={() => setFilters({ tipoPublicacion: "", anioPublicacion: "" })}
-              className="border border-text-primary text-text-primary rounded-md px-4 py-2 cursor-pointer disabled:cursor-not-allowed disabled:opacity-20 flex items-center gap-2"
+              className="inline-flex justify-center border border-text-primary text-text-primary rounded-md px-4 py-2 cursor-pointer disabled:cursor-not-allowed disabled:opacity-20 items-center gap-2"
             >
               <RxReload className="w-4 h-4" />
-              Limpiar filtros
+              <span>Limpiar filtros</span>
             </button>
           </div>
         </div>
