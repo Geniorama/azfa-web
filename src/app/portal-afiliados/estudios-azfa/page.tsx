@@ -2,8 +2,17 @@
 
 import HeadingPagePortal from "@/components/HeadingPagePortal";
 import CustomSelect from "@/utils/CustomSelect";
+import IconOferta from "@/assets/img/icon-oferta.svg";
+import IconCalendario from "@/assets/img/icon-calendario.svg";
+import { useState } from "react";
+import { RxReload } from "react-icons/rx";
 
 export default function EstudiosAzfa() {
+  const [filters, setFilters] = useState({
+    tipoPublicacion: "",
+    anioPublicacion: "",
+  });
+
   return (
     <div>
       <HeadingPagePortal
@@ -15,19 +24,62 @@ export default function EstudiosAzfa() {
       {/* Filters */}
       <section className="bg-white">
         <div className="container mx-auto px-4">
-          <div className="flex flex-row gap-4 py-6 text-text-primary">
+          <div className="flex flex-row gap-8 py-6 text-text-primary justify-center">
             <CustomSelect
               options={[
                 { label: "Publicación", value: "publicacion" },
                 { label: "Estudio", value: "estudio" },
                 { label: "Documento", value: "documento" },
               ]}
-              onChange={() => {}}
+              onChange={(value) => setFilters({ ...filters, tipoPublicacion: value })}
               name="tipo-publicacion"
               label="Tipo de publicación"
-              selected="publicacion"
+              selected={filters.tipoPublicacion}
+              labelIcon={IconOferta.src}
+              placeholder="Seleccione un tipo"
             />
+
+            <CustomSelect
+              label="Año de publicación"
+              options={[
+                { label: "2025", value: "2025" },
+                { label: "2024", value: "2024" },
+                { label: "2023", value: "2023" },
+                { label: "2022", value: "2022" },
+                { label: "2021", value: "2021" },
+                { label: "2020", value: "2020" },
+                { label: "2019", value: "2019" },
+                { label: "2018", value: "2018" },
+                { label: "2017", value: "2017" },
+                { label: "2016", value: "2016" },
+                { label: "2015", value: "2015" },
+                { label: "2014", value: "2014" },
+                { label: "2013", value: "2013" },
+              ]}
+              onChange={(value) => setFilters({ ...filters, anioPublicacion: value })}
+              name="anio-publicacion"
+              selected={filters.anioPublicacion}
+              placeholder="Seleccione un año"
+              labelIcon={IconCalendario.src}
+            />
+
+            <button
+              disabled={filters.tipoPublicacion === "" && filters.anioPublicacion === ""}
+              onClick={() => setFilters({ tipoPublicacion: "", anioPublicacion: "" })}
+              className="border border-text-primary text-text-primary rounded-md px-4 py-2 cursor-pointer disabled:cursor-not-allowed disabled:opacity-20 flex items-center gap-2"
+            >
+              <RxReload className="w-4 h-4" />
+              Limpiar filtros
+            </button>
           </div>
+        </div>
+      </section>
+      <div className="container mx-auto px-4">
+        <hr className="border-background-2 w-full" />
+      </div>
+      <section className="py-4 bg-white">
+        <div className="container mx-auto px-4">
+          <span className="text-button text-text-primary"> <b className="font-medium">5 resultados</b> encontrados</span>
         </div>
       </section>
     </div>
