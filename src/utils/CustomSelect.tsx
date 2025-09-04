@@ -1,7 +1,7 @@
 "use client"
 
 import { FaChevronDown } from "react-icons/fa";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 
 interface CustomSelectProps {
     label: string;
@@ -20,6 +20,7 @@ const defaultOption = {
 
 export default function CustomSelect({ label, labelIcon, options, onChange, name, selected, placeholder }: CustomSelectProps) {
   const [isOpen, setIsOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
   const [selectedOption, setSelectedOption] = useState({
     label: placeholder || defaultOption.label,
     value: defaultOption.value,
@@ -52,6 +53,35 @@ export default function CustomSelect({ label, labelIcon, options, onChange, name
     setIsOpen(false);
   }
 
+  // Close dropdown when clicking outside, onEscape, onResize
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setIsOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [isOpen]);
+
+  useEffect(() => {
+    const handleEscape = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        setIsOpen(false);
+      }
+    };
+    document.addEventListener("keydown", handleEscape);
+    return () => document.removeEventListener("keydown", handleEscape);
+  }, [isOpen]);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsOpen(false);
+    };
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, [isOpen]);
+
   return (
     <div className='flex flex-row gap-4 items-center'>
         <div className='flex items-center gap-1'>
@@ -59,7 +89,7 @@ export default function CustomSelect({ label, labelIcon, options, onChange, name
             <label htmlFor="">{label}</label>
         </div>
 
-        <div className='relative'>
+        <div className='relative' ref={dropdownRef}>
             <div className={`flex items-center gap-2 border text-button ${selectedOption.value === defaultOption.value ? "border-background-3 text-background-3" : "border-[#94D133] text-text-primary"} rounded-md p-2 px-3 text-body1 cursor-pointer min-w-xs justify-between`} onClick={handleToggleDropdown}>
                 <span className='inline-block'>{selectedOption.label}</span>
                 <FaChevronDown className='w-4 h-4 text-background-3' />
