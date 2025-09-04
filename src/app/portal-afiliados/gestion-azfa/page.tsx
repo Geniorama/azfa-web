@@ -10,7 +10,7 @@ import CardInfoPortal from "@/components/CardInfoPortal";
 import CoverImage from "@/assets/img/cover.jpg";
 import Pagination from "@/components/Pagination";
 
-export default function EstudiosAzfa() {
+export default function GestionAzfa() {
   const [filters, setFilters] = useState({
     tipoPublicacion: "",
     anioPublicacion: "",
@@ -20,9 +20,9 @@ export default function EstudiosAzfa() {
     <div>
       <HeadingPagePortal
         title="Portal afiliados"
-        smallTitle="Consulte y descargue informes, estudios técnicos y documentos exclusivos disponibles para los miembros de AZFA"
-        image={"/images/estudios-azfa.jpg"}
-        slug="estudios-azfa"
+        smallTitle="Consulte reportes institucionales, memorias de gestión y documentos clave sobre el trabajo de la Asociación"
+        image={"/images/gestion-azfa.jpg"}
+        slug="gestion-azfa"
       />
 
       {/* Filters */}

@@ -9,6 +9,7 @@ interface HeadingPageProps {
   image?: string;
   textAlign?: "left" | "center" | "right";
   className?: string;
+  slug: string;
 }
 
 export default function HeadingPagePortal({
@@ -17,14 +18,13 @@ export default function HeadingPagePortal({
   image,
   textAlign = "center",
   className,
+  slug,
 }: HeadingPageProps) {
-  const [selectedTab, setSelectedTab] = useState("estudios-azfa");
+  const [selectedTab] = useState(slug);
   const router = useRouter();
 
   const handleClickTab = (tab: string) => {
-    setSelectedTab(tab);
     router.push(`/portal-afiliados/${tab}`);
-    
   };
 
   return (
