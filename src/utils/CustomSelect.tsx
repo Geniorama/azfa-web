@@ -1,7 +1,7 @@
 "use client"
 
 import { FaChevronDown } from "react-icons/fa";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 interface CustomSelectProps {
     label: string;
@@ -10,14 +10,34 @@ interface CustomSelectProps {
     onChange: (value: string) => void;
     name: string;
     selected: string;
+    placeholder?: string;
 }
 
-export default function CustomSelect({ label, labelIcon, options, onChange, name, selected }: CustomSelectProps) {
+const defaultOption = {
+  label: "Selecciona una opción",
+  value: "",
+}
+
+export default function CustomSelect({ label, labelIcon, options, onChange, name, selected, placeholder }: CustomSelectProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedOption, setSelectedOption] = useState({
-    label: "Selecciona una opción",
-    value: "",
+    label: placeholder || defaultOption.label,
+    value: defaultOption.value,
   });
+
+  useEffect(() => {
+    setSelectedOption({
+      label: placeholder || defaultOption.label,
+      value: defaultOption.value,
+    });
+  }, [placeholder]);
+
+  useEffect(() => {
+    setSelectedOption({
+      label: options.find(option => option.value === selected)?.label || placeholder || defaultOption.label,
+      value: selected,
+    });
+  }, [selected]);
 
   const handleToggleDropdown = () => {
     setIsOpen(!isOpen);
@@ -25,7 +45,7 @@ export default function CustomSelect({ label, labelIcon, options, onChange, name
 
   const handleSelect = (value: string) => {
     setSelectedOption({
-      label: options.find(option => option.value === value)?.label || "Selecciona una opción",
+      label: options.find(option => option.value === value)?.label || placeholder || defaultOption.label,
       value: value,
     });
     onChange(value);
@@ -34,21 +54,24 @@ export default function CustomSelect({ label, labelIcon, options, onChange, name
 
   return (
     <div className='flex flex-row gap-4 items-center'>
-        <div className='flex items-center gap-2'>
+        <div className='flex items-center gap-1'>
             {labelIcon && <img src={labelIcon} alt={label} className='w-5 h-5' />}
             <label htmlFor="">{label}</label>
         </div>
 
         <div className='relative'>
-            <div className='flex items-center gap-2 border border-background-3 rounded-md p-2 px-3 text-background-3 cursor-pointer min-w-xs justify-between' onClick={handleToggleDropdown}>
+            <div className={`flex items-center gap-2 border text-button ${selectedOption.value === defaultOption.value ? "border-background-3 text-background-3" : "border-[#94D133] text-text-primary"} rounded-md p-2 px-3 text-body1 cursor-pointer min-w-xs justify-between`} onClick={handleToggleDropdown}>
                 <span className='inline-block'>{selectedOption.label}</span>
                 <FaChevronDown className='w-4 h-4 text-background-3' />
             </div>
             {isOpen && (
                 <div className='absolute rounded-md w-full overflow-hidden z-10 shadow-lg mt-2'>
+                    <div onClick={() => handleSelect(defaultOption.value)} className='w-full cursor-pointer py-2 px-4 bg-background-1 hover:bg-background-2 transition'>
+                      <span>{placeholder || defaultOption.label}</span>
+                    </div>
                     {options.map((option) => (
                         <div key={option.value} className={`w-full cursor-pointer py-2 px-4 bg-background-1 hover:bg-background-2 transition ${selectedOption.value === option.value ? "bg-background-2" : ""}`} onClick={() => handleSelect(option.value)}>
-                            {option.label}
+                           <span>{option.label}</span>
                         </div>
                     ))}
                 </div>
