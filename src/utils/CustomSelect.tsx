@@ -83,7 +83,7 @@ export default function CustomSelect({ label, labelIcon, options, onChange, name
   }, [isOpen]);
 
   return (
-    <div className='flex flex-row gap-4 items-center'>
+    <div className='flex flex-col md:flex-row gap-2 md:gap-4 md:items-center'>
         <div className='flex items-center gap-1'>
             {labelIcon && <img src={labelIcon} alt={label} className='w-5 h-5' />}
             <label htmlFor="">{label}</label>

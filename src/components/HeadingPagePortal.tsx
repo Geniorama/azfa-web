@@ -30,7 +30,7 @@ export default function HeadingPagePortal({
   return (
     <div
       style={{ backgroundImage: `url(${image || ""})` }}
-      className={`bg-primary bg-cover bg-center bg-no-repeat py-16 px-12 relative flex flex-col items-center justify-center ${
+      className={`bg-primary bg-cover bg-center bg-no-repeat py-16 px-6 lg:px-12 relative flex flex-col items-center justify-center ${
         textAlign === "left"
           ? "text-left"
           : textAlign === "center"
@@ -44,9 +44,9 @@ export default function HeadingPagePortal({
       <p className="text-white text-h6 lg:text-lg mt-4">{smallTitle}</p>
 
       {/* Tabs */}
-      <div className="flex flex-row w-full max-w-screen-lg mt-8">
+      <div className="flex flex-col md:flex-row w-full max-w-screen-lg mt-8 gap-0.5 md:gap-0">
         <button
-          className={`text-text-primary text-h6 lg:text-lg p-3 px-12 w-1/3 rounded-tl-lg rounded-bl-lg  border-background-3 cursor-pointer ${
+          className={`text-text-primary text-body1 lg:text-h6 lg:text-lg p-3 px-12 w-full md:w-1/3 lg:rounded-tl-lg lg:rounded-bl-lg  border-background-3 cursor-pointer ${
             selectedTab === "estudios-azfa" ? "bg-[#94D133] " : "bg-white border-r"
           }`}
           onClick={() => handleClickTab("estudios-azfa")}
@@ -54,7 +54,7 @@ export default function HeadingPagePortal({
           Estudios AZFA
         </button>
         <button
-          className={`text-text-primary text-h6 lg:text-lg p-3 px-12 w-1/3 cursor-pointer ${
+          className={`text-text-primary text-body1 lg:text-h6 lg:text-lg p-3 px-12 w-full md:w-1/3 cursor-pointer ${
             selectedTab === "gestion-azfa" ? "bg-[#94D133] " : "bg-white"
           }`}
           onClick={() => handleClickTab("gestion-azfa")}
@@ -62,7 +62,7 @@ export default function HeadingPagePortal({
           Gestión AZFA
         </button>
         <button
-          className={`text-text-primary text-h6 lg:text-lg p-3 px-12 w-1/3 rounded-tr-lg rounded-br-lg  border-background-3 cursor-pointer ${
+          className={`text-text-primary text-body1 lg:text-h6 lg:text-lg p-3 px-12 w-full md:w-1/3 lg:rounded-tr-lg lg:rounded-br-lg  border-background-3 cursor-pointer ${
             selectedTab === "estadisticas-afiliados"
               ? "bg-[#94D133] "
               : "bg-white border-l"
