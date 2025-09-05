@@ -13,6 +13,11 @@ import SliderArrowRight from "@/utils/SliderArrowRight";
 import ServicioInfoImg from "@/assets/img/icon-home-informacion 1.svg";
 import MiembrosImg from "@/assets/img/icon-home-miembros 1.svg";
 import BeneficiosImg from "@/assets/img/icon-home-beneficios-AZFA 1.svg";
+import IconIntroStar from "@/assets/img/icon-home-trayectoria-AZFA 2.svg";
+import CoverVideo from "@/assets/img/cover-video.webp";
+import { IoMdPlay } from "react-icons/io";
+import TitleDecorative from "@/utils/TitleDecorative";
+import ServiceCard from "@/components/ServiceCard";
 
 export default function Home() {
   const router = useRouter();
@@ -104,23 +109,106 @@ export default function Home() {
                 <SliderArrowLeft className="custom-swiper-button-prev" />
                 <SliderArrowRight className="custom-swiper-button-next" />
               </div>
-              <hr className="my-8 border-background-3"  />
+              <hr className="my-8 border-background-3" />
               <div className="flex justify-center gap-4 max-w-screen-md mx-auto">
                 <div className="flex items-start gap-2 w-full lg:w-1/3 justify-center">
-                  <img className="w-12" src={ServicioInfoImg.src} alt="Servicio de información especializada" />
-                  <p className="text-body2">Servicio de información especializada</p>
+                  <img
+                    className="w-12"
+                    src={ServicioInfoImg.src}
+                    alt="Servicio de información especializada"
+                  />
+                  <p className="text-body2">
+                    Servicio de información especializada
+                  </p>
                 </div>
                 <div className="flex items-start gap-2 w-full lg:w-1/3 justify-center">
-                  <img className="w-12" src={MiembrosImg.src} alt="Servicio de información especializada" />
+                  <img
+                    className="w-12"
+                    src={MiembrosImg.src}
+                    alt="Servicio de información especializada"
+                  />
                   <p className="text-body2">Conozca nuestros miembros</p>
                 </div>
                 <div className="flex items-start gap-2 w-full lg:w-1/3 justify-center">
-                  <img className="w-12" src={BeneficiosImg.src} alt="Servicio de información especializada" />
-                  <p className="text-body2">Conozca los beneficios de hacer parte de AZFA</p>
+                  <img
+                    className="w-12"
+                    src={BeneficiosImg.src}
+                    alt="Servicio de información especializada"
+                  />
+                  <p className="text-body2">
+                    Conozca los beneficios de hacer parte de AZFA
+                  </p>
                 </div>
               </div>
             </div>
           </div>
+        </div>
+      </section>
+
+      <section className="bg-white py-16">
+        <div className="container mx-auto px-4">
+          <div className="flex items-center justify-center text-text-primary gap-16 w-full lg:w-2/3 mx-auto">
+            <img
+              className="w-60"
+              src={IconIntroStar.src}
+              alt="Servicio de información especializada"
+            />
+            <p className="text-h3 font-light">
+              Con más de <span className="text-details">27 años</span> de
+              trayectoria, la AZFA es la organización que lidera y representa al
+              ecosistema de zonas francas en Iberoamérica.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section className="bg-white py-16">
+        <div className="container mx-auto px-4">
+          <div className="flex flex-col lg:flex-row items-center justify-center text-text-primary">
+            <div className="w-full lg:w-1/2">
+              <div className="relative">
+                <img
+                  src={CoverVideo.src}
+                  alt="Cover Video"
+                  className="w-full"
+                />
+                <div className="absolute top-0 left-0 w-full h-full flex items-center justify-center">
+                  <button className="bg-white/20 rounded-full cursor-pointer flex items-center justify-center w-28 h-28 hover:scale-110 transition-all duration-300">
+                    <IoMdPlay className="text-white text-5xl translate-x-0.5" />
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <div className="w-full lg:w-1/2 pl-30 text-body1">
+              <p>
+                Agrupamos a los actores clave del sector: parques de zonas
+                francas, asociaciones nacionales, entidades gubernamentales,
+                empresas proveedoras de servicios y compañías instaladas bajo el
+                régimen franco, consolidando una red regional estratégica. <br /> <br />
+
+                Nuestra misión es <span className="text-details">imparar la competitividad, la innovación, la
+                atracción de inversiones </span> y el desarrollo sostenible en las zonas
+                francas, posicionándolas como pilares del crecimiento económico
+                regional y del comercio internacional.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="bg-white py-16">
+        <div className="container mx-auto px-4">
+          <TitleDecorative>Nuestros Servicios</TitleDecorative>
+        </div>
+
+        {/* Services cards */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-[1px] mt-16">
+          <ServiceCard title="Servicio 1" subtitle="Servicio" image={"https://placehold.co/600x1000/10356B/FFFFFF"} button={{ label: "Ver más", onClick: () => router.push("/servicio-1") }} />
+          <ServiceCard title="Información especializada del sector" subtitle="Servicio" image={"https://placehold.co/600x1000/10356B/FFFFFF"} button={{ label: "Ver más", onClick: () => router.push("/servicio-2") }} />
+          <ServiceCard title="Conozca nuestros miembros" subtitle="Servicio" image={"https://placehold.co/600x1000/10356B/FFFFFF"} button={{ label: "Ver más", onClick: () => router.push("/servicio-3") }} />
+          <ServiceCard title="Conozca los beneficios de hacer parte de AZFA" subtitle="Servicio" image={"https://placehold.co/600x1000/10356B/FFFFFF"} button={{ label: "Ver más", onClick: () => router.push("/servicio-4") }} />
+          <ServiceCard title="Servicio 5" subtitle="Servicio" image={"https://placehold.co/600x1000/10356B/FFFFFF"} button={{ label: "Ver más", onClick: () => router.push("/servicio-5") }} />
         </div>
       </section>
     </>
