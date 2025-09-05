@@ -170,3 +170,19 @@ body {
     right: 20px;
   }
 }
+
+/* Estilos para slider personalizado en página principal */
+.swiper:not(.swiper-gallery):not(.swiper-custom) {
+  .swiper-button-prev,
+  .swiper-button-next {
+    display: none !important;
+  }
+}
+
+/* Estilos para botones personalizados */
+.custom-swiper-button-prev,
+.custom-swiper-button-next {
+  position: relative !important;
+  z-index: 10;
+  cursor: pointer;
+}
