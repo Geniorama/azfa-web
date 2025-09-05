@@ -1,103 +1,128 @@
 "use client";
 
-import Image from "next/image";
-import TipografiaDemo from "./tipografia-demo";
-import Button from "../utils/Button";
-import Link from "../utils/Link";
-import Pagination from "../components/Pagination";
-import SliderArrowLeft from "../utils/SliderArrowLeft";
-import SliderArrowRight from "../utils/SliderArrowRight";
-import SliderDots from "../utils/SliderDots";
+import Button from "@/utils/Button";
+import { useRouter } from "next/navigation";
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Navigation } from "swiper/modules";
+import "swiper/css";
+import "swiper/css/navigation";
+import "swiper/css/pagination";
+import "swiper/css/scrollbar";
+import SliderArrowLeft from "@/utils/SliderArrowLeft";
+import SliderArrowRight from "@/utils/SliderArrowRight";
+import ServicioInfoImg from "@/assets/img/icon-home-informacion 1.svg";
+import MiembrosImg from "@/assets/img/icon-home-miembros 1.svg";
+import BeneficiosImg from "@/assets/img/icon-home-beneficios-AZFA 1.svg";
 
 export default function Home() {
+  const router = useRouter();
+
   return (
     <>
-      <TipografiaDemo />
-      <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-        <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-          <Image
-            className="dark:invert"
-            src="/next.svg"
-            alt="Next.js logo"
-            width={180}
-            height={38}
-            priority
-          />
-          <Link href="/" variant="primary" icon>
-            Click me
-          </Link>
-          <Pagination currentPage={1} totalPages={10} onPageChange={() => {}} />
-          <div className="flex gap-4 bg-primary p-5">
-            <SliderArrowLeft onClick={() => console.log("SliderArrowLeft clicked")} />
-            <SliderArrowRight onClick={() => console.log("SliderArrowRight clicked")} />
-          </div>
-          <SliderDots slides={5} currentSlide={2} />
-          <Button 
-            variant="outline-primary" 
-            onClick={() => console.log("Button clicked")} 
-            >
-            Click me
-          </Button>
+      <section className=" bg-text-primary h-[calc(100vh-120px)]">
+        {/* Slider */}
+        <div className="relative h-full">
+          <Swiper
+            modules={[Navigation]}
+            spaceBetween={50}
+            slidesPerView={1}
+            navigation={{
+              nextEl: ".custom-swiper-button-next",
+              prevEl: ".custom-swiper-button-prev",
+            }}
+            className="h-full"
+          >
+            <SwiperSlide className="bg-primary py-16">
+              <div className="container mx-auto px-4">
+                <div className="space-y-4 w-full lg:w-1/2">
+                  <h5 className="text-caption text-details">
+                    Oferta Inmobiliaria
+                  </h5>
+                  <h1 className="text-h1 font-medium">
+                    Zonas Francas de Iberoamérica 1
+                  </h1>
+                  <p className="text-h5">
+                    Oferta inmobiliaria lorem ipsum sit amet
+                  </p>
+                  <Button
+                    icon
+                    onClick={() => router.push("/oferta-inmobiliaria")}
+                  >
+                    Ver más
+                  </Button>
+                </div>
+              </div>
+            </SwiperSlide>
+            <SwiperSlide>
+              <div className="container mx-auto px-4">
+                <div className="space-y-4 w-full lg:w-1/2">
+                  <h5 className="text-caption text-details">
+                    Oferta Inmobiliaria
+                  </h5>
+                  <h1 className="text-h1 font-medium">
+                    Zonas Francas de Iberoamérica 2
+                  </h1>
+                  <p className="text-h5">
+                    Oferta inmobiliaria lorem ipsum sit amet
+                  </p>
+                  <Button
+                    icon
+                    onClick={() => router.push("/oferta-inmobiliaria")}
+                  >
+                    Ver más
+                  </Button>
+                </div>
+              </div>
+            </SwiperSlide>
+            <SwiperSlide>
+              <div className="container mx-auto px-4">
+                <div className="space-y-4 w-full lg:w-1/2">
+                  <h5 className="text-caption text-details">
+                    Oferta Inmobiliaria
+                  </h5>
+                  <h1 className="text-h1 font-medium">
+                    Zonas Francas de Iberoamérica 3
+                  </h1>
+                  <p className="text-h5">
+                    Oferta inmobiliaria lorem ipsum sit amet
+                  </p>
+                  <Button
+                    icon
+                    onClick={() => router.push("/oferta-inmobiliaria")}
+                  >
+                    Ver más
+                  </Button>
+                </div>
+              </div>
+            </SwiperSlide>
+          </Swiper>
 
-          <Button 
-            variant="secondary" 
-            onClick={() => console.log("Button clicked")} 
-            disabled={true}
-            icon
-            >
-            Click me
-          </Button>
-          {/* Ejemplo de uso de Inter Tight */}
-          <div className="text-center sm:text-left">
-            <h1 className="font-inter-tight text-3xl font-bold mb-4 text-h4">
-              ¡Bienvenido a tu proyecto con Inter Tight!
-            </h1>
-            <p className="font-inter-tight text-lg text-gray-600 dark:text-gray-300">
-              Esta es una demostración de la fuente Inter Tight configurada en
-              tu proyecto.
-            </p>
+          {/* Botones de navegación personalizados */}
+          <div className="absolute bottom-0 right-0 left-0 pb-10 z-10">
+            <div className="container mx-auto px-4">
+              <div className="flex justify-end gap-4">
+                <SliderArrowLeft className="custom-swiper-button-prev" />
+                <SliderArrowRight className="custom-swiper-button-next" />
+              </div>
+              <hr className="my-8 border-background-3"  />
+              <div className="flex justify-center gap-4 max-w-screen-md mx-auto">
+                <div className="flex items-start gap-2 w-full lg:w-1/3 justify-center">
+                  <img className="w-12" src={ServicioInfoImg.src} alt="Servicio de información especializada" />
+                  <p className="text-body2">Servicio de información especializada</p>
+                </div>
+                <div className="flex items-start gap-2 w-full lg:w-1/3 justify-center">
+                  <img className="w-12" src={MiembrosImg.src} alt="Servicio de información especializada" />
+                  <p className="text-body2">Conozca nuestros miembros</p>
+                </div>
+                <div className="flex items-start gap-2 w-full lg:w-1/3 justify-center">
+                  <img className="w-12" src={BeneficiosImg.src} alt="Servicio de información especializada" />
+                  <p className="text-body2">Conozca los beneficios de hacer parte de AZFA</p>
+                </div>
+              </div>
+            </div>
           </div>
-
-          <ol className="list-inside list-decimal text-sm/6 text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-            <li className="mb-2 tracking-[-.01em]">
-              Get started by editing{" "}
-              <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-[family-name:var(--font-geist-mono)] font-semibold">
-                src/app/page.tsx
-              </code>
-              .
-            </li>
-            <li className="tracking-[-.01em]">
-              Save and see your changes instantly.
-            </li>
-          </ol>
-
-          <div className="flex gap-4 items-center flex-col sm:flex-row">
-            <a
-              className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-              href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <Image
-                className="dark:invert"
-                src="/vercel.svg"
-                alt="Vercel logomark"
-                width={20}
-                height={20}
-              />
-              Deploy now
-            </a>
-            <a
-              className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-              href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Read our docs
-            </a>
-          </div>
-        </main>
-      </div>
+        </div>
+      </section>
     </>
   );
 }
