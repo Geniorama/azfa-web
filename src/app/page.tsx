@@ -22,6 +22,8 @@ import Counter from "@/utils/Counter";
 import IconIberoamerica from "@/assets/img/icon-home-iberoamerica-ZF 1.svg";
 import Link from "next/link";
 import CardNews from "@/components/CardNews";
+import CardEvent from "@/components/CardEvent";
+import { truncateText } from "@/utils/truncateText";
 
 export default function Home() {
   const router = useRouter();
@@ -252,11 +254,11 @@ export default function Home() {
       </section>
 
       <section className="bg-white py-16">
-        <div className="container mx-auto px-4 flex flex-col lg:flex-row items-start justify-center text-text-primary gap-16">
+        <div className="container mx-auto px-4 flex flex-col lg:flex-row items-start justify-center text-text-primary gap-20">
           <div className="w-full lg:w-1/2">
             <div className="flex items-center justify-between">
               <TitleDecorative className="text-left items-start">Noticias</TitleDecorative>
-              <Link href="/noticias">Ver todas</Link>
+              <Link className="underline underline-offset-8 decoration-white hover:decoration-details transition-all duration-300" href="/noticias">Ver todas</Link>
             </div>
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mt-8">
@@ -264,19 +266,42 @@ export default function Home() {
                 image="https://placehold.co/600x400/"
                 title="Guía Legal de Zonas Francas de Iberoamérica 2024"
                 category="Noticia"
-                description="¿Está interesado en las normativas y regulaciones que rigen las zonas francas en Iberoamérica? La Guía Legal de las Zonas Francas de Iberoamérica es un recurso esencial que proporciona un panorama completo de los marcos jurídicos, beneficios y obligaciones en cada país de la región."
+                description={truncateText("¿Está interesado en las normativas y regulaciones que rigen las zonas francas en Iberoamérica? La Guía Legal de las Zonas Francas de Iberoamérica es un recurso esencial que proporciona un panorama completo de los marcos jurídicos, beneficios y obligaciones en cada país de la región.", 100)}
                 button={{ label: "Ver más", onClick: () => router.push("/noticia-1") }}
               />
               <CardNews
                 image="https://placehold.co/600x400/"
                 title="Guía Legal de Zonas Francas de Iberoamérica 2024"
                 category="Noticia"
-                description="¿Está interesado en las normativas y regulaciones que rigen las zonas francas en Iberoamérica? La Guía Legal de las Zonas Francas de Iberoamérica es un recurso esencial que proporciona un panorama completo de los marcos jurídicos, beneficios y obligaciones en cada país de la región."
+                description={truncateText("¿Está interesado en las normativas y regulaciones que rigen las zonas francas en Iberoamérica? La Guía Legal de las Zonas Francas de Iberoamérica es un recurso esencial que proporciona un panorama completo de los marcos jurídicos, beneficios y obligaciones en cada país de la región.", 100)}
                 button={{ label: "Ver más", onClick: () => router.push("/noticia-1") }}
               />
             </div>
           </div>
           <div className="w-full lg:w-1/2">
+            <div className="flex items-center justify-between">
+              <TitleDecorative dividerColor="bg-[#94D133]" className="text-left items-start">Próximos Eventos</TitleDecorative>
+              <Link className="underline underline-offset-8 decoration-white hover:decoration-details transition-all duration-300" href="/noticias">Ver todos</Link>
+            </div>
+
+            <div className="space-y-8 mt-8">
+              <CardEvent
+                image="https://placehold.co/600x400/"
+                title="Guía Legal de Zonas Francas de Iberoamérica 2024"
+                category="Evento"
+                date="2024-01-01"
+                location="Bogotá, Colombia"
+                button={{ label: "Ver más", onClick: () => router.push("/evento-1") }}
+              />
+              <CardEvent
+                image="https://placehold.co/600x400/"
+                title="Guía Legal de Zonas Francas de Iberoamérica 2024"
+                category="Evento"
+                date="2024-01-01"
+                location="Bogotá, Colombia"
+                button={{ label: "Ver más", onClick: () => router.push("/evento-1") }}
+              />
+            </div>
           </div>
         </div>
       </section>
