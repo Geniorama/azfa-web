@@ -24,6 +24,7 @@ import Link from "next/link";
 import CardNews from "@/components/CardNews";
 import CardEvent from "@/components/CardEvent";
 import { truncateText } from "@/utils/truncateText";
+import ImageVideo2 from "@/assets/img/video2-home.jpg";
 
 export default function Home() {
   const router = useRouter();
@@ -301,6 +302,39 @@ export default function Home() {
                 location="Bogotá, Colombia"
                 button={{ label: "Ver más", onClick: () => router.push("/evento-1") }}
               />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="bg-white py-16">
+        <div className="container mx-auto px-4">
+          <h6 className="text-body2 text-text-primary text-center">Testimonios</h6>
+          <TitleDecorative>Lo que dicen nuestros clientes</TitleDecorative>
+        </div>
+        {/* Not container content */}
+        <div className="flex mt-8 text-text-primary">
+          <div className="w-full lg:w-1/2 relative">
+            <img src={ImageVideo2.src} alt="Image Video 2" className="w-full h-full object-cover" />
+            <div className="absolute top-0 left-0 w-full h-full flex items-center justify-center">
+              <button className="bg-white/20 rounded-full cursor-pointer flex items-center justify-center w-20 h-20 hover:scale-110 transition-all duration-300">
+                <IoMdPlay className="text-white text-4xl translate-x-0.5" />
+              </button>
+            </div>
+          </div>
+          <div className="w-full lg:w-1/2">
+            <div className="bg-background-1 px-12 py-32 space-y-1">
+              <p className="max-w-[539px] text-h5 tracking-[1px]">
+                “Lorem ipsum dolor sit amet conse ctetur adipiscing elit Vel mauris turpis vel eget nec orci nec ipsum Elementum felis eu pellentesque velit vulputate. Blandit consequat facilisi sagittis ut quis Integer et faucibus elemen.”
+              </p>
+              <div>
+                <span className="text-h6 block">
+                  Nombre de la persona
+                </span>
+                <span className="text-button block">
+                  Cargo de la persona
+                </span>
+              </div>
             </div>
           </div>
         </div>
