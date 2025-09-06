@@ -18,6 +18,10 @@ import CoverVideo from "@/assets/img/cover-video.webp";
 import { IoMdPlay } from "react-icons/io";
 import TitleDecorative from "@/utils/TitleDecorative";
 import ServiceCard from "@/components/ServiceCard";
+import Counter from "@/utils/Counter";
+import IconIberoamerica from "@/assets/img/icon-home-iberoamerica-ZF 1.svg";
+import Link from "next/link";
+import CardNews from "@/components/CardNews";
 
 export default function Home() {
   const router = useRouter();
@@ -197,7 +201,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="bg-white py-16">
+      <section className="bg-white pt-16">
         <div className="container mx-auto px-4">
           <TitleDecorative>Nuestros Servicios</TitleDecorative>
         </div>
@@ -209,6 +213,71 @@ export default function Home() {
           <ServiceCard title="Conozca nuestros miembros" subtitle="Servicio" image={"https://placehold.co/600x1000/10356B/FFFFFF"} button={{ label: "Ver más", onClick: () => router.push("/servicio-3") }} />
           <ServiceCard title="Conozca los beneficios de hacer parte de AZFA" subtitle="Servicio" image={"https://placehold.co/600x1000/10356B/FFFFFF"} button={{ label: "Ver más", onClick: () => router.push("/servicio-4") }} />
           <ServiceCard title="Servicio 5" subtitle="Servicio" image={"https://placehold.co/600x1000/10356B/FFFFFF"} button={{ label: "Ver más", onClick: () => router.push("/servicio-5") }} />
+        </div>
+      </section>
+
+      <section className="bg-[#D5E3EA] py-16">
+        <div className="container mx-auto px-4 flex flex-col lg:flex-row items-start justify-center text-text-primary">
+          <div className="w-full lg:w-1/3">
+            <h2 className="text-h2">Las Zonas Francas de Iberoamérica</h2>
+          </div>
+          <div className="w-full lg:w-1/3 space-y-10">
+            <div className="flex items-center gap-6">
+              <img src={IconIberoamerica.src} alt="Icon Iberoamérica" className="w-16 h-16" />
+              <Counter value={800} prefix="+" leyend="Zonas Francas" thousandSeparator="." />
+            </div>
+
+            <div className="flex items-center gap-6">
+              <img src={IconIberoamerica.src} alt="Icon Iberoamérica" className="w-16 h-16" />
+              <Counter value={100} prefix="+" leyend="Empresas Instaladas " thousandSeparator="." />
+            </div>
+          </div>
+          <div className="w-full lg:w-1/3 space-y-10">
+            <div className="flex items-center gap-6">
+              <img src={IconIberoamerica.src} alt="Icon Iberoamérica" className="w-16 h-16" />
+              <Counter value={1094252} prefix="+" leyend="Empleos Directos  " thousandSeparator="." />
+            </div>
+
+            <div className="flex items-center gap-6">
+              <img src={IconIberoamerica.src} alt="Icon Iberoamérica" className="w-16 h-16" />
+              <Counter value={60000} prefix="USD$" leyend="Millones Exportaciones  " thousandSeparator="." />
+            </div>
+
+            <div className="flex items-center gap-6">
+              <img src={IconIberoamerica.src} alt="Icon Iberoamérica" className="w-16 h-16" />
+              <Counter value={36536} prefix="USD$" leyend="Millones Inversiones  " thousandSeparator="." />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="bg-white py-16">
+        <div className="container mx-auto px-4 flex flex-col lg:flex-row items-start justify-center text-text-primary gap-16">
+          <div className="w-full lg:w-1/2">
+            <div className="flex items-center justify-between">
+              <TitleDecorative className="text-left items-start">Noticias</TitleDecorative>
+              <Link href="/noticias">Ver todas</Link>
+            </div>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mt-8">
+              <CardNews
+                image="https://placehold.co/600x400/"
+                title="Guía Legal de Zonas Francas de Iberoamérica 2024"
+                category="Noticia"
+                description="¿Está interesado en las normativas y regulaciones que rigen las zonas francas en Iberoamérica? La Guía Legal de las Zonas Francas de Iberoamérica es un recurso esencial que proporciona un panorama completo de los marcos jurídicos, beneficios y obligaciones en cada país de la región."
+                button={{ label: "Ver más", onClick: () => router.push("/noticia-1") }}
+              />
+              <CardNews
+                image="https://placehold.co/600x400/"
+                title="Guía Legal de Zonas Francas de Iberoamérica 2024"
+                category="Noticia"
+                description="¿Está interesado en las normativas y regulaciones que rigen las zonas francas en Iberoamérica? La Guía Legal de las Zonas Francas de Iberoamérica es un recurso esencial que proporciona un panorama completo de los marcos jurídicos, beneficios y obligaciones en cada país de la región."
+                button={{ label: "Ver más", onClick: () => router.push("/noticia-1") }}
+              />
+            </div>
+          </div>
+          <div className="w-full lg:w-1/2">
+          </div>
         </div>
       </section>
     </>
