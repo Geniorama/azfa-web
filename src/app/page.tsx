@@ -28,6 +28,7 @@ import SlideSingleHome from "@/components/SlideSingleHome";
 import SlideSingleTestimonial from "@/components/SlideSingleTestimonial";
 import Modal from "@/components/Modal";
 import { useState } from "react";
+import LogoAmpip from "@/assets/img/logo-ampip 4.png";
 
 export default function Home() {
   const router = useRouter();
@@ -633,6 +634,29 @@ export default function Home() {
               />
             </SwiperSlide>
           </Swiper>
+        </div>
+      </section>
+
+      <section className="bg-white py-16">
+        <div className="container mx-auto px-4">
+          <TitleDecorative className="text-center">
+            Nuestros patrocinadores
+          </TitleDecorative>
+
+          {/* Grid sponsors */}
+          <div className="flex flex-wrap gap-8 justify-center items-center mt-8 [&>img]:grayscale [&>img]:hover:grayscale-0 [&>img]:transition-all [&>img]:duration-300 [&>img]:cursor-pointer">
+            <img className="w-full max-w-fit max-h-16 object-contain" src={LogoAmpip.src} alt="Logo" />
+            <img className="w-full max-w-fit max-h-16 object-contain" src={LogoAmpip.src} alt="Logo" />
+            <img className="w-full max-w-fit max-h-16 object-contain" src={LogoAmpip.src} alt="Logo" />
+            <img className="w-full max-w-fit max-h-16 object-contain" src={LogoAmpip.src} alt="Logo" />
+            <img className="w-full max-w-fit max-h-16 object-contain" src={LogoAmpip.src} alt="Logo" />
+            <img className="w-full max-w-fit max-h-16 object-contain" src={LogoAmpip.src} alt="Logo" />
+            <img className="w-full max-w-fit max-h-16 object-contain" src={LogoAmpip.src} alt="Logo" />
+            <img className="w-full max-w-fit max-h-16 object-contain" src={LogoAmpip.src} alt="Logo" />
+            <img className="w-full max-w-fit max-h-16 object-contain" src={LogoAmpip.src} alt="Logo" />
+            <img className="w-full max-w-fit max-h-16 object-contain" src={LogoAmpip.src} alt="Logo" />
+            <img className="w-full max-w-fit max-h-16 object-contain" src={LogoAmpip.src} alt="Logo" />
+          </div>
         </div>
       </section>
     </>
