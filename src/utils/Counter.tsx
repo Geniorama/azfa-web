@@ -73,9 +73,9 @@ useEffect(() => {
   return (
     <div ref={counterRef} className='space-y-2'>
         <div>
-            {prefix && <span className='text-h1 font-medium'>{prefix}</span>}
-            <span className='text-h1 font-medium'>{formatNumber(count)}</span>
-            {suffix && <span className='text-h1 font-medium'>{suffix}</span>}
+            {prefix && <span className='lg:text-h1 text-h2 lg:font-medium'>{prefix}</span>}
+            <span className='lg:text-h1 text-h2 lg:font-medium'>{formatNumber(count)}</span>
+            {suffix && <span className='lg:text-h1 text-h2 lg:font-medium'>{suffix}</span>}
         </div>
         {leyend && <p className='text-h6 font-normal'>{leyend}</p>}
     </div>

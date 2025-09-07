@@ -16,11 +16,11 @@ export default function SlideSingleHome({ caption, title, description, button }:
 
   return (
     <div className="container mx-auto px-4">
-      <div className="space-y-4 w-full lg:w-1/2">
+      <div className="space-y-4 w-full lg:w-1/2 text-center lg:text-left">
         <h5 className="text-caption text-details">{caption}</h5>
-        <h1 className="text-h1 font-medium">{title}</h1>
+        <h1 className="text-h2 md:text-h1 font-medium">{title}</h1>
         <p className="text-h5">{description}</p>
-        <Button icon onClick={button.onClick || (() => {})}>
+        <Button className="mx-auto lg:mx-0 mt-4 lg:mt-0" icon onClick={button.onClick || (() => {})}>
           {button.label || "Ver más"}
         </Button>
       </div>

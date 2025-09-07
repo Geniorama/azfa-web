@@ -12,7 +12,7 @@ import ServicioInfoImg from "@/assets/img/icon-home-informacion 1.svg";
 import MiembrosImg from "@/assets/img/icon-home-miembros 1.svg";
 import BeneficiosImg from "@/assets/img/icon-home-beneficios-AZFA 1.svg";
 import IconIntroStar from "@/assets/img/icon-home-trayectoria-AZFA 2.svg";
-import CoverVideo from "@/assets/img/cover-video.webp";
+import CoverVideo from "@/assets/img/cover-video.jpg";
 import LogoCodevi from "@/assets/img/CODEVI 2.png";
 import { IoMdPlay } from "react-icons/io";
 import TitleDecorative from "@/utils/TitleDecorative";
@@ -25,6 +25,7 @@ import CardEvent from "@/components/CardEvent";
 import { truncateText } from "@/utils/truncateText";
 import ImageVideo2 from "@/assets/img/video2-home.jpg";
 import SlideSingleHome from "@/components/SlideSingleHome";
+import SlideSingleTestimonial from "@/components/SlideSingleTestimonial";
 
 export default function Home() {
   const router = useRouter();
@@ -82,37 +83,37 @@ export default function Home() {
           {/* Botones de navegación personalizados */}
           <div className="absolute bottom-0 right-0 left-0 pb-10 z-10">
             <div className="container mx-auto px-4">
-              <div className="flex justify-end gap-4">
+              <div className="hidden lg:flex justify-end gap-4">
                 <SliderArrowLeft className="custom-swiper-button-prev" />
                 <SliderArrowRight className="custom-swiper-button-next" />
               </div>
               <hr className="my-8 border-background-3" />
-              <div className="flex justify-center gap-4 max-w-screen-md mx-auto">
-                <div className="flex items-start gap-2 w-full lg:w-1/3 justify-center">
+              <div className="flex items-start justify-center gap-4 max-w-screen-md mx-auto">
+                <div className="flex flex-col lg:flex-row items-center lg:items-start gap-2 w-full lg:w-1/3 justify-center">
                   <img
                     className="w-12"
                     src={ServicioInfoImg.src}
                     alt="Servicio de información especializada"
                   />
-                  <p className="text-body2">
+                  <p className="text-body2 text-center lg:text-left">
                     Servicio de información especializada
                   </p>
                 </div>
-                <div className="flex items-start gap-2 w-full lg:w-1/3 justify-center">
+                <div className="flex flex-col lg:flex-row items-center lg:items-start gap-2 w-full lg:w-1/3 justify-center">
                   <img
                     className="w-12"
                     src={MiembrosImg.src}
                     alt="Servicio de información especializada"
                   />
-                  <p className="text-body2">Conozca nuestros miembros</p>
+                  <p className="text-body2 text-center lg:text-left">Conozca nuestros miembros</p>
                 </div>
-                <div className="flex items-start gap-2 w-full lg:w-1/3 justify-center">
+                <div className="flex flex-col lg:flex-row items-center lg:items-start gap-2 w-full lg:w-1/3 justify-center">
                   <img
                     className="w-12"
                     src={BeneficiosImg.src}
                     alt="Servicio de información especializada"
                   />
-                  <p className="text-body2">
+                  <p className="text-body2 text-center lg:text-left">
                     Conozca los beneficios de hacer parte de AZFA
                   </p>
                 </div>
@@ -122,15 +123,15 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="bg-white py-16">
+      <section className="bg-white lg:pb-16 pt-16 pb-0">
         <div className="container mx-auto px-4">
-          <div className="flex items-center justify-center text-text-primary gap-16 w-full lg:w-2/3 mx-auto">
+          <div className="flex flex-col lg:flex-row items-center justify-center text-text-primary lg:gap-16 gap-6 w-full lg:w-2/3 mx-auto">
             <img
-              className="w-60"
+              className="w-[109px] lg:w-60"
               src={IconIntroStar.src}
               alt="Servicio de información especializada"
             />
-            <p className="text-h3 font-light">
+            <p className="lg:text-h3 text-h4 font-light text-center lg:text-left">
               Con más de <span className="text-details">27 años</span> de
               trayectoria, la AZFA es la organización que lidera y representa al
               ecosistema de zonas francas en Iberoamérica.
@@ -139,15 +140,15 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="bg-white py-16">
-        <div className="container mx-auto px-4">
+      <section className="bg-white lg:py-16 py-10">
+        <div className="container mx-auto lg:px-4">
           <div className="flex flex-col lg:flex-row items-center justify-center text-text-primary">
             <div className="w-full lg:w-1/2">
               <div className="relative">
                 <img
                   src={CoverVideo.src}
                   alt="Cover Video"
-                  className="w-full"
+                  className="w-full lg:rounded-2xl lg:rounded-tl-none"
                 />
                 <div className="absolute top-0 left-0 w-full h-full flex items-center justify-center">
                   <button className="bg-white/20 rounded-full cursor-pointer flex items-center justify-center w-28 h-28 hover:scale-110 transition-all duration-300">
@@ -157,7 +158,7 @@ export default function Home() {
               </div>
             </div>
 
-            <div className="w-full lg:w-1/2 pl-30 text-body1">
+            <div className="w-full lg:w-1/2 lg:pl-30 text-body1 p-4 lg:p-0">
               <p>
                 Agrupamos a los actores clave del sector: parques de zonas
                 francas, asociaciones nacionales, entidades gubernamentales,
@@ -178,13 +179,13 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="bg-white pt-16">
+      <section className="bg-white lg:pt-16">
         <div className="container mx-auto px-4">
           <TitleDecorative>Nuestros Servicios</TitleDecorative>
         </div>
 
         {/* Services cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-[1px] mt-16">
+        <div className="hidden lg:grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-[1px] mt-16">
           <ServiceCard
             title="Servicio 1"
             subtitle="Servicio"
@@ -231,14 +232,88 @@ export default function Home() {
             }}
           />
         </div>
+
+        {/* Services cards mobile swiper */}
+        <div className="lg:hidden mt-14">
+          <Swiper
+            modules={[Pagination]}
+            spaceBetween={50}
+            slidesPerView={1}
+            pagination={{
+              clickable: true,
+            }}
+            className="[&>.swiper-pagination]:!relative [&>.swiper-pagination]:!top-0 [&>.swiper-pagination]:py-12 [&>.swiper-pagination>span]:!border [&>.swiper-pagination>span]:!border-details [&>.swiper-pagination>span]:!bg-transparent [&>.swiper-pagination>span]:!opacity-100 [&>.swiper-pagination>span.swiper-pagination-bullet-active]:!bg-details [&>.swiper-pagination>span]:!cursor-pointer"
+          >
+          <SwiperSlide>
+            <ServiceCard
+              title="Servicio 1"
+              subtitle="Servicio"
+              image={"https://placehold.co/600x1000/10356B/FFFFFF"}
+              button={{
+                label: "Ver más",
+                onClick: () => router.push("/servicio-1"),
+              }}
+            />
+          </SwiperSlide>
+          <SwiperSlide>
+            <ServiceCard
+              title="Servicio 2"
+              subtitle="Servicio"
+              image={"https://placehold.co/600x1000/10356B/FFFFFF"}
+              button={{
+                label: "Ver más",
+                onClick: () => router.push("/servicio-2"),
+              }}
+            />
+          </SwiperSlide>
+          <SwiperSlide>
+            <ServiceCard
+              title="Servicio 3"
+              subtitle="Servicio"
+              image={"https://placehold.co/600x1000/10356B/FFFFFF"}
+              button={{
+                label: "Ver más",
+                onClick: () => router.push("/servicio-3"),
+              }}
+            />
+          </SwiperSlide>
+          <SwiperSlide>
+            <ServiceCard
+              title="Servicio 4"
+              subtitle="Servicio"
+              image={"https://placehold.co/600x1000/10356B/FFFFFF"}
+              button={{
+                label: "Ver más",
+                onClick: () => router.push("/servicio-4"),
+              }}
+            />
+          </SwiperSlide>
+          <SwiperSlide>
+            <ServiceCard
+              title="Servicio 5"
+              subtitle="Servicio"
+              image={"https://placehold.co/600x1000/10356B/FFFFFF"}
+              button={{
+                label: "Ver más",
+                onClick: () => router.push("/servicio-5"),
+              }}
+            />
+          </SwiperSlide>
+        </Swiper>
+        </div>
       </section>
 
       <section className="bg-[#D5E3EA] py-16">
         <div className="container mx-auto px-4 flex flex-col lg:flex-row items-start justify-center text-text-primary">
           <div className="w-full lg:w-1/3">
-            <h2 className="text-h2">Las Zonas Francas de Iberoamérica</h2>
+            <TitleDecorative
+              dividerColor="bg-[#94D133]"
+              className="text-left items-start"
+            >
+              Las Zonas Francas de Iberoamérica
+            </TitleDecorative>
           </div>
-          <div className="w-full lg:w-1/3 space-y-10">
+          <div className="w-full lg:w-1/3 space-y-10 mt-14 lg:mt-0">
             <div className="flex items-center gap-6">
               <img
                 src={IconIberoamerica.src}
@@ -268,7 +343,7 @@ export default function Home() {
             </div>
           </div>
           <div className="w-full lg:w-1/3 space-y-10">
-            <div className="flex items-center gap-6">
+            <div className="flex items-center gap-6 mt-8 lg:mt-0">
               <img
                 src={IconIberoamerica.src}
                 alt="Icon Iberoamérica"
@@ -316,7 +391,7 @@ export default function Home() {
       <section className="bg-white py-16">
         <div className="container mx-auto px-4 flex flex-col lg:flex-row items-start justify-center text-text-primary gap-20">
           <div className="w-full lg:w-1/2">
-            <div className="flex items-center justify-between">
+            <div className="flex items-center justify-between mb-12 lg:mb-0">
               <TitleDecorative className="text-left items-start">
                 Noticias
               </TitleDecorative>
@@ -363,7 +438,7 @@ export default function Home() {
                 dividerColor="bg-[#94D133]"
                 className="text-left items-start"
               >
-                Próximos Eventos
+                <span className="hidden lg:inline">Próximos</span> Eventos
               </TitleDecorative>
               <Link
                 className="underline underline-offset-8 decoration-white hover:decoration-details transition-all duration-300"
@@ -402,8 +477,8 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="bg-white py-16">
-        <div className="container mx-auto px-4">
+      <section className="bg-white lg:py-16 py-0">
+        <div className="container mx-auto px-4 text-center lg:text-left">
           <h6 className="text-body2 text-text-primary text-center">
             Testimonios
           </h6>
@@ -416,120 +491,32 @@ export default function Home() {
             modules={[Pagination]}
             spaceBetween={50}
             slidesPerView={1}
-            className="h-full"
+            className="h-full mt-8"
             pagination={{
               clickable: true,
               el: ".custom-swiper-pagination",
             }}
           >
             <SwiperSlide>
-              <div className="flex mt-8 text-text-primary">
-                <div className="w-full lg:w-1/2 relative">
-                  <img
-                    src={ImageVideo2.src}
-                    alt="Image Video 2"
-                    className="w-full h-full object-cover"
-                  />
-                  <div className="absolute top-0 left-0 w-full h-full flex items-center justify-center">
-                    <button className="bg-white/20 rounded-full cursor-pointer flex items-center justify-center w-20 h-20 hover:scale-110 transition-all duration-300">
-                      <IoMdPlay className="text-white text-4xl translate-x-0.5" />
-                    </button>
-                  </div>
-                </div>
-                <div className="w-full lg:w-1/2">
-                  <div className="bg-background-1 px-12 py-32 space-y-1">
-                    <p className="max-w-[539px] text-h5 tracking-[1px]">
-                      “Lorem ipsum dolor sit amet conse ctetur adipiscing elit
-                      Vel mauris turpis vel eget nec orci nec ipsum Elementum
-                      felis eu pellentesque velit vulputate. Blandit consequat
-                      facilisi sagittis ut quis Integer et faucibus elemen.”
-                    </p>
-                    <div>
-                      <span className="text-h6 block">
-                        Nombre de la persona
-                      </span>
-                      <span className="text-button block">
-                        Cargo de la persona
-                      </span>
-                    </div>
-                  </div>
-                </div>
-              </div>
+              <SlideSingleTestimonial
+                caption="Cargo de la persona"
+                title="Nombre de la persona"
+                description="Lorem ipsum dolor sit amet conse ctetur adipiscing elit Vel mauris turpis vel eget nec orci nec ipsum Elementum felis eu pellentesque velit vulputate. Blandit consequat facilisi sagittis ut quis Integer et faucibus elemen."
+                image={ImageVideo2.src}
+              />
             </SwiperSlide>
-
             <SwiperSlide>
-              <div className="flex mt-8 text-text-primary">
-                <div className="w-full lg:w-1/2 relative">
-                  <img
-                    src={ImageVideo2.src}
-                    alt="Image Video 2"
-                    className="w-full h-full object-cover"
-                  />
-                  <div className="absolute top-0 left-0 w-full h-full flex items-center justify-center">
-                    <button className="bg-white/20 rounded-full cursor-pointer flex items-center justify-center w-20 h-20 hover:scale-110 transition-all duration-300">
-                      <IoMdPlay className="text-white text-4xl translate-x-0.5" />
-                    </button>
-                  </div>
-                </div>
-                <div className="w-full lg:w-1/2">
-                  <div className="bg-background-1 px-12 py-32 space-y-1">
-                    <p className="max-w-[539px] text-h5 tracking-[1px]">
-                      “Lorem ipsum dolor sit amet conse ctetur adipiscing elit
-                      Vel mauris turpis vel eget nec orci nec ipsum Elementum
-                      felis eu pellentesque velit vulputate. Blandit consequat
-                      facilisi sagittis ut quis Integer et faucibus elemen.”
-                    </p>
-                    <div>
-                      <span className="text-h6 block">
-                        Nombre de la persona
-                      </span>
-                      <span className="text-button block">
-                        Cargo de la persona
-                      </span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </SwiperSlide>
-
-            <SwiperSlide>
-              <div className="flex mt-8 text-text-primary">
-                <div className="w-full lg:w-1/2 relative">
-                  <img
-                    src={ImageVideo2.src}
-                    alt="Image Video 2"
-                    className="w-full h-full object-cover"
-                  />
-                  <div className="absolute top-0 left-0 w-full h-full flex items-center justify-center">
-                    <button className="bg-white/20 rounded-full cursor-pointer flex items-center justify-center w-20 h-20 hover:scale-110 transition-all duration-300">
-                      <IoMdPlay className="text-white text-4xl translate-x-0.5" />
-                    </button>
-                  </div>
-                </div>
-                <div className="w-full lg:w-1/2">
-                  <div className="bg-background-1 px-12 py-32 space-y-1">
-                    <p className="max-w-[539px] text-h5 tracking-[1px]">
-                      “Lorem ipsum dolor sit amet conse ctetur adipiscing elit
-                      Vel mauris turpis vel eget nec orci nec ipsum Elementum
-                      felis eu pellentesque velit vulputate. Blandit consequat
-                      facilisi sagittis ut quis Integer et faucibus elemen.”
-                    </p>
-                    <div>
-                      <span className="text-h6 block">
-                        Nombre de la persona
-                      </span>
-                      <span className="text-button block">
-                        Cargo de la persona
-                      </span>
-                    </div>
-                  </div>
-                </div>
-              </div>
+              <SlideSingleTestimonial
+                caption="Cargo de la persona"
+                title="Nombre de la persona"
+                description="Lorem ipsum dolor sit amet conse ctetur adipiscing elit Vel mauris turpis vel eget nec orci nec ipsum Elementum felis eu pellentesque velit vulputate. Blandit consequat facilisi sagittis ut quis Integer et faucibus elemen."
+                image={ImageVideo2.src}
+              />
             </SwiperSlide>
           </Swiper>
           {/* Custom pagination */}
-          <div className="flex justify-end absolute bottom-3 w-1/2 left-0 pr-8 z-10">
-            <div className="custom-swiper-pagination space-x-2 [&>span]:border [&>span]:border-details [&>span]:!bg-transparent [&>span]:!opacity-100 [&>span.swiper-pagination-bullet-active]:!bg-details [&>span]:cursor-pointer text-right"></div>
+          <div className="flex lg:justify-end absolute bottom-3 w-full lg:w-1/2 left-0 pr-8 z-10">
+            <div className="custom-swiper-pagination space-x-2 [&>span]:border [&>span]:border-details [&>span]:!bg-transparent [&>span]:!opacity-100 [&>span.swiper-pagination-bullet-active]:!bg-details [&>span]:cursor-pointer text-center lg:text-right"></div>
           </div>
         </div>
       </section>
