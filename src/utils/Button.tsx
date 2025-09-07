@@ -47,7 +47,7 @@ export default function Button({
   return (
     <button
       type={type || "button"}
-      className={`${className} ${variant} ${size} font-medium text-body2 transition cursor-pointer p-3 px-5 rounded-tr-full rounded-br-full flex items-center gap-8 disabled:cursor-not-allowed disabled:pointer-events-none disabled:bg-background-2 disabled:text-[#B4B4B4] disabled:border-background-2 ${fullWidth ? "w-full justify-between" : ""} ${
+      className={`${variant} ${size} font-medium text-body2 transition cursor-pointer p-3 px-5 rounded-tr-full rounded-br-full flex items-center gap-8 disabled:cursor-not-allowed disabled:pointer-events-none disabled:bg-background-2 disabled:text-[#B4B4B4] disabled:border-background-2 ${className} ${fullWidth ? "w-full justify-between" : ""} ${
         variant === "primary"
           ? "bg-text-primary text-background-1 hover:bg-text-secondary"
           : variant === "secondary"
