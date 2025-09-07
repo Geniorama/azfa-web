@@ -16,18 +16,20 @@ export default function HeadingPage({
   return (
     <div
       style={{ backgroundImage: `url(${image || ""})` }}
-      className={`bg-primary bg-cover bg-center bg-no-repeat py-16 px-12 relative flex flex-col items-center justify-center ${
+      className={`bg-primary bg-cover bg-center bg-no-repeat py-16 relative flex flex-col justify-center ${
         textAlign === "left"
-          ? "text-left"
+          ? "text-left items-start"
           : textAlign === "center"
-          ? "text-center"
-          : "text-right"
+          ? "text-center items-center"
+          : "text-right items-end"
       } ${className}`}
     >
-      <h1 className="text-background-1 text-h3 lg:text-6xl font-normal">
-        {title}
-      </h1>
-      <p className="text-details text-h6 lg:text-lg mt-4">{smallTitle}</p>
+      <div className="container mx-auto px-4">
+        <h1 className="text-background-1 text-h3 lg:text-6xl font-normal">
+          {title}
+        </h1>
+        <p className="text-details text-h6 lg:text-lg mt-4">{smallTitle}</p>
+      </div>
     </div>
   );
 }

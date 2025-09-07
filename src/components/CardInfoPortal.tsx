@@ -7,13 +7,15 @@ interface CardInfoPortalProps {
   title: string;
   description: string;
   tags: string[];
+  author?: string;
+  arrowColor?: string;
   button: {
     label: string;
     onClick: () => void;
   }
 }
 
-export default function CardInfoPortal({ image, title, description, tags, button }: CardInfoPortalProps) {
+export default function CardInfoPortal({ image, title, description, tags, author, arrowColor, button }: CardInfoPortalProps) {
   return (
     <div className='bg-white border border-background-2 rounded-2xl overflow-hidden hover:shadow-xl hover:border-transparent transition-all duration-300'>
         <div className='w-full bg-background-2 p-2'>
@@ -22,16 +24,19 @@ export default function CardInfoPortal({ image, title, description, tags, button
         <div className='p-4 px-6 text-text-primary'>
             <div className='flex flex-row gap-1'>
                 {tags.map((tag) => (
-                    <span key={tag} className="text-caption bg-background-1 text-text-primary rounded-full px-2 py-1 tracking-[1px]">{tag}</span>
+                    <span key={tag} className="text-text-primary text-caption tracking-[1px] rounded-full px-2 py-1 bg-background-1">{tag}</span>
                 ))}
             </div>
             <h3 className="text-h4 mt-5">{title}</h3>
+            {author && (
+                <span className="text-button mt-1 inline-block">{author}</span>
+            )}
             <hr className='my-4 border-background-2' />
             <p className="text-body2 font-light">{description}</p>
             <hr className='my-4 border-background-2' />
             <button className='flex items-center gap-2 justify-between w-full cursor-pointer text-button'>
               <span className="font-medium">{button.label}</span>
-              <GoArrowDown className="text-2xl text-[#94D133]" />
+              <GoArrowDown className={`text-2xl ${arrowColor || "text-[#94D133]"}`} />
             </button>
         </div>
     </div>
