@@ -50,6 +50,83 @@
     font-size: 15px;
     line-height: 20px;
   }
+
+  /* Responsive variants - Mobile First */
+  
+  /* Small screens (sm: 640px+) */
+  @media (min-width: 640px) {
+    .sm\:text-h1 { font-size: 68px; line-height: 72px; }
+    .sm\:text-h2 { font-size: 40px; line-height: 50px; }
+    .sm\:text-h3 { font-size: 35px; line-height: 50px; }
+    .sm\:text-h4 { font-size: 28px; line-height: 32px; }
+    .sm\:text-h5 { font-size: 25px; line-height: 35px; }
+    .sm\:text-h6 { font-size: 20px; line-height: 25px; }
+    .sm\:text-body1 { font-size: 18px; line-height: 31px; }
+    .sm\:text-body2 { font-size: 16px; line-height: 25px; }
+    .sm\:text-caption { font-size: 12px; line-height: 14px; }
+    .sm\:text-overline { font-size: 11px; line-height: 14px; }
+    .sm\:text-button { font-size: 15px; line-height: 20px; }
+  }
+
+  /* Medium screens (md: 768px+) */
+  @media (min-width: 768px) {
+    .md\:text-h1 { font-size: 68px; line-height: 72px; }
+    .md\:text-h2 { font-size: 40px; line-height: 50px; }
+    .md\:text-h3 { font-size: 35px; line-height: 50px; }
+    .md\:text-h4 { font-size: 28px; line-height: 32px; }
+    .md\:text-h5 { font-size: 25px; line-height: 35px; }
+    .md\:text-h6 { font-size: 20px; line-height: 25px; }
+    .md\:text-body1 { font-size: 18px; line-height: 31px; }
+    .md\:text-body2 { font-size: 16px; line-height: 25px; }
+    .md\:text-caption { font-size: 12px; line-height: 14px; }
+    .md\:text-overline { font-size: 11px; line-height: 14px; }
+    .md\:text-button { font-size: 15px; line-height: 20px; }
+  }
+
+  /* Large screens (lg: 1024px+) */
+  @media (min-width: 1024px) {
+    .lg\:text-h1 { font-size: 68px; line-height: 72px; }
+    .lg\:text-h2 { font-size: 40px; line-height: 50px; }
+    .lg\:text-h3 { font-size: 35px; line-height: 50px; }
+    .lg\:text-h4 { font-size: 28px; line-height: 32px; }
+    .lg\:text-h5 { font-size: 25px; line-height: 35px; }
+    .lg\:text-h6 { font-size: 20px; line-height: 25px; }
+    .lg\:text-body1 { font-size: 18px; line-height: 31px; }
+    .lg\:text-body2 { font-size: 16px; line-height: 25px; }
+    .lg\:text-caption { font-size: 12px; line-height: 14px; }
+    .lg\:text-overline { font-size: 11px; line-height: 14px; }
+    .lg\:text-button { font-size: 15px; line-height: 20px; }
+  }
+
+  /* Extra large screens (xl: 1280px+) */
+  @media (min-width: 1280px) {
+    .xl\:text-h1 { font-size: 68px; line-height: 72px; }
+    .xl\:text-h2 { font-size: 40px; line-height: 50px; }
+    .xl\:text-h3 { font-size: 35px; line-height: 50px; }
+    .xl\:text-h4 { font-size: 28px; line-height: 32px; }
+    .xl\:text-h5 { font-size: 25px; line-height: 35px; }
+    .xl\:text-h6 { font-size: 20px; line-height: 25px; }
+    .xl\:text-body1 { font-size: 18px; line-height: 31px; }
+    .xl\:text-body2 { font-size: 16px; line-height: 25px; }
+    .xl\:text-caption { font-size: 12px; line-height: 14px; }
+    .xl\:text-overline { font-size: 11px; line-height: 14px; }
+    .xl\:text-button { font-size: 15px; line-height: 20px; }
+  }
+
+  /* 2XL screens (2xl: 1536px+) */
+  @media (min-width: 1536px) {
+    .xxl\:text-h1 { font-size: 68px; line-height: 72px; }
+    .xxl\:text-h2 { font-size: 40px; line-height: 50px; }
+    .xxl\:text-h3 { font-size: 35px; line-height: 50px; }
+    .xxl\:text-h4 { font-size: 28px; line-height: 32px; }
+    .xxl\:text-h5 { font-size: 25px; line-height: 35px; }
+    .xxl\:text-h6 { font-size: 20px; line-height: 25px; }
+    .xxl\:text-body1 { font-size: 18px; line-height: 31px; }
+    .xxl\:text-body2 { font-size: 16px; line-height: 25px; }
+    .xxl\:text-caption { font-size: 12px; line-height: 14px; }
+    .xxl\:text-overline { font-size: 11px; line-height: 14px; }
+    .xxl\:text-button { font-size: 15px; line-height: 20px; }
+  }
 }
 
 @theme {
