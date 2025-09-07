@@ -3,7 +3,7 @@
 import Button from "@/utils/Button";
 import { useRouter } from "next/navigation";
 import { Swiper, SwiperSlide } from "swiper/react";
-import { Navigation, Pagination } from "swiper/modules";
+import { Navigation, Pagination, Autoplay } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
@@ -14,6 +14,7 @@ import MiembrosImg from "@/assets/img/icon-home-miembros 1.svg";
 import BeneficiosImg from "@/assets/img/icon-home-beneficios-AZFA 1.svg";
 import IconIntroStar from "@/assets/img/icon-home-trayectoria-AZFA 2.svg";
 import CoverVideo from "@/assets/img/cover-video.webp";
+import LogoCodevi from "@/assets/img/CODEVI 2.png";
 import { IoMdPlay } from "react-icons/io";
 import TitleDecorative from "@/utils/TitleDecorative";
 import ServiceCard from "@/components/ServiceCard";
@@ -65,7 +66,7 @@ export default function Home() {
               </div>
             </SwiperSlide>
             <SwiperSlide>
-              <div className="container mx-auto px-4">
+              <div className="container mx-auto px-4 py-16">
                 <div className="space-y-4 w-full lg:w-1/2">
                   <h5 className="text-caption text-details">
                     Oferta Inmobiliaria
@@ -86,7 +87,7 @@ export default function Home() {
               </div>
             </SwiperSlide>
             <SwiperSlide>
-              <div className="container mx-auto px-4">
+              <div className="container mx-auto px-4 py-16">
                 <div className="space-y-4 w-full lg:w-1/2">
                   <h5 className="text-caption text-details">
                     Oferta Inmobiliaria
@@ -579,6 +580,80 @@ export default function Home() {
               <p>Widget 3</p>
             </div>
           </div>
+        </div>
+      </section>
+
+      <section className="bg-white pt-16">
+        <div className="container mx-auto pb-8 lg:pb-16 px-0 md:px-16 max-w-6xl">
+          <TitleDecorative dividerColor="bg-[#94D133]">
+            Nuestros afiliados
+          </TitleDecorative>
+
+          <Swiper
+            modules={[Autoplay, Navigation]}
+            spaceBetween={50}
+            slidesPerView={5}
+            className="mt-10 swiper-custom"
+            autoplay={{ delay: 2500, disableOnInteraction: false }}
+            navigation={true}
+            loop={true}
+            breakpoints={{
+              0: {
+                slidesPerView: 1.8,
+                centeredSlides: true,
+              },
+              768: {
+                slidesPerView: 3,
+              },
+
+              1024: {
+                slidesPerView: 5,
+              },
+            }}
+          >
+            <SwiperSlide>
+              <img
+                className="w-full h-24 object-contain max-w-fit mx-auto grayscale md:grayscale hover:grayscale-0 transition-all duration-300 swiper-slide-mobile"
+                src={LogoCodevi.src}
+                alt="Logo"
+              />
+            </SwiperSlide>
+            <SwiperSlide>
+              <img
+                className="w-full h-24 object-contain max-w-fit mx-auto grayscale md:grayscale hover:grayscale-0 transition-all duration-300 swiper-slide-mobile"
+                src={LogoCodevi.src}
+                alt="Logo"
+              />
+            </SwiperSlide>
+            <SwiperSlide>
+              <img
+                className="w-full h-24 object-contain max-w-fit mx-auto grayscale md:grayscale hover:grayscale-0 transition-all duration-300 swiper-slide-mobile"
+                src={LogoCodevi.src}
+                alt="Logo"
+              />
+            </SwiperSlide>
+            <SwiperSlide>
+              <img
+                className="w-full h-24 object-contain max-w-fit mx-auto grayscale md:grayscale hover:grayscale-0 transition-all duration-300 swiper-slide-mobile"
+                src={LogoCodevi.src}
+                alt="Logo"
+              />
+            </SwiperSlide>
+            <SwiperSlide>
+              <img
+                className="w-full h-24 object-contain max-w-fit mx-auto grayscale md:grayscale hover:grayscale-0 transition-all duration-300 swiper-slide-mobile"
+                src={LogoCodevi.src}
+                alt="Logo"
+              />
+            </SwiperSlide>
+            <SwiperSlide>
+              <img
+                className="w-full h-24 object-contain max-w-fit mx-auto grayscale md:grayscale hover:grayscale-0 transition-all duration-300 swiper-slide-mobile"
+                src={LogoCodevi.src}
+                alt="Logo"
+              />
+            </SwiperSlide>
+          </Swiper>
         </div>
       </section>
     </>
