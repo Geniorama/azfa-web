@@ -1,6 +1,5 @@
 "use client";
 
-import Button from "@/utils/Button";
 import { useRouter } from "next/navigation";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Pagination, Autoplay } from "swiper/modules";
@@ -25,6 +24,7 @@ import CardNews from "@/components/CardNews";
 import CardEvent from "@/components/CardEvent";
 import { truncateText } from "@/utils/truncateText";
 import ImageVideo2 from "@/assets/img/video2-home.jpg";
+import SlideSingleHome from "@/components/SlideSingleHome";
 
 export default function Home() {
   const router = useRouter();
@@ -45,67 +45,37 @@ export default function Home() {
             className="h-full"
           >
             <SwiperSlide className="bg-primary py-16">
-              <div className="container mx-auto px-4">
-                <div className="space-y-4 w-full lg:w-1/2">
-                  <h5 className="text-caption text-details">
-                    Oferta Inmobiliaria
-                  </h5>
-                  <h1 className="text-h1 font-medium">
-                    Zonas Francas de Iberoamérica 1
-                  </h1>
-                  <p className="text-h5">
-                    Oferta inmobiliaria lorem ipsum sit amet
-                  </p>
-                  <Button
-                    icon
-                    onClick={() => router.push("/oferta-inmobiliaria")}
-                  >
-                    Ver más
-                  </Button>
-                </div>
-              </div>
+              <SlideSingleHome
+                caption="Oferta Inmobiliaria"
+                title="Zonas Francas de Iberoamérica 1"
+                description="Oferta inmobiliaria lorem ipsum sit amet"
+                button={{
+                  label: "Ver más",
+                  onClick: () => router.push("/oferta-inmobiliaria"),
+                }}
+              />
             </SwiperSlide>
-            <SwiperSlide>
-              <div className="container mx-auto px-4 py-16">
-                <div className="space-y-4 w-full lg:w-1/2">
-                  <h5 className="text-caption text-details">
-                    Oferta Inmobiliaria
-                  </h5>
-                  <h1 className="text-h1 font-medium">
-                    Zonas Francas de Iberoamérica 2
-                  </h1>
-                  <p className="text-h5">
-                    Oferta inmobiliaria lorem ipsum sit amet
-                  </p>
-                  <Button
-                    icon
-                    onClick={() => router.push("/oferta-inmobiliaria")}
-                  >
-                    Ver más
-                  </Button>
-                </div>
-              </div>
+            <SwiperSlide className="bg-text-primary py-16">
+              <SlideSingleHome
+                caption="Oferta Inmobiliaria"
+                title="Zonas Francas de Iberoamérica 2"
+                description="Oferta inmobiliaria lorem ipsum sit amet"
+                button={{
+                  label: "Ver más",
+                  onClick: () => router.push("/oferta-inmobiliaria"),
+                }}
+              />
             </SwiperSlide>
-            <SwiperSlide>
-              <div className="container mx-auto px-4 py-16">
-                <div className="space-y-4 w-full lg:w-1/2">
-                  <h5 className="text-caption text-details">
-                    Oferta Inmobiliaria
-                  </h5>
-                  <h1 className="text-h1 font-medium">
-                    Zonas Francas de Iberoamérica 3
-                  </h1>
-                  <p className="text-h5">
-                    Oferta inmobiliaria lorem ipsum sit amet
-                  </p>
-                  <Button
-                    icon
-                    onClick={() => router.push("/oferta-inmobiliaria")}
-                  >
-                    Ver más
-                  </Button>
-                </div>
-              </div>
+            <SwiperSlide className="bg-text-primary py-16">
+              <SlideSingleHome
+                caption="Oferta Inmobiliaria"
+                title="Zonas Francas de Iberoamérica 3"
+                description="Oferta inmobiliaria lorem ipsum sit amet"
+                button={{
+                  label: "Ver más",
+                  onClick: () => router.push("/oferta-inmobiliaria"),
+                }}
+              />
             </SwiperSlide>
           </Swiper>
 
