@@ -5,6 +5,7 @@ import CustomSelect from "@/utils/CustomSelect";
 import IconStatistic from "@/assets/img/chart-bar-connected.svg";
 import { useState } from "react";
 import Button from "@/utils/Button";
+import IconDeviceMonitor from "@/assets/img/device-monitor.svg";
 
 export default function EstadisticasAfiliados() {
   const [filters, setFilters] = useState({
@@ -31,7 +32,9 @@ export default function EstadisticasAfiliados() {
                 { label: "Actuales desde 2023", value: "desde-2023" },
                 { label: "Actuales desde 2022", value: "desde-2022" },
               ]}
-              onChange={(value) => setFilters({ ...filters, tipoPublicacion: value })}
+              onChange={(value) =>
+                setFilters({ ...filters, tipoPublicacion: value })
+              }
               name="periodo"
               label="Período de estadísticas"
               selected={filters.tipoPublicacion}
@@ -46,20 +49,45 @@ export default function EstadisticasAfiliados() {
       </div>
       <section className="py-4 bg-white">
         <div className="container mx-auto px-4">
-          <span className="text-button text-text-primary"> Dashboard interactivo embebido (Power BI)</span>
-          
+          <span className="text-button text-text-primary">
+            {" "}
+            Dashboard interactivo embebido (Power BI)
+          </span>
+          <div className="md:hidden flex items-start gap-2 mt-3">
+            <img src={IconDeviceMonitor.src} alt="Icon Device Monitor" />
+            <p className="text-caption font-light text-background-3">
+              Este tablero está optimizado para pantallas de escritorio. Le
+              recomendamos acceder desde un computador para visualizar
+              correctamente los datos.
+            </p>
+          </div>
+
           <div className="my-12">
             {/* Placeholder */}
-            <img src="https://placehold.co/1920x1080" alt="Dashboard interactivo embebido (Power BI)" />
+            <img
+              src="https://placehold.co/1920x1080"
+              alt="Dashboard interactivo embebido (Power BI)"
+            />
           </div>
-          
+
           <div className="flex flex-col md:flex-row gap-6 max-w-screen-lg mx-auto items-center border border-[#94D133] p-12 mt-18">
             <div className="w-full md:w-3/5 text-text-primary space-y-2">
-              <p className="text-h6">¿Necesita actualizar la información estadística de su país?</p>
-              <p className="text-body font-light">Haga clic en el botón a continuación para acceder al formulario de edición. Recuerde ingresar con su usuario y contraseña asignados para continuar.</p>
+              <p className="text-h6">
+                ¿Necesita actualizar la información estadística de su país?
+              </p>
+              <p className="text-body font-light">
+                Haga clic en el botón a continuación para acceder al formulario
+                de edición.Recuerde ingresar con su usuario y contraseña
+                asignados para continuar.
+              </p>
             </div>
             <div className="w-full md:w-2/5">
-              <Button className="inline-flex justify-between h-auto" icon onClick={() => {}}>
+              <Button
+                variant="primary"
+                className="inline-flex justify-between h-auto"
+                icon
+                onClick={() => {}}
+              >
                 Editar información de mi país
               </Button>
             </div>
