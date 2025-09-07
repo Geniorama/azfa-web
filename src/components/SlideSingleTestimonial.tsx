@@ -5,9 +5,13 @@ interface SlideSingleTestimonialProps {
   title: string;
   description: string;
   image: string;
+  button: {
+    label: string;
+    onClick: () => void;
+  }
 }
 
-export default function SlideSingleTestimonial({ caption, title, description, image }: SlideSingleTestimonialProps) {
+export default function SlideSingleTestimonial({ caption, title, description, image, button }: SlideSingleTestimonialProps) {
   return (
     <div className="flex flex-col lg:flex-row text-text-primary">
       <div className="w-full lg:w-1/2 relative">
@@ -17,7 +21,7 @@ export default function SlideSingleTestimonial({ caption, title, description, im
           className="w-full h-full object-cover"
         />
         <div className="absolute top-0 left-0 w-full h-full flex items-center justify-center">
-          <button className="bg-white/20 rounded-full cursor-pointer flex items-center justify-center w-20 h-20 hover:scale-110 transition-all duration-300">
+          <button onClick={button.onClick} className="bg-white/20 rounded-full cursor-pointer flex items-center justify-center w-20 h-20 hover:scale-110 transition-all duration-300">
             <IoMdPlay className="text-white text-4xl translate-x-0.5" />
           </button>
         </div>

@@ -26,12 +26,26 @@ import { truncateText } from "@/utils/truncateText";
 import ImageVideo2 from "@/assets/img/video2-home.jpg";
 import SlideSingleHome from "@/components/SlideSingleHome";
 import SlideSingleTestimonial from "@/components/SlideSingleTestimonial";
+import Modal from "@/components/Modal";
+import { useState } from "react";
 
 export default function Home() {
   const router = useRouter();
-
+  const [openModalVideo, setOpenModalVideo] = useState(false);
   return (
     <>
+      <Modal open={openModalVideo} onClose={() => setOpenModalVideo(false)}>
+        <div className="bg-black overflow-hidden">
+          <video 
+            src={"/2320331_Downtown_Los_Angeles_1280x720.mp4"} 
+            autoPlay 
+            muted 
+            loop 
+            className="w-full h-auto max-h-[80vh] aspect-video"
+            controls
+          />
+        </div>
+      </Modal>
       <section className=" bg-text-primary h-[calc(100vh-120px)]">
         {/* Slider */}
         <div className="relative h-full">
@@ -151,7 +165,7 @@ export default function Home() {
                   className="w-full lg:rounded-2xl lg:rounded-tl-none"
                 />
                 <div className="absolute top-0 left-0 w-full h-full flex items-center justify-center">
-                  <button className="bg-white/20 rounded-full cursor-pointer flex items-center justify-center w-28 h-28 hover:scale-110 transition-all duration-300">
+                  <button onClick={() => setOpenModalVideo(true)} className="bg-white/20 rounded-full cursor-pointer flex items-center justify-center w-28 h-28 hover:scale-110 transition-all duration-300">
                     <IoMdPlay className="text-white text-5xl translate-x-0.5" />
                   </button>
                 </div>
@@ -503,6 +517,10 @@ export default function Home() {
                 title="Nombre de la persona"
                 description="Lorem ipsum dolor sit amet conse ctetur adipiscing elit Vel mauris turpis vel eget nec orci nec ipsum Elementum felis eu pellentesque velit vulputate. Blandit consequat facilisi sagittis ut quis Integer et faucibus elemen."
                 image={ImageVideo2.src}
+                button={{
+                  label: "Ver más",
+                  onClick: () => setOpenModalVideo(true),
+                }}
               />
             </SwiperSlide>
             <SwiperSlide>
@@ -511,6 +529,10 @@ export default function Home() {
                 title="Nombre de la persona"
                 description="Lorem ipsum dolor sit amet conse ctetur adipiscing elit Vel mauris turpis vel eget nec orci nec ipsum Elementum felis eu pellentesque velit vulputate. Blandit consequat facilisi sagittis ut quis Integer et faucibus elemen."
                 image={ImageVideo2.src}
+                button={{
+                  label: "Ver más",
+                  onClick: () => setOpenModalVideo(true),
+                }}
               />
             </SwiperSlide>
           </Swiper>
