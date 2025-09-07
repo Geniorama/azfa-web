@@ -557,8 +557,27 @@ export default function Home() {
             </SwiperSlide>
           </Swiper>
           {/* Custom pagination */}
-          <div className="flex justify-end absolute bottom-3 w-1/2 left-0 pr-3 z-10">
+          <div className="flex justify-end absolute bottom-3 w-1/2 left-0 pr-8 z-10">
             <div className="custom-swiper-pagination space-x-2 [&>span]:border [&>span]:border-details [&>span]:!bg-transparent [&>span]:!opacity-100 [&>span.swiper-pagination-bullet-active]:!bg-details [&>span]:cursor-pointer text-right"></div>
+          </div>
+        </div>
+      </section>
+
+      <section className="bg-white py-16">
+        <div className="container mx-auto px-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-screen-lg mx-auto">
+            <div className="w-full h-100 border border-gray-200 rounded-lg flex justify-center items-center text-3xl text-primary font-medium">
+              {/* Widget */}
+              <p>Widget 1</p>
+            </div>
+            <div className="w-full h-100 border border-gray-200 rounded-lg flex justify-center items-center text-3xl text-primary font-medium">
+              {/* Widget */}
+              <p>Widget 2</p>
+            </div>
+            <div className="w-full h-100 border border-gray-200 rounded-lg flex justify-center items-center text-3xl text-primary font-medium">
+              {/* Widget */}
+              <p>Widget 3</p>
+            </div>
           </div>
         </div>
       </section>
