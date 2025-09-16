@@ -241,11 +241,13 @@ export default function Header() {
                       className="flex items-center gap-2 text-black border-[#DDDDDD] border-b lg:border-transparent lg:border-b-2 py-5 lg:pb-1 mb-0 lg:-mb-1 hover:border-details transition justify-between"
                     >
                       {item.icon && (
-                        <span className="text-xl ">{item.icon}</span>
+                        <span className="text-xl">{item.icon}</span>
                       )}
-                      <span className="text-button font-medium">
-                        {item.label}
-                      </span>
+                      {item.label && (
+                        <span className="text-button font-medium">
+                          {item.label}
+                        </span>
+                      )}
                       {item.subItems && (
                         <button 
                           className="lg:hidden text-details transition-transform duration-300"
