@@ -2,8 +2,8 @@ import FooterImgTop from "@/assets/img/footer-img.svg"
 import { FaLinkedinIn, FaInstagram, FaXTwitter } from "react-icons/fa6";
 import LogoAzfaBlanco from "@/assets/img/logo-azfa-blanco.svg";
 import { IoMailOutline } from "react-icons/io5";
-import { SlScreenSmartphone } from "react-icons/sl";
 import Link from "next/link";
+import { FaWhatsapp } from "react-icons/fa";
 
 interface FooterProps {
   showBanner?: boolean;
@@ -68,7 +68,7 @@ export default function Footer({ showBanner = true }: FooterProps) {
                             <span>director@asociacionzonasfrancas.org</span>
                         </a>
                         <a href="tel:+573178520000" target="_blank" className="text-body2 hover:text-details inline-flex items-center gap-2 mt-2 w-auto lg:w-full">
-                            <SlScreenSmartphone className="text-xl" />
+                            <FaWhatsapp className="text-xl" />
                             <span>+57 000 000 0000</span>
                         </a>
                     </div>

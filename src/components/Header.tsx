@@ -27,19 +27,23 @@ const navItems: NavItem[] = [
 
   {
     label: "Invierta en Zonas Francas",
-    href: "/",
+    href: "/invierta-en-zonas-francas",
     subItems: [
       {
-        label: "Nosotros",
-        href: "/nosotros",
+        label: "Normativa Legal",
+        href: "/invierta-en-zonas-francas/normativa-legal",
       },
       {
-        label: "Nosotros",
-        href: "/nosotros",
+        label: "Estadísticas",
+        href: "/invierta-en-zonas-francas/estadisticas",
       },
       {
-        label: "Nosotros",
-        href: "/nosotros",
+        label: "Oferta Inmobiliaria",
+        href: "/invierta-en-zonas-francas/oferta-inmobiliaria",
+      },
+      {
+        label: "Publicaciones",
+        href: "/invierta-en-zonas-francas/publicaciones",
       },
     ],
   },
@@ -49,8 +53,16 @@ const navItems: NavItem[] = [
     href: "/",
     subItems: [
       {
-        label: "Nosotros",
-        href: "/nosotros",
+        label: "Junta Directiva",
+        href: "/junta-directiva",
+      },
+      {
+        label: "Comisiones",
+        href: "/comisiones",
+      },
+      {
+        label: "Equipo AZFA",
+        href: "/equipo-azfa",
       },
     ],
   },
@@ -60,8 +72,20 @@ const navItems: NavItem[] = [
     href: "/",
     subItems: [
       {
-        label: "Nosotros",
-        href: "/nosotros",
+        label: "Noticias",
+        href: "/noticias",
+      },
+      {
+        label: "Podcast",
+        href: "/podcast",
+      },
+      {
+        label: "Newsletter",
+        href: "/newsletter",
+      },
+      {
+        label: "Blog",
+        href: "/blog",
       },
     ],
   },
@@ -123,10 +147,6 @@ export default function Header() {
 
   const handleMobileSubmenuToggle = (index: number) => {
     setMobileOpenSubmenu(mobileOpenSubmenu === index ? null : index);
-  };
-
-  const handleLogin = () => {
-    router.push('/auth/login');
   };
 
   const handleLogout = () => {
@@ -196,7 +216,7 @@ export default function Header() {
                   <Button
                     className="py-2 w-full lg:w-auto"
                     variant="outline-primary"
-                    onClick={handleLogin}
+                    onClick={() => router.push('/portal-afiliados')}
                   >
                     Portal afiliados
                   </Button>
@@ -205,7 +225,7 @@ export default function Header() {
                 <Button
                   className="py-2 w-full lg:w-auto"
                   variant="outline-primary"
-                  onClick={() => {}}
+                  onClick={() => router.push('/nuestros-afiliados')}
                 >
                   Nuestros afiliados
                 </Button>
