@@ -24,6 +24,7 @@ export const countryMapping: Record<string, { code: string; name: string; nameEn
   'honduras': { code: 'HN', name: 'Honduras', nameEn: 'Honduras' },
   'nicaragua': { code: 'NI', name: 'Nicaragua', nameEn: 'Nicaragua' },
   'panama': { code: 'PA', name: 'Panamá', nameEn: 'Panama' },
+  'curacao': { code: 'CW', name: 'Curazao', nameEn: 'Curacao' },
   
   // América del Norte
   'mexico': { code: 'MX', name: 'México', nameEn: 'Mexico' },
