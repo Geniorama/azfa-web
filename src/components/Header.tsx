@@ -1,14 +1,13 @@
 "use client";
 
 import LogoAzfa from "../../public/logo-azfa.svg";
-import { FaBars } from "react-icons/fa";
 import { FaAngleDown } from "react-icons/fa6";
 import { GoHome } from "react-icons/go";
 import { FaUser, FaSignOutAlt } from "react-icons/fa";
 import Link from "next/link";
 import Button from "@/utils/Button";
 import LogoAzfaBlanco from "@/assets/img/logo-azfa-blanco.svg";
-import CloseIcon from "@/assets/img/btn-close-icon.svg";
+import CloseIcon from "@/assets/icons/close-menu.svg";
 import { useState, useEffect, useRef } from "react";
 import { useAuth } from "@/hooks/useAuth";
 import { useRouter } from "next/navigation";
@@ -150,15 +149,18 @@ export default function Header() {
                 />
               </Link>
             </div>
-            <button className="text-2xl bg-details-hover text-white rounded-lg p-2 lg:hidden" onClick={() => setIsMobileMenuOpen(true)}>
-              <FaBars />
+            <button className="text-2xl bg-details-hover text-white rounded-tr-lg rounded-br-lg p-2 lg:hidden flex flex-col items-center justify-center gap-1.5 w-10 h-10" onClick={() => setIsMobileMenuOpen(true)}>
+              <span className="block w-full h-[2px] bg-white rounded-full"></span>
+              <span className="block w-full h-[2px] bg-white rounded-full"></span>
+              <span className="block w-full h-[2px] bg-white rounded-full"></span>
+              {/* <FaBars /> */}
             </button>
           </div>
 
           <div className={`w-full lg:w-2/3 flex flex-col-reverse justify-end lg:justify-start lg:flex-col items-center lg:items-end gap-4 p-0 lg:px-0 z-10 fixed top-0 left-0 bg-white h-screen lg:h-auto lg:relative lg:translate-x-0 transition-all duration-300 ${isMobileMenuOpen ? "translate-x-0" : "translate-x-[-100%]"}`}>
             {/* Top bar */}
             <div className="flex items-center gap-4 mt-5 lg:mt-0 px-4 lg:px-0">
-              <div className="flex flex-row items-start lg:items-center space-x-1 space-y-5 lg:space-y-0 lg:space-x-4 flex-wrap justify-between">
+              <div className="flex flex-row items-start lg:items-center space-x-1 space-y-3 lg:space-y-0 lg:space-x-4 flex-wrap justify-between">
                 {isAuthenticated ? (
                   <>
                     <div className="relative" ref={userMenuRef}>
@@ -192,7 +194,7 @@ export default function Header() {
                   </>
                 ) : (
                   <Button
-                    className="py-2 w-[48%] lg:w-auto"
+                    className="py-2 w-full lg:w-auto"
                     variant="outline-primary"
                     onClick={handleLogin}
                   >
@@ -201,7 +203,7 @@ export default function Header() {
                 )}
 
                 <Button
-                  className="py-2 w-[48%] lg:w-auto"
+                  className="py-2 w-full lg:w-auto"
                   variant="outline-primary"
                   onClick={() => {}}
                 >
@@ -209,7 +211,7 @@ export default function Header() {
                 </Button>
 
                 <Button
-                  className="py-2 w-[48%] lg:w-auto"
+                  className="py-2 w-full lg:w-auto"
                   variant="outline-primary"
                   onClick={() => {}}
                 >
@@ -217,7 +219,7 @@ export default function Header() {
                 </Button>
 
                 <Button
-                  className="py-2 w-[48%] lg:w-auto"
+                  className="py-2 w-full lg:w-auto"
                   variant="primary-blue"
                   onClick={() => {}}
                 >
@@ -313,7 +315,7 @@ export default function Header() {
               </div>
               <button className="text-white text-2xl" onClick={() => setIsMobileMenuOpen(false)}>
                 <img src={CloseIcon.src} alt="Close Icon" className="w-full" />
-            </button>
+              </button>
             </div>
           </div>
         </div>
