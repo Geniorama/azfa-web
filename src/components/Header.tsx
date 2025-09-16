@@ -50,7 +50,7 @@ const navItems: NavItem[] = [
 
   {
     label: "Quiénes Somos",
-    href: "/",
+    href: "/quienes-somos",
     subItems: [
       {
         label: "Junta Directiva",
@@ -69,7 +69,7 @@ const navItems: NavItem[] = [
 
   {
     label: "Sala de Prensa",
-    href: "/",
+    href: "/sala-de-prensa",
     subItems: [
       {
         label: "Noticias",
@@ -92,12 +92,12 @@ const navItems: NavItem[] = [
 
   {
     label: "Eventos",
-    href: "/",
+    href: "/eventos",
   },
 
   {
     label: "Contacto",
-    href: "/",
+    href: "/contacto",
   },
 
   // Lenguaje
