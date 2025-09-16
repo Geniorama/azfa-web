@@ -1,11 +1,11 @@
 // Mapeo de países para el plugin strapi-plugin-country-select
 // Convierte entre nombres en español y códigos ISO 3166-1 alpha-2
 export const countryMapping: Record<string, { code: string; name: string; nameEn: string }> = {
+  // América del Sur
   'argentina': { code: 'AR', name: 'Argentina', nameEn: 'Argentina' },
   'brazil': { code: 'BR', name: 'Brasil', nameEn: 'Brazil' },
   'chile': { code: 'CL', name: 'Chile', nameEn: 'Chile' },
   'colombia': { code: 'CO', name: 'Colombia', nameEn: 'Colombia' },
-  'mexico': { code: 'MX', name: 'México', nameEn: 'Mexico' },
   'peru': { code: 'PE', name: 'Perú', nameEn: 'Peru' },
   'uruguay': { code: 'UY', name: 'Uruguay', nameEn: 'Uruguay' },
   'paraguay': { code: 'PY', name: 'Paraguay', nameEn: 'Paraguay' },
@@ -14,7 +14,27 @@ export const countryMapping: Record<string, { code: string; name: string; nameEn
   'venezuela': { code: 'VE', name: 'Venezuela', nameEn: 'Venezuela' },
   'guyana': { code: 'GY', name: 'Guyana', nameEn: 'Guyana' },
   'suriname': { code: 'SR', name: 'Surinam', nameEn: 'Suriname' },
-  'french-guiana': { code: 'GF', name: 'Guayana Francesa', nameEn: 'French Guiana' }
+  'french-guiana': { code: 'GF', name: 'Guayana Francesa', nameEn: 'French Guiana' },
+  
+  // América Central
+  'belize': { code: 'BZ', name: 'Belice', nameEn: 'Belize' },
+  'costa-rica': { code: 'CR', name: 'Costa Rica', nameEn: 'Costa Rica' },
+  'el-salvador': { code: 'SV', name: 'El Salvador', nameEn: 'El Salvador' },
+  'guatemala': { code: 'GT', name: 'Guatemala', nameEn: 'Guatemala' },
+  'honduras': { code: 'HN', name: 'Honduras', nameEn: 'Honduras' },
+  'nicaragua': { code: 'NI', name: 'Nicaragua', nameEn: 'Nicaragua' },
+  'panama': { code: 'PA', name: 'Panamá', nameEn: 'Panama' },
+  
+  // América del Norte
+  'mexico': { code: 'MX', name: 'México', nameEn: 'Mexico' },
+  
+  // Caribe
+  'cuba': { code: 'CU', name: 'Cuba', nameEn: 'Cuba' },
+  'dominican-republic': { code: 'DO', name: 'República Dominicana', nameEn: 'Dominican Republic' },
+  'haiti': { code: 'HT', name: 'Haití', nameEn: 'Haiti' },
+  'jamaica': { code: 'JM', name: 'Jamaica', nameEn: 'Jamaica' },
+  'puerto-rico': { code: 'PR', name: 'Puerto Rico', nameEn: 'Puerto Rico' },
+  'trinidad-and-tobago': { code: 'TT', name: 'Trinidad y Tobago', nameEn: 'Trinidad and Tobago' }
 };
 
 // Función para obtener el código ISO de un país por nombre
