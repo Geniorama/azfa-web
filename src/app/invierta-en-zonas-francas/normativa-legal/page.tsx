@@ -34,8 +34,6 @@ interface InfoCountry {
   countryImage?: string;
 }
 
-
-
 export default function NormativaLegal() {
   const [selectedPais, setSelectedPais] = useState<OptionType | null>(null);
   const [expandedPais, setExpandedPais] = useState<string | null>(null);
@@ -59,7 +57,7 @@ export default function NormativaLegal() {
         `/api/getContent?id=${id}&populate[0]=heading.backgroundImg&populate[1]=sections.document&populate[2]=sections.cover`
       );
       const data = await response.json();
-      
+
       if (data.data) {
         setPageContent(data.data as ContentType);
 
@@ -75,10 +73,10 @@ export default function NormativaLegal() {
               id: sectionDownload.id,
               title: sectionDownload.title,
               buttonText: sectionDownload.textButton,
-              documentUrl: sectionDownload.document?.url || '',
+              documentUrl: sectionDownload.document?.url || "",
               cover: {
-                url: sectionDownload.cover?.url || '',
-                alternativeText: sectionDownload.cover?.alternativeText || '',
+                url: sectionDownload.cover?.url || "",
+                alternativeText: sectionDownload.cover?.alternativeText || "",
               },
               target: sectionDownload.target,
             };
@@ -87,7 +85,10 @@ export default function NormativaLegal() {
           }
         }
       } else {
-        console.error("Error al obtener el contenido:", data.error || "No se encontró contenido");
+        console.error(
+          "Error al obtener el contenido:",
+          data.error || "No se encontró contenido"
+        );
         setPageContent(null);
       }
     } catch (error) {
@@ -113,7 +114,7 @@ export default function NormativaLegal() {
             // Obtener el código ISO y nombre del país usando las funciones de utilidad
             const countryCode = getCountryCode(country.country);
             const countryName = getCountryName(countryCode);
-            
+
             return {
               id: country.id,
               label: countryName,
@@ -127,7 +128,11 @@ export default function NormativaLegal() {
                   title: item.headingList?.title || "",
                   subitems:
                     item.items?.map(
-                      (subitem: { id: string; text: string; link: string }) => ({
+                      (subitem: {
+                        id: string;
+                        text: string;
+                        link: string;
+                      }) => ({
                         id: subitem.id,
                         title: subitem.text,
                         link: subitem.link,
@@ -140,16 +145,24 @@ export default function NormativaLegal() {
 
         console.log("countries", countries);
 
-        setCountriesInfo(countries);
+        // Ordenar países alfabéticamente por nombre
+        const sortedCountries = countries.sort((a, b) =>
+          a.label.localeCompare(b.label, "es", { sensitivity: "base" })
+        );
+
+        setCountriesInfo(sortedCountries);
         setCountriesOptions(
-          countries.map((country) => ({
+          sortedCountries.map((country) => ({
             id: country.id,
             label: country.label,
             value: country.value,
           }))
         );
       } else {
-        console.error("Error al obtener países:", data.error || "No se encontraron países");
+        console.error(
+          "Error al obtener países:",
+          data.error || "No se encontraron países"
+        );
         setCountriesInfo([]);
         setCountriesOptions([]);
       }
@@ -197,6 +210,7 @@ export default function NormativaLegal() {
       setSelectedPais(null);
       setExpandedPais(null);
       setScrollToPais(null);
+      setCountryImageSelected(null); // Limpiar la imagen del país para mostrar el mapa
       // Habilitar el scroll por si estaba bloqueado
       const container = document.querySelector(
         ".overflow-y-auto"
@@ -206,18 +220,23 @@ export default function NormativaLegal() {
       }
       return;
     }
-    
+
     // Buscar el país por el código ISO en countriesInfo
-    const selectedCountryInfo = countriesInfo.find(country => country.value === pais.value);
+    const selectedCountryInfo = countriesInfo.find(
+      (country) => country.value === pais.value
+    );
     if (selectedCountryInfo) {
       setSelectedPais(pais);
       setScrollToPais(selectedCountryInfo.id); // Usar el ID del país encontrado
-      
+      setCountryImageSelected(selectedCountryInfo.countryImage || null); // Mostrar la imagen del país
+
       // Solo expandir automáticamente en pantallas grandes
       if (window.innerWidth >= 768) {
         setExpandedPais(selectedCountryInfo.id);
         // Bloquear el scroll cuando se selecciona desde el buscador
-        const container = document.querySelector(".overflow-y-auto") as HTMLElement;
+        const container = document.querySelector(
+          ".overflow-y-auto"
+        ) as HTMLElement;
         if (container) {
           container.style.overflow = "hidden";
         }
@@ -283,7 +302,9 @@ export default function NormativaLegal() {
 
     if (country) {
       // Encontrar la opción correspondiente en countriesOptions
-      const countryOption = countriesOptions.find((p) => p.value === country.value);
+      const countryOption = countriesOptions.find(
+        (p) => p.value === country.value
+      );
       setSelectedPais(countryOption || null);
       setCountryImageSelected(country.countryImage || null);
       setExpandedPais(country.id || null);
@@ -304,7 +325,9 @@ export default function NormativaLegal() {
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
           <p className="text-red-500 text-lg">Error al cargar el contenido</p>
-          <p className="text-gray-600 mt-2">No se pudo cargar la información de normativa legal</p>
+          <p className="text-gray-600 mt-2">
+            No se pudo cargar la información de normativa legal
+          </p>
         </div>
       </div>
     );
@@ -323,7 +346,7 @@ export default function NormativaLegal() {
       <div className="flex flex-col md:flex-row md:h-screen min-h-full">
         <div
           className={`hidden md:flex w-full md:w-5/8 bg-[#73DAEB] justify-center ${
-            countryImageSelected ? "items-center" : "items-start"
+            countryImageSelected ? "items-start pt-16" : "items-start"
           } h-full overflow-hidden`}
         >
           {countryImageSelected ? (
@@ -337,7 +360,11 @@ export default function NormativaLegal() {
           )}
         </div>
         <div className="flex md:hidden w-full h-full">
-          <img src={MapResponsive.src} alt="Mapa Responsive" className="w-full h-full object-cover" />
+          <img
+            src={MapResponsive.src}
+            alt="Mapa Responsive"
+            className="w-full h-full object-cover"
+          />
         </div>
         <div className="w-full md:w-3/8 h-full">
           <div className="relative">
@@ -360,13 +387,13 @@ export default function NormativaLegal() {
                       return (
                         <div
                           id={`pais-${pais.id}`}
-                          className="hidden md:grid md:grid-cols-2 h-full transition bg-primary text-white border-b border-gray-300"
+                          className="hidden lg:grid lg:grid-cols-3 h-full transition bg-primary text-white border-b border-gray-300"
                           key={index}
                           onClick={() => handlePaisExpand(pais.id)}
                           style={{ cursor: "pointer" }}
                         >
                           {/* Left column */}
-                          <div className="flex flex-col gap-4 px-4 py-8 transition justify-start h-full">
+                          <div className="flex lg:col-span-1 flex-col gap-4 px-4 py-8 transition justify-start h-full">
                             <div className="flex justify-between items-start">
                               <h3 className="text-h4 transition text-3xl">
                                 {pais.label}
@@ -407,7 +434,7 @@ export default function NormativaLegal() {
                           </div>
 
                           {/* Right column */}
-                          <div className="flex flex-col gap-4 text-text-primary bg-[#FBFBFB] p-6 h-full overflow-y-auto">
+                          <div className="flex lg:col-span-2 flex-col gap-4 text-text-primary bg-[#FBFBFB] p-6 h-full overflow-y-auto">
                             {pais.items?.map((item, index) => (
                               <div
                                 className={`${
@@ -449,35 +476,39 @@ export default function NormativaLegal() {
                     })
                 : // Si no hay país expandido, mostrar todos los países
                   countriesInfo.map((pais, index) => {
-
                     return (
-                                             <div
-                         id={`pais-${pais.id}`}
-                         className="md:grid md:grid-cols-2 transition hover:bg-primary border-b-2 md:border-b border-gray-300"
-                         key={index}
-                         onClick={() => handlePaisExpand(pais.id)}
-                         style={{ cursor: window.innerWidth >= 768 ? "pointer" : "default" }}
-                       >
+                      <div
+                        id={`pais-${pais.id}`}
+                        className="lg:grid lg:grid-cols-3 transition hover:bg-primary border-b-2 md:border-b border-gray-300"
+                        key={index}
+                        onClick={() => handlePaisExpand(pais.id)}
+                        style={{
+                          cursor:
+                            window.innerWidth >= 768 ? "pointer" : "default",
+                        }}
+                      >
                         {/* Left column */}
-                                                 <div className={`flex flex-col md:gap-4 px-4 py-8 transition ${
-                           selectedPais?.id === pais.id 
-                             ? "bg-primary text-white" 
-                             : "bg-[#EDEDED] hover:bg-primary hover:text-white"
-                         }`}>
+                        <div
+                          className={`flex lg:col-span-1 flex-col md:gap-4 px-4 py-8 transition ${
+                            selectedPais?.id === pais.id
+                              ? "bg-primary text-white"
+                              : "bg-[#EDEDED] hover:bg-primary hover:text-white"
+                          }`}
+                        >
                           <div className="flex justify-center md:justify-between items-start">
                             <h3 className="text-h4 transition">{pais.label}</h3>
                           </div>
 
-                                                     <a
-                             href={pais.linkDownload}
-                             target="_blank"
-                             className={`inline-flex w-full items-center gap-2 cursor-pointer mt-6 transition md:w-fit justify-center md:justify-start ${
-                               selectedPais?.id === pais.id 
-                                 ? "text-white hover:text-gray-200" 
-                                 : "hover:text-details"
-                             }`}
-                             onClick={(e) => e.stopPropagation()}
-                           >
+                          <a
+                            href={pais.linkDownload}
+                            target="_blank"
+                            className={`inline-flex w-full items-center gap-2 cursor-pointer mt-6 transition md:w-fit justify-center md:justify-start ${
+                              selectedPais?.id === pais.id
+                                ? "text-white hover:text-gray-200"
+                                : "hover:text-details"
+                            }`}
+                            onClick={(e) => e.stopPropagation()}
+                          >
                             <span className="underline underline-offset-6">
                               Descargar
                             </span>
@@ -486,7 +517,7 @@ export default function NormativaLegal() {
                         </div>
 
                         {/* Right column */}
-                        <div className="flex flex-col gap-4 text-text-primary bg-[#FBFBFB] p-6 h-full">
+                        <div className="flex lg:col-span-2 flex-col gap-4 text-text-primary bg-[#FBFBFB] p-6 h-full">
                           {pais.items?.map((item, index) => (
                             <div
                               className={`${
@@ -512,9 +543,13 @@ export default function NormativaLegal() {
                                 <ul className="list-disc pl-7 mt-2 font-light">
                                   {item.subitems.map((subitem, index) => (
                                     <li key={index}>
-                                      <p className="text-button">
-                                        {subitem.title}
-                                      </p>
+                                      {subitem.link ? (
+                                        <Link href={subitem.link} className="font-normal underline underline-offset-4 hover:opacity-60" target={"_blank"}>
+                                          {subitem.title}
+                                        </Link>
+                                      ) : (
+                                        <p className="text-button">{subitem.title}</p>
+                                      )}
                                     </li>
                                   ))}
                                 </ul>
