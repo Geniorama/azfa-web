@@ -18,6 +18,7 @@ import { useState, useEffect } from "react";
 import { useParams } from "next/navigation";
 import { StrapiButtonType } from "@/types/componentsType";
 import { getCountryCode, getCountryName } from "@/utils/countryMapping";
+import ReactMarkdown from 'react-markdown';
 
 // Función para convertir bloques de Strapi a HTML
 interface StrapiBlock {
@@ -151,7 +152,7 @@ export default function OfertaInmobiliariaSingle() {
       />
 
       <div className="container mx-auto px-4 -mt-16 z-10 relative">
-        <AdvancedSearchBar />
+        <AdvancedSearchBar onSearch={() => {}} />
 
         <article className="py-16">
           <div className="container mx-auto px-4">
@@ -172,34 +173,34 @@ export default function OfertaInmobiliariaSingle() {
                 </h5>
                 {/* Features */}
                 <div className="flex flex-row space-y-3 mt-10 flex-wrap">
-                  {inmueble.offerType && (
+                  {inmueble.offerType && inmueble.offerType.length > 0 && (
                     <div className="flex items-center gap-2 w-full md:w-1/2 border-b border-background-1 pb-3">
                       <img
                         src={IconTipoOferta.src}
                         alt="Tipo de oferta"
                         className="w-4 h-4"
                       />
-                      <span className="text-body2">{inmueble.offerType}</span>
+                      <span className="text-body2">{inmueble.offerType.map(type => type.charAt(0).toUpperCase() + type.slice(1)).join(', ')}</span>
                     </div>
                   )}
-                  {inmueble.propertyType && (
+                  {inmueble.propertyType && inmueble.propertyType.length > 0 && (
                     <div className="flex items-center gap-2 w-full md:w-1/2 border-b border-background-1 pb-3">
                       <img
                         src={IconTipoInmueble.src}
                       alt="Tipo de inmueble"
-                      className="w-4 h-4"
+                        className="w-4 h-4"
                       />
-                      <span className="text-body2">{inmueble.propertyType}</span>
+                      <span className="text-body2">{inmueble.propertyType.map(type => type.charAt(0).toUpperCase() + type.slice(1)).join(', ')}</span>
                     </div>
                   )}
-                  {inmueble.propertyUse && (
+                  {inmueble.propertyUse && inmueble.propertyUse.length > 0 && (
                     <div className="flex items-center gap-2 w-full md:w-1/2 border-b border-background-1 pb-3">
                       <img
                         src={IconUso.src}
-                      alt="Uso de inmueble"
-                      className="w-4 h-4"
-                    />
-                      <span className="text-body2">{inmueble.propertyUse}</span>
+                        alt="Uso de inmueble"
+                        className="w-4 h-4"
+                      />
+                      <span className="text-body2">{inmueble.propertyUse.map(use => use.charAt(0).toUpperCase() + use.slice(1)).join(', ')}</span>
                     </div>
                   )}
                   {inmueble.area && (
@@ -225,9 +226,9 @@ export default function OfertaInmobiliariaSingle() {
                     </div>
                   )}
                 </div>
-                <p className="text-body font-light mt-4">
-                  {inmueble.description}
-                </p>
+                <div className="text-body font-light mt-4">
+                  <ReactMarkdown>{inmueble.description || ''}</ReactMarkdown>
+                </div>
 
                 {/* Certifications */}
                 {inmueble.certifications && (

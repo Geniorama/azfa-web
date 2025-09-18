@@ -4,9 +4,9 @@ export interface InmuebleType {
     id: string;
     title: string;
     image?: string;
-    offerType?: string;
-    propertyType?: string;
-    propertyUse?: string;
+    offerType?: string[];
+    propertyType?: string[];
+    propertyUse?: string[];
     city?: string;
     country?: string;
     region?: string;

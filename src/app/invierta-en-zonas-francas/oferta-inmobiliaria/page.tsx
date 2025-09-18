@@ -15,13 +15,22 @@ import "swiper/css/navigation";
 import { useRealStateOffers } from "@/hooks/useRealStateOffers";
 import { useState, useEffect } from "react";
 import { ContentType } from "@/types/contentType";
+import type { FilterValuesProps } from "@/components/AdvancedSearchBar";
 
 export default function OfertaInmobiliaria() {
   const [currentPage, setCurrentPage] = useState(1);
   const [pageContent, setPageContent] = useState<ContentType | null>(null);
+  const [searchFilters, setSearchFilters] = useState<FilterValuesProps>({
+    tipoOferta: 'todos',
+    tipoInmueble: 'todos',
+    usoInmueble: 'todos',
+    ciudad: 'todos',
+    pais: 'todos',
+    estado: 'todos'
+  });
   const pageSize = 9; // 3x3 grid
   
-  const { offers, loading, error, pagination } = useRealStateOffers(currentPage, pageSize);
+  const { offers, loading, error, pagination } = useRealStateOffers(currentPage, pageSize, searchFilters);
 
   const getPageContentBySlug = async (slug: string) => {
     try {
@@ -58,12 +67,20 @@ export default function OfertaInmobiliaria() {
   }, []);
 
   useEffect(() => {
-    console.log(offers);
+    console.log('offers', offers);
   }, [offers]);
 
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
     // Scroll to top when page changes
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const handleSearch = (filters: FilterValuesProps) => {
+    console.log('Filtros recibidos en página:', filters);
+    setSearchFilters(filters);
+    setCurrentPage(1); // Reset to first page when searching
+    // Scroll to results
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
@@ -120,7 +137,7 @@ export default function OfertaInmobiliaria() {
 
       <section>
         <div className="container mx-auto px-4 md:px-16 md:-mt-24 z-1 mb-6 relative">
-          <AdvancedSearchBar />
+          <AdvancedSearchBar onSearch={handleSearch} />
         </div>
       </section>
 

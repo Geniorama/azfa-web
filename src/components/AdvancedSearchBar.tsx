@@ -9,7 +9,6 @@ import IconCiudad from "@/assets/img/icon-ciudad.svg"
 import IconPais from "@/assets/img/icon-pais.svg"
 import IconEstado from "@/assets/img/icon-nuevo-usado.svg"
 import SearchButton from '@/utils/SearchButton';
-
 interface Option {
     label: string;
     value: string;
@@ -173,9 +172,30 @@ const optionsEstado: Option[] = [
     },
 ]
 
-export default function AdvancedSearchBar() {
+export interface FilterValuesProps {
+    tipoOferta: string;
+    tipoInmueble: string;
+    usoInmueble: string;
+    ciudad: string;
+    pais: string;
+    estado: string;
+}
+
+interface AdvancedSearchBarProps {
+    onSearch: (filters: FilterValuesProps) => void;
+}
+
+export default function AdvancedSearchBar({ onSearch }: AdvancedSearchBarProps) {
   const [openFilter, setOpenFilter] = useState<string | null>(null)
-  const [selectedValues, setSelectedValues] = useState({
+  const [selectedValues, setSelectedValues] = useState<FilterValuesProps>({
+    tipoOferta: '',
+    tipoInmueble: '',
+    usoInmueble: '',
+    ciudad: '',
+    pais: '',
+    estado: ''
+  })
+  const [searchFilters, setSearchFilters] = useState<FilterValuesProps>({
     tipoOferta: '',
     tipoInmueble: '',
     usoInmueble: '',
@@ -185,6 +205,26 @@ export default function AdvancedSearchBar() {
   })
   const containerRef = useRef<HTMLDivElement>(null)
 
+  // Inicializar valores por defecto
+  useEffect(() => {
+    setSelectedValues({
+      tipoOferta: optionsTipoOferta[0]?.label || '',
+      tipoInmueble: optionsTipoInmueble[0]?.label || '',
+      usoInmueble: optionsUsoInmueble[0]?.label || '',
+      ciudad: optionsCiudad[0]?.label || '',
+      pais: optionsPais[0]?.label || '',
+      estado: optionsEstado[0]?.label || ''
+    })
+    setSearchFilters({
+      tipoOferta: optionsTipoOferta[0]?.value || '',
+      tipoInmueble: optionsTipoInmueble[0]?.value || '',
+      usoInmueble: optionsUsoInmueble[0]?.value || '',
+      ciudad: optionsCiudad[0]?.value || '',
+      pais: optionsPais[0]?.value || '',
+      estado: optionsEstado[0]?.value || ''
+    })
+  }, [])
+
   // Función para manejar la apertura/cierre de filtros
   const handleFilterToggle = (filterName: string) => {
     setOpenFilter(openFilter === filterName ? null : filterName)
@@ -192,10 +232,17 @@ export default function AdvancedSearchBar() {
 
   // Función para manejar cambios en los valores seleccionados
   const handleValueChange = (filterName: string, value: string, label: string) => {
+    // Actualizar valores visuales (labels)
     setSelectedValues(prev => ({
       ...prev,
-      [filterName]: label // Guardar el label para mostrar visualmente
+      [filterName]: label
     }))
+    // Actualizar filtros de búsqueda (values)
+    setSearchFilters(prev => ({
+      ...prev,
+      [filterName]: value
+    }))
+    
     setOpenFilter(null) // Cerrar el filtro después de seleccionar
   }
 
@@ -227,6 +274,14 @@ export default function AdvancedSearchBar() {
       document.removeEventListener('keydown', handleKeyDown)
     }
   }, [])
+
+  // Función para manejar la búsqueda
+  const handleSearch = () => {
+    if (onSearch) {
+      console.log('Filtros enviados (values):', searchFilters);
+      onSearch(searchFilters)
+    }
+  }
 
   return (
     <div ref={containerRef} className='bg-white rounded-2xl shadow-lg p-5 md:border border-text-text-secondary'>
@@ -298,7 +353,7 @@ export default function AdvancedSearchBar() {
                 />
             </div>
             <div className='w-full md:w-20 md:h-20 flex flex-grow justify-end'>
-                <SearchButton />
+                <SearchButton onClick={handleSearch} />
             </div>
         </div>
     </div>

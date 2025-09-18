@@ -7,9 +7,9 @@ interface StrapiResponse {
     id: string;
     title: string;
     slug: string;
-    propertyType?: string;
-    offerType?: string;
-    propertyUse?: string;
+    propertyType?: string[];
+    offerType?: string[];
+    propertyUse?: string[];
     area?: string;
     city?: string;
     country?: string;
@@ -41,7 +41,16 @@ interface PaginationInfo {
   total: number;
 }
 
-export const useRealStateOffers = (page: number = 1, pageSize: number = 9) => {
+interface SearchFilters {
+  tipoOferta?: string;
+  tipoInmueble?: string;
+  usoInmueble?: string;
+  ciudad?: string;
+  pais?: string;
+  estado?: string;
+}
+
+export const useRealStateOffers = (page: number = 1, pageSize: number = 9, filters?: SearchFilters) => {
   const [offers, setOffers] = useState<InmuebleType[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -58,7 +67,36 @@ export const useRealStateOffers = (page: number = 1, pageSize: number = 9) => {
         setLoading(true);
         setError(null);
         
-        const response = await fetch(`/api/getRealStateOffer?populate[imgGallery]=true&pagination[page]=${page}&pagination[pageSize]=${pageSize}`);
+        // Construir parámetros de filtros
+        const filterParams = new URLSearchParams();
+        filterParams.append('populate[imgGallery]', 'true');
+        filterParams.append('pagination[page]', page.toString());
+        filterParams.append('pagination[pageSize]', pageSize.toString());
+        
+        // Agregar filtros si existen
+        if (filters) {
+          console.log('Filtros recibidos en hook:', filters);
+          if (filters.tipoOferta && filters.tipoOferta !== 'todos') {
+            filterParams.append('filters[offerType][$contains]', filters.tipoOferta);
+          }
+          if (filters.tipoInmueble && filters.tipoInmueble !== 'todos') {
+            filterParams.append('filters[propertyType][$contains]', filters.tipoInmueble);
+          }
+          if (filters.usoInmueble && filters.usoInmueble !== 'todos') {
+            filterParams.append('filters[propertyUse][$contains]', filters.usoInmueble);
+          }
+          if (filters.ciudad && filters.ciudad !== 'todos') {
+            filterParams.append('filters[city][$eq]', filters.ciudad);
+          }
+          if (filters.pais && filters.pais !== 'todos') {
+            filterParams.append('filters[country][$eq]', filters.pais);
+          }
+          if (filters.estado && filters.estado !== 'todos') {
+            filterParams.append('filters[propertyStatus][$eq]', filters.estado);
+          }
+        }
+        
+        const response = await fetch(`/api/getRealStateOffer?${filterParams.toString()}`);
         
         if (!response.ok) {
           throw new Error('Error al obtener las ofertas inmobiliarias');
@@ -118,7 +156,7 @@ export const useRealStateOffers = (page: number = 1, pageSize: number = 9) => {
     };
 
     fetchOffers();
-  }, [page, pageSize]);
+  }, [page, pageSize, filters]);
 
   return { offers, loading, error, pagination };
 }; 
