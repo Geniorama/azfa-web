@@ -55,7 +55,7 @@ export default function CardInmueble({
         <img
           src={image || PhotoExample.src}
           alt="Inmueble"
-          className="w-full h-60 object-cover"
+          className="w-full h-full object-cover aspect-video"
         />
         {platinum && (
           <div className="absolute top-5 left-0">

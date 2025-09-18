@@ -154,7 +154,20 @@ export const useRealStateOffers = (page: number = 1, pageSize: number = 9, filte
             };
           });
           
-          setOffers(transformedOffers);
+          // Aplicar ordenamiento: destacados primero, luego por fecha descendente
+          const sortedOffers = transformedOffers.sort((a, b) => {
+            // Primero: inmuebles destacados (platinum) van primero
+            if (a.platinum && !b.platinum) return -1;
+            if (!a.platinum && b.platinum) return 1;
+            
+            // Segundo: dentro de cada grupo, ordenar por fecha de actualización descendente
+            const dateA = new Date(a.updatedAt || a.publishedAt || a.createdAt || '');
+            const dateB = new Date(b.updatedAt || b.publishedAt || b.createdAt || '');
+            
+            return dateB.getTime() - dateA.getTime();
+          });
+          
+          setOffers(sortedOffers);
           
           // Actualizar información de paginación
           if (data.meta && data.meta.pagination) {
