@@ -28,6 +28,27 @@ export default function CardInmueble({
   slug,
 }: InmuebleType) {
   const router = useRouter();
+  
+  // Función para formatear offerType array
+  const formatOfferType = (offerTypes?: string[]) => {
+    if (!offerTypes || offerTypes.length === 0) return '';
+    // Capitalizar la primera letra de cada tipo
+    return offerTypes.map(type => type.charAt(0).toUpperCase() + type.slice(1)).join(', ');
+    // return offerTypes.join(', ');
+  };
+
+  // Función para formatear propertyType array
+  const formatPropertyType = (propertyTypes?: string[]) => {
+    if (!propertyTypes || propertyTypes.length === 0) return '';
+    return propertyTypes.map(type => type.charAt(0).toUpperCase() + type.slice(1)).join(', ');
+  };
+
+  // Función para formatear propertyUse array
+  const formatPropertyUse = (propertyUses?: string[]) => {
+    if (!propertyUses || propertyUses.length === 0) return '';
+    return propertyUses.map(use => use.charAt(0).toUpperCase() + use.slice(1)).join(', ');
+  };
+
   return (
     <div className={`card-inmueble-${id} bg-white rounded-tr-2xl shadow-none rounded-bl-2xl rounded-br-2xl overflow-hidden hover:shadow-lg transition-all duration-300}`}>
       <div className="relative">
@@ -50,22 +71,22 @@ export default function CardInmueble({
         <hr className="my-4 border-slate-300" />
         {/* Features */}
         <ul className="flex flex-col gap-2">
-          {offerType && (
+          {offerType && offerType.length > 0 && (
             <li className="flex items-center gap-1 text-body2">
               <img src={IconTipoOferta.src} alt="Icono" />
-              <p>{offerType}</p>
+              <p>{formatOfferType(offerType)}</p>
             </li>
           )}
-          {propertyType && (
+          {propertyType && propertyType.length > 0 && (
             <li className="flex items-center gap-1 text-body2">
               <img src={IconTipoInmueble.src} alt="Icono" />
-              <p>{propertyType}</p>
+              <p>{formatPropertyType(propertyType)}</p>
             </li>
           )}
-          {propertyUse && (
+          {propertyUse && propertyUse.length > 0 && (
             <li className="flex items-center gap-1 text-body2">
               <img src={IconUsoInmueble.src} alt="Icono" />
-              <p>{propertyUse}</p>
+              <p>{formatPropertyUse(propertyUse)}</p>
             </li>
           )}
           {area && (

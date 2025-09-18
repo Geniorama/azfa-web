@@ -4,12 +4,14 @@ import strapiClient from "@/lib/strapi";
 interface QueryParams {
     populate: Record<string, unknown>;
     pagination?: Record<string, number>;
+    filters?: Record<string, any>;
 }
 
 export async function GET(request: NextRequest) {
     const { searchParams } = new URL(request.url);
     const populateParams: Record<string, string> = {};
     const paginationParams: Record<string, number> = {};
+    const filterParams: Record<string, any> = {};
 
     for (const [key, value] of searchParams.entries()) {
         if (key.startsWith('populate[')) {
@@ -25,6 +27,23 @@ export async function GET(request: NextRequest) {
                 const numValue = parseInt(value, 10);
                 if (!isNaN(numValue)) {
                     paginationParams[paginationKey] = numValue;
+                }
+            }
+        } else if (key.startsWith('filters[')) {
+            // Procesar filtros anidados como filters[offerType][$contains]
+            const filterMatch = key.match(/filters\[([^\]]+)\]\[([^\]]+)\]/);
+            if (filterMatch) {
+                const [, field, operator] = filterMatch;
+                if (!filterParams[field]) {
+                    filterParams[field] = {};
+                }
+                filterParams[field][operator] = value;
+            } else {
+                // Procesar filtros simples como filters[field]
+                const simpleMatch = key.match(/filters\[([^\]]+)\]/);
+                if (simpleMatch) {
+                    const filterKey = simpleMatch[1];
+                    filterParams[filterKey] = value;
                 }
             }
         }
@@ -43,6 +62,13 @@ export async function GET(request: NextRequest) {
             queryParams.pagination = paginationParams;
         }
 
+        // Agregar filtros si existen
+        if (Object.keys(filterParams).length > 0) {
+            queryParams.filters = filterParams;
+            console.log('Filtros procesados en API:', filterParams);
+        }
+
+        console.log('Query params finales:', queryParams);
         const realStateOffers = await strapiClient.collection("real-state-offers").find(queryParams);
 
         console.log('Raw Strapi response:', realStateOffers);
