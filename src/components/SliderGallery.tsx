@@ -33,7 +33,7 @@ export default function SliderGallery({ images, isPlatinum = false }: SliderGall
       >
         {images.map((image, index) => (
           <SwiperSlide key={index}>
-            <img src={image.url} alt={image.alternativeText || "Slider Gallery"} />
+            <img className="w-full h-full object-cover aspect-video" src={image.url} alt={image.alternativeText || "Slider Gallery"} />
           </SwiperSlide>
         ))}
       </Swiper>

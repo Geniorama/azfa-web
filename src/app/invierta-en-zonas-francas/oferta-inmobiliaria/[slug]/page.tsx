@@ -158,7 +158,7 @@ export default function OfertaInmobiliariaSingle() {
           <div className="container mx-auto px-4">
             <div className="flex flex-col md:flex-row gap-8">
               {/* Left side */}
-              <div className="w-full md:w-1/2">
+              <div className="w-full md:w-1/2 pt-16 -mr-18">
                 {inmueble.imgGallery && inmueble.imgGallery.length > 0 && (
                   <SliderGallery images={inmueble.imgGallery} />
                 )}
@@ -178,7 +178,7 @@ export default function OfertaInmobiliariaSingle() {
                       <img
                         src={IconTipoOferta.src}
                         alt="Tipo de oferta"
-                        className="w-4 h-4"
+                        className="w-[20px] h-[20px]"
                       />
                       <span className="text-body2">{inmueble.offerType.map(type => type.charAt(0).toUpperCase() + type.slice(1)).join(', ')}</span>
                     </div>
@@ -187,8 +187,8 @@ export default function OfertaInmobiliariaSingle() {
                     <div className="flex items-center gap-2 w-full md:w-1/2 border-b border-background-1 pb-3">
                       <img
                         src={IconTipoInmueble.src}
-                      alt="Tipo de inmueble"
-                        className="w-4 h-4"
+                        alt="Tipo de inmueble"
+                        className="w-[20px] h-[20px]"
                       />
                       <span className="text-body2">{inmueble.propertyType.map(type => type.charAt(0).toUpperCase() + type.slice(1)).join(', ')}</span>
                     </div>
@@ -198,7 +198,7 @@ export default function OfertaInmobiliariaSingle() {
                       <img
                         src={IconUso.src}
                         alt="Uso de inmueble"
-                        className="w-4 h-4"
+                        className="w-[20px] h-[20px]"
                       />
                       <span className="text-body2">{inmueble.propertyUse.map(use => use.charAt(0).toUpperCase() + use.slice(1)).join(', ')}</span>
                     </div>
@@ -208,7 +208,7 @@ export default function OfertaInmobiliariaSingle() {
                       <img
                       src={IconArea.src}
                       alt="Área de inmueble"
-                      className="w-4 h-4"
+                      className="w-[20px] h-[20px]"
                     />
                     <span className="text-body2">{inmueble.area}</span>
                     </div>
@@ -218,7 +218,7 @@ export default function OfertaInmobiliariaSingle() {
                       <img
                       src={IconEstado.src}
                       alt="Estado de inmueble"
-                      className="w-4 h-4"
+                      className="w-[20px] h-[20px]"
                     />
                     <span className="text-body2">
                       {inmueble.propertyStatus}
@@ -237,7 +237,7 @@ export default function OfertaInmobiliariaSingle() {
                       <img
                         src={IconCertificado.src}
                         alt="Certificado"
-                        className="w-4 h-4"
+                        className="w-[20px] h-[20px]"
                       />
                       <h3 className="text-body font-medium">Certificaciones</h3>
                     </div>
