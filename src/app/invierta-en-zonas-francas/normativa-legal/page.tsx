@@ -353,7 +353,7 @@ export default function NormativaLegal() {
             <img
               src={countryImageSelected}
               alt="countryImageSelected"
-              className="w-full max-w-lg border-2 border-white rounded-full"
+              className="w-full max-w-lg"
             />
           ) : (
             <MapOne onCountrySelect={handleMapCountrySelect} />
