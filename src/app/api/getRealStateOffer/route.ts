@@ -30,7 +30,7 @@ export async function GET(request: NextRequest) {
                 }
             }
         } else if (key.startsWith('filters[')) {
-            // Procesar filtros anidados como filters[offerType][$contains]
+            // Procesar filtros anidados como filters[offerType][$eq]
             const filterMatch = key.match(/filters\[([^\]]+)\]\[([^\]]+)\]/);
             if (filterMatch) {
                 const [, field, operator] = filterMatch;
@@ -69,37 +69,72 @@ export async function GET(request: NextRequest) {
         }
 
         console.log('Query params finales:', queryParams);
-        const realStateOffers = await strapiClient.collection("real-state-offers").find(queryParams);
-
-        console.log('Raw Strapi response:', realStateOffers);
-
-        // Asegurar que la respuesta tenga la estructura correcta de Strapi
-        if (realStateOffers && typeof realStateOffers === 'object') {
-            // Si la respuesta ya tiene la estructura correcta, devolverla tal como está
-            if (realStateOffers.data !== undefined) {
-                console.log('Response has data structure:', realStateOffers);
-                return NextResponse.json(realStateOffers);
-            } else if (Array.isArray(realStateOffers)) {
-                // Si es un array, envolverlo en la estructura correcta
-                console.log('Response is array, wrapping:', realStateOffers);
-                return NextResponse.json({
-                    data: realStateOffers,
-                    meta: { pagination: { page: 1, pageSize: 25, pageCount: 1, total: realStateOffers.length } }
-                });
+        
+        try {
+            const realStateOffers = await strapiClient.collection("real-state-offers").find(queryParams);
+            console.log('Raw Strapi response:', realStateOffers);
+            
+            // Asegurar que la respuesta tenga la estructura correcta de Strapi
+            if (realStateOffers && typeof realStateOffers === 'object') {
+                // Si la respuesta ya tiene la estructura correcta, devolverla tal como está
+                if (realStateOffers.data !== undefined) {
+                    console.log('Response has data structure:', realStateOffers);
+                    return NextResponse.json(realStateOffers);
+                } else if (Array.isArray(realStateOffers)) {
+                    // Si es un array, envolverlo en la estructura correcta
+                    console.log('Response is array, wrapping:', realStateOffers);
+                    return NextResponse.json({
+                        data: realStateOffers,
+                        meta: { pagination: { page: 1, pageSize: 25, pageCount: 1, total: realStateOffers.length } }
+                    });
+                } else {
+                    // Si es un objeto pero no tiene data, envolverlo
+                    console.log('Response is object, wrapping:', realStateOffers);
+                    return NextResponse.json({
+                        data: [realStateOffers],
+                        meta: { pagination: { page: 1, pageSize: 25, pageCount: 1, total: 1 } }
+                    });
+                }
             } else {
-                // Si es un objeto pero no tiene data, envolverlo
-                console.log('Response is object, wrapping:', realStateOffers);
-                return NextResponse.json({
-                    data: [realStateOffers],
-                    meta: { pagination: { page: 1, pageSize: 25, pageCount: 1, total: 1 } }
+                console.log('No valid response, returning empty data');
+                return NextResponse.json({ 
+                    data: [], 
+                    meta: { pagination: { page: 1, pageSize: 25, pageCount: 0, total: 0 } } 
                 });
             }
-        } else {
-            console.log('No valid response, returning empty data');
-            return NextResponse.json({ 
-                data: [], 
-                meta: { pagination: { page: 1, pageSize: 25, pageCount: 0, total: 0 } } 
-            });
+        } catch (strapiError) {
+            console.error('Strapi error:', strapiError);
+            
+            // Si hay un error con filtros, intentar sin filtros
+            if (Object.keys(filterParams).length > 0) {
+                console.log('Retrying without filters due to error...');
+                const fallbackParams: QueryParams = {
+                    populate: {
+                        imgGallery: true,
+                        ...populateParams
+                    }
+                };
+                
+                if (Object.keys(paginationParams).length > 0) {
+                    fallbackParams.pagination = paginationParams;
+                }
+                
+                const fallbackResponse = await strapiClient.collection("real-state-offers").find(fallbackParams);
+                console.log('Fallback response:', fallbackResponse);
+                
+                if (fallbackResponse && typeof fallbackResponse === 'object') {
+                    if (fallbackResponse.data !== undefined) {
+                        return NextResponse.json(fallbackResponse);
+                    } else if (Array.isArray(fallbackResponse)) {
+                        return NextResponse.json({
+                            data: fallbackResponse,
+                            meta: { pagination: { page: 1, pageSize: 25, pageCount: 1, total: fallbackResponse.length } }
+                        });
+                    }
+                }
+            }
+            
+            throw strapiError;
         }
     } catch (error) {
         console.error('Error fetching real state offers:', error);
