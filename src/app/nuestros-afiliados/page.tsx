@@ -137,7 +137,7 @@ function NuestrosAfiliadosContent() {
   const mapRef = useRef<MapGoogleRef>(null);
    
   // Usar la API real de afiliados
-  const { affiliates: apiAffiliates, loading, error } = useAffiliates(1, 50);
+  const { affiliates: apiAffiliates, loading, error } = useAffiliates();
   const [afiliados, setAfiliados] = useState<Afiliado[]>([]);
   const [allAffiliates, setAllAffiliates] = useState<Afiliado[]>([]); // Datos completos sin filtrar
 

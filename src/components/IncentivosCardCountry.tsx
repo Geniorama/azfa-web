@@ -14,9 +14,9 @@ interface IncentivosCardCountryProps {
 export default function IncentivosCardCountry({ index, country, numberZones, numberCompanies, directJobs, list, imgFlag }: IncentivosCardCountryProps) {
   return (
     <div className="pb-6">
-       <div className='flex flex-row items-center bg-[#E3EAF4] h-12'>
-          <span className='flex items-center bg-primary text-white justify-center p-3'>{index + 1}</span>
-          <span className='flex items-center text-text-primary px-3 text-[24px] flex-grow'>{country}</span>
+       <div className='flex flex-row items-center bg-[#E3EAF4] h-16'>
+          <span className='flex items-center bg-primary text-white justify-center p-3 h-16'>{index + 1}</span>
+          <span className='flex items-center text-text-primary px-3 text-[28px] flex-grow'>{country}</span>
           {/* Country flag */}
           {imgFlag && (
             <span className='flex items-center text-white justify-center p-3'>
