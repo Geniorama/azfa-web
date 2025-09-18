@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useRef, useEffect } from 'react'
+import { useState, useRef, useEffect, useMemo } from 'react'
 import SelectorFilter from '../utils/SelectorFilter'
 import IconTipoOferta from "@/assets/img/icon-oferta.svg"
 import IconTipoInmueble from "@/assets/img/icon-inmueble.svg"
@@ -181,12 +181,36 @@ export interface FilterValuesProps {
   propertyStatus: string;
 }
 
-interface AdvancedSearchBarProps {
-    onSearch: (filters: FilterValuesProps) => void;
+interface FilterOptions {
+  offerType: { label: string; value: string }[];
+  propertyType: { label: string; value: string }[];
+  propertyUse: { label: string; value: string }[];
+  city: { label: string; value: string }[];
+  country: { label: string; value: string }[];
+  propertyStatus: { label: string; value: string }[];
 }
 
-export default function AdvancedSearchBar({ onSearch }: AdvancedSearchBarProps) {
+interface AdvancedSearchBarProps {
+  onSearch: (filters: FilterValuesProps) => void;
+  options?: FilterOptions;
+  currentFilters?: FilterValuesProps;
+}
+
+export default function AdvancedSearchBar({ onSearch, options, currentFilters }: AdvancedSearchBarProps) {
   const [openFilter, setOpenFilter] = useState<string | null>(null)
+  
+  // Usar opciones por props o opciones por defecto
+  const filterOptions = useMemo(() => {
+    return options || {
+      offerType: optionsTipoOferta,
+      propertyType: optionsTipoInmueble,
+      propertyUse: optionsUsoInmueble,
+      city: optionsCiudad,
+      country: optionsPais,
+      propertyStatus: optionsEstado
+    };
+  }, [options]);
+  
   const [selectedValues, setSelectedValues] = useState<FilterValuesProps>({
     offerType: '',
     propertyType: '',
@@ -205,25 +229,44 @@ export default function AdvancedSearchBar({ onSearch }: AdvancedSearchBarProps) 
   })
   const containerRef = useRef<HTMLDivElement>(null)
 
-  // Inicializar valores por defecto
+  // Inicializar valores por defecto o usar filtros actuales
   useEffect(() => {
-    setSelectedValues({
-      offerType: optionsTipoOferta[0]?.label || '',
-      propertyType: optionsTipoInmueble[0]?.label || '',
-      propertyUse: optionsUsoInmueble[0]?.label || '',
-      city: optionsCiudad[0]?.label || '',
-      country: optionsPais[0]?.label || '',
-      propertyStatus: optionsEstado[0]?.label || ''
-    })
-    setSearchFilters({
-      offerType: optionsTipoOferta[0]?.value || '',
-      propertyType: optionsTipoInmueble[0]?.value || '',
-      propertyUse: optionsUsoInmueble[0]?.value || '',
-      city: optionsCiudad[0]?.value || '',
-      country: optionsPais[0]?.value || '',
-      propertyStatus: optionsEstado[0]?.value || ''
-    })
-  }, [])
+    if (currentFilters) {
+      // Si hay filtros actuales, encontrar los labels correspondientes
+      const getLabelFromValue = (value: string, options: Option[]) => {
+        const option = options.find(opt => opt.value === value);
+        return option ? option.label : value;
+      };
+
+      setSelectedValues({
+        offerType: getLabelFromValue(currentFilters.offerType, filterOptions.offerType),
+        propertyType: getLabelFromValue(currentFilters.propertyType, filterOptions.propertyType),
+        propertyUse: getLabelFromValue(currentFilters.propertyUse, filterOptions.propertyUse),
+        city: getLabelFromValue(currentFilters.city, filterOptions.city),
+        country: getLabelFromValue(currentFilters.country, filterOptions.country),
+        propertyStatus: getLabelFromValue(currentFilters.propertyStatus, filterOptions.propertyStatus)
+      });
+      setSearchFilters(currentFilters);
+    } else {
+      // Valores por defecto
+      setSelectedValues({
+        offerType: filterOptions.offerType[0]?.label || '',
+        propertyType: filterOptions.propertyType[0]?.label || '',
+        propertyUse: filterOptions.propertyUse[0]?.label || '',
+        city: filterOptions.city[0]?.label || '',
+        country: filterOptions.country[0]?.label || '',
+        propertyStatus: filterOptions.propertyStatus[0]?.label || ''
+      });
+      setSearchFilters({
+        offerType: filterOptions.offerType[0]?.value || '',
+        propertyType: filterOptions.propertyType[0]?.value || '',
+        propertyUse: filterOptions.propertyUse[0]?.value || '',
+        city: filterOptions.city[0]?.value || '',
+        country: filterOptions.country[0]?.value || '',
+        propertyStatus: filterOptions.propertyStatus[0]?.value || ''
+      });
+    }
+  }, [filterOptions, currentFilters])
 
   // Función para manejar la apertura/cierre de filtros
   const handleFilterToggle = (filterName: string) => {
@@ -278,8 +321,17 @@ export default function AdvancedSearchBar({ onSearch }: AdvancedSearchBarProps) 
   // Función para manejar la búsqueda
   const handleSearch = () => {
     if (onSearch) {
-      console.log('Filtros enviados (values):', searchFilters);
-      onSearch(searchFilters)
+      // Filtrar solo los valores que no son "todos" o vacíos
+      const activeFilters: FilterValuesProps = {
+        offerType: searchFilters.offerType !== 'todos' && searchFilters.offerType !== '' ? searchFilters.offerType : 'todos',
+        propertyType: searchFilters.propertyType !== 'todos' && searchFilters.propertyType !== '' ? searchFilters.propertyType : 'todos',
+        propertyUse: searchFilters.propertyUse !== 'todos' && searchFilters.propertyUse !== '' ? searchFilters.propertyUse : 'todos',
+        city: searchFilters.city !== 'todos' && searchFilters.city !== '' ? searchFilters.city : 'todos',
+        country: searchFilters.country !== 'todos' && searchFilters.country !== '' ? searchFilters.country : 'todos',
+        propertyStatus: searchFilters.propertyStatus !== 'todos' && searchFilters.propertyStatus !== '' ? searchFilters.propertyStatus : 'todos'
+      };
+      console.log('Filtros enviados (values):', activeFilters);
+      onSearch(activeFilters)
     }
   }
 
@@ -288,7 +340,7 @@ export default function AdvancedSearchBar({ onSearch }: AdvancedSearchBarProps) 
         <div className='flex flex-col md:flex-row gap-2 md:gap-4'>
             <div className='md:border-r border-text-text-secondary pr-4 py-4 w-full'>
                 <SelectorFilter 
-                  options={optionsTipoOferta} 
+                  options={filterOptions.offerType} 
                   selected={selectedValues.offerType} 
                   onChange={(value, label) => handleValueChange('offerType', value, label)} 
                   label='Tipo de Oferta' 
@@ -299,7 +351,7 @@ export default function AdvancedSearchBar({ onSearch }: AdvancedSearchBarProps) 
             </div>
             <div className='md:border-r border-text-text-secondary pr-4 py-4 w-full'>
                 <SelectorFilter 
-                  options={optionsTipoInmueble} 
+                  options={filterOptions.propertyType} 
                   selected={selectedValues.propertyType} 
                   onChange={(value, label) => handleValueChange('propertyType', value, label)} 
                   label='Tipo de Inmueble' 
@@ -310,7 +362,7 @@ export default function AdvancedSearchBar({ onSearch }: AdvancedSearchBarProps) 
             </div>
             <div className='md:border-r border-text-text-secondary pr-4 py-4 w-full'>
                 <SelectorFilter 
-                  options={optionsUsoInmueble} 
+                  options={filterOptions.propertyUse} 
                   selected={selectedValues.propertyUse} 
                   onChange={(value, label) => handleValueChange('propertyUse', value, label)} 
                   label='Uso de inmueble' 
@@ -321,7 +373,7 @@ export default function AdvancedSearchBar({ onSearch }: AdvancedSearchBarProps) 
             </div>
             <div className='md:border-r border-text-text-secondary pr-4 py-4 w-full'>
                 <SelectorFilter 
-                  options={optionsCiudad} 
+                  options={filterOptions.city} 
                   selected={selectedValues.city} 
                   onChange={(value, label) => handleValueChange('city', value, label)} 
                   label='Ciudad' 
@@ -332,7 +384,7 @@ export default function AdvancedSearchBar({ onSearch }: AdvancedSearchBarProps) 
             </div>
             <div className='md:border-r border-text-text-secondary pr-4 py-4 w-full'>
                 <SelectorFilter 
-                  options={optionsPais} 
+                  options={filterOptions.country} 
                   selected={selectedValues.country} 
                   onChange={(value, label) => handleValueChange('country', value, label)} 
                   label='País' 
@@ -343,7 +395,7 @@ export default function AdvancedSearchBar({ onSearch }: AdvancedSearchBarProps) 
             </div>
             <div className='pr-4 py-4 w-full'>
                 <SelectorFilter 
-                  options={optionsEstado} 
+                  options={filterOptions.propertyStatus} 
                   selected={selectedValues.propertyStatus} 
                   onChange={(value, label) => handleValueChange('propertyStatus', value, label)} 
                   label='Estado' 

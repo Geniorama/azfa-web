@@ -16,17 +16,19 @@ import { useRealStateOffers } from "@/hooks/useRealStateOffers";
 import { useState, useEffect } from "react";
 import { ContentType } from "@/types/contentType";
 import type { FilterValuesProps } from "@/components/AdvancedSearchBar";
+import { extractFilterOptions, FilterOptions } from "@/utils/extractFilterOptions";
 
 export default function OfertaInmobiliaria() {
   const [currentPage, setCurrentPage] = useState(1);
   const [pageContent, setPageContent] = useState<ContentType | null>(null);
+  const [filterOptions, setFilterOptions] = useState<FilterOptions | null>(null);
   const [searchFilters, setSearchFilters] = useState<FilterValuesProps>({
-    offerType: 'todos',
-    propertyType: 'todos',
-    propertyUse: 'todos',
-    city: 'todos',
-    country: 'todos',
-    propertyStatus: 'todos'
+    offerType: '',
+    propertyType: '',
+    propertyUse: '',
+    city: '',
+    country: '',
+    propertyStatus: ''
   });
   const pageSize = 9; // 3x3 grid
   
@@ -68,6 +70,11 @@ export default function OfertaInmobiliaria() {
 
   useEffect(() => {
     console.log('offers', offers);
+    // Extraer opciones de filtros de los inmuebles
+    if (offers.length > 0) {
+      const options = extractFilterOptions(offers);
+      setFilterOptions(options);
+    }
   }, [offers]);
 
   const handlePageChange = (page: number) => {
@@ -78,7 +85,19 @@ export default function OfertaInmobiliaria() {
 
   const handleSearch = (filters: FilterValuesProps) => {
     console.log('Filtros recibidos en página:', filters);
-    setSearchFilters(filters);
+    
+    // Solo actualizar filtros que no sean "todos" o vacíos
+    const activeFilters: FilterValuesProps = {
+      offerType: filters.offerType !== 'todos' && filters.offerType !== '' ? filters.offerType : '',
+      propertyType: filters.propertyType !== 'todos' && filters.propertyType !== '' ? filters.propertyType : '',
+      propertyUse: filters.propertyUse !== 'todos' && filters.propertyUse !== '' ? filters.propertyUse : '',
+      city: filters.city !== 'todos' && filters.city !== '' ? filters.city : '',
+      country: filters.country !== 'todos' && filters.country !== '' ? filters.country : '',
+      propertyStatus: filters.propertyStatus !== 'todos' && filters.propertyStatus !== '' ? filters.propertyStatus : ''
+    };
+    
+    console.log('Filtros activos aplicados:', activeFilters);
+    setSearchFilters(activeFilters);
     setCurrentPage(1); // Reset to first page when searching
     // Scroll to results
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -137,7 +156,11 @@ export default function OfertaInmobiliaria() {
 
       <section>
         <div className="container mx-auto px-4 md:px-16 md:-mt-24 z-1 mb-6 relative">
-          <AdvancedSearchBar onSearch={handleSearch} />
+            <AdvancedSearchBar 
+              onSearch={handleSearch} 
+              options={filterOptions || undefined} 
+              currentFilters={searchFilters}
+            />
         </div>
       </section>
 

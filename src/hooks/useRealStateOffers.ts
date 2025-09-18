@@ -73,26 +73,44 @@ export const useRealStateOffers = (page: number = 1, pageSize: number = 9, filte
         filterParams.append('pagination[page]', page.toString());
         filterParams.append('pagination[pageSize]', pageSize.toString());
         
-        // Agregar filtros si existen
+        // Agregar filtros solo si existen y no están vacíos
         if (filters) {
           console.log('Filtros recibidos en hook:', filters);
-          if (filters.offerType && filters.offerType !== 'todos') {
-            filterParams.append('filters[offerType][$contains]', filters.offerType);
+          let hasActiveFilters = false;
+          
+          if (filters.offerType && filters.offerType.trim() !== '') {
+            filterParams.append('filters[offerType][$eq]', filters.offerType);
+            console.log('Aplicando filtro offerType:', filters.offerType);
+            hasActiveFilters = true;
           }
-          if (filters.propertyType && filters.propertyType !== 'todos') {
-            filterParams.append('filters[propertyType][$contains]', filters.propertyType);
+          if (filters.propertyType && filters.propertyType.trim() !== '') {
+            filterParams.append('filters[propertyType][$eq]', filters.propertyType);
+            console.log('Aplicando filtro propertyType:', filters.propertyType);
+            hasActiveFilters = true;
           }
-          if (filters.propertyUse && filters.propertyUse !== 'todos') {
-            filterParams.append('filters[propertyUse][$contains]', filters.propertyUse);
+          if (filters.propertyUse && filters.propertyUse.trim() !== '') {
+            filterParams.append('filters[propertyUse][$eq]', filters.propertyUse);
+            console.log('Aplicando filtro propertyUse:', filters.propertyUse);
+            hasActiveFilters = true;
           }
-          if (filters.city && filters.city !== 'todos') {
+          if (filters.city && filters.city.trim() !== '') {
             filterParams.append('filters[city][$eq]', filters.city);
+            console.log('Aplicando filtro city:', filters.city);
+            hasActiveFilters = true;
           }
-          if (filters.country && filters.country !== 'todos') {
+          if (filters.country && filters.country.trim() !== '') {
             filterParams.append('filters[country][$eq]', filters.country);
+            console.log('Aplicando filtro country:', filters.country);
+            hasActiveFilters = true;
           }
-          if (filters.propertyStatus && filters.propertyStatus !== 'todos') {
+          if (filters.propertyStatus && filters.propertyStatus.trim() !== '') {
             filterParams.append('filters[propertyStatus][$eq]', filters.propertyStatus);
+            console.log('Aplicando filtro propertyStatus:', filters.propertyStatus);
+            hasActiveFilters = true;
+          }
+          
+          if (!hasActiveFilters) {
+            console.log('No hay filtros activos, obteniendo todos los inmuebles');
           }
         }
         
