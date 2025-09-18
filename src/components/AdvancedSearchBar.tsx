@@ -1,5 +1,6 @@
 "use client"
 
+import { useState, useRef, useEffect } from 'react'
 import SelectorFilter from '../utils/SelectorFilter'
 import IconTipoOferta from "@/assets/img/icon-oferta.svg"
 import IconTipoInmueble from "@/assets/img/icon-inmueble.svg"
@@ -173,26 +174,128 @@ const optionsEstado: Option[] = [
 ]
 
 export default function AdvancedSearchBar() {
+  const [openFilter, setOpenFilter] = useState<string | null>(null)
+  const [selectedValues, setSelectedValues] = useState({
+    tipoOferta: '',
+    tipoInmueble: '',
+    usoInmueble: '',
+    ciudad: '',
+    pais: '',
+    estado: ''
+  })
+  const containerRef = useRef<HTMLDivElement>(null)
+
+  // Función para manejar la apertura/cierre de filtros
+  const handleFilterToggle = (filterName: string) => {
+    setOpenFilter(openFilter === filterName ? null : filterName)
+  }
+
+  // Función para manejar cambios en los valores seleccionados
+  const handleValueChange = (filterName: string, value: string, label: string) => {
+    setSelectedValues(prev => ({
+      ...prev,
+      [filterName]: label // Guardar el label para mostrar visualmente
+    }))
+    setOpenFilter(null) // Cerrar el filtro después de seleccionar
+  }
+
+  // Función para cerrar todos los filtros
+  const closeAllFilters = () => {
+    setOpenFilter(null)
+  }
+
+  // Manejar clic fuera del contenedor
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (containerRef.current && !containerRef.current.contains(event.target as Node)) {
+        closeAllFilters()
+      }
+    }
+
+    // Manejar tecla ESC
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        closeAllFilters()
+      }
+    }
+
+    document.addEventListener('mousedown', handleClickOutside)
+    document.addEventListener('keydown', handleKeyDown)
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside)
+      document.removeEventListener('keydown', handleKeyDown)
+    }
+  }, [])
+
   return (
-    <div className='bg-white rounded-2xl shadow-lg p-5 md:border border-text-text-secondary'>
+    <div ref={containerRef} className='bg-white rounded-2xl shadow-lg p-5 md:border border-text-text-secondary'>
         <div className='flex flex-col md:flex-row gap-2 md:gap-4'>
             <div className='md:border-r border-text-text-secondary pr-4 py-4 w-full'>
-                <SelectorFilter options={optionsTipoOferta} selected={''} onChange={() => {}} label='Tipo de Oferta' icon={IconTipoOferta.src} />
+                <SelectorFilter 
+                  options={optionsTipoOferta} 
+                  selected={selectedValues.tipoOferta} 
+                  onChange={(value, label) => handleValueChange('tipoOferta', value, label)} 
+                  label='Tipo de Oferta' 
+                  icon={IconTipoOferta.src}
+                  isOpen={openFilter === 'tipoOferta'}
+                  onToggle={() => handleFilterToggle('tipoOferta')}
+                />
             </div>
             <div className='md:border-r border-text-text-secondary pr-4 py-4 w-full'>
-                <SelectorFilter options={optionsTipoInmueble} selected={''} onChange={() => {}} label='Tipo de Inmueble' icon={IconTipoInmueble.src} />
+                <SelectorFilter 
+                  options={optionsTipoInmueble} 
+                  selected={selectedValues.tipoInmueble} 
+                  onChange={(value, label) => handleValueChange('tipoInmueble', value, label)} 
+                  label='Tipo de Inmueble' 
+                  icon={IconTipoInmueble.src}
+                  isOpen={openFilter === 'tipoInmueble'}
+                  onToggle={() => handleFilterToggle('tipoInmueble')}
+                />
             </div>
             <div className='md:border-r border-text-text-secondary pr-4 py-4 w-full'>
-                <SelectorFilter options={optionsUsoInmueble} selected={''} onChange={() => {}} label='Uso de inmueble' icon={IconUsoInmueble.src} />
+                <SelectorFilter 
+                  options={optionsUsoInmueble} 
+                  selected={selectedValues.usoInmueble} 
+                  onChange={(value, label) => handleValueChange('usoInmueble', value, label)} 
+                  label='Uso de inmueble' 
+                  icon={IconUsoInmueble.src}
+                  isOpen={openFilter === 'usoInmueble'}
+                  onToggle={() => handleFilterToggle('usoInmueble')}
+                />
             </div>
             <div className='md:border-r border-text-text-secondary pr-4 py-4 w-full'>
-                <SelectorFilter options={optionsCiudad} selected={''} onChange={() => {}} label='Ciudad' icon={IconCiudad.src} />
+                <SelectorFilter 
+                  options={optionsCiudad} 
+                  selected={selectedValues.ciudad} 
+                  onChange={(value, label) => handleValueChange('ciudad', value, label)} 
+                  label='Ciudad' 
+                  icon={IconCiudad.src}
+                  isOpen={openFilter === 'ciudad'}
+                  onToggle={() => handleFilterToggle('ciudad')}
+                />
             </div>
             <div className='md:border-r border-text-text-secondary pr-4 py-4 w-full'>
-                <SelectorFilter options={optionsPais} selected={''} onChange={() => {}} label='País' icon={IconPais.src} />
+                <SelectorFilter 
+                  options={optionsPais} 
+                  selected={selectedValues.pais} 
+                  onChange={(value, label) => handleValueChange('pais', value, label)} 
+                  label='País' 
+                  icon={IconPais.src}
+                  isOpen={openFilter === 'pais'}
+                  onToggle={() => handleFilterToggle('pais')}
+                />
             </div>
             <div className='pr-4 py-4 w-full'>
-                <SelectorFilter options={optionsEstado} selected={''} onChange={() => {}} label='Estado' icon={IconEstado.src} />
+                <SelectorFilter 
+                  options={optionsEstado} 
+                  selected={selectedValues.estado} 
+                  onChange={(value, label) => handleValueChange('estado', value, label)} 
+                  label='Estado' 
+                  icon={IconEstado.src}
+                  isOpen={openFilter === 'estado'}
+                  onToggle={() => handleFilterToggle('estado')}
+                />
             </div>
             <div className='w-full md:w-20 md:h-20 flex flex-grow justify-end'>
                 <SearchButton />
