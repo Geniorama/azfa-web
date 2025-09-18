@@ -4,14 +4,14 @@ import strapiClient from "@/lib/strapi";
 interface QueryParams {
     populate: Record<string, unknown>;
     pagination?: Record<string, number>;
-    filters?: Record<string, any>;
+    filters?: Record<string, string | Record<string, string>>;
 }
 
 export async function GET(request: NextRequest) {
     const { searchParams } = new URL(request.url);
     const populateParams: Record<string, string> = {};
     const paginationParams: Record<string, number> = {};
-    const filterParams: Record<string, any> = {};
+    const filterParams: Record<string, string | Record<string, string>> = {};
 
     for (const [key, value] of searchParams.entries()) {
         if (key.startsWith('populate[')) {
@@ -37,7 +37,10 @@ export async function GET(request: NextRequest) {
                 if (!filterParams[field]) {
                     filterParams[field] = {};
                 }
-                filterParams[field][operator] = value;
+                // Type guard para asegurar que es un objeto
+                if (typeof filterParams[field] === 'object' && filterParams[field] !== null) {
+                    (filterParams[field] as Record<string, string>)[operator] = value;
+                }
             } else {
                 // Procesar filtros simples como filters[field]
                 const simpleMatch = key.match(/filters\[([^\]]+)\]/);
