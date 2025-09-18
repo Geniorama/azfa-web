@@ -42,12 +42,12 @@ interface PaginationInfo {
 }
 
 interface SearchFilters {
-  tipoOferta?: string;
-  tipoInmueble?: string;
-  usoInmueble?: string;
-  ciudad?: string;
-  pais?: string;
-  estado?: string;
+  offerType?: string;
+  propertyType?: string;
+  propertyUse?: string;
+  city?: string;
+  country?: string;
+  propertyStatus?: string;
 }
 
 export const useRealStateOffers = (page: number = 1, pageSize: number = 9, filters?: SearchFilters) => {
@@ -76,23 +76,23 @@ export const useRealStateOffers = (page: number = 1, pageSize: number = 9, filte
         // Agregar filtros si existen
         if (filters) {
           console.log('Filtros recibidos en hook:', filters);
-          if (filters.tipoOferta && filters.tipoOferta !== 'todos') {
-            filterParams.append('filters[offerType][$contains]', filters.tipoOferta);
+          if (filters.offerType && filters.offerType !== 'todos') {
+            filterParams.append('filters[offerType][$contains]', filters.offerType);
           }
-          if (filters.tipoInmueble && filters.tipoInmueble !== 'todos') {
-            filterParams.append('filters[propertyType][$contains]', filters.tipoInmueble);
+          if (filters.propertyType && filters.propertyType !== 'todos') {
+            filterParams.append('filters[propertyType][$contains]', filters.propertyType);
           }
-          if (filters.usoInmueble && filters.usoInmueble !== 'todos') {
-            filterParams.append('filters[propertyUse][$contains]', filters.usoInmueble);
+          if (filters.propertyUse && filters.propertyUse !== 'todos') {
+            filterParams.append('filters[propertyUse][$contains]', filters.propertyUse);
           }
-          if (filters.ciudad && filters.ciudad !== 'todos') {
-            filterParams.append('filters[city][$eq]', filters.ciudad);
+          if (filters.city && filters.city !== 'todos') {
+            filterParams.append('filters[city][$eq]', filters.city);
           }
-          if (filters.pais && filters.pais !== 'todos') {
-            filterParams.append('filters[country][$eq]', filters.pais);
+          if (filters.country && filters.country !== 'todos') {
+            filterParams.append('filters[country][$eq]', filters.country);
           }
-          if (filters.estado && filters.estado !== 'todos') {
-            filterParams.append('filters[propertyStatus][$eq]', filters.estado);
+          if (filters.propertyStatus && filters.propertyStatus !== 'todos') {
+            filterParams.append('filters[propertyStatus][$eq]', filters.propertyStatus);
           }
         }
         

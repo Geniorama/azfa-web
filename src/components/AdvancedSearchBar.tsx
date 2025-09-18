@@ -173,12 +173,12 @@ const optionsEstado: Option[] = [
 ]
 
 export interface FilterValuesProps {
-    tipoOferta: string;
-    tipoInmueble: string;
-    usoInmueble: string;
-    ciudad: string;
-    pais: string;
-    estado: string;
+  offerType: string;
+  propertyType: string;
+  propertyUse: string;
+  city: string;
+  country: string;
+  propertyStatus: string;
 }
 
 interface AdvancedSearchBarProps {
@@ -188,40 +188,40 @@ interface AdvancedSearchBarProps {
 export default function AdvancedSearchBar({ onSearch }: AdvancedSearchBarProps) {
   const [openFilter, setOpenFilter] = useState<string | null>(null)
   const [selectedValues, setSelectedValues] = useState<FilterValuesProps>({
-    tipoOferta: '',
-    tipoInmueble: '',
-    usoInmueble: '',
-    ciudad: '',
-    pais: '',
-    estado: ''
+    offerType: '',
+    propertyType: '',
+    propertyUse: '',
+    city: '',
+    country: '',
+    propertyStatus: ''
   })
   const [searchFilters, setSearchFilters] = useState<FilterValuesProps>({
-    tipoOferta: '',
-    tipoInmueble: '',
-    usoInmueble: '',
-    ciudad: '',
-    pais: '',
-    estado: ''
+    offerType: '',
+    propertyType: '',
+    propertyUse: '',
+    city: '',
+    country: '',
+    propertyStatus: ''
   })
   const containerRef = useRef<HTMLDivElement>(null)
 
   // Inicializar valores por defecto
   useEffect(() => {
     setSelectedValues({
-      tipoOferta: optionsTipoOferta[0]?.label || '',
-      tipoInmueble: optionsTipoInmueble[0]?.label || '',
-      usoInmueble: optionsUsoInmueble[0]?.label || '',
-      ciudad: optionsCiudad[0]?.label || '',
-      pais: optionsPais[0]?.label || '',
-      estado: optionsEstado[0]?.label || ''
+      offerType: optionsTipoOferta[0]?.label || '',
+      propertyType: optionsTipoInmueble[0]?.label || '',
+      propertyUse: optionsUsoInmueble[0]?.label || '',
+      city: optionsCiudad[0]?.label || '',
+      country: optionsPais[0]?.label || '',
+      propertyStatus: optionsEstado[0]?.label || ''
     })
     setSearchFilters({
-      tipoOferta: optionsTipoOferta[0]?.value || '',
-      tipoInmueble: optionsTipoInmueble[0]?.value || '',
-      usoInmueble: optionsUsoInmueble[0]?.value || '',
-      ciudad: optionsCiudad[0]?.value || '',
-      pais: optionsPais[0]?.value || '',
-      estado: optionsEstado[0]?.value || ''
+      offerType: optionsTipoOferta[0]?.value || '',
+      propertyType: optionsTipoInmueble[0]?.value || '',
+      propertyUse: optionsUsoInmueble[0]?.value || '',
+      city: optionsCiudad[0]?.value || '',
+      country: optionsPais[0]?.value || '',
+      propertyStatus: optionsEstado[0]?.value || ''
     })
   }, [])
 
@@ -289,67 +289,67 @@ export default function AdvancedSearchBar({ onSearch }: AdvancedSearchBarProps) 
             <div className='md:border-r border-text-text-secondary pr-4 py-4 w-full'>
                 <SelectorFilter 
                   options={optionsTipoOferta} 
-                  selected={selectedValues.tipoOferta} 
-                  onChange={(value, label) => handleValueChange('tipoOferta', value, label)} 
+                  selected={selectedValues.offerType} 
+                  onChange={(value, label) => handleValueChange('offerType', value, label)} 
                   label='Tipo de Oferta' 
                   icon={IconTipoOferta.src}
-                  isOpen={openFilter === 'tipoOferta'}
-                  onToggle={() => handleFilterToggle('tipoOferta')}
+                  isOpen={openFilter === 'offerType'}
+                  onToggle={() => handleFilterToggle('offerType')}
                 />
             </div>
             <div className='md:border-r border-text-text-secondary pr-4 py-4 w-full'>
                 <SelectorFilter 
                   options={optionsTipoInmueble} 
-                  selected={selectedValues.tipoInmueble} 
-                  onChange={(value, label) => handleValueChange('tipoInmueble', value, label)} 
+                  selected={selectedValues.propertyType} 
+                  onChange={(value, label) => handleValueChange('propertyType', value, label)} 
                   label='Tipo de Inmueble' 
                   icon={IconTipoInmueble.src}
-                  isOpen={openFilter === 'tipoInmueble'}
-                  onToggle={() => handleFilterToggle('tipoInmueble')}
+                  isOpen={openFilter === 'propertyType'}
+                  onToggle={() => handleFilterToggle('propertyType')}
                 />
             </div>
             <div className='md:border-r border-text-text-secondary pr-4 py-4 w-full'>
                 <SelectorFilter 
                   options={optionsUsoInmueble} 
-                  selected={selectedValues.usoInmueble} 
-                  onChange={(value, label) => handleValueChange('usoInmueble', value, label)} 
+                  selected={selectedValues.propertyUse} 
+                  onChange={(value, label) => handleValueChange('propertyUse', value, label)} 
                   label='Uso de inmueble' 
                   icon={IconUsoInmueble.src}
-                  isOpen={openFilter === 'usoInmueble'}
-                  onToggle={() => handleFilterToggle('usoInmueble')}
+                  isOpen={openFilter === 'propertyUse'}
+                  onToggle={() => handleFilterToggle('propertyUse')}
                 />
             </div>
             <div className='md:border-r border-text-text-secondary pr-4 py-4 w-full'>
                 <SelectorFilter 
                   options={optionsCiudad} 
-                  selected={selectedValues.ciudad} 
-                  onChange={(value, label) => handleValueChange('ciudad', value, label)} 
+                  selected={selectedValues.city} 
+                  onChange={(value, label) => handleValueChange('city', value, label)} 
                   label='Ciudad' 
                   icon={IconCiudad.src}
-                  isOpen={openFilter === 'ciudad'}
-                  onToggle={() => handleFilterToggle('ciudad')}
+                  isOpen={openFilter === 'city'}
+                  onToggle={() => handleFilterToggle('city')}
                 />
             </div>
             <div className='md:border-r border-text-text-secondary pr-4 py-4 w-full'>
                 <SelectorFilter 
                   options={optionsPais} 
-                  selected={selectedValues.pais} 
-                  onChange={(value, label) => handleValueChange('pais', value, label)} 
+                  selected={selectedValues.country} 
+                  onChange={(value, label) => handleValueChange('country', value, label)} 
                   label='País' 
                   icon={IconPais.src}
-                  isOpen={openFilter === 'pais'}
-                  onToggle={() => handleFilterToggle('pais')}
+                  isOpen={openFilter === 'country'}
+                  onToggle={() => handleFilterToggle('country')}
                 />
             </div>
             <div className='pr-4 py-4 w-full'>
                 <SelectorFilter 
                   options={optionsEstado} 
-                  selected={selectedValues.estado} 
-                  onChange={(value, label) => handleValueChange('estado', value, label)} 
+                  selected={selectedValues.propertyStatus} 
+                  onChange={(value, label) => handleValueChange('propertyStatus', value, label)} 
                   label='Estado' 
                   icon={IconEstado.src}
-                  isOpen={openFilter === 'estado'}
-                  onToggle={() => handleFilterToggle('estado')}
+                  isOpen={openFilter === 'propertyStatus'}
+                  onToggle={() => handleFilterToggle('propertyStatus')}
                 />
             </div>
             <div className='w-full md:w-20 md:h-20 flex flex-grow justify-end'>

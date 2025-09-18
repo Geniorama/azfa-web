@@ -21,12 +21,12 @@ export default function OfertaInmobiliaria() {
   const [currentPage, setCurrentPage] = useState(1);
   const [pageContent, setPageContent] = useState<ContentType | null>(null);
   const [searchFilters, setSearchFilters] = useState<FilterValuesProps>({
-    tipoOferta: 'todos',
-    tipoInmueble: 'todos',
-    usoInmueble: 'todos',
-    ciudad: 'todos',
-    pais: 'todos',
-    estado: 'todos'
+    offerType: 'todos',
+    propertyType: 'todos',
+    propertyUse: 'todos',
+    city: 'todos',
+    country: 'todos',
+    propertyStatus: 'todos'
   });
   const pageSize = 9; // 3x3 grid
   
