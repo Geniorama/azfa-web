@@ -37,17 +37,20 @@ const createUniqueOptionsFromArrays = (arrays: string[][], includeTodos: boolean
 };
 
 // Función para validar valores conocidos
-const validateOfferType = (value: string): boolean => {
+const validateOfferType = (value: string | undefined): boolean => {
+  if (!value) return false;
   const validOfferTypes = ['venta', 'alquiler', 'venta-y-alquiler', 'arriendo'];
   return validOfferTypes.includes(value.toLowerCase());
 };
 
-const validatePropertyType = (value: string): boolean => {
+const validatePropertyType = (value: string | undefined): boolean => {
+  if (!value) return false;
   const validPropertyTypes = ['casa', 'terreno', 'local', 'oficina', 'apartamento'];
   return validPropertyTypes.includes(value.toLowerCase());
 };
 
-const validatePropertyUse = (value: string): boolean => {
+const validatePropertyUse = (value: string | undefined): boolean => {
+  if (!value) return false;
   const validPropertyUses = ['industria', 'oficinas', 'comercial', 'residencial', 'hotel', 'terreno'];
   return validPropertyUses.includes(value.toLowerCase());
 };
@@ -57,14 +60,14 @@ export const extractFilterOptions = (offers: InmuebleType[]): FilterOptions => {
   const offerTypes = offers.map(offer => offer.offerType).filter(Boolean).flat();
   const propertyTypes = offers.map(offer => offer.propertyType).filter(Boolean).flat();
   const propertyUses = offers.map(offer => offer.propertyUse).filter(Boolean).flat();
-  const cities = offers.map(offer => offer.city).filter(Boolean);
-  const countries = offers.map(offer => offer.country).filter(Boolean);
-  const propertyStatuses = offers.map(offer => offer.propertyStatus).filter(Boolean);
+  const cities = offers.map(offer => offer.city).filter(Boolean) as string[];
+  const countries = offers.map(offer => offer.country).filter(Boolean) as string[];
+  const propertyStatuses = offers.map(offer => offer.propertyStatus).filter(Boolean) as string[];
 
   // Filtrar solo valores válidos para evitar errores en Strapi
-  const validOfferTypes = offerTypes.filter(validateOfferType);
-  const validPropertyTypes = propertyTypes.filter(validatePropertyType);
-  const validPropertyUses = propertyUses.filter(validatePropertyUse);
+  const validOfferTypes = offerTypes.filter(validateOfferType) as string[];
+  const validPropertyTypes = propertyTypes.filter(validatePropertyType) as string[];
+  const validPropertyUses = propertyUses.filter(validatePropertyUse) as string[];
 
   return {
     offerType: createUniqueOptionsFromArrays([validOfferTypes]),
