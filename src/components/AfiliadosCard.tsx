@@ -50,7 +50,7 @@ export default function AfiliadosCard({ index, logo, title, name, position, city
           {email && (
             <div className="flex flex-row items-center gap-2">
               <img src={IconEmail.src} alt="email" className="w-4 h-4" />
-              <p className="text-body font-light">{email}</p>
+              <a href={`mailto:${email}`} className="text-body font-light hover:underline">{email}</a>
             </div>
           )}
 
@@ -58,7 +58,14 @@ export default function AfiliadosCard({ index, logo, title, name, position, city
           {website && (
             <div className="flex flex-row items-center gap-2">
               <FiGlobe />
-              <p className="text-body font-light">{website}</p>
+              <a 
+                href={website.startsWith('http') ? website : `https://${website}`} 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="text-body font-light hover:underline"
+              >
+                {website}
+              </a>
             </div>
           )}
         </div>

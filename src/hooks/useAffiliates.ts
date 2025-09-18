@@ -55,14 +55,14 @@ interface PaginationInfo {
   total: number;
 }
 
-export const useAffiliates = (page: number = 1, pageSize: number = 25) => {
+export const useAffiliates = () => {
   const [affiliates, setAffiliates] = useState<Affiliate[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [pagination, setPagination] = useState<PaginationInfo>({
     page: 1,
-    pageSize: 25,
-    pageCount: 0,
+    pageSize: 0,
+    pageCount: 1,
     total: 0
   });
 
@@ -72,7 +72,7 @@ export const useAffiliates = (page: number = 1, pageSize: number = 25) => {
         setLoading(true);
         setError(null);
         
-        const response = await fetch(`/api/getAffiliate?page=${page}&pageSize=${pageSize}`);
+        const response = await fetch(`/api/getAffiliate`);
         
         if (!response.ok) {
           throw new Error('Error al obtener los afiliados');
@@ -81,7 +81,12 @@ export const useAffiliates = (page: number = 1, pageSize: number = 25) => {
         const data: StrapiResponse = await response.json();
         
         if (data.success && data.data && Array.isArray(data.data)) {
-          setAffiliates(data.data);
+          // Ordenar afiliados alfabéticamente por title
+          const sortedAffiliates = data.data.sort((a, b) => {
+            return a.title.localeCompare(b.title, 'es', { sensitivity: 'base' });
+          });
+          
+          setAffiliates(sortedAffiliates);
           if (data.meta?.pagination) {
             setPagination(data.meta.pagination);
           }
@@ -98,7 +103,7 @@ export const useAffiliates = (page: number = 1, pageSize: number = 25) => {
     };
 
     fetchAffiliates();
-  }, [page, pageSize]);
+  }, []);
 
   return {
     affiliates,
