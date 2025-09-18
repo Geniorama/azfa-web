@@ -29,7 +29,7 @@ export default function CardInmueble({
 }: InmuebleType) {
   const router = useRouter();
   return (
-    <div className={`card-inmueble-${id} bg-white shadow-lg rounded-tr-2xl rounded-bl-2xl rounded-br-2xl overflow-hidden hover:shadow-2xl transition-all duration-300}`}>
+    <div className={`card-inmueble-${id} bg-white rounded-tr-2xl shadow-none rounded-bl-2xl rounded-br-2xl overflow-hidden hover:shadow-lg transition-all duration-300}`}>
       <div className="relative">
         <img
           src={image || PhotoExample.src}
@@ -83,7 +83,7 @@ export default function CardInmueble({
         </ul>
         <hr className="my-4 border-slate-300" />
         <Button
-          onClick={() => router.push(`/oferta-inmobiliaria/${slug}`)}
+          onClick={() => router.push(`/invierta-en-zonas-francas/oferta-inmobiliaria/${slug}`)}
           icon={true}
           fullWidth={true}
           className="mt-4 bg-white text-text-primary hover:bg-text-secondary hover:text-white"
