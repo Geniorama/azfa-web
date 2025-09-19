@@ -40,6 +40,9 @@ export async function GET(request: NextRequest) {
 
     //  Get content by slug
     try {
+        console.log('Query params for content:', queryParams);
+        console.log('Populate being used:', queryParams.populate);
+        
         const content = await strapiClient.collection('contents').find({
             filters: {
                 slug: {

@@ -5,6 +5,10 @@ export interface HeadingType {
     description?: string;
     alignment?: "left" | "center" | "right";
     imageUrl?: string;
+    backgroundImg?: {
+        url: string;
+        alternativeText?: string;
+    };
 }
 export interface DownloadType {
     id: number;
@@ -62,3 +66,25 @@ export interface AffiliateType {
     publishedAt: string;
   };
 }
+
+export interface ImageType {
+  url?: string;
+  alternativeText?: string;
+}
+
+export interface SlideData {
+  __component?: string;
+  title?: string;
+  icon?: ImageType;
+  content?: HeadingType;
+  id?: number;
+}
+
+export interface SliderData {
+  __component?: string;
+  title?: string;
+  slides?: SlideData[];
+  id?: number;
+  icon?: ImageType;
+}
+
