@@ -10,7 +10,6 @@ import SliderArrowLeft from "@/utils/SliderArrowLeft";
 import SliderArrowRight from "@/utils/SliderArrowRight";
 import ServicioInfoImg from "@/assets/img/icon-home-informacion 1.svg";
 import IconIntroStar from "@/assets/img/icon-home-trayectoria-AZFA 2.svg";
-import CoverVideo from "@/assets/img/cover-video.jpg";
 import LogoCodevi from "@/assets/img/CODEVI 2.png";
 import { IoMdPlay } from "react-icons/io";
 import TitleDecorative from "@/utils/TitleDecorative";
@@ -27,28 +26,56 @@ import SlideSingleTestimonial from "@/components/SlideSingleTestimonial";
 import Modal from "@/components/Modal";
 import { useState, useEffect } from "react";
 import LogoAmpip from "@/assets/img/logo-ampip 4.png";
-import { SliderData } from "@/types/componentsType";
+import {
+  IntroData,
+  SliderData,
+  TwoColumnsData,
+  ServicesGridData,
+} from "@/types/componentsType";
+import { ContentType } from "@/types/contentType";
+import ReactMarkdown from "react-markdown";
+import rehypeRaw from "rehype-raw";
 
 interface HomeViewProps {
-  content: {
-    title?: string;
-    description?: string;
-    sections?: [];
-  };
+  content: ContentType;
 }
 
 export default function HomeView({ content }: HomeViewProps) {
   const router = useRouter();
   const [openModalVideo, setOpenModalVideo] = useState(false);
-  const [pageData, setPageData] = useState<Record<string, unknown> | null>(
+  const [pageData, setPageData] = useState<ContentType | null>(null);
+  const [sliderData, setSliderData] = useState<SliderData | null>(null);
+  const [introData, setIntroData] = useState<IntroData | null>(null);
+  const [twoColumnsData, setTwoColumnsData] = useState<TwoColumnsData | null>(
     null
   );
-  const [sliderData, setSliderData] = useState<SliderData | null>(null);
-
+  const [servicesData, setServicesData] = useState<ServicesGridData | null>(
+    null
+  );
 
   useEffect(() => {
     setPageData(content);
-    setSliderData(content.sections?.find((section: Record<string, unknown>) => section.__component === "sections.slider") as SliderData | null);
+    const foundSlider = content.sections?.find(
+      (section) => section.__component === "sections.slider"
+    );
+    setSliderData(foundSlider ? (foundSlider as SliderData) : null);
+
+    const foundIntro = content.sections?.find(
+      (section) => section.__component === "sections.intro"
+    );
+    setIntroData(foundIntro ? (foundIntro as IntroData) : null);
+
+    const foundTwoColumns = content.sections?.find(
+      (section) => section.__component === "sections.two-columns-section"
+    );
+    setTwoColumnsData(
+      foundTwoColumns ? (foundTwoColumns as TwoColumnsData) : null
+    );
+
+    const foundServices = content.sections?.find(
+      (section) => section.__component === "sections.services-grid"
+    );
+    setServicesData(foundServices ? (foundServices as ServicesGridData) : null);
   }, [content]);
 
   useEffect(() => {
@@ -58,19 +85,37 @@ export default function HomeView({ content }: HomeViewProps) {
   useEffect(() => {
     console.log("sliderData", sliderData);
   }, [sliderData]);
-  
+
   return (
     <>
       <Modal open={openModalVideo} onClose={() => setOpenModalVideo(false)}>
         <div className="bg-black overflow-hidden">
-          <video
-            src={"/2320331_Downtown_Los_Angeles_1280x720.mp4"}
-            autoPlay
-            muted
-            loop
-            className="w-full h-auto max-h-[80vh] aspect-video"
-            controls
-          />
+          {twoColumnsData?.video?.uploadedVideo?.url && (
+            <video
+              src={twoColumnsData?.video?.uploadedVideo?.url}
+              autoPlay
+              muted
+              loop
+            />
+          )}
+          {twoColumnsData?.video?.youtubeUrl && (
+            <iframe
+              src={twoColumnsData?.video?.youtubeUrl}
+              title="YouTube video player"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+              referrerPolicy="strict-origin-when-cross-origin"
+              allowFullScreen
+            ></iframe>
+          )}
+          {twoColumnsData?.video?.vimeoUrl && (
+            <iframe
+              src={twoColumnsData?.video?.vimeoUrl}
+              title="Vimeo video player"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+              referrerPolicy="strict-origin-when-cross-origin"
+              allowFullScreen
+            ></iframe>
+          )}
         </div>
       </Modal>
       {sliderData && sliderData.slides && sliderData.slides.length > 0 && (
@@ -89,14 +134,21 @@ export default function HomeView({ content }: HomeViewProps) {
             >
               {sliderData.slides?.map((slide, index) => {
                 return (
-                  <SwiperSlide style={{backgroundImage: `url(${slide.content?.backgroundImg?.url})`}} className="h-full pt-24 bg-cover bg-center bg-no-repeat" key={index}>
+                  <SwiperSlide
+                    style={{
+                      backgroundImage: `url(${slide.content?.backgroundImg?.url})`,
+                    }}
+                    className="h-full pt-24 bg-cover bg-center bg-no-repeat"
+                    key={index}
+                  >
                     <SlideSingleHome
-                      caption={slide.content?.smallTitle || "Oferta Inmobiliaria"}
-                      title={slide.content?.title || "Zonas Francas de Iberoamérica"}
-                      description={slide.content?.description || "Oferta inmobiliaria lorem ipsum sit amet"}
+                      caption={slide.content?.smallTitle || ""}
+                      title={slide.content?.title || ""}
+                      description={slide.content?.description || ""}
                       button={{
-                        label: "Ver más",
-                        onClick: () => router.push("/oferta-inmobiliaria"),
+                        label: slide.content?.button?.text || "",
+                        onClick: () =>
+                          router.push(slide.content?.button?.link || ""),
                       }}
                     />
                   </SwiperSlide>
@@ -113,23 +165,25 @@ export default function HomeView({ content }: HomeViewProps) {
                 </div>
                 <hr className="my-8 border-background-3" />
                 <div className="flex items-start justify-center gap-4 max-w-screen-md mx-auto">
-                  
                   {sliderData.slides?.map((slide, index) => {
                     return (
-                      <div key={index} className="flex flex-col lg:flex-row items-center lg:items-start gap-2 w-full lg:w-1/3 justify-center">
+                      <div
+                        key={index}
+                        className="flex flex-col lg:flex-row items-center lg:items-start gap-2 w-full lg:w-1/3 justify-center"
+                      >
                         <img
-                        className="w-12"
-                        src={slide?.icon?.url || ServicioInfoImg.src}
-                        alt={
+                          className="w-12"
+                          src={slide?.icon?.url || ServicioInfoImg.src}
+                          alt={
                             slide?.title ||
                             "Servicio de información especializada"
-                        }
+                          }
                         />
                         <p className="text-body2 text-center lg:text-left">
-                        {slide?.title ||
+                          {slide?.title ||
                             "Servicio de información especializada"}
                         </p>
-                    </div>
+                      </div>
                     );
                   })}
                 </div>
@@ -139,188 +193,209 @@ export default function HomeView({ content }: HomeViewProps) {
         </section>
       )}
 
-      <section className="bg-white lg:pb-16 pt-16 pb-0">
-        <div className="container mx-auto px-4">
-          <div className="flex flex-col lg:flex-row items-center justify-center text-text-primary lg:gap-16 gap-6 w-full lg:w-2/3 mx-auto">
-            <img
-              className="w-[109px] lg:w-60"
-              src={IconIntroStar.src}
-              alt="Servicio de información especializada"
-            />
-            <p className="lg:text-h3 text-h4 font-light text-center lg:text-left">
-              Con más de <span className="text-details">27 años</span> de
-              trayectoria, la AZFA es la organización que lidera y representa al
-              ecosistema de zonas francas en Iberoamérica.
-            </p>
-          </div>
-        </div>
-      </section>
-
-      <section className="bg-white lg:py-16 py-10">
-        <div className="container mx-auto lg:px-4">
-          <div className="flex flex-col lg:flex-row items-center justify-center text-text-primary">
-            <div className="w-full lg:w-1/2">
-              <div className="relative">
-                <img
-                  src={CoverVideo.src}
-                  alt="Cover Video"
-                  className="w-full lg:rounded-2xl lg:rounded-tl-none"
-                />
-                <div className="absolute top-0 left-0 w-full h-full flex items-center justify-center">
-                  <button
-                    onClick={() => setOpenModalVideo(true)}
-                    className="bg-white/20 rounded-full cursor-pointer flex items-center justify-center w-28 h-28 hover:scale-110 transition-all duration-300"
-                  >
-                    <IoMdPlay className="text-white text-5xl translate-x-0.5" />
-                  </button>
-                </div>
+      {introData && (
+        <section className="bg-white lg:pb-16 pt-16 pb-0">
+          <div className="container mx-auto px-4">
+            <div className="flex flex-col lg:flex-row items-center justify-center text-text-primary lg:gap-16 gap-6 w-full lg:w-2/3 mx-auto">
+              <img
+                className="w-[109px] lg:w-60"
+                src={introData.icon?.url || IconIntroStar.src}
+                alt={
+                  introData.icon?.alternativeText ||
+                  "Servicio de información especializada"
+                }
+              />
+              <div className="lg:text-h3 text-h4 font-light text-center lg:text-left">
+                <ReactMarkdown rehypePlugins={[rehypeRaw]}>
+                  {introData.content}
+                </ReactMarkdown>
               </div>
             </div>
+          </div>
+        </section>
+      )}
 
-            <div className="w-full lg:w-1/2 lg:pl-30 text-body1 p-4 lg:p-0">
-              <p>
-                Agrupamos a los actores clave del sector: parques de zonas
-                francas, asociaciones nacionales, entidades gubernamentales,
-                empresas proveedoras de servicios y compañías instaladas bajo el
-                régimen franco, consolidando una red regional estratégica.{" "}
-                <br /> <br />
-                Nuestra misión es{" "}
-                <span className="text-details">
-                  imparar la competitividad, la innovación, la atracción de
-                  inversiones{" "}
-                </span>{" "}
-                y el desarrollo sostenible en las zonas francas, posicionándolas
-                como pilares del crecimiento económico regional y del comercio
-                internacional.
-              </p>
+      {/* Two Columns Section */}
+      {twoColumnsData && (
+        <section className="bg-white lg:py-16 py-10">
+          <div className="container mx-auto lg:px-4">
+            <div
+              className={`flex flex-col lg:flex-row items-center justify-center text-text-primary ${
+                twoColumnsData.positionContent === "left"
+                  ? "lg:flex-row-reverse"
+                  : "lg:flex-row"
+              }`}
+            >
+              <div className="w-full lg:w-1/2">
+                <div className="relative">
+                  <img
+                    src={
+                      twoColumnsData.cover?.url ||
+                      twoColumnsData.video?.thumbnail?.url ||
+                      ""
+                    }
+                    alt={
+                      twoColumnsData.cover?.alternativeText ||
+                      twoColumnsData.video?.thumbnail?.alternativeText ||
+                      ""
+                    }
+                    className="w-full lg:rounded-2xl lg:rounded-tl-none"
+                  />
+                  {(twoColumnsData.video?.uploadedVideo?.url ||
+                    twoColumnsData.video?.youtubeUrl ||
+                    twoColumnsData.video?.vimeoUrl) && (
+                    <div className="absolute top-0 left-0 w-full h-full flex items-center justify-center">
+                      <button
+                        onClick={() => setOpenModalVideo(true)}
+                        className="bg-white/20 rounded-full cursor-pointer flex items-center justify-center w-28 h-28 hover:scale-110 transition-all duration-300"
+                      >
+                        <IoMdPlay className="text-white text-5xl translate-x-0.5" />
+                      </button>
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              <div
+                className={`w-full lg:w-1/2 text-body1 lg:p-0 p-4 lg:${
+                  twoColumnsData.positionContent === "left" ? "pr-30" : "pl-30"
+                }`}
+              >
+                <ReactMarkdown rehypePlugins={[rehypeRaw]}>
+                  {twoColumnsData.content}
+                </ReactMarkdown>
+              </div>
             </div>
           </div>
-        </div>
-      </section>
+        </section>
+      )}
 
-      <section className="bg-white lg:pt-16">
-        <div className="container mx-auto px-4">
-          <TitleDecorative>Nuestros Servicios</TitleDecorative>
-        </div>
+      {/* Services Grid */}
+      {servicesData && (
+        <section className="bg-white lg:pt-16">
+          <div className="container mx-auto px-4">
+            <TitleDecorative>{servicesData.title}</TitleDecorative>
+          </div>
 
-        {/* Services cards */}
-        <div className="hidden lg:grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-[1px] mt-16">
-          <ServiceCard
-            title="Servicio 1"
-            subtitle="Servicio"
-            image={"https://placehold.co/600x1000/10356B/FFFFFF"}
-            button={{
-              label: "Ver más",
-              onClick: () => router.push("/servicio-1"),
-            }}
-          />
-          <ServiceCard
-            title="Información especializada del sector"
-            subtitle="Servicio"
-            image={"https://placehold.co/600x1000/10356B/FFFFFF"}
-            button={{
-              label: "Ver más",
-              onClick: () => router.push("/servicio-2"),
-            }}
-          />
-          <ServiceCard
-            title="Conozca nuestros miembros"
-            subtitle="Servicio"
-            image={"https://placehold.co/600x1000/10356B/FFFFFF"}
-            button={{
-              label: "Ver más",
-              onClick: () => router.push("/servicio-3"),
-            }}
-          />
-          <ServiceCard
-            title="Conozca los beneficios de hacer parte de AZFA"
-            subtitle="Servicio"
-            image={"https://placehold.co/600x1000/10356B/FFFFFF"}
-            button={{
-              label: "Ver más",
-              onClick: () => router.push("/servicio-4"),
-            }}
-          />
-          <ServiceCard
-            title="Servicio 5"
-            subtitle="Servicio"
-            image={"https://placehold.co/600x1000/10356B/FFFFFF"}
-            button={{
-              label: "Ver más",
-              onClick: () => router.push("/servicio-5"),
-            }}
-          />
-        </div>
+          {/* Services cards */}
+          <div className="hidden lg:grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-[1px] mt-16">
+            <ServiceCard
+              title="Servicio 1"
+              subtitle="Servicio"
+              image={"https://placehold.co/600x1000/10356B/FFFFFF"}
+              button={{
+                label: "Ver más",
+                onClick: () => router.push("/servicio-1"),
+              }}
+            />
+            <ServiceCard
+              title="Información especializada del sector"
+              subtitle="Servicio"
+              image={"https://placehold.co/600x1000/10356B/FFFFFF"}
+              button={{
+                label: "Ver más",
+                onClick: () => router.push("/servicio-2"),
+              }}
+            />
+            <ServiceCard
+              title="Conozca nuestros miembros"
+              subtitle="Servicio"
+              image={"https://placehold.co/600x1000/10356B/FFFFFF"}
+              button={{
+                label: "Ver más",
+                onClick: () => router.push("/servicio-3"),
+              }}
+            />
+            <ServiceCard
+              title="Conozca los beneficios de hacer parte de AZFA"
+              subtitle="Servicio"
+              image={"https://placehold.co/600x1000/10356B/FFFFFF"}
+              button={{
+                label: "Ver más",
+                onClick: () => router.push("/servicio-4"),
+              }}
+            />
+            <ServiceCard
+              title="Servicio 5"
+              subtitle="Servicio"
+              image={"https://placehold.co/600x1000/10356B/FFFFFF"}
+              button={{
+                label: "Ver más",
+                onClick: () => router.push("/servicio-5"),
+              }}
+            />
+          </div>
 
-        {/* Services cards mobile swiper */}
-        <div className="lg:hidden mt-14">
-          <Swiper
-            modules={[Pagination]}
-            spaceBetween={50}
-            slidesPerView={1}
-            pagination={{
-              clickable: true,
-            }}
-            className="[&>.swiper-pagination]:!relative [&>.swiper-pagination]:!top-0 [&>.swiper-pagination]:py-12 [&>.swiper-pagination>span]:!border [&>.swiper-pagination>span]:!border-details [&>.swiper-pagination>span]:!bg-transparent [&>.swiper-pagination>span]:!opacity-100 [&>.swiper-pagination>span.swiper-pagination-bullet-active]:!bg-details [&>.swiper-pagination>span]:!cursor-pointer"
-          >
-            <SwiperSlide>
-              <ServiceCard
-                title="Servicio 1"
-                subtitle="Servicio"
-                image={"https://placehold.co/600x1000/10356B/FFFFFF"}
-                button={{
-                  label: "Ver más",
-                  onClick: () => router.push("/servicio-1"),
-                }}
-              />
-            </SwiperSlide>
-            <SwiperSlide>
-              <ServiceCard
-                title="Servicio 2"
-                subtitle="Servicio"
-                image={"https://placehold.co/600x1000/10356B/FFFFFF"}
-                button={{
-                  label: "Ver más",
-                  onClick: () => router.push("/servicio-2"),
-                }}
-              />
-            </SwiperSlide>
-            <SwiperSlide>
-              <ServiceCard
-                title="Servicio 3"
-                subtitle="Servicio"
-                image={"https://placehold.co/600x1000/10356B/FFFFFF"}
-                button={{
-                  label: "Ver más",
-                  onClick: () => router.push("/servicio-3"),
-                }}
-              />
-            </SwiperSlide>
-            <SwiperSlide>
-              <ServiceCard
-                title="Servicio 4"
-                subtitle="Servicio"
-                image={"https://placehold.co/600x1000/10356B/FFFFFF"}
-                button={{
-                  label: "Ver más",
-                  onClick: () => router.push("/servicio-4"),
-                }}
-              />
-            </SwiperSlide>
-            <SwiperSlide>
-              <ServiceCard
-                title="Servicio 5"
-                subtitle="Servicio"
-                image={"https://placehold.co/600x1000/10356B/FFFFFF"}
-                button={{
-                  label: "Ver más",
-                  onClick: () => router.push("/servicio-5"),
-                }}
-              />
-            </SwiperSlide>
-          </Swiper>
-        </div>
-      </section>
+          {/* Services cards mobile swiper */}
+          <div className="lg:hidden mt-14">
+            <Swiper
+              modules={[Pagination]}
+              spaceBetween={50}
+              slidesPerView={1}
+              pagination={{
+                clickable: true,
+              }}
+              className="[&>.swiper-pagination]:!relative [&>.swiper-pagination]:!top-0 [&>.swiper-pagination]:py-12 [&>.swiper-pagination>span]:!border [&>.swiper-pagination>span]:!border-details [&>.swiper-pagination>span]:!bg-transparent [&>.swiper-pagination>span]:!opacity-100 [&>.swiper-pagination>span.swiper-pagination-bullet-active]:!bg-details [&>.swiper-pagination>span]:!cursor-pointer"
+            >
+              <SwiperSlide>
+                <ServiceCard
+                  title="Servicio 1"
+                  subtitle="Servicio"
+                  image={"https://placehold.co/600x1000/10356B/FFFFFF"}
+                  button={{
+                    label: "Ver más",
+                    onClick: () => router.push("/servicio-1"),
+                  }}
+                />
+              </SwiperSlide>
+              <SwiperSlide>
+                <ServiceCard
+                  title="Servicio 2"
+                  subtitle="Servicio"
+                  image={"https://placehold.co/600x1000/10356B/FFFFFF"}
+                  button={{
+                    label: "Ver más",
+                    onClick: () => router.push("/servicio-2"),
+                  }}
+                />
+              </SwiperSlide>
+              <SwiperSlide>
+                <ServiceCard
+                  title="Servicio 3"
+                  subtitle="Servicio"
+                  image={"https://placehold.co/600x1000/10356B/FFFFFF"}
+                  button={{
+                    label: "Ver más",
+                    onClick: () => router.push("/servicio-3"),
+                  }}
+                />
+              </SwiperSlide>
+              <SwiperSlide>
+                <ServiceCard
+                  title="Servicio 4"
+                  subtitle="Servicio"
+                  image={"https://placehold.co/600x1000/10356B/FFFFFF"}
+                  button={{
+                    label: "Ver más",
+                    onClick: () => router.push("/servicio-4"),
+                  }}
+                />
+              </SwiperSlide>
+              <SwiperSlide>
+                <ServiceCard
+                  title="Servicio 5"
+                  subtitle="Servicio"
+                  image={"https://placehold.co/600x1000/10356B/FFFFFF"}
+                  button={{
+                    label: "Ver más",
+                    onClick: () => router.push("/servicio-5"),
+                  }}
+                />
+              </SwiperSlide>
+            </Swiper>
+          </div>
+        </section>
+      )}
 
       <section className="bg-[#D5E3EA] py-16">
         <div className="container mx-auto px-4 flex flex-col lg:flex-row items-start justify-center text-text-primary">
