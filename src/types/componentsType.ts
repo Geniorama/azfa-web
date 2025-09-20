@@ -9,6 +9,7 @@ export interface HeadingType {
         url: string;
         alternativeText?: string;
     };
+    button?: StrapiButtonType;
 }
 export interface DownloadType {
     id: number;
@@ -88,3 +89,38 @@ export interface SliderData {
   icon?: ImageType;
 }
 
+export interface IntroData {
+  __component?: string;
+  icon?: ImageType;
+  content?: string
+  id?: number;
+}
+
+export interface TwoColumnsData {
+  __component?: string;
+  title?: string;
+  content?: string;
+  positionContent?: "left" | "right";
+  id?: number;
+  cover?: ImageType;
+  video?: {
+    title?: string;
+    uploadedVideo?: {
+      url: string;
+      alternativeText?: string;
+    };
+    youtubeUrl?: string;
+    vimeoUrl?: string;
+    thumbnail?: ImageType;
+    autoplay?: boolean;
+    loop?: boolean;
+    muted?: boolean;
+  };
+}
+
+export interface ServicesGridData {
+  __component?: string;
+  title?: string;
+  active?: boolean;
+  id?: number;
+}
