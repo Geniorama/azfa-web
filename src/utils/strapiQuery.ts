@@ -3,7 +3,7 @@
  */
 
 export interface StrapiQueryOptions {
-  filters?: Record<string, any>;
+  filters?: Record<string, unknown>;
   populate?: string[];
   sort?: string[];
   pagination?: {
