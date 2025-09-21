@@ -54,15 +54,15 @@ const navItems: NavItem[] = [
     subItems: [
       {
         label: "Junta Directiva",
-        href: "/junta-directiva",
+        href: "/quienes-somos/junta-directiva",
       },
       {
         label: "Comisiones",
-        href: "/comisiones",
+        href: "/quienes-somos/comisiones",
       },
       {
         label: "Equipo AZFA",
-        href: "/equipo-azfa",
+        href: "/quienes-somos/equipo-azfa",
       },
     ],
   },
