@@ -65,7 +65,7 @@ export default async function Home() {
   console.log("content result:", result);
 
   if (result.success && result.data?.data?.[0]) {
-    const contentData = result.data.data[0];
+    const contentData = result.data.data[0] as unknown as Record<string, unknown>;
     return <HomeView content={contentData} />;
   } else {
     return (
