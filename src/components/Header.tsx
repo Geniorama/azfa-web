@@ -73,19 +73,19 @@ const navItems: NavItem[] = [
     subItems: [
       {
         label: "Noticias",
-        href: "/noticias",
+        href: "/sala-de-prensa/noticias",
       },
       {
         label: "Podcast",
-        href: "/podcast",
+        href: "/sala-de-prensa/podcast",
       },
       {
         label: "Newsletter",
-        href: "/newsletter",
+        href: "/sala-de-prensa/newsletter",
       },
       {
         label: "Blog",
-        href: "/blog",
+        href: "/sala-de-prensa/blog",
       },
     ],
   },

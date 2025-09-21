@@ -28,11 +28,11 @@ export function buildStrapiQuery(options: StrapiQueryOptions): string {
         if (typeof value === 'object' && !Array.isArray(value)) {
           // Para filtros complejos como { $eq: 'value' }
           Object.entries(value).forEach(([operator, operatorValue]) => {
-            queryParams.push(`filters[${key}][${operator}]=${encodeURIComponent(operatorValue)}`);
+            queryParams.push(`filters[${key}][${operator}]=${encodeURIComponent(String(operatorValue))}`);
           });
         } else {
           // Para filtros simples
-          queryParams.push(`filters[${key}]=${encodeURIComponent(value)}`);
+          queryParams.push(`filters[${key}]=${encodeURIComponent(String(value))}`);
         }
       }
     });
