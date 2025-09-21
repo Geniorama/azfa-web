@@ -4,6 +4,8 @@ import HeadingPageSalaPrensa from "@/components/HeadingPageSalaPrensa";
 import CoverImage from "@/assets/img/bg-sala-prensa.jpg";
 import CardNewsletter from "@/components/CardNewsletter";
 import Pagination from "@/components/Pagination";
+import ImageBanner from "@/assets/img/Frame 53.png";
+import Button from "@/utils/Button";
 
 export default function NewsletterView() {
   return (
@@ -27,6 +29,35 @@ export default function NewsletterView() {
                 </div>
                 <div className="flex justify-center mt-16">
                     <Pagination currentPage={1} totalPages={10} onPageChange={() => {}} />
+                </div>
+            </div>
+        </section>
+
+        <section className="bg-white py-16">
+            <div className="container mx-auto px-4">
+                {/* Bg gradient */}
+                <div className="flex flex-col lg:flex-row lg:gap-12 gap-5 items-center p-8 lg:p-12 mt-10 lg:mt-0 bg-secondary lg:bg-linear-to-r from-white to-secondary from-20% to-20%">
+                    <div className="w-full lg:w-1/2">
+                        <img src={ImageBanner.src} alt="Banner" className="w-full h-full object-cover -mt-22 lg:mt-0" />
+                    </div>
+                    <div className="w-full lg:w-1/2 lg:pr-12">
+                        <h4 className="lg:text-[40px] text-h3 leading-12">Sea el primero en recibir nuestro Boletín AZFA</h4>
+                        <p className="lg:text-h5 text-h6 mt-3">Manténgase informado con las últimas noticias, eventos y publicaciones del ecosistema de Zonas Francas.</p>
+
+                        <div className="flex lg:flex-row flex-col lg:gap-0 gap-2 mt-5">
+                            <input placeholder="Ingrese su correo electrónico" className="bg-white flex-grow text-text-primary px-5 outline-none focus:outline-none h-12 lg:h-auto rounded-sm" type="text" />
+                            <Button
+                                onClick={() => {}}
+                                variant="primary"
+                                icon
+                                className="justify-between"
+                            >
+                                Suscribirse
+                            </Button>
+                        </div>
+
+                        <p className="text-caption mt-5">Al suscribirse, acepta nuestra política de privacidad y su tratamiento de datos *</p>
+                    </div>
                 </div>
             </div>
         </section>
