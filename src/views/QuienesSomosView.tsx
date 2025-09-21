@@ -97,12 +97,12 @@ export default function JuntaDirectivaView() {
     <div>
       <HeadingPage
         title="Quiénes Somos"
-        textAlign="left"
+        textAlign="center"
         image={JuntaDirectivaImage.src}
-        className="min-h-[500px]"
+        className="min-h-[500px] lg:text-left"
       />
 
-      <section className="bg-white lg:pt-16">
+      <section className="bg-white py-10 lg:pt-16">
         <div className="container mx-auto px-4">
           <IntroPage introData={introData} />
         </div>
@@ -111,9 +111,9 @@ export default function JuntaDirectivaView() {
       {/* Section Tabs */}
       <section className="bg-white lg:pt-16">
         <div className="container mx-auto px-4">
-          <div className="flex flex-col lg:flex-row gap-4 justify-center items-start text-center">
+          <div className="flex gap-4 justify-center items-start text-center">
             <div
-              className={`w-1/3 max-w-[350px] border-b-2  hover:border-details pb-14 transition cursor-pointer ${
+              className={`w-1/3 max-w-[350px] border-b-2  hover:border-details lg:pb-14 pb-6 transition cursor-pointer ${
                 activeTab === "junta-directiva"
                   ? "border-details"
                   : "border-white"
@@ -123,14 +123,14 @@ export default function JuntaDirectivaView() {
               <img
                 src={IconTabs.src}
                 alt="Icon Tabs"
-                className="w-16 h-16 mx-auto"
+                className="lg:w-16 lg:h-16 w-10 h-10 mx-auto"
               />
-              <h2 className="text-h4 font-normal text-text-primary">
+              <h2 className="lg:text-h4 text-body2 font-normal text-text-primary">
                 Junta Directiva
               </h2>
             </div>
             <div
-              className={`w-1/3 max-w-[350px] border-b-2  hover:border-details pb-14 transition cursor-pointer ${
+              className={`w-1/3 max-w-[350px] border-b-2  hover:border-details lg:pb-14 pb-6 transition cursor-pointer ${
                 activeTab === "comisiones" ? "border-details" : "border-white"
               }`}
               onClick={() => handleTabClick("comisiones")}
@@ -138,14 +138,14 @@ export default function JuntaDirectivaView() {
               <img
                 src={IconTabs.src}
                 alt="Icon Tabs"
-                className="w-16 h-16 mx-auto"
+                className="lg:w-16 lg:h-16 w-10 h-10 mx-auto"
               />
-              <h2 className="text-h4 font-normal text-text-primary">
+              <h2 className="lg:text-h4 text-body2 font-normal text-text-primary">
                 Comisiones
               </h2>
             </div>
             <div
-              className={`w-1/3 max-w-[350px] border-b-2  hover:border-details pb-14 transition cursor-pointer ${
+              className={`w-1/3 max-w-[350px] border-b-2  hover:border-details lg:pb-14 pb-6 transition cursor-pointer ${
                 activeTab === "equipo-azfa" ? "border-details" : "border-white"
               }`}
               onClick={() => handleTabClick("equipo-azfa")}
@@ -153,9 +153,9 @@ export default function JuntaDirectivaView() {
               <img
                 src={IconTabs.src}
                 alt="Icon Tabs"
-                className="w-16 h-16 mx-auto"
+                className="lg:w-16 lg:h-16 w-10 h-10 mx-auto"
               />
-              <h2 className="text-h4 font-normal text-text-primary">
+              <h2 className="lg:text-h4 text-body2 font-normal text-text-primary">
                 Equipo AZFA
               </h2>
             </div>
@@ -164,7 +164,7 @@ export default function JuntaDirectivaView() {
       </section>
 
       {/* Section Content */}
-      <section className="bg-background-1 lg:py-28">
+      <section className="bg-background-1 py-10 lg:py-28">
         <div className="container mx-auto px-4">
           {/* Tab Junta Directiva */}
           {activeTab === "junta-directiva" && (
