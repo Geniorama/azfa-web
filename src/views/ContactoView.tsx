@@ -89,19 +89,19 @@ export default function ContactoView() {
           title="Contacto" 
           smallTitle="Su mensaje puede iniciar algo grande."
           image={BgContacto.src}
-          className="pb-64"
+          className="lg:pb-64"
         />
 
         <section className=" py-12 lg:py-16">
           <div className="container mx-auto px-4">
             <div className="flex flex-col md:flex-row gap-6 text-text-primary">
-              <div className="w-full md:w-1/2">
+              <div className="w-full md:w-1/2 mb-10 lg:mb-0">
                 <h2 className="text-h2">¿Necesita asesoría?</h2>
                 <h3 className="text-h2">contáctenos</h3>
 
                 {/* Phone */}
-                <div className="flex flex-row items-center gap-6 p-5 mt-4">
-                  <div>
+                <div className="flex lg:flex-row flex-col lg:items-center gap-2 lg:gap-6 p-5 mt-4">
+                  <div className="w-10 h-10">
                     <img src={IconPhone.src} alt="icon-phone" />
                   </div>
                   <div>
@@ -111,9 +111,9 @@ export default function ContactoView() {
                 </div>
 
                 {/* Email */}
-                <div className="flex flex-row items-center gap-6 p-5 mt-4">
-                  <div>
-                    <img src={IconEmail.src} alt="icon-email" />
+                <div className="flex lg:flex-row flex-col lg:items-center gap-2 lg:gap-6 p-5 lg:mt-4">
+                  <div className="w-10 h-10">
+                    <img src={IconEmail.src} alt="icon-email" className="w-full block" />
                   </div>
                   <div>
                     <p className="text-h6">Email</p>
@@ -123,7 +123,7 @@ export default function ContactoView() {
 
                 {/* Social Media */}
                 <div>
-                  <ul className="flex flex-row items-center gap-6 mt-12">
+                  <ul className="flex flex-row justify-center lg:justify-start items-center gap-6 mt-12">
                     <li>
                       <a href="#" target="_blank" rel="noopener noreferrer" className="hover:opacity-70 transition">
                         <img src={IconFacebook.src} alt="icon-facebook" />
@@ -158,7 +158,7 @@ export default function ContactoView() {
                 </div>
               </div>
               <div className="w-full md:w-1/2 relative z-10">
-                <div className="bg-white p-10 rounded-lg -mt-64">
+                <div className="bg-white lg:p-10 p-4 rounded-lg lg:-mt-64">
                   <div className="text-center space-y-4">
                     <h5 className="text-h2">¿Desea que le contactemos?</h5>
                     <p className="text-h5">Si desea contactarnos puede hacerlo a través del siguiente formulario</p>
@@ -224,7 +224,7 @@ export default function ContactoView() {
                     </div>
                     
                     {/* Acceptance of the terms and conditions */}
-                    <div className="flex flex-row items-center gap-2">
+                    <div className="flex flex-row items-start lg:items-center gap-2">
                       <input 
                         name="aceptaTerminos"
                         checked={formData.aceptaTerminos}
@@ -232,6 +232,7 @@ export default function ContactoView() {
                         type="checkbox" 
                         id="terms" 
                         required
+                        className="mt-1 lg:mt-0"
                       />
                       <label htmlFor="terms">He leído y acepto la <Link target="_blank" className="underline hover:text-details transition" href="/politica-de-privacidad">política de privacidad</Link> y el <Link target="_blank" className="underline hover:text-details transition" href="/aviso-legal">aviso legal</Link>. *</label>
                     </div>
@@ -240,6 +241,7 @@ export default function ContactoView() {
                       type="submit"
                       disabled={isSubmitting}
                       onClick={() => {}}
+                      className="w-full lg:w-auto text-center lg:text-left justify-center lg:justify-start"
                     >
                       {isSubmitting ? 'Enviando...' : 'Enviar mensaje'}
                     </Button>
