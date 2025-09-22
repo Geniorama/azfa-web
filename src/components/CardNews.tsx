@@ -23,7 +23,7 @@ export default function CardNews({ image, title, category, description, button }
             <hr className="my-4 border-slate-300" />
             <p className="text-body2 font-light">{description}</p>
             <hr className="my-4 border-slate-300" />
-            <button className='flex items-center gap-2 justify-between w-full cursor-pointer text-button hover:opacity-50 transition-all duration-300'>
+            <button onClick={button.onClick} className='flex items-center gap-2 justify-between w-full cursor-pointer text-button hover:opacity-50 transition-all duration-300'>
               <span className="font-medium">{button.label}</span>
               <img src={ArrowRightBlue.src} alt="arrow-right-blue" className="w-8 h-8" />
             </button>

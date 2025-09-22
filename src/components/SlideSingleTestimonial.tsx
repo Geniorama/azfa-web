@@ -20,7 +20,7 @@ export default function SlideSingleTestimonial({ caption, title, description, im
           alt={title}
           className="w-full h-full object-cover"
         />
-        <div className="absolute top-0 left-0 w-full h-full flex items-center justify-center">
+        <div className="absolute top-0 left-0 w-full h-full flex items-center justify-center hidden">
           <button onClick={button.onClick} className="bg-white/20 rounded-full cursor-pointer flex items-center justify-center w-20 h-20 hover:scale-110 transition-all duration-300">
             <IoMdPlay className="text-white text-4xl translate-x-0.5" />
           </button>
