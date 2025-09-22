@@ -34,10 +34,10 @@ export default function CardEventsMonth({
                   className={`rounded-lg p-2 text-h4 w-16 h-16 flex items-center justify-center ${
                     event.isFirst
                       ? "bg-details-hover text-white"
-                      : event.isLast
-                      ? "bg-background-3 text-white"
                       : event.isNext
                       ? "bg-black text-white"
+                      : event.isLast
+                      ? "bg-background-3 text-white"
                       : "bg-background-3 text-white"
                   }`}
                 >
