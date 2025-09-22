@@ -12,9 +12,9 @@ interface ServiceCardProps {
 
 export default function ServiceCard({ title, subtitle, image, button }: ServiceCardProps) {
   return (
-    <div className='relative bg-primary'>
+    <div className='relative bg-primary h-132'>
         <img src={image} alt={title} className='w-full h-full object-cover' />
-        <div className='absolute top-0 left-0 w-full h-full flex flex-col justify-end p-4'>
+        <div className='absolute top-0 left-0 w-full h-full flex flex-col justify-end p-4 bg-gradient-to-b from-transparent to-primary to-80%'>
             <div className='mb-4 min-h-28'>
                 <p className='text-white text-button'>{subtitle}</p>
                 <h3 className='text-white text-h5'>{title}</h3>

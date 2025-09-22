@@ -63,13 +63,13 @@ export default function Footer({ showBanner = true }: FooterProps) {
                 <div className="w-full lg:w-3/4 flex space-x-4 flex-wrap">
                     <div className="w-full lg:w-1/2 mr-0 lg:-mr-2 text-center lg:text-left mb-8 lg:mb-0">
                         <p className="text-h5">Afíliese, haga parte de AZFA</p>
-                        <a href="mailto:director@asociacionzonasfrancas.org" target="_blank" className="text-body2 hover:text-details inline-flex w-auto lg:w-full items-center gap-2 mt-2">
+                        <a href="mailto:info@asociacionzonasfrancas.org" target="_blank" className="text-body2 hover:text-details inline-flex w-auto lg:w-full items-center gap-2 mt-2">
                             <IoMailOutline className="text-xl" />
-                            <span>director@asociacionzonasfrancas.org</span>
+                            <span>info@asociacionzonasfrancas.org</span>
                         </a>
-                        <a href="tel:+573178520000" target="_blank" className="text-body2 hover:text-details inline-flex items-center gap-2 mt-2 w-auto lg:w-full">
+                        <a href="https://wa.me/573148724979" target="_blank" className="text-body2 hover:text-details inline-flex items-center gap-2 mt-2 w-auto lg:w-full">
                             <FaWhatsapp className="text-xl" />
-                            <span>+57 000 000 0000</span>
+                            <span>+57 314 8724979</span>
                         </a>
                     </div>
                     <div className="w-full lg:w-1/2 mr-0 lg:-mr-2">
@@ -83,12 +83,12 @@ export default function Footer({ showBanner = true }: FooterProps) {
                                             </Link>
                                         </li>
                                         <li>
-                                            <Link href="/portal-afiliados" className="text-body2 text-[#F2F1FA] opacity-30 hover:underline hover:opacity-100 transition underline-offset-8">
+                                            <Link href="/nuestros-afiliados" className="text-body2 text-[#F2F1FA] opacity-30 hover:underline hover:opacity-100 transition underline-offset-8">
                                             Nuestros afiliados
                                             </Link>
                                         </li>
                                         <li>
-                                            <Link href="/portal-afiliados" className="text-body2 text-[#F2F1FA] opacity-30 hover:underline hover:opacity-100 transition underline-offset-8">
+                                            <Link href="/sala-de-prensa/noticias" className="text-body2 text-[#F2F1FA] opacity-30 hover:underline hover:opacity-100 transition underline-offset-8">
                                             Noticias
                                             </Link>
                                         </li>

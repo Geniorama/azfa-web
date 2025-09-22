@@ -47,7 +47,7 @@ export default function CardEvent({ image, title, category, date, location, hote
                 )}
             </div>
             <hr className="my-4 border-background-2" />
-            <button className='flex items-center gap-2 justify-between w-full cursor-pointer text-button hover:opacity-50 transition-all duration-300'>
+            <button onClick={button.onClick} className='flex items-center gap-2 justify-between w-full cursor-pointer text-button hover:opacity-50 transition-all duration-300'>
               <span className="font-medium">{button.label}</span>
               <img src={ArrowRightGreen.src} alt="arrow-right-green" className="w-8 h-8" />
             </button>
