@@ -106,7 +106,9 @@ export default function ContactoView() {
                   </div>
                   <div>
                     <p className="text-h6">Teléfono</p>
-                    <p className="text-body1">+57 000 000 0000</p>
+                    <a href="https://wa.me/573148724979" target="_blank" className="text-body1 hover:text-details transition">
+                      +57 314 8724979
+                    </a>
                   </div>
                 </div>
 
@@ -117,7 +119,9 @@ export default function ContactoView() {
                   </div>
                   <div>
                     <p className="text-h6">Email</p>
-                    <p className="text-body1">director@asociacionzonasfrancas.org</p>
+                    <a href="mailto:info@asociacionzonasfrancas.org" className="text-body1 hover:text-details transition">
+                      info@asociacionzonasfrancas.org
+                    </a>
                   </div>
                 </div>
 
