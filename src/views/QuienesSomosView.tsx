@@ -6,11 +6,10 @@ import IntroPage from "@/components/IntroPage";
 import { IntroData } from "@/types/componentsType";
 import IconIntroQuienesSomos from "@/assets/img/icon-home-quienes-somos-voz-lider 1.svg";
 import IconTabs from "@/assets/img/icon-home-iberoamerica-empleos 2.svg";
-import CardTeamMember from "@/components/CardTeamMember";
+import CardTeamMember, { CardTeamMemberProps } from "@/components/CardTeamMember";
 import memberTeam from "@/assets/img/member-team.jpg";
 import { useState, useEffect } from "react";
 import { usePathname, useRouter } from "next/navigation";
-import ImageComision from "@/assets/img/img comisiones.png";
 import IconPerson from "@/assets/img/person-1.svg";
 import LeaderPerson from "@/assets/img/leader.png";
 import AvatarPerson from "@/components/AvatarPerson";
@@ -55,43 +54,90 @@ export default function JuntaDirectivaView() {
       "En la Asociación de Zonas Francas de las Américas (AZFA), <span className='text-details'>somos la voz líder</span> del sector en Iberoamérica. Con 27 años de trayectoria, impulsamos el crecimiento y la competitividad de las Zonas Francas, promoviendo la inversión, la innovación y el desarrollo sostenible en la región.",
   };
 
-  const members = [
+  const members: CardTeamMemberProps[] = [
     {
       image: memberTeam.src,
-      name: "John Doe",
-      position: "CEO",
-      company: "Company",
-      location: "Location",
-      email: "john.doe@example.com",
+      name: "CLAUDIA PELLERANO",
+      position: "Presidente",
+      company: "Las Américas Free Zone Park",
+      location: "Dominican Republic",
+      // email: "john.doe@example.com",
     },
 
     {
-      image: memberTeam.src,
-      name: "John Doe",
-      position: "CEO",
-      company: "Company",
-      location: "Location", 
-      email: "john.doe@example.com",
+      image: 'https://testazfabucket.s3.us-east-2.amazonaws.com/2_juntad_carlos_wong_eeb5fb14de.webp',
+      name: "CARLOS WONG",
+      position: "Primer Vicepresidente",
+      company: "Code Development Group",
+      location: "Costa Rica", 
+      // email: "john.doe@example.com",
     },
 
     {
-      image: memberTeam.src,
-      name: "John Doe",
-      position: "CEO",
-      company: "Company",
-      location: "Location",
-      email: "john.doe@example.com",
+      image: 'https://testazfabucket.s3.us-east-2.amazonaws.com/3_juntad_juan_opertti_180f982a44.webp',
+      name: "JUAN OPERTTI",
+      position: "Segundo Vicepresidente",
+      company: "Cámara de Zonas Francas",
+      location: "Uruguay",
+      // email: "john.doe@example.com",
     },
 
     {
-      image: memberTeam.src,
-      name: "John Doe",
-      position: "CEO",
-      company: "Company",
-      location: "Location",
-      email: "john.doe@example.com",
+      image: 'https://testazfabucket.s3.us-east-2.amazonaws.com/4_juntad_julio_rodriguez_fa83677858.webp',
+      name: "JULIO RODRÍGUEZ",
+      position: "Director Ejecutivo",
+      company: "Asociación de Zonas Francas de las Américas | AZFA",
+      location: "Colombia",
+      // email: "john.doe@example.com",
+    },
+
+    {
+      image: 'https://testazfabucket.s3.us-east-2.amazonaws.com/5_juntad_marcela_barrios_ecb6057261.webp',
+      name: "MARCELA BARRIOS",
+      position: "Secretaria",
+      company: "Zona Franca Barranquilla",
+      location: "Colombia",
+      // email: "john.doe@example.com",
+    },
+
+    {
+      image: 'https://testazfabucket.s3.us-east-2.amazonaws.com/6_juntad_diego_vargas_108d359b36.webp',
+      name: "DIEGO VARGAS",
+      position: "Tesorero",
+      company: "Zona Franca Bogotá",
+      location: "Colombia",
+      // email: "john.doe@example.com",
     },
   ];
+
+  const membersEquipoAzfa = [
+    {
+      image: 'https://testazfabucket.s3.us-east-2.amazonaws.com/4_juntad_julio_rodriguez_fa83677858.webp',
+      name: "JULIO RODRÍGUEZ",
+      position: "Director Ejecutivo",
+      company: "Asociación de Zonas Francas de las Américas | AZFA",
+      location: "Colombia",
+      // email: "john.doe@example.com",
+    },
+
+    {
+      image: 'https://testazfabucket.s3.us-east-2.amazonaws.com/equipo_azfa_cristina_dfb9439bcc.webp',
+      name: "CRISTINA CHIVARÁ",
+      position: "Coordinadora Administrativa y eventos",
+      company: "Asociación de Zonas Francas de las Américas | AZFA",
+      location: "Colombia",
+      // email: "john.doe@example.com",
+    },
+
+    {
+      image: 'https://testazfabucket.s3.us-east-2.amazonaws.com/equipo_azfa_stefanni_847a0c5395.webp',
+      name: "STEFANNI PALENCIA",
+      position: "Coordinadora de Proyectos",
+      company: "Asociación de Zonas Francas de las Américas | AZFA",
+      location: "Colombia",
+      email: "proyectos@asociacionzonasfrancas.org",
+    },
+  ]
 
   return (
     <div>
@@ -198,7 +244,7 @@ export default function JuntaDirectivaView() {
               </div>
 
               {/* Grid Team Members */}
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mt-16">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mt-16 hidden">
                 {members.map((member, index) => (
                   <CardTeamMember
                     key={index}
@@ -278,7 +324,7 @@ export default function JuntaDirectivaView() {
                 <div className="w-full lg:w-1/2">
                   <img
                     className="w-full h-full object-cover"
-                    src={ImageComision.src}
+                    src={'https://testazfabucket.s3.us-east-2.amazonaws.com/servicio_comisi_n_posicionamiento_8e4c25cf97.webp'}
                     alt="Image Comision"
                   />
                 </div>
@@ -347,7 +393,7 @@ export default function JuntaDirectivaView() {
                 </div>
                 <div className="w-full lg:w-1/2">
                   <img
-                    src={ImageComision.src}
+                    src={'https://testazfabucket.s3.us-east-2.amazonaws.com/servicio_comision_legal_43ac981dd8.webp'}
                     alt="Image Comision"
                     className="w-full h-full object-cover"
                   />
@@ -418,7 +464,7 @@ export default function JuntaDirectivaView() {
                 <div className="w-full lg:w-1/2">
                   <img
                     className="w-full h-full object-cover"
-                    src={ImageComision.src}
+                    src={'https://testazfabucket.s3.us-east-2.amazonaws.com/servicios_captaciones_8481291abb.webp'}
                     alt="Image Comision"
                   />
                 </div>
@@ -487,7 +533,7 @@ export default function JuntaDirectivaView() {
                 </div>
                 <div className="w-full lg:w-1/2">
                   <img
-                    src={ImageComision.src}
+                    src={'https://testazfabucket.s3.us-east-2.amazonaws.com/4_sostenibilidad_ac200f3218.webp'}
                     alt="Image Comision"
                     className="w-full h-full object-cover"
                   />
@@ -501,7 +547,7 @@ export default function JuntaDirectivaView() {
             <div>
               {/* Grid Team Members */}
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-16">
-                {members.map((member, index) => (
+                {membersEquipoAzfa.map((member, index) => (
                   <CardTeamMember
                     key={index}
                     image={member.image}
@@ -509,7 +555,7 @@ export default function JuntaDirectivaView() {
                     position={member.position}
                     company={member.company}
                     location={member.location}
-                    email={member.email}
+                    email={member.email || ''}
                   />
                 ))}
               </div>
