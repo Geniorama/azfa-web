@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 interface HeadingPageSalaPrensaProps {
   title?: string;
@@ -20,12 +21,10 @@ export default function HeadingPageSalaPrensa({
   slug,
 }: HeadingPageSalaPrensaProps) {
   const [selectedTab] = useState(slug);
+  const router = useRouter();
 
   const handleClickTab = (tab: string) => {
-    // Usar pushState para evitar recarga de página
-    window.history.pushState(null, '', `/sala-de-prensa/${tab}`);
-    // Opcional: también puedes usar router.push si prefieres
-    // router.push(`/sala-de-prensa/${tab}`);
+    router.push(`/sala-de-prensa/${tab}`);
   };
 
   return (
