@@ -2,7 +2,7 @@ import IconHouse from "@/assets/img/house.svg";
 import IconPin from "@/assets/img/pin.svg";
 import IconEmail from "@/assets/icons/email.svg";
 
-interface CardTeamMemberProps {
+export interface CardTeamMemberProps {
   image: string;
   name: string;
   position: string;
