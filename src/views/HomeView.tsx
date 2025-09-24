@@ -24,7 +24,7 @@ import SlideSingleHome from "@/components/SlideSingleHome";
 import SlideSingleTestimonial from "@/components/SlideSingleTestimonial";
 import Modal from "@/components/Modal";
 import { useState } from "react";
-import { HeroSlideData, IntroData, ServiceData, VideoType, StatisticsItemData, NewsType, EventType } from "@/types/componentsType";
+import { HeroSlideData, IntroData, ServiceData, VideoType, StatisticsItemData, NewsType, EventType, TestimonialType, AffiliateSectionType, PartnersSectionType } from "@/types/componentsType";
 import ReactMarkdown from "react-markdown";
 import rehypeRaw from "rehype-raw";
 import { formatYouTubeUrl } from "@/utils/formatYouTubeUrl";
@@ -61,9 +61,27 @@ interface HomeViewProps {
     id?: number;
   };
   eventsData?: EventType[] | null;
+  eventSectionData?: {
+    __component?: string;
+    title?: string;
+    viewAllLink?: {
+      url?: string;
+      label?: string;
+    };
+    id?: number;
+  };
+  testimonialsData?: TestimonialType[] | null;
+  testimonialsSectionData?: {
+    __component?: string;
+    title?: string;
+    label?: string;
+    id?: number;
+  };
+  affiliatesSectionData?: AffiliateSectionType | null;
+  partnersSectionData?: PartnersSectionType | null;
 }
 
-export default function Home({ slidesData, introData, contentWithVideoData, servicesData, statisticsData, newsData, newsSectionData, eventsData }: HomeViewProps) {
+export default function Home({ slidesData, introData, contentWithVideoData, servicesData, statisticsData, newsData, newsSectionData, eventsData, eventSectionData, testimonialsData, testimonialsSectionData, affiliatesSectionData, partnersSectionData }: HomeViewProps) {
   const router = useRouter();
   const [openModalVideo, setOpenModalVideo] = useState(false);
 
@@ -71,6 +89,10 @@ export default function Home({ slidesData, introData, contentWithVideoData, serv
   console.log("newsData", newsData);
   console.log("newsSectionData", newsSectionData);
   console.log("eventsData", eventsData);
+  console.log("eventSectionData", eventSectionData);
+  console.log("testimonialsData", testimonialsData);
+  console.log("affiliatesSectionData", affiliatesSectionData);
+  console.log("partnersSectionData", partnersSectionData);
 
   const handleOpenNews = (url: string) => {
     window.open(url, "_blank");
@@ -548,13 +570,13 @@ export default function Home({ slidesData, introData, contentWithVideoData, serv
                 dividerColor="bg-[#94D133]"
                 className="text-left items-start"
               >
-                <span className="hidden lg:inline">Próximos</span> Eventos
+                {eventSectionData?.title || "Eventos"}
               </TitleDecorative>
               <Link
                 className="underline underline-offset-8 decoration-white hover:decoration-details transition-all duration-300"
-                href="/eventos"
+                href={eventSectionData?.viewAllLink?.url || "/eventos"}
               >
-                Ver todos
+                {eventSectionData?.viewAllLink?.label || "Ver todos"}
               </Link>
             </div>
 
@@ -618,9 +640,9 @@ export default function Home({ slidesData, introData, contentWithVideoData, serv
       <section className="bg-white lg:py-16 py-0">
         <div className="container mx-auto px-4 text-center lg:text-left">
           <h6 className="text-body2 text-text-primary text-center">
-            Testimonios
+            {testimonialsSectionData?.label || "Testimonios"}
           </h6>
-          <TitleDecorative>Lo que dicen nuestros clientes</TitleDecorative>
+          <TitleDecorative>{testimonialsSectionData?.title || "Lo que dicen nuestros clientes"}</TitleDecorative>
         </div>
         {/* Not container content */}
         {/* Swiper testimonials */}
@@ -635,42 +657,62 @@ export default function Home({ slidesData, introData, contentWithVideoData, serv
               el: ".custom-swiper-pagination",
             }}
           >
-            <SwiperSlide>
-              <SlideSingleTestimonial
-                caption="Directora Ejecutiva, Camtex"
-                title="Patricia Figueroa"
-                description="CAMTEX forma parte de AZFA desde hace más de 10 años. Una decisión sumamente acertada dado que AZFA nos brinda un importante espacio de diálogo del más alto nivel donde se intercambian conocimientos y se establece una red de contactos con los otros miembros que nos permiten estar a la vanguardia de lo que acaece en el entorno internacional…"
-                image={'https://testazfabucket.s3.us-east-2.amazonaws.com/img_Testimonio_1_Patricia_Figueroa_color_f9ca828652.jpg'}
-                button={{
-                  label: "Ver más",
-                  onClick: () => setOpenModalVideo(true),
-                }}
-              />
-            </SwiperSlide>
-            <SwiperSlide>
-              <SlideSingleTestimonial
-                caption="Presidente, AraújoIbarra"
-                title="Martín Ibarra"
-                description="Para mí es un gran honor ser miembro de AZFA y estoy vinculado a AZFA hace 26 años cuando se crió AZFA en República Dominicana y tuve el honor de ser su primer presidente. En estos 26 años de trabajo ininterrumpido, no hemos descansado en trabajar por la defensa del régimen franco en la región…"
-                image={'https://testazfabucket.s3.us-east-2.amazonaws.com/img_Testimonio_3_Martin_Ibarra_Negro_f01f8bdd75.jpg'}
-                button={{
-                  label: "Ver más",
-                  onClick: () => setOpenModalVideo(true),
-                }}
-              />
-            </SwiperSlide>
-            <SwiperSlide>
-              <SlideSingleTestimonial
-                caption="Gerente General, La Lima Free Zone and Business Park"
-                title="Fernando Carazo"
-                description="Somos miembros de azfa desde ya hace unos 5 años aproximadamente. El papel de AZFA nos parece importantísimo, la unificación de la voz de los stateholders de regimenes de zona franca y regímenes especiales no solo de la región sino del mundo nos parece muy importante que sea unificada por medio de AZFA…"
-                image={'https://testazfabucket.s3.us-east-2.amazonaws.com/img_Testimonio_2_Fernando_Carazo_negro_9d35c882c6.jpg'}
-                button={{
-                  label: "Ver más",
-                  onClick: () => setOpenModalVideo(true),
-                }}
-              />
-            </SwiperSlide>
+            {testimonialsData && testimonialsData.length > 0 ? (
+              testimonialsData.map((testimonial) => (
+                <SwiperSlide key={testimonial.id}>
+                  <SlideSingleTestimonial
+                    caption={testimonial.company}
+                    title={testimonial.name}
+                    description={testimonial.testimonial}
+                    image={testimonial.coverImage?.url || 'https://testazfabucket.s3.us-east-2.amazonaws.com/img_Testimonio_1_Patricia_Figueroa_color_f9ca828652.jpg'}
+                    button={{
+                      label: "Ver más",
+                      onClick: () => setOpenModalVideo(true),
+                    }}
+                  />
+                </SwiperSlide>
+              ))
+            ) : (
+              // Fallback cuando no hay datos de testimonios
+              <>
+                <SwiperSlide>
+                  <SlideSingleTestimonial
+                    caption="Directora Ejecutiva, Camtex"
+                    title="Patricia Figueroa"
+                    description="CAMTEX forma parte de AZFA desde hace más de 10 años. Una decisión sumamente acertada dado que AZFA nos brinda un importante espacio de diálogo del más alto nivel donde se intercambian conocimientos y se establece una red de contactos con los otros miembros que nos permiten estar a la vanguardia de lo que acaece en el entorno internacional…"
+                    image={'https://testazfabucket.s3.us-east-2.amazonaws.com/img_Testimonio_1_Patricia_Figueroa_color_f9ca828652.jpg'}
+                    button={{
+                      label: "Ver más",
+                      onClick: () => setOpenModalVideo(true),
+                    }}
+                  />
+                </SwiperSlide>
+                <SwiperSlide>
+                  <SlideSingleTestimonial
+                    caption="Presidente, AraújoIbarra"
+                    title="Martín Ibarra"
+                    description="Para mí es un gran honor ser miembro de AZFA y estoy vinculado a AZFA hace 26 años cuando se crió AZFA en República Dominicana y tuve el honor de ser su primer presidente. En estos 26 años de trabajo ininterrumpido, no hemos descansado en trabajar por la defensa del régimen franco en la región…"
+                    image={'https://testazfabucket.s3.us-east-2.amazonaws.com/img_Testimonio_3_Martin_Ibarra_Negro_f01f8bdd75.jpg'}
+                    button={{
+                      label: "Ver más",
+                      onClick: () => setOpenModalVideo(true),
+                    }}
+                  />
+                </SwiperSlide>
+                <SwiperSlide>
+                  <SlideSingleTestimonial
+                    caption="Gerente General, La Lima Free Zone and Business Park"
+                    title="Fernando Carazo"
+                    description="Somos miembros de azfa desde ya hace unos 5 años aproximadamente. El papel de AZFA nos parece importantísimo, la unificación de la voz de los stateholders de regimenes de zona franca y regímenes especiales no solo de la región sino del mundo nos parece muy importante que sea unificada por medio de AZFA…"
+                    image={'https://testazfabucket.s3.us-east-2.amazonaws.com/img_Testimonio_2_Fernando_Carazo_negro_9d35c882c6.jpg'}
+                    button={{
+                      label: "Ver más",
+                      onClick: () => setOpenModalVideo(true),
+                    }}
+                  />
+                </SwiperSlide>
+              </>
+            )}
           </Swiper>
           {/* Custom pagination */}
           <div className="flex lg:justify-end absolute bottom-3 w-full lg:w-1/2 left-0 pr-8 z-10">
@@ -701,7 +743,7 @@ export default function Home({ slidesData, introData, contentWithVideoData, serv
       <section className="bg-white pt-16">
         <div className="container mx-auto pb-8 lg:pb-16 px-0 md:px-16 max-w-6xl">
           <TitleDecorative dividerColor="bg-[#94D133]">
-            Nuestros afiliados
+            {affiliatesSectionData?.title || "Nuestros afiliados"}
           </TitleDecorative>
 
           <Swiper
@@ -726,41 +768,62 @@ export default function Home({ slidesData, introData, contentWithVideoData, serv
               },
             }}
           >
-            <SwiperSlide>
-              <img
-                className="w-full h-24 object-contain max-w-fit mx-auto grayscale md:grayscale hover:grayscale-0 transition-all duration-300 swiper-slide-mobile"
-                src={'https://testazfabucket.s3.us-east-2.amazonaws.com/Costa_Rica_piasa_7371f1e8b5.jpg'}
-                alt="Logo"
-              />
-            </SwiperSlide>
-            <SwiperSlide>
-              <img
-                className="w-full h-24 object-contain max-w-fit mx-auto grayscale md:grayscale hover:grayscale-0 transition-all duration-300 swiper-slide-mobile"
-                src={'https://testazfabucket.s3.us-east-2.amazonaws.com/zeta_group_logo_f6f20bc67d.jpg'}
-                alt="Logo"
-              />
-            </SwiperSlide>
-            <SwiperSlide>
-              <img
-                className="w-full h-24 object-contain max-w-fit mx-auto grayscale md:grayscale hover:grayscale-0 transition-all duration-300 swiper-slide-mobile"
-                src={'https://testazfabucket.s3.us-east-2.amazonaws.com/TMF_Logo_ENG_aedf88b6c2.png'}
-                alt="Logo"
-              />
-            </SwiperSlide>
-            <SwiperSlide>
-              <img
-                className="w-full h-24 object-contain max-w-fit mx-auto grayscale md:grayscale hover:grayscale-0 transition-all duration-300 swiper-slide-mobile"
-                src={'https://testazfabucket.s3.us-east-2.amazonaws.com/Hemistion_36554b1aff.png'}
-                alt="Logo"
-              />
-            </SwiperSlide>
-            <SwiperSlide>
-              <img
-                className="w-full h-24 object-contain max-w-fit mx-auto grayscale md:grayscale hover:grayscale-0 transition-all duration-300 swiper-slide-mobile"
-                src={'https://testazfabucket.s3.us-east-2.amazonaws.com/Colombia_zonamerica_jpg_e3da5e9653.webp'}
-                alt="Logo"
-              />
-            </SwiperSlide>
+            {affiliatesSectionData?.logos && affiliatesSectionData.logos.length > 0 ? (
+              affiliatesSectionData.logos.map((affiliate) => (
+                <SwiperSlide key={affiliate.id}>
+                  <img
+                    className="w-full h-24 object-contain max-w-fit mx-auto grayscale md:grayscale hover:grayscale-0 transition-all duration-300 swiper-slide-mobile"
+                    src={affiliate.logo?.url || 'https://testazfabucket.s3.us-east-2.amazonaws.com/Costa_Rica_piasa_7371f1e8b5.jpg'}
+                    alt={affiliate.name || "Logo"}
+                    onClick={() => {
+                      if (affiliate.url) {
+                        window.open(affiliate.url, "_blank");
+                      }
+                    }}
+                    style={{ cursor: affiliate.url ? 'pointer' : 'default' }}
+                  />
+                </SwiperSlide>
+              ))
+            ) : (
+              // Fallback cuando no hay datos de afiliados
+              <>
+                <SwiperSlide>
+                  <img
+                    className="w-full h-24 object-contain max-w-fit mx-auto grayscale md:grayscale hover:grayscale-0 transition-all duration-300 swiper-slide-mobile"
+                    src={'https://testazfabucket.s3.us-east-2.amazonaws.com/Costa_Rica_piasa_7371f1e8b5.jpg'}
+                    alt="Logo"
+                  />
+                </SwiperSlide>
+                <SwiperSlide>
+                  <img
+                    className="w-full h-24 object-contain max-w-fit mx-auto grayscale md:grayscale hover:grayscale-0 transition-all duration-300 swiper-slide-mobile"
+                    src={'https://testazfabucket.s3.us-east-2.amazonaws.com/zeta_group_logo_f6f20bc67d.jpg'}
+                    alt="Logo"
+                  />
+                </SwiperSlide>
+                <SwiperSlide>
+                  <img
+                    className="w-full h-24 object-contain max-w-fit mx-auto grayscale md:grayscale hover:grayscale-0 transition-all duration-300 swiper-slide-mobile"
+                    src={'https://testazfabucket.s3.us-east-2.amazonaws.com/TMF_Logo_ENG_aedf88b6c2.png'}
+                    alt="Logo"
+                  />
+                </SwiperSlide>
+                <SwiperSlide>
+                  <img
+                    className="w-full h-24 object-contain max-w-fit mx-auto grayscale md:grayscale hover:grayscale-0 transition-all duration-300 swiper-slide-mobile"
+                    src={'https://testazfabucket.s3.us-east-2.amazonaws.com/Hemistion_36554b1aff.png'}
+                    alt="Logo"
+                  />
+                </SwiperSlide>
+                <SwiperSlide>
+                  <img
+                    className="w-full h-24 object-contain max-w-fit mx-auto grayscale md:grayscale hover:grayscale-0 transition-all duration-300 swiper-slide-mobile"
+                    src={'https://testazfabucket.s3.us-east-2.amazonaws.com/Colombia_zonamerica_jpg_e3da5e9653.webp'}
+                    alt="Logo"
+                  />
+                </SwiperSlide>
+              </>
+            )}
           </Swiper>
         </div>
       </section>
@@ -768,41 +831,61 @@ export default function Home({ slidesData, introData, contentWithVideoData, serv
       <section className="bg-white py-16">
         <div className="container mx-auto px-4">
           <TitleDecorative className="text-center">
-            Nuestros aliados
+            {partnersSectionData?.title || "Nuestros aliados"}
           </TitleDecorative>
 
           {/* Grid sponsors */}
           <div className="flex flex-wrap gap-8 justify-center items-center mt-8 [&>img]:grayscale [&>img]:hover:grayscale-0 [&>img]:transition-all [&>img]:duration-300 [&>img]:cursor-pointer">
-            <img
-              className="w-full max-w-fit max-h-16 object-contain"
-              src={'https://testazfabucket.s3.us-east-2.amazonaws.com/logo_aliado_4_oecd_b53ef2d06d.webp'}
-              alt="Logo"
-            />
-            <img
-              className="w-full max-w-fit max-h-16 object-contain"
-              src={'https://testazfabucket.s3.us-east-2.amazonaws.com/logo_aliado_2_aezo_bdff6064f2.webp'}
-              alt="Logo"
-            />
-            <img
-              className="w-full max-w-fit max-h-16 object-contain"
-              src={'https://testazfabucket.s3.us-east-2.amazonaws.com/logo_aliado_5_naftz_a0eadf16d0.webp'}
-              alt="Logo"
-            />
-            <img
-              className="w-full max-w-fit max-h-16 object-contain"
-              src={'https://testazfabucket.s3.us-east-2.amazonaws.com/logo_aliado_6_world_fzo_d63743d79b.webp'}
-              alt="Logo"
-            />
-            <img
-              className="w-full max-w-fit max-h-16 object-contain"
-              src={'https://testazfabucket.s3.us-east-2.amazonaws.com/logo_aliado_3_gasez_7b5989cd81.webp'}
-              alt="Logo"
-            />
-            <img
-              className="w-full max-w-fit max-h-16 object-contain"
-              src={'https://testazfabucket.s3.us-east-2.amazonaws.com/logo_aliado_1_aezo_b9ff07b6ec.webp'}
-              alt="Logo"
-            />
+            {partnersSectionData?.logos && partnersSectionData.logos.length > 0 ? (
+              partnersSectionData.logos.map((partner) => (
+                <img
+                  key={partner.id}
+                  className="w-full max-w-fit max-h-16 object-contain"
+                  src={partner.logo?.url || 'https://testazfabucket.s3.us-east-2.amazonaws.com/logo_aliado_4_oecd_b53ef2d06d.webp'}
+                  alt={partner.name || "Logo"}
+                  onClick={() => {
+                    if (partner.url) {
+                      window.open(partner.url, "_blank");
+                    }
+                  }}
+                  style={{ cursor: partner.url ? 'pointer' : 'default' }}
+                />
+              ))
+            ) : (
+              // Fallback cuando no hay datos de aliados
+              <>
+                <img
+                  className="w-full max-w-fit max-h-16 object-contain"
+                  src={'https://testazfabucket.s3.us-east-2.amazonaws.com/logo_aliado_4_oecd_b53ef2d06d.webp'}
+                  alt="Logo"
+                />
+                <img
+                  className="w-full max-w-fit max-h-16 object-contain"
+                  src={'https://testazfabucket.s3.us-east-2.amazonaws.com/logo_aliado_2_aezo_bdff6064f2.webp'}
+                  alt="Logo"
+                />
+                <img
+                  className="w-full max-w-fit max-h-16 object-contain"
+                  src={'https://testazfabucket.s3.us-east-2.amazonaws.com/logo_aliado_5_naftz_a0eadf16d0.webp'}
+                  alt="Logo"
+                />
+                <img
+                  className="w-full max-w-fit max-h-16 object-contain"
+                  src={'https://testazfabucket.s3.us-east-2.amazonaws.com/logo_aliado_6_world_fzo_d63743d79b.webp'}
+                  alt="Logo"
+                />
+                <img
+                  className="w-full max-w-fit max-h-16 object-contain"
+                  src={'https://testazfabucket.s3.us-east-2.amazonaws.com/logo_aliado_3_gasez_7b5989cd81.webp'}
+                  alt="Logo"
+                />
+                <img
+                  className="w-full max-w-fit max-h-16 object-contain"
+                  src={'https://testazfabucket.s3.us-east-2.amazonaws.com/logo_aliado_1_aezo_b9ff07b6ec.webp'}
+                  alt="Logo"
+                />
+              </>
+            )}
           </div>
         </div>
       </section>

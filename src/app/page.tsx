@@ -1,6 +1,6 @@
 import HomeView from "@/views/HomeView";
 import { Metadata } from "next";
-import { NewsType, EventType } from "@/types/componentsType";
+import { NewsType, EventType, TestimonialType } from "@/types/componentsType";
 
 export async function generateMetadata(): Promise<Metadata> {
   return {
@@ -14,7 +14,7 @@ export async function generateMetadata(): Promise<Metadata> {
 const getHome = async () => {
   try {
     const response = await fetch(
-      `${process.env.STRAPI_URL}/api/homepage?populate[0]=heroSlides&populate[1]=heroSlides.backgroundImage&populate[2]=heroSlides.button&populate[3]=heroSlides.iconLinks&populate[4]=heroSlides.iconLinks.icon.customImage&populate[5]=introContent&populate[6]=introContent.icon&populate[7]=contentWithVideo&populate[8]=contentWithVideo.video&populate[9]=contentWithVideo.video.thumbnail&populate[10]=contentWithVideo.video.uploadedVideo&populate[11]=servicesSection&populate[12]=servicesSection.services&populate[13]=servicesSection.services.coverImage&populate[14]=statisticsSection&populate[15]=statisticsSection.statistics&populate[16]=statisticsSection.statistics.icon&populate[17]=statisticsSection.statistics.icon.customImage&populate[18]=newsSection&populate[19]=newsSection.viewAllLink`,
+      `${process.env.STRAPI_URL}/api/homepage?populate[0]=heroSlides&populate[1]=heroSlides.backgroundImage&populate[2]=heroSlides.button&populate[3]=heroSlides.iconLinks&populate[4]=heroSlides.iconLinks.icon.customImage&populate[5]=introContent&populate[6]=introContent.icon&populate[7]=contentWithVideo&populate[8]=contentWithVideo.video&populate[9]=contentWithVideo.video.thumbnail&populate[10]=contentWithVideo.video.uploadedVideo&populate[11]=servicesSection&populate[12]=servicesSection.services&populate[13]=servicesSection.services.coverImage&populate[14]=statisticsSection&populate[15]=statisticsSection.statistics&populate[16]=statisticsSection.statistics.icon&populate[17]=statisticsSection.statistics.icon.customImage&populate[18]=newsSection&populate[19]=newsSection.viewAllLink&populate[20]=upcomingEventsSection&populate[21]=upcomingEventsSection.viewAllLink&populate[22]=testimonialsSection&populate[23]=affiliatesSection&populate[24]=affiliatesSection.logos&populate[25]=affiliatesSection.logos.logo&populate[26]=partnersSection&populate[27]=partnersSection.logos&populate[28]=partnersSection.logos.logo`,
       {
         cache: "force-cache", // Cache estático por defecto
         next: { revalidate: 3600 }, // Revalidar cada hora (3600 segundos)
@@ -78,14 +78,39 @@ const getEvents = async (): Promise<{ data: EventType[] } | null> => {
   }
 };
 
+const getTestimonials = async (): Promise<{ data: TestimonialType[] } | null> => {
+  try {
+    const response = await fetch(
+      `${process.env.STRAPI_URL}/api/testimonials?populate[0]=coverImage&populate[1]=media&pagination[pageSize]=3`,
+      {
+        cache: "force-cache",
+        next: { revalidate: 3600 }, // Revalidar cada hora
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error("Error fetching testimonials:", error);
+    return null;
+  }
+};
+
 
 export default async function Home() {
   const home = await getHome();
   const news = await getNews();
   const events = await getEvents();
+  const testimonials = await getTestimonials();
+
   console.log("home", home);
   console.log("news", news);
   console.log("events", events);
+  console.log("testimonials", testimonials);
 
   // Fallback data en caso de error de conexión
   const fallbackData = {
@@ -96,7 +121,12 @@ export default async function Home() {
     statisticsData: null,
     newsData: null,
     newsSectionData: null,
-    eventsData: null
+    eventsData: null,
+    upcomingEventsSection: null,
+    testimonialsData: null,
+    testimonialsSectionData: null,
+    affiliatesSectionData: null,
+    partnersSectionData: null
   };
 
   return (
@@ -109,6 +139,11 @@ export default async function Home() {
       newsData={news?.data || fallbackData.newsData}
       newsSectionData={home?.data?.newsSection || fallbackData.newsSectionData}
       eventsData={events?.data || fallbackData.eventsData}
+      eventSectionData={home?.data?.upcomingEventsSection || fallbackData.upcomingEventsSection}
+      testimonialsData={testimonials?.data || fallbackData.testimonialsData}
+      testimonialsSectionData={home?.data?.testimonialsSection || fallbackData.testimonialsSectionData}
+      affiliatesSectionData={home?.data?.affiliatesSection || fallbackData.affiliatesSectionData}
+      partnersSectionData={home?.data?.partnersSection || fallbackData.partnersSectionData}
     />
   );
 }
