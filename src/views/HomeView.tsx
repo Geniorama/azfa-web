@@ -24,16 +24,31 @@ import SlideSingleHome from "@/components/SlideSingleHome";
 import SlideSingleTestimonial from "@/components/SlideSingleTestimonial";
 import Modal from "@/components/Modal";
 import { useState } from "react";
-import { homeSliderData } from "@/data/mockData";
+import { HeroSlideData, IntroData, ServiceData, VideoType } from "@/types/componentsType";
+import ReactMarkdown from "react-markdown";
+import rehypeRaw from "rehype-raw";
+import { formatYouTubeUrl } from "@/utils/formatYouTubeUrl";
 
 interface HomeViewProps {
-  content: Record<string, unknown>;
+  slidesData: HeroSlideData[];
+  introData?: IntroData;
+  contentWithVideoData?: {
+    __component?: string;
+    content?: string;
+    video?: VideoType;
+    id?: number;
+  };
+  servicesData?: {
+    __component?: string;
+    title?: string;
+    services?: ServiceData[];
+    id?: number;
+  };
 }
 
-export default function Home({ content }: HomeViewProps) {
+export default function Home({ slidesData, introData, contentWithVideoData, servicesData }: HomeViewProps) {
   const router = useRouter();
   const [openModalVideo, setOpenModalVideo] = useState(false);
-  console.log("content", content);
 
   const handleOpenNews = (url: string) => {
     window.open(url, "_blank");
@@ -43,26 +58,42 @@ export default function Home({ content }: HomeViewProps) {
     <>
       <Modal open={openModalVideo} onClose={() => setOpenModalVideo(false)}>
           <div className="bg-black overflow-hidden">
-            {/* <video 
-              src={"/2320331_Downtown_Los_Angeles_1280x720.mp4"} 
-              autoPlay 
-              muted 
-              loop 
-              className="w-full h-auto max-h-[80vh] aspect-video"
-              controls
-            /> */}
-
+            {
+              contentWithVideoData?.video?.videoType === "uploaded" && (
+                <video 
+                  src={contentWithVideoData?.video?.uploadedVideo?.url}
+                  autoPlay 
+                  muted 
+                  loop 
+                  className="w-full h-auto max-h-[80vh] aspect-video"
+                  controls
+                />
+              )
+            }
+            {contentWithVideoData?.video?.videoType === "youtube" && (
             <div className="relative w-full h-0 pb-[56.25%] max-h-[80vh]">
               <iframe
                 className="absolute top-0 left-0 w-full h-full"
-                src="https://www.youtube.com/embed/c8Sk1b-vsds?si=By82cPAft6Npds9U"
+                src={formatYouTubeUrl(contentWithVideoData?.video?.youtubeUrl || "")}
                 title="YouTube video player"
-                frameBorder="0"
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                 referrerPolicy="strict-origin-when-cross-origin"
                 allowFullScreen
               ></iframe>
             </div>
+            )}
+            {contentWithVideoData?.video?.videoType === "vimeo" && (
+              <div className="relative w-full h-0 pb-[56.25%] max-h-[80vh]">
+                <iframe
+                  className="absolute top-0 left-0 w-full h-full"
+                  src={contentWithVideoData?.video?.vimeoUrl}
+                  title="Vimeo video player"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                  referrerPolicy="strict-origin-when-cross-origin"
+                  allowFullScreen
+                ></iframe>
+              </div>
+            )}
           </div>
       </Modal>
       <section className=" bg-text-primary h-[calc(100vh-120px)]">
@@ -78,23 +109,41 @@ export default function Home({ content }: HomeViewProps) {
             }}
             className="h-full"
           >
-            {homeSliderData.map((slide) => (
+            {slidesData && slidesData.length > 0 ? (
+              slidesData.map((slide) => (
+                <SwiperSlide
+                  style={{ backgroundImage: `url(${slide.backgroundImage?.url || '/inicio-slide (1).jpg'})` }}
+                  key={slide.id}
+                  className="bg-text-primary py-16"
+                >
+                  <SlideSingleHome
+                    caption={slide.label || ""}
+                    title={slide.title || ""}
+                    description={slide.subtitle || ""}
+                    button={{
+                      label: slide.button?.text || "Ver más",
+                      onClick: () => router.push(slide.button?.link || "/"),
+                    }}
+                  />
+                </SwiperSlide>
+              ))
+            ) : (
+              // Fallback slide cuando no hay datos
               <SwiperSlide
-                style={{ backgroundImage: `url(${slide.backgroundImage || '/inicio-slide (1).jpg'})` }}
-                key={slide.id}
-                className={`${slide.backgroundColor} py-16`}
+                style={{ backgroundImage: `url('/inicio-slide (1).jpg')` }}
+                className="bg-text-primary py-16"
               >
                 <SlideSingleHome
-                  caption={slide.caption}
-                  title={slide.title}
-                  description={slide.description}
+                  caption="AZFA"
+                  title="Asociación de Zonas Francas de Iberoamérica"
+                  description="Conectando el ecosistema de zonas francas en Iberoamérica"
                   button={{
-                    label: slide.button.label,
-                    onClick: () => router.push(slide.button.href),
+                    label: "Conocer más",
+                    onClick: () => router.push("/quienes-somos"),
                   }}
                 />
               </SwiperSlide>
-            ))}
+            )}
           </Swiper>
 
           {/* Botones de navegación personalizados */}
@@ -106,15 +155,15 @@ export default function Home({ content }: HomeViewProps) {
               </div>
               <hr className="my-8 border-background-3" />
               <div className="flex items-start justify-center gap-4 max-w-screen-md mx-auto">
-                {homeSliderData.map((slide) => (
+                {slidesData?.slice(0, 3).map((slide) => (
                   <div
                     key={slide.id}
                     className="flex flex-col lg:flex-row items-center lg:items-start gap-2 w-full lg:w-1/3 justify-center"
                   >
                     <img
                       className="w-12"
-                      src={ServicioInfoImg.src}
-                      alt={slide.caption}
+                      src={slide.iconLinks?.[0]?.icon?.customImage?.url || ServicioInfoImg.src}
+                      alt={slide.label || ""}
                     />
                     <p className="text-body2 text-center lg:text-left">
                       {slide.title}
@@ -135,11 +184,12 @@ export default function Home({ content }: HomeViewProps) {
               src={IconIntroStar.src}
               alt="Servicio de información especializada"
             />
-            <p className="lg:text-h3 text-h4 font-light text-center lg:text-left">
-              Con más de <span className="text-details">27 años</span> de
-              trayectoria, la AZFA es la organización que lidera y representa al
-              ecosistema de zonas francas en Iberoamérica.
-            </p>
+            <div className="lg:text-h3 text-h4 font-light text-center lg:text-left">
+              <ReactMarkdown rehypePlugins={[rehypeRaw]}>
+                {introData?.content || "Con más de <span class='text-details'>27 años</span> de trayectoria, la AZFA es la organización que lidera y representa al ecosistema de zonas francas en Iberoamérica."}
+              </ReactMarkdown>
+            </div>
+            
           </div>
         </div>
       </section>
@@ -166,21 +216,11 @@ export default function Home({ content }: HomeViewProps) {
             </div>
 
             <div className="w-full lg:w-1/2 lg:pl-30 text-body1 p-4 lg:p-0">
-              <p>
-                Agrupamos a los actores clave del sector: parques de zonas
-                francas, asociaciones nacionales, entidades gubernamentales,
-                empresas proveedoras de servicios y compañías instaladas bajo el
-                régimen franco, consolidando una red regional estratégica.{" "}
-                <br /> <br />
-                Nuestra misión es{" "}
-                <span className="text-details">
-                  imparar la competitividad, la innovación, la atracción de
-                  inversiones{" "}
-                </span>{" "}
-                y el desarrollo sostenible en las zonas francas, posicionándolas
-                como pilares del crecimiento económico regional y del comercio
-                internacional.
-              </p>
+              <div>
+                <ReactMarkdown rehypePlugins={[rehypeRaw]}>
+                  {contentWithVideoData?.content}
+                </ReactMarkdown>
+              </div>
             </div>
           </div>
         </div>
@@ -188,56 +228,74 @@ export default function Home({ content }: HomeViewProps) {
 
       <section className="bg-white lg:pt-16">
         <div className="container mx-auto px-4">
-          <TitleDecorative>Nuestros Servicios</TitleDecorative>
+          <TitleDecorative>{servicesData?.title || "Nuestros Servicios"}</TitleDecorative>
         </div>
 
         {/* Services cards */}
         <div className="hidden lg:grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-[1px] mt-16">
-          <ServiceCard
-            title="POSICIONAMIENTO"
-            subtitle="Servicio"
-            image={"https://testazfabucket.s3.us-east-2.amazonaws.com/1_posicionamiento_693973b4e2.webp"}
-            button={{
-              label: "Ver más",
-              onClick: () => router.push("/servicio-1"),
-            }}
-          />
-          <ServiceCard
-            title="PROMOCIÓN"
-            subtitle="Servicio"
-            image={"https://testazfabucket.s3.us-east-2.amazonaws.com/2_promocion_731d85b7cd.webp"}
-            button={{
-              label: "Ver más",
-              onClick: () => router.push("/servicio-2"),
-            }}
-          />
-          <ServiceCard
-            title="INFORMACIÓN ESPECIALIZADA DEL SECTOR"
-            subtitle="Servicio"
-            image={"https://testazfabucket.s3.us-east-2.amazonaws.com/3_informacion_7fa601f8f5.webp"}
-            button={{
-              label: "Ver más",
-              onClick: () => router.push("/servicio-3"),
-            }}
-          />
-          <ServiceCard
-            title="NEGOCIOS"
-            subtitle="Servicio"
-            image={"https://testazfabucket.s3.us-east-2.amazonaws.com/4_negocios_7149dea41e.webp"}
-            button={{
-              label: "Ver más",
-              onClick: () => router.push("/servicio-4"),
-            }}
-          />
-          <ServiceCard
-            title="COMUNIDAD"
-            subtitle="Servicio"
-            image={"https://testazfabucket.s3.us-east-2.amazonaws.com/5_Comunidad_14858a626f.webp"}
-            button={{
-              label: "Ver más",
-              onClick: () => router.push("/servicio-5"),
-            }}
-          />
+          {servicesData?.services && servicesData.services.length > 0 ? (
+            servicesData.services.map((service) => (
+              <ServiceCard
+                key={service.id}
+                title={service.title || ""}
+                subtitle={service.tag || "Servicio"}
+                image={service.coverImage?.url || "https://placehold.co/600x1000/10356B/FFFFFF"}
+                button={{
+                  label: service.button?.text || "Ver más",
+                  onClick: () => router.push(service.button?.link || "/servicios"),
+                }}
+              />
+            ))
+          ) : (
+            // Fallback services cuando no hay datos
+            <>
+              <ServiceCard
+                title="POSICIONAMIENTO"
+                subtitle="Servicio"
+                image="https://testazfabucket.s3.us-east-2.amazonaws.com/1_posicionamiento_693973b4e2.webp"
+                button={{
+                  label: "Ver más",
+                  onClick: () => router.push("/servicio-1"),
+                }}
+              />
+              <ServiceCard
+                title="PROMOCIÓN"
+                subtitle="Servicio"
+                image="https://testazfabucket.s3.us-east-2.amazonaws.com/2_promocion_731d85b7cd.webp"
+                button={{
+                  label: "Ver más",
+                  onClick: () => router.push("/servicio-2"),
+                }}
+              />
+              <ServiceCard
+                title="INFORMACIÓN ESPECIALIZADA"
+                subtitle="Servicio"
+                image="https://testazfabucket.s3.us-east-2.amazonaws.com/3_informacion_7fa601f8f5.webp"
+                button={{
+                  label: "Ver más",
+                  onClick: () => router.push("/servicio-3"),
+                }}
+              />
+              <ServiceCard
+                title="NEGOCIOS"
+                subtitle="Servicio"
+                image="https://testazfabucket.s3.us-east-2.amazonaws.com/4_negocios_7149dea41e.webp"
+                button={{
+                  label: "Ver más",
+                  onClick: () => router.push("/servicio-4"),
+                }}
+              />
+              <ServiceCard
+                title="COMUNIDAD"
+                subtitle="Servicio"
+                image="https://testazfabucket.s3.us-east-2.amazonaws.com/5_Comunidad_14858a626f.webp"
+                button={{
+                  label: "Ver más",
+                  onClick: () => router.push("/servicio-5"),
+                }}
+              />
+            </>
+          )}
         </div>
 
         {/* Services cards mobile swiper */}
@@ -251,61 +309,19 @@ export default function Home({ content }: HomeViewProps) {
             }}
             className="[&>.swiper-pagination]:!relative [&>.swiper-pagination]:!top-0 [&>.swiper-pagination]:py-12 [&>.swiper-pagination>span]:!border [&>.swiper-pagination>span]:!border-details [&>.swiper-pagination>span]:!bg-transparent [&>.swiper-pagination>span]:!opacity-100 [&>.swiper-pagination>span.swiper-pagination-bullet-active]:!bg-details [&>.swiper-pagination>span]:!cursor-pointer"
           >
-            <SwiperSlide>
-              <ServiceCard
-                title="Servicio 1"
-                subtitle="Servicio"
-                image={"https://placehold.co/600x1000/10356B/FFFFFF"}
-                button={{
-                  label: "Ver más",
-                  onClick: () => router.push("/servicio-1"),
-                }}
-              />
-            </SwiperSlide>
-            <SwiperSlide>
-              <ServiceCard
-                title="Servicio 2"
-                subtitle="Servicio"
-                image={"https://placehold.co/600x1000/10356B/FFFFFF"}
-                button={{
-                  label: "Ver más",
-                  onClick: () => router.push("/servicio-2"),
-                }}
-              />
-            </SwiperSlide>
-            <SwiperSlide>
-              <ServiceCard
-                title="Servicio 3"
-                subtitle="Servicio"
-                image={"https://placehold.co/600x1000/10356B/FFFFFF"}
-                button={{
-                  label: "Ver más",
-                  onClick: () => router.push("/servicio-3"),
-                }}
-              />
-            </SwiperSlide>
-            <SwiperSlide>
-              <ServiceCard
-                title="Servicio 4"
-                subtitle="Servicio"
-                image={"https://placehold.co/600x1000/10356B/FFFFFF"}
-                button={{
-                  label: "Ver más",
-                  onClick: () => router.push("/servicio-4"),
-                }}
-              />
-            </SwiperSlide>
-            <SwiperSlide>
-              <ServiceCard
-                title="Servicio 5"
-                subtitle="Servicio"
-                image={"https://placehold.co/600x1000/10356B/FFFFFF"}
-                button={{
-                  label: "Ver más",
-                  onClick: () => router.push("/servicio-5"),
-                }}
-              />
-            </SwiperSlide>
+            {servicesData?.services?.map((service) => (
+              <SwiperSlide key={service.id}>
+                <ServiceCard
+                  title={service.title || ""}
+                  subtitle={service.tag || "Servicio"}
+                  image={service.coverImage?.url || "https://placehold.co/600x1000/10356B/FFFFFF"}
+                  button={{
+                    label: service.button?.text || "Ver más",
+                    onClick: () => router.push(service.button?.link || "/servicios"),
+                  }}
+                />
+              </SwiperSlide>
+            ))}
           </Swiper>
         </div>
       </section>

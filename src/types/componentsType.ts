@@ -124,3 +124,46 @@ export interface ServicesGridData {
   active?: boolean;
   id?: number;
 }
+
+export interface IconLinkType {
+  __component?: string;
+  icon?: {
+    type?: string;
+    customImage?: ImageType;
+    reactIconName?: string;
+  }
+  label?: string;
+  url?: string;
+}
+
+export interface HeroSlideData {
+  __component?: string;
+  title?: string;
+  label?: string;
+  subtitle?: string;
+  backgroundImage?: ImageType;
+  button?: StrapiButtonType;
+  iconLinks?: IconLinkType[];
+  id?: number;
+}
+
+export interface VideoType {
+  title?: string;
+  thumbnail?: string;
+  videoType?: "youtube" | "vimeo" | "uploaded";
+  youtubeUrl?: string;
+  vimeoUrl?: string;
+  uploadedVideo?: {
+    url: string;
+    alternativeText?: string;
+  };
+}
+
+export interface ServiceData {
+  __component?: string;
+  title?: string;
+  tag?: string;
+  coverImage?: ImageType;
+  button?: StrapiButtonType;
+  id?: number;
+}
