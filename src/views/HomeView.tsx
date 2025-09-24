@@ -24,7 +24,7 @@ import SlideSingleHome from "@/components/SlideSingleHome";
 import SlideSingleTestimonial from "@/components/SlideSingleTestimonial";
 import Modal from "@/components/Modal";
 import { useState } from "react";
-import { HeroSlideData, IntroData, ServiceData, VideoType } from "@/types/componentsType";
+import { HeroSlideData, IntroData, ServiceData, VideoType, StatisticsItemData, NewsType, EventType } from "@/types/componentsType";
 import ReactMarkdown from "react-markdown";
 import rehypeRaw from "rehype-raw";
 import { formatYouTubeUrl } from "@/utils/formatYouTubeUrl";
@@ -44,11 +44,33 @@ interface HomeViewProps {
     services?: ServiceData[];
     id?: number;
   };
+  statisticsData?: {
+    __component?: string;
+    title?: string;
+    statistics?: StatisticsItemData[];
+    id?: number;
+  };
+  newsData?: NewsType[] | null;
+  newsSectionData?: {
+    __component?: string;
+    title?: string;
+    viewAllLink?: {
+      url?: string;
+      label?: string;
+    };
+    id?: number;
+  };
+  eventsData?: EventType[] | null;
 }
 
-export default function Home({ slidesData, introData, contentWithVideoData, servicesData }: HomeViewProps) {
+export default function Home({ slidesData, introData, contentWithVideoData, servicesData, statisticsData, newsData, newsSectionData, eventsData }: HomeViewProps) {
   const router = useRouter();
   const [openModalVideo, setOpenModalVideo] = useState(false);
+
+  console.log("statisticsData", statisticsData);
+  console.log("newsData", newsData);
+  console.log("newsSectionData", newsSectionData);
+  console.log("eventsData", eventsData);
 
   const handleOpenNews = (url: string) => {
     window.open(url, "_blank");
@@ -333,80 +355,120 @@ export default function Home({ slidesData, introData, contentWithVideoData, serv
               dividerColor="bg-[#94D133]"
               className="text-left items-start"
             >
-              Las Zonas Francas de Iberoamérica
+              {statisticsData?.title || "Las Zonas Francas de Iberoamérica"}
             </TitleDecorative>
           </div>
           <div className="w-full lg:w-1/3 space-y-10 mt-14 lg:mt-0">
-            <div className="flex items-center gap-6">
-              <img
-                src={IconIberoamerica.src}
-                alt="Icon Iberoamérica"
-                className="w-16 h-16"
-              />
-              <Counter
-                value={800}
-                prefix="+"
-                leyend="Zonas Francas"
-                thousandSeparator="."
-              />
-            </div>
+            {statisticsData?.statistics?.slice(0, 2).map((statistic, index) => (
+              <div key={statistic.id || index} className="flex items-center gap-6">
+                <img
+                  src={statistic.icon?.customImage?.url || IconIberoamerica.src}
+                  alt={statistic.label || "Icon Iberoamérica"}
+                  className="w-16 h-16"
+                />
+                <Counter
+                  value={parseInt(statistic.value || "0")}
+                  prefix={statistic.prefix || "+"}
+                  leyend={statistic.label || ""}
+                  thousandSeparator="."
+                />
+              </div>
+            ))}
+            {/* Fallback si no hay datos */}
+            {(!statisticsData?.statistics || statisticsData.statistics.length === 0) && (
+              <>
+                <div className="flex items-center gap-6">
+                  <img
+                    src={IconIberoamerica.src}
+                    alt="Icon Iberoamérica"
+                    className="w-16 h-16"
+                  />
+                  <Counter
+                    value={800}
+                    prefix="+"
+                    leyend="Zonas Francas"
+                    thousandSeparator="."
+                  />
+                </div>
 
-            <div className="flex items-center gap-6">
-              <img
-                src={IconIberoamerica.src}
-                alt="Icon Iberoamérica"
-                className="w-16 h-16"
-              />
-              <Counter
-                value={8000}
-                prefix="+"
-                leyend="Empresas"
-                thousandSeparator="."
-              />
-            </div>
+                <div className="flex items-center gap-6">
+                  <img
+                    src={IconIberoamerica.src}
+                    alt="Icon Iberoamérica"
+                    className="w-16 h-16"
+                  />
+                  <Counter
+                    value={8000}
+                    prefix="+"
+                    leyend="Empresas"
+                    thousandSeparator="."
+                  />
+                </div>
+              </>
+            )}
           </div>
           <div className="w-full lg:w-1/3 space-y-10">
-            <div className="flex items-center gap-6 mt-8 lg:mt-0">
-              <img
-                src={IconIberoamerica.src}
-                alt="Icon Iberoamérica"
-                className="w-16 h-16"
-              />
-              <Counter
-                value={1090000}
-                prefix="+"
-                leyend="Empleos"
-                thousandSeparator="."
-              />
-            </div>
+            {statisticsData?.statistics?.slice(2).map((statistic, index) => (
+              <div key={statistic.id || index} className={`flex items-center gap-6 ${index === 0 ? 'mt-8 lg:mt-0' : ''}`}>
+                <img
+                  src={statistic.icon?.customImage?.url || IconIberoamerica.src}
+                  alt={statistic.label || "Icon Iberoamérica"}
+                  className="w-16 h-16"
+                />
+                <Counter
+                  value={parseInt(statistic.value || "0")}
+                  prefix={statistic.prefix || "+"}
+                  leyend={statistic.label || ""}
+                  thousandSeparator="."
+                />
+              </div>
+            ))}
+            {/* Fallback si no hay datos */}
+            {(!statisticsData?.statistics || statisticsData.statistics.length === 0) && (
+              <>
+                <div className="flex items-center gap-6 mt-8 lg:mt-0">
+                  <img
+                    src={IconIberoamerica.src}
+                    alt="Icon Iberoamérica"
+                    className="w-16 h-16"
+                  />
+                  <Counter
+                    value={1090000}
+                    prefix="+"
+                    leyend="Empleos"
+                    thousandSeparator="."
+                  />
+                </div>
 
-            <div className="flex items-center gap-6">
-              <img
-                src={IconIberoamerica.src}
-                alt="Icon Iberoamérica"
-                className="w-16 h-16"
-              />
-              <Counter
-                value={65800}
-                prefix="USD $"
-                leyend="millones EXPORTACIÓN"
-                thousandSeparator="."
-              />
-            </div>
+                <div className="flex items-center gap-6">
+                  <img
+                    src={IconIberoamerica.src}
+                    alt="Icon Iberoamérica"
+                    className="w-16 h-16"
+                  />
+                  <Counter
+                    value={65800}
+                    prefix="USD $"
+                    leyend="millones EXPORTACIÓN"
+                    thousandSeparator="."
+                  />
+                </div>
 
-            <div className="flex items-center gap-6">
-              <img
-                src={IconIberoamerica.src}
-                alt="Icon Iberoamérica"
-                className="w-16 h-16"
-              />
-              <Counter
-                value={48000}
-                prefix="USD $"
-                leyend="millones INVERSIONES"
-                thousandSeparator="."
-              />
-            </div>
+                <div className="flex items-center gap-6">
+                  <img
+                    src={IconIberoamerica.src}
+                    alt="Icon Iberoamérica"
+                    className="w-16 h-16"
+                  />
+                  <Counter
+                    value={48000}
+                    prefix="USD $"
+                    leyend="millones INVERSIONES"
+                    thousandSeparator="."
+                  />
+                </div>
+              </>
+            )}
           </div>
         </div>
       </section>
@@ -416,43 +478,68 @@ export default function Home({ slidesData, introData, contentWithVideoData, serv
           <div className="w-full lg:w-1/2">
             <div className="flex items-center justify-between mb-12 lg:mb-0">
               <TitleDecorative className="text-left items-start">
-                Noticias
+                {newsSectionData?.title || "Noticias"}
               </TitleDecorative>
               <Link
                 className="underline underline-offset-8 decoration-white hover:decoration-details transition-all duration-300"
-                href="/noticias"
+                href={newsSectionData?.viewAllLink?.url || "/noticias"}
               >
-                Ver todas
+                {newsSectionData?.viewAllLink?.label || "Ver todas"}
               </Link>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mt-8">
-              <CardNews
-                image="https://testazfabucket.s3.us-east-2.amazonaws.com/noticias_3_adfc8dd1e2.png"
-                title="Zonas francas: piden modernizar la ley y potenciar la competitividad en Argentina"
-                category="Noticia"
-                description={truncateText(
-                  "En el marco del Consejo Federal de Zonas Francas, representantes provinciales coincidieron en la necesidad de actualizar la normativa vigente y generar condiciones que permitan desarrollar plenamente su potencial exportador, logístico e industrial",
-                  100
-                )}
-                button={{
-                  label: "Ver más",
-                  onClick: () => handleOpenNews("https://www.elfinancierocr.com/economia-y-politica/economia-de-costa-rica-crece-46-en-julio-impulsada/NNWQX52JYZDOFKCHKUS3GKS7ZM/story/"),
-                }}
-              />
-              <CardNews
-                image="https://testazfabucket.s3.us-east-2.amazonaws.com/657e7211_e1d3_43fc_a2ca_8dbc93648e0c_895fdc8714.jpg"
-                title="Economía de Costa Rica crece 4,6% en julio, impulsada por las zonas francas, pero existen desafíos en sectores clave"
-                category="Noticia"
-                description={truncateText(
-                  "La producción nacional de Costa Rica, medida por la serie tendencia ciclo del Índice Mensual de Actividad Económica (IMAE), registró un crecimiento interanual del 4,6% en julio de 2025, según el más reciente informe publicado por el Banco Central de Costa Rica (BCCR)",
-                  100
-                )}
-                button={{
-                  label: "Ver más",
-                  onClick: () => router.push("/noticia-1"),
-                }}
-              />
+              {newsData && newsData.length > 0 ? (
+                newsData.slice(0, 2).map((newsItem) => (
+                  <CardNews
+                    key={newsItem.id}
+                    image={newsItem.thumbnail?.formats?.small?.url || "https://testazfabucket.s3.us-east-2.amazonaws.com/noticias_3_adfc8dd1e2.png"}
+                    title={newsItem.title}
+                    category={"Noticia"}
+                    description={truncateText(newsItem.extract, 100)}
+                    button={{
+                      label: "Ver más",
+                      onClick: () => {
+                        if (newsItem.externalLink) {
+                          handleOpenNews(newsItem.externalLink);
+                        } else {
+                          router.push(`/noticias/${newsItem.slug}`);
+                        }
+                      },
+                    }}
+                  />
+                ))
+              ) : (
+                // Fallback cuando no hay datos de noticias
+                <>
+                  <CardNews
+                    image="https://testazfabucket.s3.us-east-2.amazonaws.com/noticias_3_adfc8dd1e2.png"
+                    title="Zonas francas: piden modernizar la ley y potenciar la competitividad en Argentina"
+                    category="Noticia"
+                    description={truncateText(
+                      "En el marco del Consejo Federal de Zonas Francas, representantes provinciales coincidieron en la necesidad de actualizar la normativa vigente y generar condiciones que permitan desarrollar plenamente su potencial exportador, logístico e industrial",
+                      100
+                    )}
+                    button={{
+                      label: "Ver más",
+                      onClick: () => handleOpenNews("https://www.elfinancierocr.com/economia-y-politica/economia-de-costa-rica-crece-46-en-julio-impulsada/NNWQX52JYZDOFKCHKUS3GKS7ZM/story/"),
+                    }}
+                  />
+                  <CardNews
+                    image="https://testazfabucket.s3.us-east-2.amazonaws.com/657e7211_e1d3_43fc_a2ca_8dbc93648e0c_895fdc8714.jpg"
+                    title="Economía de Costa Rica crece 4,6% en julio, impulsada por las zonas francas, pero existen desafíos en sectores clave"
+                    category="Noticia"
+                    description={truncateText(
+                      "La producción nacional de Costa Rica, medida por la serie tendencia ciclo del Índice Mensual de Actividad Económica (IMAE), registró un crecimiento interanual del 4,6% en julio de 2025, según el más reciente informe publicado por el Banco Central de Costa Rica (BCCR)",
+                      100
+                    )}
+                    button={{
+                      label: "Ver más",
+                      onClick: () => router.push("/noticia-1"),
+                    }}
+                  />
+                </>
+              )}
             </div>
           </div>
           <div className="w-full lg:w-1/2">
@@ -472,30 +559,57 @@ export default function Home({ slidesData, introData, contentWithVideoData, serv
             </div>
 
             <div className="space-y-8 mt-8">
-              <CardEvent
-                image="https://testazfabucket.s3.us-east-2.amazonaws.com/img_evento_1a_World_FZO_af2dc47ee4.webp"
-                title="11º Congreso Mundial de la World FZO"
-                category="Evento"
-                date="2024-10-10"
-                location="Hainan, China"
-                button={{
-                  label: "Ver más",
-                  onClick: () => router.push("/eventos"),
-                }}
-                hotel="Centro Internacional de Conferencias y Exposiciones de Hainan"
-              />
-              <CardEvent
-                image="https://testazfabucket.s3.us-east-2.amazonaws.com/img_evento_2_Iberoamerica_Free_Trade_Zone_Conference_95b385bcf7.webp"
-                title="XXVIII Conferencia de Zonas Francas de Iberoamérica"
-                category="Evento"
-                date="2024-11-19"
-                location="Punta del Este, Uruguay"
-                button={{
-                  label: "Ver más",
-                  onClick: () => router.push("/eventos"),
-                }}
-                hotel="Hotel por confirmar"
-              />
+              {eventsData && eventsData.length > 0 ? (
+                eventsData.slice(0, 2).map((event) => (
+                  <CardEvent
+                    key={event.id}
+                    image={event.featuredImage?.url || "https://testazfabucket.s3.us-east-2.amazonaws.com/img_evento_1a_World_FZO_af2dc47ee4.webp"}
+                    title={event.title}
+                    category={"Evento"}
+                    date={event.startDate}
+                    location={event.location}
+                    button={{
+                      label: event.buttonText || "Ver más",
+                      onClick: () => {
+                        if (event.buttonUrl) {
+                          window.open(event.buttonUrl, "_blank");
+                        } else {
+                          router.push(`/eventos/${event.slug}`);
+                        }
+                      },
+                    }}
+                    hotel={event.address}
+                  />
+                ))
+              ) : (
+                // Fallback cuando no hay datos de eventos
+                <>
+                  <CardEvent
+                    image="https://testazfabucket.s3.us-east-2.amazonaws.com/img_evento_1a_World_FZO_af2dc47ee4.webp"
+                    title="11º Congreso Mundial de la World FZO"
+                    category="Evento"
+                    date="2024-10-10"
+                    location="Hainan, China"
+                    button={{
+                      label: "Ver más",
+                      onClick: () => router.push("/eventos"),
+                    }}
+                    hotel="Centro Internacional de Conferencias y Exposiciones de Hainan"
+                  />
+                  <CardEvent
+                    image="https://testazfabucket.s3.us-east-2.amazonaws.com/img_evento_2_Iberoamerica_Free_Trade_Zone_Conference_95b385bcf7.webp"
+                    title="XXVIII Conferencia de Zonas Francas de Iberoamérica"
+                    category="Evento"
+                    date="2024-11-19"
+                    location="Punta del Este, Uruguay"
+                    button={{
+                      label: "Ver más",
+                      onClick: () => router.push("/eventos"),
+                    }}
+                    hotel="Hotel por confirmar"
+                  />
+                </>
+              )}
             </div>
           </div>
         </div>

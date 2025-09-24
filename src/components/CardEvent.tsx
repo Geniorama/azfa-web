@@ -28,20 +28,20 @@ export default function CardEvent({ image, title, category, date, location, hote
             <hr className="my-4 border-background-2" />
             <div className="flex flex-row gap-y-2 justify-between flex-wrap">
                 {date && (
-                    <div className="flex flex-row gap-2 items-center w-full lg:w-1/2">
-                        <GoCalendar />
+                    <div className="flex flex-row gap-2 items-start w-full lg:w-1/2">
+                        <GoCalendar className="w-5 h-5" />
                         <span className="text-body2 inline-block">{date}</span>
                     </div>
                 )}
                 {location && (
-                    <div className="flex flex-row gap-2 items-center w-full lg:w-1/2">
-                        <GoHome />
+                    <div className="flex flex-row gap-2 items-start w-full lg:w-1/2">
+                        <GoHome className="w-5 h-5" />
                         <span className="text-body2 inline-block">{location}</span>
                     </div>
                 )}
                 {hotel && (
-                    <div className="flex flex-row gap-2 items-center w-full lg:w-1/2">
-                        <GoHome />
+                    <div className="flex flex-row gap-2 items-start w-full">
+                        <GoHome className="w-5 h-5 min-w-5" />
                         <span className="text-body2 inline-block">{hotel}</span>
                     </div>
                 )}

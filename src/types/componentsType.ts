@@ -167,3 +167,129 @@ export interface ServiceData {
   button?: StrapiButtonType;
   id?: number;
 }
+
+export interface StatisticsData {
+  __component?: string;
+  title?: string;
+  statistics?: StatisticsItemData[];
+  id?: number;
+}
+
+export interface StatisticsItemData {
+  __component?: string;
+  title?: string;
+  icon?: {
+    type?: string;
+    customImage?: ImageType;
+    reactIconName?: string;
+  };
+  value?: string;
+  label?: string;
+  isActive?: boolean;
+  prefix?: string;
+  suffix?: string;
+  thousandSeparator?: string;
+  id?: number;
+}
+
+export interface StrapiImageFormat {
+  ext: string;
+  url: string;
+  hash: string;
+  mime: string;
+  name: string;
+  path: string | null;
+  size: number;
+  width: number;
+  height: number;
+  sizeInBytes: number;
+}
+
+export interface StrapiImageFormats {
+  large?: StrapiImageFormat;
+  small?: StrapiImageFormat;
+  medium?: StrapiImageFormat;
+  thumbnail?: StrapiImageFormat;
+}
+
+export interface StrapiImageType {
+  id: number;
+  documentId: string;
+  name: string;
+  alternativeText: string | null;
+  caption: string | null;
+  width: number;
+  height: number;
+  formats: StrapiImageFormats;
+  hash: string;
+  ext: string;
+  mime: string;
+  size: number;
+  url: string;
+  previewUrl: string | null;
+  provider: string;
+  provider_metadata: Record<string, unknown> | null;
+  createdAt: string;
+  updatedAt: string;
+  publishedAt: string;
+}
+
+export interface NewsCategoryType {
+  id: number;
+  documentId: string;
+  name: string;
+  slug: string;
+  description: string | null;
+  color: string;
+  createdAt: string;
+  updatedAt: string;
+  publishedAt: string;
+}
+
+export interface NewsType {
+  id: number;
+  documentId: string;
+  title: string;
+  slug: string;
+  extract: string;
+  type: string;
+  createdAt: string;
+  updatedAt: string;
+  publishedAt: string;
+  externalLink: string | null;
+  thumbnail: StrapiImageType;
+  category: NewsCategoryType;
+}
+
+export interface EventIconType {
+  id: number;
+  type: string;
+  reactIconName: string;
+  customImage: StrapiImageType;
+}
+
+export interface EventType {
+  id: number;
+  documentId: string;
+  title: string;
+  slug: string;
+  description: string;
+  featured: boolean;
+  tag: string;
+  startDate: string;
+  endDate: string;
+  location: string;
+  address: string;
+  buttonText: string;
+  buttonUrl: string;
+  createdAt: string;
+  updatedAt: string;
+  publishedAt: string;
+  locale: string;
+  featuredImage: StrapiImageType;
+  calendarIcon: EventIconType;
+  locationIcon: EventIconType;
+  addressIcon: EventIconType;
+  SEO: Record<string, unknown> | null;
+  localizations: Record<string, unknown>[];
+}
