@@ -293,3 +293,57 @@ export interface EventType {
   SEO: Record<string, unknown> | null;
   localizations: Record<string, unknown>[];
 }
+
+export interface StrapiMediaType {
+  id: number;
+  title: string | null;
+  videoType: string;
+  youtubeUrl: string | null;
+  vimeoUrl: string | null;
+  autoplay: boolean;
+  muted: boolean;
+  loop: boolean;
+}
+
+export interface TestimonialType {
+  id: number;
+  documentId: string;
+  name: string;
+  position: string;
+  company: string;
+  testimonial: string;
+  featured: boolean;
+  publishedAt: string;
+  createdAt: string;
+  updatedAt: string;
+  coverImage: StrapiImageType;
+  media: StrapiMediaType;
+}
+
+export interface AffiliateLogoType {
+  id: number;
+  name: string | null;
+  url: string | null;
+  logo: StrapiImageType;
+}
+
+export interface AffiliateSectionType {
+  id: number;
+  title: string;
+  displayType: string;
+  logos: AffiliateLogoType[];
+}
+
+export interface PartnerLogoType {
+  id: number;
+  name: string | null;
+  url: string | null;
+  logo: StrapiImageType;
+}
+
+export interface PartnersSectionType {
+  id: number;
+  title: string;
+  displayType: string;
+  logos: PartnerLogoType[];
+}
