@@ -3,7 +3,6 @@
 import LogoAzfa from "../../public/logo-azfa.svg";
 import { FaAngleDown } from "react-icons/fa6";
 import { GoHome } from "react-icons/go";
-import { FaUser, FaSignOutAlt } from "react-icons/fa";
 import Link from "next/link";
 import Button from "@/utils/Button";
 import LogoAzfaBlanco from "@/assets/img/logo-azfa-blanco.svg";
@@ -11,7 +10,7 @@ import CloseIcon from "@/assets/icons/close-menu.svg";
 import { useState, useEffect, useRef } from "react";
 import { useAuth } from "@/hooks/useAuth";
 import { useRouter } from "next/navigation";
-
+import { HeaderTypeData } from "@/types/componentsType";
 interface NavItem {
   icon?: React.ReactNode;
   label?: string;
@@ -19,101 +18,7 @@ interface NavItem {
   subItems?: NavItem[];
 }
 
-const navItems: NavItem[] = [
-  {
-    icon: <GoHome />,
-    href: "/",
-  },
-
-  {
-    label: "Invierta en Zonas Francas",
-    href: "/invierta-en-zonas-francas",
-    subItems: [
-      {
-        label: "Normativa Legal",
-        href: "/invierta-en-zonas-francas/normativa-legal",
-      },
-      {
-        label: "Estadísticas",
-        href: "/invierta-en-zonas-francas/estadisticas",
-      },
-      {
-        label: "Oferta Inmobiliaria",
-        href: "/invierta-en-zonas-francas/oferta-inmobiliaria",
-      },
-      {
-        label: "Publicaciones",
-        href: "/invierta-en-zonas-francas/publicaciones",
-      },
-    ],
-  },
-
-  {
-    label: "Quiénes Somos",
-    href: "/quienes-somos",
-    subItems: [
-      {
-        label: "Junta Directiva",
-        href: "/quienes-somos/junta-directiva",
-      },
-      {
-        label: "Comisiones",
-        href: "/quienes-somos/comisiones",
-      },
-      {
-        label: "Equipo AZFA",
-        href: "/quienes-somos/equipo-azfa",
-      },
-    ],
-  },
-
-  {
-    label: "Sala de Prensa",
-    href: "/sala-de-prensa",
-    subItems: [
-      {
-        label: "Noticias",
-        href: "/sala-de-prensa/noticias",
-      },
-      {
-        label: "Podcast",
-        href: "/sala-de-prensa/podcast",
-      },
-      {
-        label: "Newsletter",
-        href: "/sala-de-prensa/newsletter",
-      },
-      {
-        label: "Blog",
-        href: "/sala-de-prensa/blog",
-      },
-    ],
-  },
-
-  {
-    label: "Eventos",
-    href: "/eventos",
-  },
-
-  {
-    label: "Contacto",
-    href: "/contacto",
-  },
-
-  // Lenguaje
-  {
-    label: "Esp",
-    href: "/",
-    subItems: [
-      {
-        label: "Eng",
-        href: "/",
-      },
-    ],
-  },
-];
-
-export default function Header() {
+export default function Header({ header }: { header: HeaderTypeData }) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [openSubmenu, setOpenSubmenu] = useState<number | null>(null);
   const [mobileOpenSubmenu, setMobileOpenSubmenu] = useState<number | null>(null);
@@ -122,6 +27,8 @@ export default function Header() {
   const { user, isAuthenticated, logout } = useAuth();
   const router = useRouter();
   const userMenuRef = useRef<HTMLDivElement>(null);
+
+  console.log('header from header component', header);
 
   // Cerrar menú de usuario al hacer clic fuera
   useEffect(() => {
@@ -161,10 +68,10 @@ export default function Header() {
         <div className="flex flex-col lg:flex-row justify-between items-center">
           <div className="w-full lg:w-1/3 flex justify-between items-center gap-4 px-4 lg:px-0">
             <div>
-              <Link href="/">
+              <Link href={header.logoUrl || "/"}>
                 <img
                   className="max-w-[130px] lg:max-w-none"
-                  src={LogoAzfa.src}
+                  src={header.logo.url || LogoAzfa.src}
                   alt="Logo Azfa"
                 />
               </Link>
@@ -181,77 +88,42 @@ export default function Header() {
             {/* Top bar */}
             <div className="flex items-center gap-4 mt-5 lg:mt-0 px-4 lg:px-0">
               <div className="flex flex-row items-start lg:items-center space-x-1 space-y-3 lg:space-y-0 lg:space-x-4 flex-wrap justify-between">
-                {isAuthenticated ? (
-                  <>
-                    <div className="relative" ref={userMenuRef}>
-                      <Button
-                        className="py-2 w-[48%] lg:w-auto"
-                        variant="outline-primary"
-                        onClick={() => setShowUserMenu(!showUserMenu)}
-                      >
-                        <FaUser className="mr-2" />
-                        {user?.username || user?.email}
-                      </Button>
-                      
-                      {/* User dropdown menu */}
-                      {showUserMenu && (
-                        <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg z-50 border">
-                          <div className="py-1">
-                            <div className="px-4 py-2 text-sm text-gray-700 border-b">
-                              {user?.email}
-                            </div>
-                            <button
-                              onClick={handleLogout}
-                              className="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                            >
-                              <FaSignOutAlt className="mr-2" />
-                              Cerrar sesión
-                            </button>
-                          </div>
-                        </div>
-                      )}
-                    </div>
-                  </>
-                ) : (
+                {/* Logout button */}
+                {isAuthenticated && (
                   <Button
                     className="py-2 w-full lg:w-auto"
                     variant="outline-primary"
-                    onClick={() => router.push('/portal-afiliados')}
+                    onClick={handleLogout}
                   >
-                    Portal afiliados
+                    Cerrar sesión
                   </Button>
                 )}
 
-                <Button
-                  className="py-2 w-full lg:w-auto"
-                  variant="outline-primary"
-                  onClick={() => router.push('/nuestros-afiliados')}
-                >
-                  Nuestros afiliados
-                </Button>
-
-                <Button
-                  className="py-2 w-full lg:w-auto"
-                  variant="outline-primary"
-                  onClick={() => {}}
-                >
-                  Haga parte de AZFA
-                </Button>
-
-                <Button
-                  className="py-2 w-full lg:w-auto"
-                  variant="primary-blue"
-                  onClick={() => {}}
-                >
-                  PAGOS
-                </Button>
+                {header.topButtons?.map((button, index) => (
+                  <Button
+                    key={button.id || index}
+                    className="py-2 w-full lg:w-auto"
+                    variant={index === header.topButtons?.length - 1 ? "primary-blue" : "outline-primary"}
+                    onClick={() => {
+                      if (button.url) {
+                        if (button.openInNewTab) {
+                          window.open(button.url, '_blank');
+                        } else {
+                          router.push(button.url);
+                        }
+                      }
+                    }}
+                  >
+                    {button.label}
+                  </Button>
+                ))}
               </div>
             </div>
 
             {/* Bottom bar */}
             <nav className="w-full lg:w-auto -mt-3 lg:mt-0 px-4 lg:px-0">
               <ul className="flex flex-col lg:flex-row items-center gap-0 lg:gap-6">
-                {navItems.map((item, index) => (
+                {header.mainMenu?.map((item, index) => (
                   <li 
                     className="w-full lg:w-auto relative group" 
                     key={index}
@@ -259,18 +131,22 @@ export default function Header() {
                     onMouseLeave={handleMouseLeave}
                   >
                     <Link
-                      href={item.href}
+                      href={item.url || "#"}
+                      target={item.openInNewTab ? "_blank" : "_self"}
                       className="flex items-center gap-2 text-black border-[#DDDDDD] border-b lg:border-transparent lg:border-b-2 py-5 lg:pb-1 mb-0 lg:-mb-1 hover:border-details transition justify-between"
                     >
-                      {item.icon && (
-                        <span className="text-xl">{item.icon}</span>
+                      {item.icon && item.icon.type === "react-icon" && item.icon.reactIconName && (
+                        <span className="text-xl">{item.icon.reactIconName}</span>
+                      )}
+                      {item.icon && item.icon.type === "custom-image" && item.icon.customImage && (
+                        <img src={item.icon.customImage.url} alt={item.icon.customImage.alternativeText || ""} className="w-5 h-5" />
                       )}
                       {item.label && (
                         <span className="text-button font-medium">
                           {item.label}
                         </span>
                       )}
-                      {item.subItems && (
+                      {item.submenu && (
                         <button 
                           className="lg:hidden text-details transition-transform duration-300"
                           onClick={(e) => {
@@ -281,11 +157,11 @@ export default function Header() {
                           <FaAngleDown className={`transition-transform duration-300 ${mobileOpenSubmenu === index ? 'rotate-180' : ''}`} />
                         </button>
                       )}
-                      {item.subItems && (
+                      {item.submenu && item.submenu.length > 0 && (
                         <FaAngleDown className={`text-details transition-transform duration-300 hidden lg:block ${openSubmenu === index ? 'rotate-180' : ''}`} />
                       )}
                     </Link>
-                    {item.subItems && (
+                    {item.submenu && item.submenu.length > 0 && (
                       <>
                         {/* Desktop submenu */}
                         <div className={`absolute w-full min-w-[200px] shadow-lg left-0 mt-2 bg-background-1 transition-all duration-300 ease-in-out hidden lg:block ${
@@ -294,9 +170,9 @@ export default function Header() {
                             : 'opacity-0 invisible translate-y-[-10px]'
                         }`}>
                           <ul className="flex flex-col text-black">
-                            {item.subItems.map((subItem, subIndex) => (
+                            {item.submenu.map((subItem, subIndex) => (
                               <li className="p-4 hover:bg-background-2 transition-all duration-300" key={subIndex}>
-                                <Link className="block" href={subItem.href}>{subItem.label}</Link>
+                                <Link className="block" href={subItem.url || "#"} target={subItem.openInNewTab ? "_blank" : "_self"}>{subItem.label}</Link>
                               </li>
                             ))}
                           </ul>
@@ -309,9 +185,9 @@ export default function Header() {
                             : 'max-h-0 opacity-0 overflow-hidden'
                         }`}>
                           <ul className="flex flex-col text-black">
-                            {item.subItems.map((subItem, subIndex) => (
+                            {item.submenu.map((subItem, subIndex) => (
                               <li className="p-4 hover:bg-background-2 transition-all duration-300 border-b border-gray-200" key={subIndex}>
-                                <Link className="block" href={subItem.href}>{subItem.label}</Link>
+                                <Link className="block" href={subItem.url || "#"} target={subItem.openInNewTab ? "_blank" : "_self"}>{subItem.label}</Link>
                               </li>
                             ))}
                           </ul>
@@ -320,6 +196,68 @@ export default function Header() {
                     )}
                   </li>
                 ))}
+
+                {/* Language selector */}
+                {header.availableLanguages && header.availableLanguages.length > 0 && (
+                  <li 
+                    className="w-full lg:w-auto relative group"
+                    onMouseEnter={() => handleMouseEnter(header.mainMenu?.length || 0)}
+                    onMouseLeave={handleMouseLeave}
+                  >
+                    <Link 
+                      href="#" 
+                      className="flex items-center gap-2 text-black border-[#DDDDDD] border-b lg:border-transparent lg:border-b-2 py-5 lg:pb-1 mb-0 lg:-mb-1 hover:border-details transition justify-between"
+                    >
+                      <span className="text-button font-medium">
+                        {header.availableLanguages.find(lang => lang.value === 'es')?.label || 'Esp'}
+                      </span>
+                      <button 
+                        className="lg:hidden text-details transition-transform duration-300"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          handleMobileSubmenuToggle(header.mainMenu?.length || 0);
+                        }}
+                      >
+                        <FaAngleDown className={`transition-transform duration-300 ${mobileOpenSubmenu === (header.mainMenu?.length || 0) ? 'rotate-180' : ''}`} />
+                      </button>
+                      <FaAngleDown className={`text-details transition-transform duration-300 hidden lg:block ${openSubmenu === (header.mainMenu?.length || 0) ? 'rotate-180' : ''}`} />
+                    </Link>
+
+                    {/* Desktop language submenu */}
+                    <div className={`absolute w-full min-w-[200px] shadow-lg left-0 mt-2 bg-background-1 transition-all duration-300 ease-in-out hidden lg:block ${
+                      openSubmenu === (header.mainMenu?.length || 0)
+                        ? 'opacity-100 visible translate-y-0' 
+                        : 'opacity-0 invisible translate-y-[-10px]'
+                    }`}>
+                      <ul className="flex flex-col text-black">
+                        {header.availableLanguages.map((lang, langIndex) => (
+                          <li className="p-4 hover:bg-background-2 transition-all duration-300" key={lang.id || langIndex}>
+                            <Link className="block" href={lang.value ? `/${lang.value}` : "#"}>
+                              {lang.label}
+                            </Link>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+
+                    {/* Mobile language submenu */}
+                    <div className={`w-full bg-background-1 lg:shadow-lg lg:hidden transition-all duration-300 ease-in-out ${
+                      mobileOpenSubmenu === (header.mainMenu?.length || 0)
+                        ? 'max-h-96 opacity-100' 
+                        : 'max-h-0 opacity-0 overflow-hidden'
+                    }`}>
+                      <ul className="flex flex-col text-black">
+                        {header.availableLanguages.map((lang, langIndex) => (
+                          <li className="p-4 hover:bg-background-2 transition-all duration-300 border-b border-gray-200" key={lang.id || langIndex}>
+                            <Link className="block" href={lang.value ? `/${lang.value}` : "#"}>
+                              {lang.label}
+                            </Link>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  </li>
+                )}
               </ul>
 
             </nav>
