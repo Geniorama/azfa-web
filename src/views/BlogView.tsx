@@ -9,7 +9,6 @@ import { RxReload } from "react-icons/rx";
 import CardInfoPortal from "@/components/CardInfoPortal";
 import Pagination from "@/components/Pagination";
 import { useState } from "react";
-import { useRouter } from "next/navigation";
 import { truncateText } from "@/utils/truncateText";
 import { NewsType, NewsCategoryType } from "@/types/componentsType";
 
@@ -32,7 +31,6 @@ export default function BlogView({ blogData, categoriesData, paginationMeta }: B
     tipoPublicacion: "",
     anioPublicacion: "",
   });
-  const router = useRouter();
 
   // Función para formatear la fecha como "JUN 25"
   const formatDate = (dateString: string): string => {
