@@ -26,7 +26,7 @@ export default function CardNewsletter({ title, date, button, background }: Card
             <hr className="my-4 border-slate-300" />
         </div>
         <div className="px-6 pb-4">
-            <button className="flex items-center gap-2 justify-between w-full cursor-pointer text-button hover:opacity-50 transition-all duration-300">
+            <button onClick={button.onClick} className="flex items-center gap-2 justify-between w-full cursor-pointer text-button hover:opacity-50 transition-all duration-300">
                 <span className="font-medium">{button.label}</span>
                 <img src={IconArrowRight.src} alt="Icon Arrow Right" className="w-8 h-8" />
             </button>
