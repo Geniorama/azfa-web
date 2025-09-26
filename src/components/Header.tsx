@@ -2,7 +2,6 @@
 
 import LogoAzfa from "../../public/logo-azfa.svg";
 import { FaAngleDown } from "react-icons/fa6";
-import { GoHome } from "react-icons/go";
 import Link from "next/link";
 import Button from "@/utils/Button";
 import LogoAzfaBlanco from "@/assets/img/logo-azfa-blanco.svg";
@@ -11,12 +10,6 @@ import { useState, useEffect, useRef } from "react";
 import { useAuth } from "@/hooks/useAuth";
 import { useRouter } from "next/navigation";
 import { HeaderTypeData } from "@/types/componentsType";
-interface NavItem {
-  icon?: React.ReactNode;
-  label?: string;
-  href: string;
-  subItems?: NavItem[];
-}
 
 export default function Header({ header }: { header: HeaderTypeData }) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -24,11 +17,11 @@ export default function Header({ header }: { header: HeaderTypeData }) {
   const [mobileOpenSubmenu, setMobileOpenSubmenu] = useState<number | null>(null);
   const [showUserMenu, setShowUserMenu] = useState(false);
   
-  const { user, isAuthenticated, logout } = useAuth();
+  const { isAuthenticated, logout } = useAuth();
   const router = useRouter();
   const userMenuRef = useRef<HTMLDivElement>(null);
 
-  console.log('header from header component', header);
+  console.log(showUserMenu);
 
   // Cerrar menú de usuario al hacer clic fuera
   useEffect(() => {
