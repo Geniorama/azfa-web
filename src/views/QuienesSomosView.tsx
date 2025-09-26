@@ -3,156 +3,151 @@
 import HeadingPage from "@/components/HeadingPage";
 import JuntaDirectivaImage from "@/assets/img/bg-quienes-somos.jpg";
 import IntroPage from "@/components/IntroPage";
-import { IntroData } from "@/types/componentsType";
-import IconIntroQuienesSomos from "@/assets/img/icon-home-quienes-somos-voz-lider 1.svg";
+import { HeadingType, IntroData } from "@/types/componentsType";
 import IconTabs from "@/assets/img/icon-home-iberoamerica-empleos 2.svg";
-import CardTeamMember, { CardTeamMemberProps } from "@/components/CardTeamMember";
-import memberTeam from "@/assets/img/member-team.jpg";
+import CardTeamMember, {
+  CardTeamMemberProps,
+} from "@/components/CardTeamMember";
 import { useState, useEffect } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import IconPerson from "@/assets/img/person-1.svg";
 import LeaderPerson from "@/assets/img/leader.png";
 import AvatarPerson from "@/components/AvatarPerson";
+import { getCountryName } from "@/utils/countryMapping";
 
-export default function JuntaDirectivaView() {
+interface TeamMemberType {
+  id: number;
+  fullName: string;
+  position: string;
+  association: string;
+  country: string;
+  email?: string;
+  memberType: string;
+  subCategory: string;
+  photo: {
+    url: string;
+    alternativeText?: string;
+  };
+}
+
+interface TabType {
+  id: number;
+  label: string;
+  icon: {
+    id: number;
+    reactIconName: string;
+    type: string;
+    customImage?: {
+      id: number;
+      documentId: string;
+      name: string;
+      alternativeText?: string;
+      caption?: string;
+      url: string;
+    };
+  };
+}
+
+interface TabsSectionType {
+  id: number;
+  azfaTeamTab: TabType;
+  committeesTab: TabType;
+  boardOfDirectorsTab: TabType;
+}
+
+interface QuienesSomosViewProps {
+  hero: HeadingType;
+  intro?: IntroData;
+  teamMembersData?: TeamMemberType[];
+  tabsSection?: TabsSectionType;
+}
+
+export default function JuntaDirectivaView({
+  hero,
+  intro,
+  teamMembersData,
+  tabsSection,
+}: QuienesSomosViewProps) {
   const [activeTab, setActiveTab] = useState("junta-directiva");
   const pathname = usePathname();
   const router = useRouter();
 
+  console.log("hero from QuienesSomosView", hero);
+  console.log("intro from QuienesSomosView", intro);
+  console.log("teamMembersData from QuienesSomosView", teamMembersData);
+  console.log("tabsSection from QuienesSomosView", tabsSection);
+
+  // Función para filtrar miembros por tipo
+  const getMembersByType = (memberType: string, subCategory?: string) => {
+    if (!teamMembersData) return [];
+    return teamMembersData.filter(member => {
+      if (subCategory) {
+        return member.memberType === memberType && member.subCategory === subCategory;
+      }
+      return member.memberType === memberType;
+    });
+  };
+
+  // Función para formatear datos de miembros para CardTeamMember
+  const formatMemberData = (member: TeamMemberType): CardTeamMemberProps => ({
+    image: member.photo.url,
+    name: member.fullName,
+    position: member.position,
+    company: member.association,
+    location: getCountryName(member.country),
+    email: member.email || undefined,
+  });
+
+  // Obtener miembros dinámicamente
+  const boardMembers = getMembersByType("board-of-directors", "board-members");
+  const honoraryPresidents = getMembersByType("board-of-directors", "honorary-presidents");
+  const azfaTeamMembers = getMembersByType("azfa-team");
+
   // Detectar el tab activo basado en la URL solo en la carga inicial
   useEffect(() => {
-    const pathSegments = pathname.split('/');
+    const pathSegments = pathname.split("/");
     const lastSegment = pathSegments[pathSegments.length - 1];
-    
+
     // Mapear slugs a tabs
     const slugToTab: { [key: string]: string } = {
-      'junta-directiva': 'junta-directiva',
-      'comisiones': 'comisiones',
-      'equipo-azfa': 'equipo-azfa'
+      "junta-directiva": "junta-directiva",
+      comisiones: "comisiones",
+      "equipo-azfa": "equipo-azfa",
     };
-    
+
     if (slugToTab[lastSegment]) {
       setActiveTab(slugToTab[lastSegment]);
-    } else if (pathname === '/quienes-somos') {
+    } else if (pathname === "/quienes-somos") {
       // Si está en la página principal, redirigir al tab junta-directiva
-      router.replace('/quienes-somos/junta-directiva');
+      router.replace("/quienes-somos/junta-directiva");
     }
   }, []); // Solo ejecutar en el montaje inicial
 
   const handleTabClick = (tab: string) => {
     setActiveTab(tab);
     // Actualizar la URL usando pushState para evitar recarga
-    window.history.pushState(null, '', `/quienes-somos/${tab}`);
+    window.history.pushState(null, "", `/quienes-somos/${tab}`);
   };
-
-  const introData: IntroData = {
-    icon: {
-      url: IconIntroQuienesSomos.src,
-      alternativeText: "Junta Directiva",
-    },
-    content:
-      "En la Asociación de Zonas Francas de las Américas (AZFA), <span className='text-details'>somos la voz líder</span> del sector en Iberoamérica. Con 27 años de trayectoria, impulsamos el crecimiento y la competitividad de las Zonas Francas, promoviendo la inversión, la innovación y el desarrollo sostenible en la región.",
-  };
-
-  const members: CardTeamMemberProps[] = [
-    {
-      image: memberTeam.src,
-      name: "CLAUDIA PELLERANO",
-      position: "Presidente",
-      company: "Las Américas Free Zone Park",
-      location: "Dominican Republic",
-      // email: "john.doe@example.com",
-    },
-
-    {
-      image: 'https://testazfabucket.s3.us-east-2.amazonaws.com/2_juntad_carlos_wong_eeb5fb14de.webp',
-      name: "CARLOS WONG",
-      position: "Primer Vicepresidente",
-      company: "Code Development Group",
-      location: "Costa Rica", 
-      // email: "john.doe@example.com",
-    },
-
-    {
-      image: 'https://testazfabucket.s3.us-east-2.amazonaws.com/3_juntad_juan_opertti_180f982a44.webp',
-      name: "JUAN OPERTTI",
-      position: "Segundo Vicepresidente",
-      company: "Cámara de Zonas Francas",
-      location: "Uruguay",
-      // email: "john.doe@example.com",
-    },
-
-    {
-      image: 'https://testazfabucket.s3.us-east-2.amazonaws.com/4_juntad_julio_rodriguez_fa83677858.webp',
-      name: "JULIO RODRÍGUEZ",
-      position: "Director Ejecutivo",
-      company: "Asociación de Zonas Francas de las Américas | AZFA",
-      location: "Colombia",
-      // email: "john.doe@example.com",
-    },
-
-    {
-      image: 'https://testazfabucket.s3.us-east-2.amazonaws.com/5_juntad_marcela_barrios_ecb6057261.webp',
-      name: "MARCELA BARRIOS",
-      position: "Secretaria",
-      company: "Zona Franca Barranquilla",
-      location: "Colombia",
-      // email: "john.doe@example.com",
-    },
-
-    {
-      image: 'https://testazfabucket.s3.us-east-2.amazonaws.com/6_juntad_diego_vargas_108d359b36.webp',
-      name: "DIEGO VARGAS",
-      position: "Tesorero",
-      company: "Zona Franca Bogotá",
-      location: "Colombia",
-      // email: "john.doe@example.com",
-    },
-  ];
-
-  const membersEquipoAzfa = [
-    {
-      image: 'https://testazfabucket.s3.us-east-2.amazonaws.com/4_juntad_julio_rodriguez_fa83677858.webp',
-      name: "JULIO RODRÍGUEZ",
-      position: "Director Ejecutivo",
-      company: "Asociación de Zonas Francas de las Américas | AZFA",
-      location: "Colombia",
-      // email: "john.doe@example.com",
-    },
-
-    {
-      image: 'https://testazfabucket.s3.us-east-2.amazonaws.com/equipo_azfa_cristina_dfb9439bcc.webp',
-      name: "CRISTINA CHIVARÁ",
-      position: "Coordinadora Administrativa y eventos",
-      company: "Asociación de Zonas Francas de las Américas | AZFA",
-      location: "Colombia",
-      // email: "john.doe@example.com",
-    },
-
-    {
-      image: 'https://testazfabucket.s3.us-east-2.amazonaws.com/equipo_azfa_stefanni_847a0c5395.webp',
-      name: "STEFANNI PALENCIA",
-      position: "Coordinadora de Proyectos",
-      company: "Asociación de Zonas Francas de las Américas | AZFA",
-      location: "Colombia",
-      email: "proyectos@asociacionzonasfrancas.org",
-    },
-  ]
 
   return (
     <div>
       <HeadingPage
-        title="Quiénes Somos"
+        title={hero.title}
+        smallTitle={hero.smallTitle}
         textAlign="center"
-        image={JuntaDirectivaImage.src}
+        image={hero.backgroundImg?.url || JuntaDirectivaImage.src}
         className="min-h-[500px] lg:text-left"
       />
 
-      <section className="bg-white py-10 lg:pt-16">
-        <div className="container mx-auto px-4">
-          <IntroPage introData={introData} />
-        </div>
-      </section>
+      {intro && (
+        <section className="bg-white py-10 lg:pt-16">
+          <div className="container mx-auto px-4">
+            <IntroPage
+              introData={intro}
+            />
+          </div>
+        </section>
+      )}
 
       {/* Section Tabs */}
       <section className="bg-white lg:pt-16">
@@ -167,12 +162,12 @@ export default function JuntaDirectivaView() {
               onClick={() => handleTabClick("junta-directiva")}
             >
               <img
-                src={IconTabs.src}
-                alt="Icon Tabs"
+                src={tabsSection?.boardOfDirectorsTab?.icon?.customImage?.url || IconTabs.src}
+                alt={tabsSection?.boardOfDirectorsTab?.icon?.customImage?.alternativeText || "Icon Tabs"}
                 className="lg:w-16 lg:h-16 w-10 h-10 mx-auto"
               />
               <h2 className="lg:text-h4 text-body2 font-normal text-text-primary">
-                Junta Directiva
+                {tabsSection?.boardOfDirectorsTab?.label || "Junta Directiva"}
               </h2>
             </div>
             <div
@@ -182,12 +177,12 @@ export default function JuntaDirectivaView() {
               onClick={() => handleTabClick("comisiones")}
             >
               <img
-                src={IconTabs.src}
-                alt="Icon Tabs"
+                src={tabsSection?.committeesTab?.icon?.customImage?.url || IconTabs.src}
+                alt={tabsSection?.committeesTab?.icon?.customImage?.alternativeText || "Icon Tabs"}
                 className="lg:w-16 lg:h-16 w-10 h-10 mx-auto"
               />
               <h2 className="lg:text-h4 text-body2 font-normal text-text-primary">
-                Comisiones
+                {tabsSection?.committeesTab?.label || "Comisiones"}
               </h2>
             </div>
             <div
@@ -197,12 +192,12 @@ export default function JuntaDirectivaView() {
               onClick={() => handleTabClick("equipo-azfa")}
             >
               <img
-                src={IconTabs.src}
-                alt="Icon Tabs"
+                src={tabsSection?.azfaTeamTab?.icon?.customImage?.url || IconTabs.src}
+                alt={tabsSection?.azfaTeamTab?.icon?.customImage?.alternativeText || "Icon Tabs"}
                 className="lg:w-16 lg:h-16 w-10 h-10 mx-auto"
               />
               <h2 className="lg:text-h4 text-body2 font-normal text-text-primary">
-                Equipo AZFA
+                {tabsSection?.azfaTeamTab?.label || "Equipo AZFA"}
               </h2>
             </div>
           </div>
@@ -224,16 +219,14 @@ export default function JuntaDirectivaView() {
 
               {/* Grid Team Members */}
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mt-16">
-                {members.map((member, index) => (
-                  <CardTeamMember
-                    key={index}
-                    image={member.image}
-                    name={member.name}
-                    position={member.position}
-                    company={member.company}
-                    location={member.location}
-                  />
-                ))}
+                {boardMembers.length > 0 && (
+                  boardMembers.map((member) => (
+                    <CardTeamMember
+                      key={member.id}
+                      {...formatMemberData(member)}
+                    />
+                  ))
+                )}
               </div>
 
               <div className="text-center mt-16">
@@ -244,17 +237,15 @@ export default function JuntaDirectivaView() {
               </div>
 
               {/* Grid Team Members */}
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mt-16 hidden">
-                {members.map((member, index) => (
-                  <CardTeamMember
-                    key={index}
-                    image={member.image}
-                    name={member.name}
-                    position={member.position}
-                    company={member.company}
-                    location={member.location}
-                  />
-                ))}
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mt-16">
+                {honoraryPresidents.length > 0 && (
+                  honoraryPresidents.map((member) => (
+                    <CardTeamMember
+                      key={member.id}
+                      {...formatMemberData(member)}
+                    />
+                  ))
+                )}
               </div>
             </div>
           )}
@@ -324,7 +315,9 @@ export default function JuntaDirectivaView() {
                 <div className="w-full lg:w-1/2">
                   <img
                     className="w-full h-full object-cover"
-                    src={'https://testazfabucket.s3.us-east-2.amazonaws.com/servicio_comisi_n_posicionamiento_8e4c25cf97.webp'}
+                    src={
+                      "https://testazfabucket.s3.us-east-2.amazonaws.com/servicio_comisi_n_posicionamiento_8e4c25cf97.webp"
+                    }
                     alt="Image Comision"
                   />
                 </div>
@@ -393,7 +386,9 @@ export default function JuntaDirectivaView() {
                 </div>
                 <div className="w-full lg:w-1/2">
                   <img
-                    src={'https://testazfabucket.s3.us-east-2.amazonaws.com/servicio_comision_legal_43ac981dd8.webp'}
+                    src={
+                      "https://testazfabucket.s3.us-east-2.amazonaws.com/servicio_comision_legal_43ac981dd8.webp"
+                    }
                     alt="Image Comision"
                     className="w-full h-full object-cover"
                   />
@@ -464,7 +459,9 @@ export default function JuntaDirectivaView() {
                 <div className="w-full lg:w-1/2">
                   <img
                     className="w-full h-full object-cover"
-                    src={'https://testazfabucket.s3.us-east-2.amazonaws.com/servicios_captaciones_8481291abb.webp'}
+                    src={
+                      "https://testazfabucket.s3.us-east-2.amazonaws.com/servicios_captaciones_8481291abb.webp"
+                    }
                     alt="Image Comision"
                   />
                 </div>
@@ -533,7 +530,9 @@ export default function JuntaDirectivaView() {
                 </div>
                 <div className="w-full lg:w-1/2">
                   <img
-                    src={'https://testazfabucket.s3.us-east-2.amazonaws.com/4_sostenibilidad_ac200f3218.webp'}
+                    src={
+                      "https://testazfabucket.s3.us-east-2.amazonaws.com/4_sostenibilidad_ac200f3218.webp"
+                    }
                     alt="Image Comision"
                     className="w-full h-full object-cover"
                   />
@@ -547,17 +546,14 @@ export default function JuntaDirectivaView() {
             <div>
               {/* Grid Team Members */}
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-16">
-                {membersEquipoAzfa.map((member, index) => (
-                  <CardTeamMember
-                    key={index}
-                    image={member.image}
-                    name={member.name}
-                    position={member.position}
-                    company={member.company}
-                    location={member.location}
-                    email={member.email || ''}
-                  />
-                ))}
+                {azfaTeamMembers.length > 0 && (
+                  azfaTeamMembers.map((member) => (
+                    <CardTeamMember
+                      key={member.id}
+                      {...formatMemberData(member)}
+                    />
+                  ))
+                )}
               </div>
             </div>
           )}
