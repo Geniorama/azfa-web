@@ -6,8 +6,61 @@ import CardNewsletter from "@/components/CardNewsletter";
 import Pagination from "@/components/Pagination";
 import ImageBanner from "@/assets/img/Frame 53.png";
 import Button from "@/utils/Button";
+import { NewsType, NewsCategoryType } from "@/types/componentsType";
+import { truncateText } from "@/utils/truncateText";
 
-export default function NewsletterView() {
+// Interfaz extendida para newsletters con downloadDocument
+interface NewsletterType extends NewsType {
+  downloadDocument?: {
+    url: string;
+    alternativeText?: string;
+  };
+}
+
+interface NewsletterViewProps {
+  newsletterData: NewsletterType[];
+  categoriesData: NewsCategoryType[];
+  paginationMeta: { pagination: { page: number, pageCount: number, pageSize: number, total: number } } | null;
+}
+
+export default function NewsletterView({ newsletterData, categoriesData, paginationMeta }: NewsletterViewProps) {
+  // Función para formatear la fecha como "JUN 25"
+  const formatDate = (dateString: string): string => {
+    const date = new Date(dateString);
+    const monthNames = [
+      "ENE", "FEB", "MAR", "ABR", "MAY", "JUN",
+      "JUL", "AGO", "SEP", "OCT", "NOV", "DIC"
+    ];
+    const month = monthNames[date.getMonth()];
+    const day = date.getDate().toString().padStart(2, '0');
+    return `${month} ${day}`;
+  };
+
+  console.log("categoriesData", categoriesData);
+
+  // Función para formatear las newsletters para el componente
+  const formatNewsletterData = (newsletters: NewsletterType[]) => {
+    return newsletters.map((item) => ({
+      title: item.title,
+      date: formatDate(item.publishedAt),
+      description: truncateText(item.extract, 100),
+      url: item.downloadDocument?.url || item.externalLink || "#",
+      hasDocument: !item.externalLink && !!item.downloadDocument?.url,
+    }));
+  };
+
+  // Colores de fondo para las tarjetas
+  const backgroundColors = [
+    "bg-details", "bg-secondary", "bg-primary", 
+    "bg-background-1", "bg-background-2", "bg-background-3"
+  ];
+
+  const handleOpenNewsletter = (url: string) => {
+    window.open(url, "_blank");
+  };
+
+  const formattedNewsletterData = formatNewsletterData(newsletterData);
+
   return (
     <div>
         <HeadingPageSalaPrensa
@@ -19,17 +72,39 @@ export default function NewsletterView() {
 
         <section className="bg-white lg:py-16 py-10">
             <div className="container mx-auto px-4">
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    <CardNewsletter title="Newsletter 1" date="2025-01-01" button={{ label: "Ver más", onClick: () => {} }} background={"bg-details"} />
-                    <CardNewsletter title="Newsletter 2" date="2025-01-01" button={{ label: "Ver más", onClick: () => {} }} background={"bg-secondary"} />
-                    <CardNewsletter title="Newsletter 3" date="2025-01-01" button={{ label: "Ver más", onClick: () => {} }} background={"bg-primary"} />
-                    <CardNewsletter title="Newsletter 4" date="2025-01-01" button={{ label: "Ver más", onClick: () => {} }} background={"bg-background-1"} />
-                    <CardNewsletter title="Newsletter 5" date="2025-01-01" button={{ label: "Ver más", onClick: () => {} }} background={"bg-background-2"} />
-                    <CardNewsletter title="Newsletter 6" date="2025-01-01" button={{ label: "Ver más", onClick: () => {} }} background={"bg-background-3"} />
-                </div>
-                <div className="flex justify-center mt-16">
-                    <Pagination currentPage={1} totalPages={10} onPageChange={() => {}} />
-                </div>
+                {formattedNewsletterData.length > 0 ? (
+                  <>
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        {formattedNewsletterData.map((item, index) => (
+                            <CardNewsletter 
+                              key={index}
+                              title={item.title} 
+                              date={item.date} 
+                              button={{ 
+                                label: "Leer boletín", 
+                                onClick: () => handleOpenNewsletter(item.url) 
+                              }} 
+                              background={backgroundColors[index % backgroundColors.length]} 
+                            />
+                        ))}
+                    </div>
+                    {paginationMeta && paginationMeta.pagination && paginationMeta.pagination.pageCount > 1 && (
+                      <div className="flex justify-center mt-16">
+                        <Pagination 
+                          currentPage={paginationMeta.pagination.page} 
+                          totalPages={paginationMeta.pagination.pageCount} 
+                          onPageChange={() => {}} 
+                        />
+                      </div>
+                    )}
+                  </>
+                ) : (
+                  <div className="text-center py-16">
+                    <p className="text-text-primary text-lg">
+                      No se encontraron newsletters disponibles.
+                    </p>
+                  </div>
+                )}
             </div>
         </section>
 
