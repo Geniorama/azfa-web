@@ -4,9 +4,11 @@ import LogoAzfaBlanco from "@/assets/img/logo-azfa-blanco.svg";
 import { IoMailOutline } from "react-icons/io5";
 import Link from "next/link";
 import { FaWhatsapp } from "react-icons/fa";
+import { FooterType } from "@/types/componentsType";
 
 interface FooterProps {
   showBanner?: boolean;
+  footer: FooterType;
 }
 
 export default function Footer({ showBanner = true }: FooterProps) {

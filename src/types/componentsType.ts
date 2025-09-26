@@ -36,6 +36,63 @@ export interface StrapiButtonType {
     target?: string;
 }
 
+export interface HeaderTypeData {
+    id: number;
+    logoUrl: string;
+    languageSelector: boolean;
+    logo: {
+        id: number;
+        documentId: string;
+        name: string;
+        alternativeText: string | null;
+        caption: string | null;
+        width: number;
+        height: number;
+        formats: StrapiImageFormats | null;
+        hash: string;
+        ext: string;
+        mime: string;
+        size: number;
+        url: string;
+        previewUrl: string | null;
+        provider: string;
+        provider_metadata: Record<string, unknown> | null;
+        createdAt: string;
+        updatedAt: string;
+        publishedAt: string;
+    };
+    availableLanguages: {
+      id?: number;
+      label?: string;
+      value?: string;
+    }[];
+    mainMenu: {
+      id?: number;
+      label?: string;
+      url?: string;
+      openInNewTab?: boolean;
+      isActive?: boolean;
+      icon?: {
+        type?: string;
+        customImage?: ImageType;
+        reactIconName?: string;
+      };
+      submenu?: {
+        id?: number;
+        label?: string;
+        url?: string;
+        openInNewTab?: boolean;
+      }[];
+    }[];
+    topButtons: {
+      id?: number;
+      label?: string;
+      url?: string;
+      openInNewTab?: boolean;
+      isActive?: boolean;
+    }[];
+}
+
 export interface AffiliateType {
   id: number;
   attributes: {
@@ -346,4 +403,104 @@ export interface PartnersSectionType {
   title: string;
   displayType: string;
   logos: PartnerLogoType[];
+}
+
+export interface GlobalSettingsType {
+  id: number;
+  title: string;
+  description: string;
+  logo: StrapiImageType;
+}
+
+export interface SocialMediaItemType {
+  id: number;
+  platform: string;
+  url: string;
+  openInNewTab: boolean;
+  icon: {
+    id: number;
+    type: string;
+    reactIconName: string | null;
+    customImage: {
+      id: number;
+      documentId: string;
+      name: string;
+      alternativeText: string | null;
+      caption: string | null;
+      width: number;
+      height: number;
+      formats: StrapiImageFormats | null;
+      hash: string;
+      ext: string;
+      mime: string;
+      size: number;
+      url: string;
+      previewUrl: string | null;
+      provider: string;
+      provider_metadata: Record<string, unknown> | null;
+      createdAt: string;
+      updatedAt: string;
+      publishedAt: string;
+    };
+  };
+}
+
+export interface FooterLinkType {
+  id: number;
+  label: string;
+  url: string;
+  openInNewTab: boolean;
+}
+
+export interface FooterLinksColumnType {
+  id: number;
+  title: string;
+  links: FooterLinkType[];
+}
+
+export interface ContactInfoType {
+  id: number;
+  email: string | null;
+  website: string | null;
+  phone: string | null;
+  address: string | null;
+  addressIcon: {
+    id: number;
+    type: string;
+    reactIconName: string | null;
+    customImage: StrapiImageType;
+  } | null;
+  emailIcon: {
+    id: number;
+    type: string;
+    reactIconName: string | null;
+    customImage: StrapiImageType;
+  } | null;
+  phoneIcon: {
+    id: number;
+    type: string;
+    reactIconName: string | null;
+    customImage: StrapiImageType;
+  } | null;
+}
+
+export interface FooterCopyrightType {
+  id: number;
+  text: string;
+  developedByText: string;
+  developedByLink: {
+    id: number;
+    label: string;
+    url: string;
+    openInNewTab: boolean;
+  };
+  legalLinks: FooterLinkType[];
+}
+
+export interface FooterType {
+  id: number;
+  showSocialLinks: boolean;
+  copyright: FooterCopyrightType;
+  footerLinksColumns: FooterLinksColumnType[];
+  contactInfo: ContactInfoType;
 }
