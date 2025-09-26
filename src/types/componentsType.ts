@@ -502,5 +502,12 @@ export interface FooterType {
   showSocialLinks: boolean;
   copyright: FooterCopyrightType;
   footerLinksColumns: FooterLinksColumnType[];
-  contactInfo: ContactInfoType;
+  contactInfo: {
+    id: number;
+    logo?: StrapiImageType;
+    ctaText?: string;
+    showContactInfo?: boolean;
+  };
+  socialMedia: SocialMediaItemType[];
+  contactInfoGlobal: ContactInfoType;
 }
