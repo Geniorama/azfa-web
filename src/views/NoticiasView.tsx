@@ -9,42 +9,95 @@ import { RxReload } from "react-icons/rx";
 import { useState } from "react";
 import CardInfoPortal from "@/components/CardInfoPortal";
 import Pagination from "@/components/Pagination";
+import { NewsType, NewsCategoryType } from "@/types/componentsType";
+import { truncateText } from "@/utils/truncateText";
 
-export default function NoticiasView() {
+interface NoticiasViewProps {
+  newsData: NewsType[];
+  categoriesData: NewsCategoryType[];
+  paginationMeta: { pagination: { page: number, pageCount: number, pageSize: number, total: number } } | null;
+}
+
+export default function NoticiasView({ newsData, categoriesData, paginationMeta }: NoticiasViewProps) {
   const [filters, setFilters] = useState({
     tipoPublicacion: "",
     anioPublicacion: "",
   });
 
   const handleOpenNews = (url: string) => {
-    window.open(url, "_blank");
+    console.log("handleOpenNews called with URL:", url);
+    if (url && url !== "#") {
+      console.log("Opening URL:", url);
+      window.open(url, "_blank");
+    } else {
+      console.log("URL is empty or #, not opening");
+    }
   };
 
-  const data = [
-    {
-      image: "https://testazfabucket.s3.us-east-2.amazonaws.com/noticias_3_adfc8dd1e2.png",
-      title: "Zonas francas: piden modernizar la ley y potenciar la competitividad en Argentina",
-      description: "En el marco del Consejo Federal de Zonas Francas, representantes provinciales coincidieron en la necesidad de actualizar la normativa vigente y generar condiciones que permitan desarrollar plenamente su potencial exportador, logístico e industrial. La modernización de la legislación actual es fundamental para mantener la competitividad del sector y atraer nuevas inversiones.",
-      tags: ["Argentina", "Legislación", "Competitividad"],
-      url: "#", // URL pendiente
-    },
+  // Función para formatear la fecha como "JUN 25"
+  const formatDate = (dateString: string): string => {
+    const date = new Date(dateString);
+    const monthNames = [
+      "ENE", "FEB", "MAR", "ABR", "MAY", "JUN",
+      "JUL", "AGO", "SEP", "OCT", "NOV", "DIC"
+    ];
+    const month = monthNames[date.getMonth()];
+    const day = date.getDate().toString().padStart(2, '0');
+    return `${month} ${day}`;
+  };
 
-    {
-      image: "https://testazfabucket.s3.us-east-2.amazonaws.com/657e7211_e1d3_43fc_a2ca_8dbc93648e0c_895fdc8714.jpg",
-      title: "Economía de Costa Rica crece 4,6% en julio, impulsada por las zonas francas, pero existen desafíos en sectores clave",
-      description: "La producción nacional de Costa Rica, medida por la serie tendencia ciclo del Índice Mensual de Actividad Económica (IMAE), registró un crecimiento interanual del 4,6% en julio de 2025, según el más reciente informe publicado por el Banco Central de Costa Rica (BCCR). Las zonas francas han sido un motor importante de este crecimiento, aunque persisten desafíos en otros sectores económicos.",
-      tags: ["Costa Rica", "Crecimiento Económico", "IMAE"],
-      url: "https://www.elfinancierocr.com/economia-y-politica/economia-de-costa-rica-crece-46-en-julio-impulsada/NNWQX52JYZDOFKCHKUS3GKS7ZM/story/",
-    },
-    
-    {
-      image: "https://testazfabucket.s3.us-east-2.amazonaws.com/69dc5762_5481_4b0e_8922_ccd83e7d22a1_d3dc3230dc.jpg",
-      title: "Autorizan dos nuevas zonas francas y cuatro más esperan aprobación",
-      description: "El Ministerio de Economía indicó que El Salvador no había registrado nuevas zonas francas desde hace 17 años. La entidad espera que con esta autorización se generen 2,520 nuevos empleos. Dos nuevas zonas francas fueron autorizadas para iniciar operaciones en El Salvador, marcando un hito importante en el desarrollo económico del país centroamericano.",
-      tags: ["El Salvador", "Nuevas Zonas Francas", "Empleo"],
-      url: "#", // URL pendiente
-    },
-  ];
+  // Función para formatear las noticias para el componente
+  const formatNewsData = (news: NewsType[]) => {
+    return news.map((item) => {
+      const formattedItem = {
+        image: item.thumbnail?.url || "",
+        title: item.title,
+        description: truncateText(item.extract, 160),
+        tags: [item.category?.name || "Noticias"],
+        url: item.externalLink || "#",
+        date: formatDate(item.publishedAt),
+      };
+      console.log("Formatted news item:", formattedItem);
+      return formattedItem;
+    });
+  };
+
+  // Función para formatear las categorías para el select
+  const formatCategoriesForSelect = (categories: NewsCategoryType[]) => {
+    return categories.map((category) => ({
+      label: category.name,
+      value: category.slug,
+    }));
+  };
+
+  // Función para filtrar las noticias
+  const filterNewsData = (news: NewsType[]) => {
+    return news.filter((item) => {
+      // Filtro por categoría
+      if (filters.tipoPublicacion && item.category?.slug !== filters.tipoPublicacion) {
+        return false;
+      }
+      
+      // Filtro por mes de publicación
+      if (filters.anioPublicacion) {
+        const publishedDate = new Date(item.publishedAt);
+        const monthNames = [
+          "enero", "febrero", "marzo", "abril", "mayo", "junio",
+          "julio", "agosto", "septiembre", "octubre", "noviembre", "diciembre"
+        ];
+        const currentMonth = monthNames[publishedDate.getMonth()];
+        if (currentMonth !== filters.anioPublicacion) {
+          return false;
+        }
+      }
+      
+      return true;
+    });
+  };
+
+  const filteredNewsData = filterNewsData(newsData);
+  const formattedNewsData = formatNewsData(filteredNewsData);
+  const categoryOptions = formatCategoriesForSelect(categoriesData);
 
   return (
     <div>
@@ -61,26 +114,15 @@ export default function NoticiasView() {
         <div className="container mx-auto px-4">
           <div className="flex flex-col md:flex-row gap-4 md:gap-8 py-6 text-text-primary justify-center">
             <CustomSelect
-              options={[
-                { label: "Tema 1", value: "tema-1" },
-                { label: "Tema 2", value: "tema-2" },
-                { label: "Tema 3", value: "tema-3" },
-                { label: "Tema 4", value: "tema-4" },
-                { label: "Tema 5", value: "tema-5" },
-                { label: "Tema 6", value: "tema-6" },
-                { label: "tema-7", value: "tema-7" },
-                { label: "Tema 8", value: "tema-8" },
-                { label: "Tema 9", value: "tema-9" },
-                { label: "Tema 10", value: "tema-10" },
-              ]}
+              options={categoryOptions}
               onChange={(value) =>
                 setFilters({ ...filters, tipoPublicacion: value })
               }
               name="tema"
-              label="Tema"
+              label="Categoría"
               selected={filters.tipoPublicacion}
               labelIcon={IconOferta.src}
-              placeholder="Seleccione un tema"
+              placeholder="Seleccione una categoría"
             />
 
             <CustomSelect
@@ -104,7 +146,7 @@ export default function NoticiasView() {
               }
               name="anio-publicacion"
               selected={filters.anioPublicacion}
-              placeholder="Seleccione un año"
+              placeholder="Seleccione un mes"
               labelIcon={IconCalendario.src}
             />
 
@@ -127,31 +169,52 @@ export default function NoticiasView() {
       <section className="bg-white py-16">
         <div className="container mx-auto px-4">
             {/* Grid cards */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 md:gap-12">
-                {data.map((item, index) => (
-                    <CardInfoPortal
-                      key={index}
-                      image={item.image}
-                      title={item.title}
-                      description={item.description}
-                      tags={item.tags}
-                      button={{
-                        label: "Leer noticia",
-                        onClick: () => handleOpenNews(item.url) ,
-                      }}
-                      noSpaceImage={true}
-                      isReadMore={true}
-                      arrowColor="text-details"
-                    />
-                ))}
-            </div>
+            {formattedNewsData.length > 0 ? (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 md:gap-12">
+                  {formattedNewsData.map((item, index) => (
+                      <CardInfoPortal
+                        key={index}
+                        image={item.image}
+                        title={item.title}
+                        description={item.description}
+                        tags={item.tags}
+                        date={item.date}
+                        button={{
+                          label: "Leer noticia",
+                          onClick: () => handleOpenNews(item.url) ,
+                        }}
+                        noSpaceImage={true}
+                        isReadMore={true}
+                        arrowColor="text-details"
+                      />
+                  ))}
+              </div>
+            ) : (
+              <div className="text-center py-16">
+                <p className="text-text-primary text-lg">
+                  No se encontraron noticias con los filtros seleccionados.
+                </p>
+                <button
+                  onClick={() => setFilters({ tipoPublicacion: "", anioPublicacion: "" })}
+                  className="mt-4 text-details hover:underline"
+                >
+                  Limpiar filtros
+                </button>
+              </div>
+            )}
         </div>
       </section>
 
       <section className="bg-white lg:py-10">
         <div className="container mx-auto px-4">
           <div className="flex justify-center">
-            <Pagination currentPage={1} totalPages={10} onPageChange={() => {}} />
+            {paginationMeta && paginationMeta.pagination && paginationMeta.pagination.pageCount > 1 && (
+              <Pagination 
+                currentPage={paginationMeta.pagination.page} 
+                totalPages={paginationMeta.pagination.pageCount} 
+                onPageChange={() => {}} 
+              />
+            )}
           </div>
         </div>
       </section>
