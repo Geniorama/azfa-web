@@ -21,16 +21,17 @@ export default async function RootLayout({
   const header = globalSettings.data.header as HeaderTypeData;
   const socialMedia = globalSettings.data.socialMedia as SocialMediaItemType[];
   const footer = globalSettings.data.footer as FooterType;
-  const contactInfo = globalSettings.data.contactInfo as ContactInfoType;
+  const contactInfoGlobal = globalSettings.data.contactInfo as ContactInfoType;
 
   console.log('header', header);
   console.log('socialMedia', socialMedia);
   console.log('footer', footer);
-  console.log('contactInfo', contactInfo);
+  console.log('contactInfo', contactInfoGlobal);
 
   const footerWithContactInfo = {
     ...footer,
-    contactInfo: contactInfo
+    contactInfoGlobal,
+    socialMedia
   };
 
   console.log('footerWithContactInfo', footerWithContactInfo);
