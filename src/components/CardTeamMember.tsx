@@ -25,7 +25,7 @@ export default function CardTeamMember({
         <img
           src={image}
           alt="image"
-          className="w-full h-full object-cover grayscale transition-all duration-300"
+          className="w-full h-100 object-cover grayscale transition-all duration-300"
         />
       </div>
 

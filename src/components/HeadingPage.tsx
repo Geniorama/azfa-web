@@ -4,6 +4,7 @@ interface HeadingPageProps {
   image?: string;
   textAlign?: "left" | "center" | "right";
   className?: string;
+  description?: string
 }
 
 export default function HeadingPage({
@@ -12,6 +13,7 @@ export default function HeadingPage({
   image,
   textAlign = "center",
   className,
+  description
 }: HeadingPageProps) {
   return (
     <div
@@ -29,6 +31,9 @@ export default function HeadingPage({
           {title}
         </h1>
         <p className="text-details text-h6 lg:text-lg mt-4">{smallTitle}</p>
+        {description && (
+          <p>{description}</p>
+        )}
       </div>
     </div>
   );
