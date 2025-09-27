@@ -1,6 +1,6 @@
 import NoticiasView from "@/views/NoticiasView";
 import { Metadata } from "next";
-import { NewsType, NewsCategoryType } from "@/types/componentsType";
+import { NewsType, NewsCategoryType, PressRoomPageType } from "@/types/componentsType";
 
 export async function generateMetadata(): Promise<Metadata> {
   return {
@@ -67,18 +67,40 @@ const getNewsCategories = async (): Promise<{ data: NewsCategoryType[] } | null>
   }
 };
 
+// Función común para obtener datos de la página de sala de prensa
+const getPressRoomPage = async (): Promise<{ data: PressRoomPageType } | null> => {
+  try {
+    const response = await fetch(`${process.env.STRAPI_URL}/api/press-room-page?populate[0]=blogSection&populate[1]=blogSection.backgroundImg&populate[2]=newsletterSection&populate[3]=newsletterSection.backgroundImg&populate[4]=podcastSection&populate[5]=podcastSection.backgroundImg&populate[6]=newsSection&populate[7]=newsSection.backgroundImg`, {
+      cache: "force-cache",
+      next: { revalidate: 3600 }, // Revalidar cada hora
+    });
+    
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error("Error fetching press room page:", error);
+    return null;
+  }
+}
+
 export default async function Noticias() {
   const newsData = await getNews();
   const categoriesData = await getNewsCategories();
+  const pressRoomPageData = await getPressRoomPage();
 
   console.log("newsData", newsData);
   console.log("categoriesData", categoriesData);
+  console.log("pressRoomPageData", pressRoomPageData);
 
   return (
     <NoticiasView 
       newsData={newsData?.data || []}
       categoriesData={categoriesData?.data || []}
       paginationMeta={newsData?.meta || null}
+      newsSectionData={pressRoomPageData?.data?.newsSection || null}
     />
   )
 }

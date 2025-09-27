@@ -511,3 +511,47 @@ export interface FooterType {
   socialMedia: SocialMediaItemType[];
   contactInfoGlobal: ContactInfoType;
 }
+
+export interface BlogPageType {
+  id: number;
+  smallTitle: string | null;
+  title: string;
+  description: string;
+  alignment: "left" | "center" | "right";
+  backgroundImg: StrapiImageType;
+}
+
+export interface NewsletterSectionType {
+  id: number;
+  smallTitle: string | null;
+  title: string;
+  description: string;
+  alignment: "left" | "center" | "right";
+  backgroundImg: StrapiImageType;
+}
+
+export interface PodcastSectionType {
+  id: number;
+  smallTitle: string | null;
+  title: string;
+  description: string;
+  alignment: "left" | "center" | "right";
+  backgroundImg: StrapiImageType;
+}
+
+export interface NewsSectionType {
+  id: number;
+  smallTitle: string | null;
+  title: string;
+  description: string;
+  alignment: "left" | "center" | "right";
+  backgroundImg: StrapiImageType;
+}
+
+export interface PressRoomPageType {
+  id: number;
+  blogSection?: BlogPageType | null;
+  newsletterSection?: NewsletterSectionType | null;
+  podcastSection?: PodcastSectionType | null;
+  newsSection?: NewsSectionType | null;
+}

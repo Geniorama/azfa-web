@@ -9,16 +9,17 @@ import { RxReload } from "react-icons/rx";
 import { useState } from "react";
 import CardInfoPortal from "@/components/CardInfoPortal";
 import Pagination from "@/components/Pagination";
-import { NewsType, NewsCategoryType } from "@/types/componentsType";
+import { NewsType, NewsCategoryType, NewsSectionType } from "@/types/componentsType";
 import { truncateText } from "@/utils/truncateText";
 
 interface NoticiasViewProps {
   newsData: NewsType[];
   categoriesData: NewsCategoryType[];
   paginationMeta: { pagination: { page: number, pageCount: number, pageSize: number, total: number } } | null;
+  newsSectionData: NewsSectionType | null;
 }
 
-export default function NoticiasView({ newsData, categoriesData, paginationMeta }: NoticiasViewProps) {
+export default function NoticiasView({ newsData, categoriesData, paginationMeta, newsSectionData }: NoticiasViewProps) {
   const [filters, setFilters] = useState({
     tipoPublicacion: "",
     anioPublicacion: "",
@@ -102,11 +103,11 @@ export default function NoticiasView({ newsData, categoriesData, paginationMeta 
   return (
     <div>
       <HeadingPageSalaPrensa
-        title="Sala de prensa"
-        description="Infórmese con los acontecimientos más recientes y relevantes del ecosistema de zonas francas en Iberoamérica"
-        image={CoverImage.src}
+        title={newsSectionData?.title || "Sala de prensa"}
+        description={newsSectionData?.description || "Infórmese con los acontecimientos más recientes y relevantes del ecosistema de zonas francas en Iberoamérica"}
+        image={newsSectionData?.backgroundImg?.url || CoverImage.src}
         slug="noticias"
-        textAlign="center"
+        textAlign={newsSectionData?.alignment || "center"}
       />
 
       {/* Filters */}

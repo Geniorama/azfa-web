@@ -10,7 +10,7 @@ import CardInfoPortal from "@/components/CardInfoPortal";
 import Pagination from "@/components/Pagination";
 import { useState } from "react";
 import { truncateText } from "@/utils/truncateText";
-import { NewsType, NewsCategoryType } from "@/types/componentsType";
+import { NewsType, NewsCategoryType, BlogPageType } from "@/types/componentsType";
 
 // Interfaz extendida para blogs con downloadDocument
 interface BlogType extends NewsType {
@@ -23,15 +23,17 @@ interface BlogType extends NewsType {
 interface BlogViewProps {
   blogData: BlogType[];
   categoriesData: NewsCategoryType[];
+  blogPageData: BlogPageType | null;
   paginationMeta: { pagination: { page: number, pageCount: number, pageSize: number, total: number } } | null;
 }
 
-export default function BlogView({ blogData, categoriesData, paginationMeta }: BlogViewProps) {
+export default function BlogView({ blogData, categoriesData, blogPageData, paginationMeta }: BlogViewProps) {
   const [filters, setFilters] = useState({
     tipoPublicacion: "",
     anioPublicacion: "",
   });
 
+  console.log("blogPageData from BlogView", blogPageData);
   // Función para formatear la fecha como "JUN 25"
   const formatDate = (dateString: string): string => {
     const date = new Date(dateString);
@@ -102,10 +104,11 @@ export default function BlogView({ blogData, categoriesData, paginationMeta }: B
   return (
     <div>
       <HeadingPageSalaPrensa
-        title="Blog"
-        description="Revise boletines informativos con actualizaciones exclusivas, iniciativas y oportunidades de interés en sólo 3 minutos"
-        image={CoverImage.src}
+        title={blogPageData?.title || "Blog"}
+        description={blogPageData?.description || "Revise boletines informativos con actualizaciones exclusivas, iniciativas y oportunidades de interés en sólo 3 minutos"}
+        image={blogPageData?.backgroundImg?.url || CoverImage.src}
         slug="blog"
+        textAlign={blogPageData?.alignment || "center"}
       />
 
       {/* Filters */}
