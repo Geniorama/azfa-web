@@ -6,7 +6,7 @@ import CardNewsletter from "@/components/CardNewsletter";
 import Pagination from "@/components/Pagination";
 import ImageBanner from "@/assets/img/Frame 53.png";
 import Button from "@/utils/Button";
-import { NewsType, NewsCategoryType } from "@/types/componentsType";
+import { NewsType, NewsCategoryType, NewsletterSectionType } from "@/types/componentsType";
 import { truncateText } from "@/utils/truncateText";
 
 // Interfaz extendida para newsletters con downloadDocument
@@ -21,9 +21,10 @@ interface NewsletterViewProps {
   newsletterData: NewsletterType[];
   categoriesData: NewsCategoryType[];
   paginationMeta: { pagination: { page: number, pageCount: number, pageSize: number, total: number } } | null;
+  newsletterSectionData: NewsletterSectionType | null;
 }
 
-export default function NewsletterView({ newsletterData, categoriesData, paginationMeta }: NewsletterViewProps) {
+export default function NewsletterView({ newsletterData, categoriesData, paginationMeta, newsletterSectionData }: NewsletterViewProps) {
   // Función para formatear la fecha como "JUN 25"
   const formatDate = (dateString: string): string => {
     const date = new Date(dateString);
@@ -64,10 +65,11 @@ export default function NewsletterView({ newsletterData, categoriesData, paginat
   return (
     <div>
         <HeadingPageSalaPrensa
-            title="Newsletter"
-            description="Revise boletines informativos con actualizaciones exclusivas, iniciativas y oportunidades de interés en sólo 3 minutos"
-            image={CoverImage.src}
+            title={newsletterSectionData?.title || "Newsletter"}
+            description={newsletterSectionData?.description || "Revise boletines informativos con actualizaciones exclusivas, iniciativas y oportunidades de interés en sólo 3 minutos"}
+            image={newsletterSectionData?.backgroundImg?.url || CoverImage.src}
             slug="newsletter"
+            textAlign={newsletterSectionData?.alignment || "center"}
         />
 
         <section className="bg-white lg:py-16 py-10">
