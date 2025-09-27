@@ -572,3 +572,22 @@ export interface EventsPageType {
   updatedAt: string;
   publishedAt: string;
 }
+
+export interface ContactPageType {
+  id: number;
+  documentId: string;
+  slug: string;
+  contactSectionTitle: string;
+  hero: {
+    id: number;
+    smallTitle: string | null;
+    title: string;
+    description: string | null;
+    alignment: "left" | "center" | "right" | null;
+    backgroundImg: StrapiImageType;
+  };
+  locale: string;
+  createdAt: string;
+  updatedAt: string;
+  publishedAt: string;
+}

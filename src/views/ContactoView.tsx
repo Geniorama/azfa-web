@@ -14,9 +14,15 @@ import Button from "@/utils/Button"
 import Link from "next/link"
 import { useState } from "react"
 import ReCAPTCHA from "react-google-recaptcha"
+import { ContactPageType, ContactInfoType, SocialMediaItemType } from "@/types/componentsType"
 
+interface ContactoViewProps {
+  contactPageData: ContactPageType | null;
+  contactInfoGlobal: ContactInfoType;
+  socialMedia: SocialMediaItemType[];
+}
 
-export default function ContactoView() {
+export default function ContactoView({ contactPageData, contactInfoGlobal, socialMedia }: ContactoViewProps) {
   const [formData, setFormData] = useState({
     nombre: '',
     telefono: '',
@@ -86,9 +92,9 @@ export default function ContactoView() {
   return (
     <div>
         <HeadingPage 
-          title="Contacto" 
-          smallTitle="Su mensaje puede iniciar algo grande."
-          image={BgContacto.src}
+          title={contactPageData?.hero?.title || "Contacto"} 
+          smallTitle={contactPageData?.hero?.smallTitle || "Su mensaje puede iniciar algo grande."}
+          image={contactPageData?.hero?.backgroundImg?.url || BgContacto.src}
           className="lg:pb-64"
         />
 
@@ -96,8 +102,7 @@ export default function ContactoView() {
           <div className="container mx-auto px-4">
             <div className="flex flex-col md:flex-row gap-6 text-text-primary">
               <div className="w-full md:w-1/2 mb-10 lg:mb-0">
-                <h2 className="text-h2">¿Necesita asesoría?</h2>
-                <h3 className="text-h2">contáctenos</h3>
+                <h2 className="text-h2">{contactPageData?.contactSectionTitle || "¿Necesita asesoría? contáctenos"}</h2>
 
                 {/* Phone */}
                 <div className="flex lg:flex-row flex-col lg:items-center gap-2 lg:gap-6 p-5 mt-4">
@@ -106,8 +111,8 @@ export default function ContactoView() {
                   </div>
                   <div>
                     <p className="text-h6">Teléfono</p>
-                    <a href="https://wa.me/573148724979" target="_blank" className="text-body1 hover:text-details transition">
-                      +57 314 8724979
+                    <a href={`https://wa.me/${contactInfoGlobal.phone?.replace(/\D/g, '')}`} target="_blank" className="text-body1 hover:text-details transition">
+                      {contactInfoGlobal.phone || "+57 314 8724979"}
                     </a>
                   </div>
                 </div>
@@ -119,8 +124,8 @@ export default function ContactoView() {
                   </div>
                   <div>
                     <p className="text-h6">Email</p>
-                    <a href="mailto:info@asociacionzonasfrancas.org" className="text-body1 hover:text-details transition">
-                      info@asociacionzonasfrancas.org
+                    <a href={`mailto:${contactInfoGlobal.email}`} className="text-body1 hover:text-details transition">
+                      {contactInfoGlobal.email || "info@asociacionzonasfrancas.org"}
                     </a>
                   </div>
                 </div>
@@ -128,36 +133,34 @@ export default function ContactoView() {
                 {/* Social Media */}
                 <div>
                   <ul className="flex flex-row justify-center lg:justify-start items-center gap-6 mt-12">
-                    <li>
-                      <a href="#" target="_blank" rel="noopener noreferrer" className="hover:opacity-70 transition">
-                        <img src={IconFacebook.src} alt="icon-facebook" />
-                      </a>
-                    </li>
-                    <li>
-                      <a href="#" target="_blank" rel="noopener noreferrer" className="hover:opacity-70 transition">
-                        <img src={IconInstagram.src} alt="icon-instagram" />
-                      </a>
-                    </li>
-                    <li>
-                      <a href="#" target="_blank" rel="noopener noreferrer" className="hover:opacity-70 transition">
-                        <img src={IconLinkedin.src} alt="icon-linkedin" />
-                      </a>
-                    </li>
-                    <li>
-                      <a href="#" target="_blank" rel="noopener noreferrer" className="hover:opacity-70 transition">
-                        <img src={IconYoutube.src} alt="icon-youtube" />
-                      </a>
-                    </li>
-                    <li>
-                      <a href="#" target="_blank" rel="noopener noreferrer" className="hover:opacity-70 transition">
-                        <img src={IconSpotify.src} alt="icon-spotify" />
-                      </a>
-                    </li>
-                    <li>
-                      <a href="#" target="_blank" rel="noopener noreferrer" className="hover:opacity-70 transition">
-                        <img src={IconTwitterX.src} alt="icon-twitter-x" />
-                      </a>
-                    </li>
+                    {socialMedia.map((social) => (
+                      <li key={social.id}>
+                        <a 
+                          href={social.url} 
+                          target={social.openInNewTab ? "_blank" : "_self"} 
+                          rel={social.openInNewTab ? "noopener noreferrer" : ""}
+                          className="hover:opacity-70 transition"
+                        >
+                          {social.icon.type === "custom" && social.icon.customImage ? (
+                            <img 
+                              src={social.icon.customImage.url} 
+                              alt={`icon-${social.platform}`} 
+                              width={24}
+                              height={24}
+                            />
+                          ) : (
+                            <span className="text-2xl">
+                              {social.platform === "facebook" && <img src={IconFacebook.src} alt="icon-facebook" />}
+                              {social.platform === "instagram" && <img src={IconInstagram.src} alt="icon-instagram" />}
+                              {social.platform === "linkedin" && <img src={IconLinkedin.src} alt="icon-linkedin" />}
+                              {social.platform === "youtube" && <img src={IconYoutube.src} alt="icon-youtube" />}
+                              {social.platform === "spotify" && <img src={IconSpotify.src} alt="icon-spotify" />}
+                              {social.platform === "twitter" && <img src={IconTwitterX.src} alt="icon-twitter-x" />}
+                            </span>
+                          )}
+                        </a>
+                      </li>
+                    ))}
                   </ul>
                 </div>
               </div>
