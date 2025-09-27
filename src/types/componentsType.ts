@@ -555,3 +555,20 @@ export interface PressRoomPageType {
   podcastSection?: PodcastSectionType | null;
   newsSection?: NewsSectionType | null;
 }
+
+export interface EventsPageType {
+  id: number;
+  documentId: string;
+  headingSection: {
+    id: number;
+    smallTitle: string | null;
+    title: string;
+    description: string;
+    alignment: "left" | "center" | "right";
+    backgroundImg: StrapiImageType;
+  };
+  locale: string;
+  createdAt: string;
+  updatedAt: string;
+  publishedAt: string;
+}

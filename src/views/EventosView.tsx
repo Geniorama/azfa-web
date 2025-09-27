@@ -3,10 +3,11 @@
 import CardEventsMonth from '@/components/CardEventsMonth'
 import BackgroundEventos from '@/assets/img/bg-eventos.jpg'
 import { useState } from 'react'
-import { EventType } from '@/types/componentsType'
+import { EventType, EventsPageType } from '@/types/componentsType'
 
 interface EventosViewProps {
   eventsData: EventType[];
+  eventsPageData: EventsPageType | null;
   isLoading?: boolean;
   error?: string | null;
 }
@@ -64,7 +65,7 @@ const transformEventsData = (apiEvents: EventType[]): MonthEvents[] => {
   return monthsData;
 };
 
-export default function EventosView({ eventsData, isLoading = false, error = null }: EventosViewProps) {
+export default function EventosView({ eventsData, eventsPageData, isLoading = false, error = null }: EventosViewProps) {
   const transformedEvents = transformEventsData(eventsData);
   const [events] = useState<MonthEvents[]>(transformedEvents)
   const [activeTab, setActiveTab] = useState("todos")
@@ -189,11 +190,11 @@ export default function EventosView({ eventsData, isLoading = false, error = nul
   return (
     <div>
         <section style={{
-            backgroundImage: `url(${BackgroundEventos.src})`
+            backgroundImage: `url(${eventsPageData?.headingSection?.backgroundImg?.url || BackgroundEventos.src})`
         }} className='py-16 bg-primary bg-cover bg-center bg-no-repeat text-center'>
             <div className="container mx-auto px-4">
-                <h1 className='text-h1'>Eventos</h1>
-                <p className='text-body1 lg:text-lg'>Conozca aquí los próximos eventos del año</p>
+                <h1 className='text-h1'>{eventsPageData?.headingSection?.title || "Eventos"}</h1>
+                <p className='text-body1 lg:text-lg'>{eventsPageData?.headingSection?.description || "Conozca aquí los próximos eventos del año"}</p>
 
                 {/* Tabs */}
                 <div className='flex flex-col md:flex-row w-full max-w-screen-lg gap-0.5 md:gap-0 justify-center mx-auto mt-10'>
