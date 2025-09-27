@@ -3,224 +3,70 @@
 import CardEventsMonth from '@/components/CardEventsMonth'
 import BackgroundEventos from '@/assets/img/bg-eventos.jpg'
 import { useState } from 'react'
+import { EventType } from '@/types/componentsType'
 
-const eventsData = [
-  {
-    month: 'Enero',
-    events: [
-      {
-        title: 'Evento 1',
-        date: '2025-01-01',
-        link: 'https://www.google.com',
-        isFirst: false,
-        isLast: true,
-        isNext: false
-      },
-      {
-        title: 'Evento 2',
-        date: '2025-01-02',
-        link: 'https://www.google.com',
-        isFirst: true,
-        isLast: false,
-        isNext: false
-      }
-    ]
-  },
-  {
-    month: 'Febrero',
-    events: [
-      {
-        title: 'Evento 3',
-        date: '2025-02-01',
-        link: 'https://www.google.com',
-        isFirst: false,
-        isLast: false,
-        isNext: true
-      }
-    ]
-  },
-  {
-    month: 'Marzo',
-    events: [
-      {
-        title: 'Evento 4',
-        date: '2025-03-01',
-        link: 'https://www.google.com',
-        isFirst: false,
-        isLast: false,
-        isNext: true
-      }
-    ]
-  },
-  {
-    month: 'Abril',
-    events: [
-      {
-        title: 'Conferencia de Zonas Francas',
-        date: '2025-04-15',
-        link: 'https://www.google.com',
-        isFirst: false,
-        isLast: false,
-        isNext: true
-      },
-      {
-        title: 'Taller de Inversiones',
-        date: '2025-04-22',
-        link: 'https://www.google.com',
-        isFirst: false,
-        isLast: true,
-        isNext: false
-      }
-    ]
-  },
-  {
-    month: 'Mayo',
-    events: [
-      {
-        title: 'Cumbre Iberoamericana',
-        date: '2025-05-10',
-        link: 'https://www.google.com',
-        isFirst: true,
-        isLast: false,
-        isNext: true
-      }
-    ]
-  },
-  {
-    month: 'Junio',
-    events: [
-      {
-        title: 'Seminario de Exportaciones',
-        date: '2025-06-05',
-        link: 'https://www.google.com',
-        isFirst: false,
-        isLast: false,
-        isNext: true
-      },
-      {
-        title: 'Networking Empresarial',
-        date: '2025-06-18',
-        link: 'https://www.google.com',
-        isFirst: false,
-        isLast: true,
-        isNext: false
-      }
-    ]
-  },
-  {
-    month: 'Julio',
-    events: [
-      {
-        title: 'Expo Zonas Francas 2025',
-        date: '2025-07-12',
-        link: 'https://www.google.com',
-        isFirst: true,
-        isLast: false,
-        isNext: true
-      },
-      {
-        title: 'Foro de Innovación',
-        date: '2025-07-25',
-        link: 'https://www.google.com',
-        isFirst: false,
-        isLast: true,
-        isNext: false
-      }
-    ]
-  },
-  {
-    month: 'Agosto',
-    events: [
-      {
-        title: 'Convención Anual AZFA',
-        date: '2025-08-08',
-        link: 'https://www.google.com',
-        isFirst: true,
-        isLast: false,
-        isNext: true
-      }
-    ]
-  },
-  {
-    month: 'Septiembre',
-    events: [
-      {
-        title: 'Workshop de Sostenibilidad',
-        date: '2025-09-14',
-        link: 'https://www.google.com',
-        isFirst: false,
-        isLast: false,
-        isNext: true
-      },
-      {
-        title: 'Panel de Expertos',
-        date: '2025-09-28',
-        link: 'https://www.google.com',
-        isFirst: false,
-        isLast: true,
-        isNext: false
-      }
-    ]
-  },
-  {
-    month: 'Octubre',
-    events: [
-      {
-        title: 'Congreso Internacional',
-        date: '2025-10-03',
-        link: 'https://www.google.com',
-        isFirst: true,
-        isLast: false,
-        isNext: true
-      },
-      {
-        title: 'Feria de Inversiones',
-        date: '2025-10-17',
-        link: 'https://www.google.com',
-        isFirst: false,
-        isLast: true,
-        isNext: false
-      }
-    ]
-  },
-  {
-    month: 'Noviembre',
-    events: [
-      {
-        title: 'Simposio de Comercio',
-        date: '2025-11-11',
-        link: 'https://www.google.com',
-        isFirst: false,
-        isLast: false,
-        isNext: true
-      }
-    ]
-  },
-  {
-    month: 'Diciembre',
-    events: [
-      {
-        title: 'Cierre de Año AZFA',
-        date: '2025-12-05',
-        link: 'https://www.google.com',
-        isFirst: true,
-        isLast: false,
-        isNext: true
-      },
-      {
-        title: 'Gala de Premiación',
-        date: '2025-12-15',
-        link: 'https://www.google.com',
-        isFirst: false,
-        isLast: true,
-        isNext: false
-      }
-    ]
-  }
-]   
+interface EventosViewProps {
+  eventsData: EventType[];
+  isLoading?: boolean;
+  error?: string | null;
+}
 
-export default function EventosView() {
-  const [events] = useState<typeof eventsData>(eventsData)
+// Tipo para el formato esperado por la vista
+interface FormattedEvent {
+  title: string;
+  date: string;
+  link: string;
+  isFirst: boolean;
+  isLast: boolean;
+  isNext: boolean;
+}
+
+interface MonthEvents {
+  month: string;
+  events: FormattedEvent[];
+}
+
+// Función para transformar eventos de la API al formato esperado por la vista
+const transformEventsData = (apiEvents: EventType[]): MonthEvents[] => {
+  const monthNames = [
+    'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
+    'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'
+  ];
+
+  // Crear estructura inicial con todos los meses
+  const monthsData: MonthEvents[] = monthNames.map(month => ({
+    month,
+    events: []
+  }));
+
+  // Agrupar eventos por mes
+  apiEvents.forEach(event => {
+    const eventDate = new Date(event.startDate);
+    const monthIndex = eventDate.getMonth();
+    
+    const formattedEvent: FormattedEvent = {
+      title: event.title,
+      date: event.startDate,
+      link: event.buttonUrl || '#',
+      isFirst: false, // Se calculará después
+      isLast: false,  // Se calculará después
+      isNext: false   // Se calculará después
+    };
+
+    monthsData[monthIndex].events.push(formattedEvent);
+  });
+
+  // Ordenar eventos dentro de cada mes por fecha
+  monthsData.forEach(monthData => {
+    monthData.events.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+  });
+
+  return monthsData;
+};
+
+export default function EventosView({ eventsData, isLoading = false, error = null }: EventosViewProps) {
+  const transformedEvents = transformEventsData(eventsData);
+  const [events] = useState<MonthEvents[]>(transformedEvents)
   const [activeTab, setActiveTab] = useState("todos")
 
   // Función para filtrar eventos según el tab activo
@@ -229,7 +75,7 @@ export default function EventosView() {
     today.setHours(0, 0, 0, 0) // Resetear horas para comparar solo fechas
 
     // Primero obtener todos los eventos filtrados de todos los meses
-    const allFilteredEvents: Array<{event: typeof eventsData[0]['events'][0], monthIndex: number, eventIndex: number}> = []
+    const allFilteredEvents: Array<{event: FormattedEvent, monthIndex: number, eventIndex: number}> = []
     
     events.forEach((monthData, monthIndex) => {
       const filteredEvents = monthData.events.filter(event => {
@@ -316,6 +162,29 @@ export default function EventosView() {
   }
 
   const filteredEvents = getFilteredEvents()
+
+  // Manejo de estados de carga y error
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-primary mx-auto"></div>
+          <p className="mt-4 text-lg text-text-primary">Cargando eventos...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <p className="text-lg text-red-600 mb-4">Error: {error}</p>
+          <p className="text-text-primary">Por favor, intente recargar la página.</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div>
