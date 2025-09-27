@@ -1,7 +1,36 @@
 import EventosView from '@/views/EventosView'
+import { EventType } from '@/types/componentsType'
 
-export default function Eventos() {
+// Función para obtener eventos desde Strapi
+const getEvents = async (): Promise<{ data: EventType[] } | null> => {
+  try {
+    const response = await fetch(`${process.env.STRAPI_URL}/api/events?populate[0]=featuredImage&populate[1]=calendarIcon&populate[2]=locationIcon&populate[3]=addressIcon&populate[4]=calendarIcon.customImage&populate[5]=locationIcon.customImage&populate[6]=addressIcon.customImage&pagination[pageSize]=100&sort=startDate:asc`, {
+      cache: "force-cache",
+      next: { revalidate: 3600 }, // Revalidar cada hora
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error("Error fetching events:", error);
+    return null;
+  }
+}
+
+export default async function Eventos() {
+  const eventsResponse = await getEvents();
+  
+  console.log("eventsData", eventsResponse);
+
   return (
-    <EventosView />
+    <EventosView 
+      eventsData={eventsResponse?.data || []} 
+      isLoading={false}
+      error={eventsResponse === null ? "Error al cargar los eventos" : null}
+    />
   ) 
 }

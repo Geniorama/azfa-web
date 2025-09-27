@@ -23,7 +23,7 @@ export default function CardEventsMonth({
       <hr className="my-3 border-background-2" />
       {events && events.length > 0 ? (
         events.map((event, index) => (
-          <Link href={event.link || ""} key={index}>
+          <Link target="_blank" rel="noopener noreferrer" href={event.link || ""} key={index}>
             <div
               className="flex flex-row gap-3 mb-3 bg-background-1 rounded-lg"
               key={index}
