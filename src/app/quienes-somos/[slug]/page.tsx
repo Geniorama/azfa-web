@@ -12,7 +12,7 @@ export async function generateMetadata(): Promise<Metadata> {
 
 const getQuienesSomos = async () => {
   try {
-    const response = await fetch(`${process.env.STRAPI_URL}/api/about-us-page?populate[0]=hero&populate[1]=hero.button&populate[2]=hero.backgroundImg&populate[3]=contentSection&populate[4]=contentSection.icon&populate[5]=contentSection.icon.customImage&populate[6]=teamTabsSection&populate[7]=teamTabsSection.boardOfDirectorsTab.icon&populate[8]=teamTabsSection.boardOfDirectorsTab.icon.customImage&populate[9]=teamTabsSection.committeesTab.icon&populate[10]=teamTabsSection.committeesTab.icon.customImage&populate[11]=teamTabsSection.azfaTeamTab.icon&populate[12]=teamTabsSection.azfaTeamTab.icon.customImage`, {
+    const response = await fetch(`${process.env.STRAPI_URL}/api/about-us-page?populate[0]=hero&populate[1]=hero.button&populate[2]=hero.backgroundImg&populate[3]=contentSection&populate[4]=contentSection.icon&populate[5]=contentSection.icon.customImage&populate[6]=teamTabsSection&populate[7]=teamTabsSection.boardOfDirectorsTab.icon&populate[8]=teamTabsSection.boardOfDirectorsTab.icon.customImage&populate[9]=teamTabsSection.committeesTab.icon&populate[10]=teamTabsSection.committeesTab.icon.customImage&populate[11]=teamTabsSection.azfaTeamTab.icon&populate[12]=teamTabsSection.azfaTeamTab.icon.customImage&populate[13]=comissionSection&populate[14]=comissionSection.coverImage&populate[15]=comissionSection.leaderProfiles&populate[16]=comissionSection.leaderProfiles.photo&populate[17]=comissionSection.teamProfiles&populate[18]=comissionSection.teamProfiles.photo`, {
       cache: "force-cache",
       next: { revalidate: 3600 }, // Revalidar cada hora
     });
@@ -50,11 +50,14 @@ export default async function QuienesSomos() {
   const intro = aboutUsPage?.data?.contentSection;
   const teamMembers = await getTeamMembers();
   const teamTabsSection = aboutUsPage?.data?.teamTabsSection;
+  const comissionSection = aboutUsPage?.data?.comissionSection;
   
   console.log("aboutUsPage", aboutUsPage);
   console.log("intro", intro);
   console.log("teamTabsSection", teamTabsSection);
   console.log("teamMembers", teamMembers);
+  console.log("comissionSection", comissionSection);
+
   const transformedIntro = {
     ...intro,
     icon: {
@@ -69,6 +72,7 @@ export default async function QuienesSomos() {
       intro={transformedIntro} 
       teamMembersData={teamMembers?.data || []}
       tabsSection={teamTabsSection}
+      commissionSections={comissionSection}
     />
   )
 }
