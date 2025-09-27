@@ -11,7 +11,6 @@ import CardTeamMember, {
 import { useState, useEffect } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import IconPerson from "@/assets/img/person-1.svg";
-import LeaderPerson from "@/assets/img/leader.png";
 import AvatarPerson from "@/components/AvatarPerson";
 import { getCountryName } from "@/utils/countryMapping";
 
@@ -55,11 +54,150 @@ interface TabsSectionType {
   boardOfDirectorsTab: TabType;
 }
 
+interface ProfileType {
+  id: number;
+  fullName: string;
+  photo: {
+    id: number;
+    documentId: string;
+    name: string;
+    alternativeText?: string;
+    caption?: string;
+    width: number;
+    height: number;
+    formats?: {
+      small?: {
+        ext: string;
+        url: string;
+        hash: string;
+        mime: string;
+        name: string;
+        size: number;
+        width: number;
+        height: number;
+        sizeInBytes: number;
+      };
+      medium?: {
+        ext: string;
+        url: string;
+        hash: string;
+        mime: string;
+        name: string;
+        size: number;
+        width: number;
+        height: number;
+        sizeInBytes: number;
+      };
+      thumbnail?: {
+        ext: string;
+        url: string;
+        hash: string;
+        mime: string;
+        name: string;
+        size: number;
+        width: number;
+        height: number;
+        sizeInBytes: number;
+      };
+    };
+    hash: string;
+    ext: string;
+    mime: string;
+    size: number;
+    url: string;
+    previewUrl?: string;
+    provider: string;
+    provider_metadata?: unknown;
+    createdAt: string;
+    updatedAt: string;
+    publishedAt: string;
+  };
+}
+
+interface CommissionSectionType {
+  id: number;
+  title: string;
+  description: string;
+  leadersLabel: string;
+  leadersText: string;
+  teamLabel?: string;
+  teamText?: string;
+  teamProfiles: ProfileType[];
+  leaderProfiles: ProfileType[];
+  coverImage: {
+    id: number;
+    documentId: string;
+    name: string;
+    alternativeText?: string;
+    caption?: string;
+    width: number;
+    height: number;
+    formats?: {
+      small?: {
+        ext: string;
+        url: string;
+        hash: string;
+        mime: string;
+        name: string;
+        size: number;
+        width: number;
+        height: number;
+        sizeInBytes: number;
+      };
+      medium?: {
+        ext: string;
+        url: string;
+        hash: string;
+        mime: string;
+        name: string;
+        size: number;
+        width: number;
+        height: number;
+        sizeInBytes: number;
+      };
+      large?: {
+        ext: string;
+        url: string;
+        hash: string;
+        mime: string;
+        name: string;
+        size: number;
+        width: number;
+        height: number;
+        sizeInBytes: number;
+      };
+      thumbnail?: {
+        ext: string;
+        url: string;
+        hash: string;
+        mime: string;
+        name: string;
+        size: number;
+        width: number;
+        height: number;
+        sizeInBytes: number;
+      };
+    };
+    hash: string;
+    ext: string;
+    mime: string;
+    size: number;
+    url: string;
+    previewUrl?: string;
+    provider: string;
+    provider_metadata?: unknown;
+    createdAt: string;
+    updatedAt: string;
+    publishedAt: string;
+  };
+}
+
 interface QuienesSomosViewProps {
   hero: HeadingType;
   intro?: IntroData;
   teamMembersData?: TeamMemberType[];
   tabsSection?: TabsSectionType;
+  commissionSections?: CommissionSectionType[];
 }
 
 export default function JuntaDirectivaView({
@@ -67,6 +205,7 @@ export default function JuntaDirectivaView({
   intro,
   teamMembersData,
   tabsSection,
+  commissionSections,
 }: QuienesSomosViewProps) {
   const [activeTab, setActiveTab] = useState("junta-directiva");
   const pathname = usePathname();
@@ -76,13 +215,16 @@ export default function JuntaDirectivaView({
   console.log("intro from QuienesSomosView", intro);
   console.log("teamMembersData from QuienesSomosView", teamMembersData);
   console.log("tabsSection from QuienesSomosView", tabsSection);
+  console.log("commissionSections from QuienesSomosView", commissionSections);
 
   // Función para filtrar miembros por tipo
   const getMembersByType = (memberType: string, subCategory?: string) => {
     if (!teamMembersData) return [];
-    return teamMembersData.filter(member => {
+    return teamMembersData.filter((member) => {
       if (subCategory) {
-        return member.memberType === memberType && member.subCategory === subCategory;
+        return (
+          member.memberType === memberType && member.subCategory === subCategory
+        );
       }
       return member.memberType === memberType;
     });
@@ -100,7 +242,10 @@ export default function JuntaDirectivaView({
 
   // Obtener miembros dinámicamente
   const boardMembers = getMembersByType("board-of-directors", "board-members");
-  const honoraryPresidents = getMembersByType("board-of-directors", "honorary-presidents");
+  const honoraryPresidents = getMembersByType(
+    "board-of-directors",
+    "honorary-presidents"
+  );
   const azfaTeamMembers = getMembersByType("azfa-team");
 
   // Detectar el tab activo basado en la URL solo en la carga inicial
@@ -142,9 +287,7 @@ export default function JuntaDirectivaView({
       {intro && (
         <section className="bg-white py-10 lg:pt-16">
           <div className="container mx-auto px-4">
-            <IntroPage
-              introData={intro}
-            />
+            <IntroPage introData={intro} />
           </div>
         </section>
       )}
@@ -162,8 +305,14 @@ export default function JuntaDirectivaView({
               onClick={() => handleTabClick("junta-directiva")}
             >
               <img
-                src={tabsSection?.boardOfDirectorsTab?.icon?.customImage?.url || IconTabs.src}
-                alt={tabsSection?.boardOfDirectorsTab?.icon?.customImage?.alternativeText || "Icon Tabs"}
+                src={
+                  tabsSection?.boardOfDirectorsTab?.icon?.customImage?.url ||
+                  IconTabs.src
+                }
+                alt={
+                  tabsSection?.boardOfDirectorsTab?.icon?.customImage
+                    ?.alternativeText || "Icon Tabs"
+                }
                 className="lg:w-16 lg:h-16 w-10 h-10 mx-auto"
               />
               <h2 className="lg:text-h4 text-body2 font-normal text-text-primary">
@@ -177,8 +326,14 @@ export default function JuntaDirectivaView({
               onClick={() => handleTabClick("comisiones")}
             >
               <img
-                src={tabsSection?.committeesTab?.icon?.customImage?.url || IconTabs.src}
-                alt={tabsSection?.committeesTab?.icon?.customImage?.alternativeText || "Icon Tabs"}
+                src={
+                  tabsSection?.committeesTab?.icon?.customImage?.url ||
+                  IconTabs.src
+                }
+                alt={
+                  tabsSection?.committeesTab?.icon?.customImage
+                    ?.alternativeText || "Icon Tabs"
+                }
                 className="lg:w-16 lg:h-16 w-10 h-10 mx-auto"
               />
               <h2 className="lg:text-h4 text-body2 font-normal text-text-primary">
@@ -192,8 +347,14 @@ export default function JuntaDirectivaView({
               onClick={() => handleTabClick("equipo-azfa")}
             >
               <img
-                src={tabsSection?.azfaTeamTab?.icon?.customImage?.url || IconTabs.src}
-                alt={tabsSection?.azfaTeamTab?.icon?.customImage?.alternativeText || "Icon Tabs"}
+                src={
+                  tabsSection?.azfaTeamTab?.icon?.customImage?.url ||
+                  IconTabs.src
+                }
+                alt={
+                  tabsSection?.azfaTeamTab?.icon?.customImage
+                    ?.alternativeText || "Icon Tabs"
+                }
                 className="lg:w-16 lg:h-16 w-10 h-10 mx-auto"
               />
               <h2 className="lg:text-h4 text-body2 font-normal text-text-primary">
@@ -219,14 +380,13 @@ export default function JuntaDirectivaView({
 
               {/* Grid Team Members */}
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mt-16">
-                {boardMembers.length > 0 && (
+                {boardMembers.length > 0 &&
                   boardMembers.map((member) => (
                     <CardTeamMember
                       key={member.id}
                       {...formatMemberData(member)}
                     />
-                  ))
-                )}
+                  ))}
               </div>
 
               <div className="text-center mt-16">
@@ -238,14 +398,13 @@ export default function JuntaDirectivaView({
 
               {/* Grid Team Members */}
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mt-16">
-                {honoraryPresidents.length > 0 && (
+                {honoraryPresidents.length > 0 &&
                   honoraryPresidents.map((member) => (
                     <CardTeamMember
                       key={member.id}
                       {...formatMemberData(member)}
                     />
-                  ))
-                )}
+                  ))}
               </div>
             </div>
           )}
@@ -253,291 +412,82 @@ export default function JuntaDirectivaView({
           {/* Tab Comisiones */}
           {activeTab === "comisiones" && (
             <div>
-              <div className="flex flex-col lg:flex-row gap-6">
-                <div className="w-full lg:w-1/2 lg:pr-32 pt-6 text-text-primary">
-                  <h2 className="text-h2 font-normal text-text-primary mb-8">
-                    Comisión de Posicionamiento
-                  </h2>
-                  <p>
-                    Enfocada en potenciar la visibilidad de las zonas francas
-                    como ecosistemas de competitividad e innovación, elevando su
-                    presencia en mercados estratégicos y fortaleciendo su
-                    reconocimiento regional a través de estrategias efectivas de
-                    comunicación y marketing.
-                  </p>
-                  <div className="flex flex-row gap-4 items-start mt-5">
-                    <img src={IconPerson.src} alt="Icon Person" />
-                    <div>
-                      <p>Líder de la Comisión</p>
-                      <p>John Doe - Zona Franca Lima</p>
-                      <AvatarPerson
-                        image={LeaderPerson.src}
-                        alternativeText="Leader Person"
-                        name="John Doe"
-                      />
-                    </div>
-                  </div>
+              {commissionSections &&
+                commissionSections.length > 0 &&
+                commissionSections?.map((comission, index) => (
+                  <div key={index}>
+                    <div
+                      key={index}
+                      className={`flex flex-col ${index % 2 === 0 ? "lg:flex-row" : "lg:flex-row-reverse"} gap-6`}
+                    >
+                      <div className={`w-full lg:w-1/2 ${index % 2 === 0 ? "lg:pr-32" : "lg:pl-32"} pt-6 text-text-primary`}>
+                        <h2 className="text-h2 font-normal text-text-primary mb-8">
+                          {comission.title}
+                        </h2>
+                        <div>{comission.description}</div>
 
-                  <div className="flex flex-row gap-4 items-start mt-5">
-                    <img src={IconPerson.src} alt="Icon Person" />
-                    <div>
-                      <p>Equipo:</p>
-                      <div className="flex flex-row gap-4">
-                        <AvatarPerson
-                          image={LeaderPerson.src}
-                          alternativeText="Leader Person"
-                          name="John Doe"
-                        />
-                        <AvatarPerson
-                          image={LeaderPerson.src}
-                          alternativeText="Leader Person"
-                          name="John Doe"
-                        />
-                        <AvatarPerson
-                          image={LeaderPerson.src}
-                          alternativeText="Leader Person"
-                          name="John Doe"
-                        />
-                        <AvatarPerson
-                          image={LeaderPerson.src}
-                          alternativeText="Leader Person"
-                          name="John Doe"
-                        />
-                        <AvatarPerson
-                          image={LeaderPerson.src}
-                          alternativeText="Leader Person"
-                          name="John Doe"
+                        {/* Leader Profiles */}
+                        {comission.leaderProfiles.length > 0 && (
+                          <div className="flex flex-row gap-4 items-start mt-5">
+                            <img src={IconPerson.src} alt="Icon Person" />
+                            <div>
+                              <p>{comission.leadersLabel}</p>
+                              <p>{comission.leadersText}</p>
+                              <div className="flex flex-row gap-4">
+                                {comission.leaderProfiles.length > 0 &&
+                                  comission.leaderProfiles.map(
+                                    (leader, index) => (
+                                      <AvatarPerson
+                                        key={index}
+                                        image={leader.photo.url}
+                                        alternativeText={
+                                          leader.photo.alternativeText
+                                        }
+                                        name={leader.fullName}
+                                      />
+                                    )
+                                  )}
+                              </div>
+                            </div>
+                          </div>
+                        )}
+
+                        {/* Team Profiles */}
+                        {comission.teamProfiles.length > 0 && (
+                          <div className="flex flex-row gap-4 items-start mt-5">
+                            <img src={IconPerson.src} alt="Icon Person" />
+                            <div>
+                              <p>{comission.teamLabel}</p>
+                              <div className="flex flex-row gap-4">
+                                {comission.teamProfiles.length > 0 &&
+                                  comission.teamProfiles.map((team, index) => (
+                                    <AvatarPerson
+                                      key={index}
+                                      image={team.photo.url}
+                                      alternativeText={
+                                        team.photo.alternativeText
+                                      }
+                                      name={team.fullName}
+                                    />
+                                  ))}
+                              </div>
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                      <div className="w-full lg:w-1/2">
+                        <img
+                          className="w-full h-full object-cover"
+                          src={comission.coverImage.url}
+                          alt={comission.coverImage.alternativeText}
                         />
                       </div>
                     </div>
+                    {index < commissionSections.length - 1 && (
+                      <hr className="my-16 border-slate-300" />
+                    )}
                   </div>
-                </div>
-                <div className="w-full lg:w-1/2">
-                  <img
-                    className="w-full h-full object-cover"
-                    src={
-                      "https://testazfabucket.s3.us-east-2.amazonaws.com/servicio_comisi_n_posicionamiento_8e4c25cf97.webp"
-                    }
-                    alt="Image Comision"
-                  />
-                </div>
-              </div>
-
-              <hr className="my-16 border-slate-300" />
-
-              <div className="flex flex-col lg:flex-row-reverse gap-6">
-                <div className="w-full lg:w-1/2 text-text-primary pt-6 lg:pl-32">
-                  <h2 className="text-h2 font-normal text-text-primary mb-8">
-                    Comisión legal
-                  </h2>
-                  <p>
-                    Enfocada en potenciar la visibilidad de las zonas francas
-                    como ecosistemas de competitividad e innovación, elevando su
-                    presencia en mercados estratégicos y fortaleciendo su
-                    reconocimiento regional a través de estrategias efectivas de
-                    comunicación y marketing.
-                  </p>
-                  <div className="flex flex-row gap-4 items-start mt-5">
-                    <img src={IconPerson.src} alt="Icon Person" />
-                    <div>
-                      <p>Líder de la Comisión</p>
-                      <p>John Doe - Zona Franca Lima</p>
-                      <AvatarPerson
-                        image={LeaderPerson.src}
-                        alternativeText="Leader Person"
-                        name="John Doe"
-                      />
-                    </div>
-                  </div>
-
-                  <div className="flex flex-row gap-4 items-start mt-5">
-                    <img src={IconPerson.src} alt="Icon Person" />
-                    <div>
-                      <p>Equipo:</p>
-                      <div className="flex flex-row gap-4">
-                        <AvatarPerson
-                          image={LeaderPerson.src}
-                          alternativeText="Leader Person"
-                          name="John Doe"
-                        />
-                        <AvatarPerson
-                          image={LeaderPerson.src}
-                          alternativeText="Leader Person"
-                          name="John Doe"
-                        />
-                        <AvatarPerson
-                          image={LeaderPerson.src}
-                          alternativeText="Leader Person"
-                          name="John Doe"
-                        />
-                        <AvatarPerson
-                          image={LeaderPerson.src}
-                          alternativeText="Leader Person"
-                          name="John Doe"
-                        />
-                        <AvatarPerson
-                          image={LeaderPerson.src}
-                          alternativeText="Leader Person"
-                          name="John Doe"
-                        />
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div className="w-full lg:w-1/2">
-                  <img
-                    src={
-                      "https://testazfabucket.s3.us-east-2.amazonaws.com/servicio_comision_legal_43ac981dd8.webp"
-                    }
-                    alt="Image Comision"
-                    className="w-full h-full object-cover"
-                  />
-                </div>
-              </div>
-
-              <hr className="my-16 border-slate-300" />
-
-              <div className="flex flex-col lg:flex-row gap-6">
-                <div className="w-full lg:w-1/2 lg:pr-32 pt-6 text-text-primary">
-                  <h2 className="text-h2 font-normal text-text-primary mb-8">
-                    Comisión de Captación de Inversiones
-                  </h2>
-                  <p>
-                    Enfocada en potenciar la visibilidad de las zonas francas
-                    como ecosistemas de competitividad e innovación, elevando su
-                    presencia en mercados estratégicos y fortaleciendo su
-                    reconocimiento regional a través de estrategias efectivas de
-                    comunicación y marketing.
-                  </p>
-                  <div className="flex flex-row gap-4 items-start mt-5">
-                    <img src={IconPerson.src} alt="Icon Person" />
-                    <div>
-                      <p>Líder de la Comisión</p>
-                      <p>John Doe - Zona Franca Lima</p>
-                      <AvatarPerson
-                        image={LeaderPerson.src}
-                        alternativeText="Leader Person"
-                        name="John Doe"
-                      />
-                    </div>
-                  </div>
-
-                  <div className="flex flex-row gap-4 items-start mt-5">
-                    <img src={IconPerson.src} alt="Icon Person" />
-                    <div>
-                      <p>Equipo:</p>
-                      <div className="flex flex-row gap-4">
-                        <AvatarPerson
-                          image={LeaderPerson.src}
-                          alternativeText="Leader Person"
-                          name="John Doe"
-                        />
-                        <AvatarPerson
-                          image={LeaderPerson.src}
-                          alternativeText="Leader Person"
-                          name="John Doe"
-                        />
-                        <AvatarPerson
-                          image={LeaderPerson.src}
-                          alternativeText="Leader Person"
-                          name="John Doe"
-                        />
-                        <AvatarPerson
-                          image={LeaderPerson.src}
-                          alternativeText="Leader Person"
-                          name="John Doe"
-                        />
-                        <AvatarPerson
-                          image={LeaderPerson.src}
-                          alternativeText="Leader Person"
-                          name="John Doe"
-                        />
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div className="w-full lg:w-1/2">
-                  <img
-                    className="w-full h-full object-cover"
-                    src={
-                      "https://testazfabucket.s3.us-east-2.amazonaws.com/servicios_captaciones_8481291abb.webp"
-                    }
-                    alt="Image Comision"
-                  />
-                </div>
-              </div>
-
-              <hr className="my-16 border-slate-300" />
-
-              <div className="flex flex-col lg:flex-row-reverse gap-6">
-                <div className="w-full lg:w-1/2 text-text-primary pt-6 lg:pl-32">
-                  <h2 className="text-h2 font-normal text-text-primary mb-8">
-                    Comisión de Sostenibilidad
-                  </h2>
-                  <p>
-                    Enfocada en potenciar la visibilidad de las zonas francas
-                    como ecosistemas de competitividad e innovación, elevando su
-                    presencia en mercados estratégicos y fortaleciendo su
-                    reconocimiento regional a través de estrategias efectivas de
-                    comunicación y marketing.
-                  </p>
-                  <div className="flex flex-row gap-4 items-start mt-5">
-                    <img src={IconPerson.src} alt="Icon Person" />
-                    <div>
-                      <p>Líder de la Comisión</p>
-                      <p>John Doe - Zona Franca Lima</p>
-                      <AvatarPerson
-                        image={LeaderPerson.src}
-                        alternativeText="Leader Person"
-                        name="John Doe"
-                      />
-                    </div>
-                  </div>
-
-                  <div className="flex flex-row gap-4 items-start mt-5">
-                    <img src={IconPerson.src} alt="Icon Person" />
-                    <div>
-                      <p>Equipo:</p>
-                      <div className="flex flex-row gap-4">
-                        <AvatarPerson
-                          image={LeaderPerson.src}
-                          alternativeText="Leader Person"
-                          name="John Doe"
-                        />
-                        <AvatarPerson
-                          image={LeaderPerson.src}
-                          alternativeText="Leader Person"
-                          name="John Doe"
-                        />
-                        <AvatarPerson
-                          image={LeaderPerson.src}
-                          alternativeText="Leader Person"
-                          name="John Doe"
-                        />
-                        <AvatarPerson
-                          image={LeaderPerson.src}
-                          alternativeText="Leader Person"
-                          name="John Doe"
-                        />
-                        <AvatarPerson
-                          image={LeaderPerson.src}
-                          alternativeText="Leader Person"
-                          name="John Doe"
-                        />
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div className="w-full lg:w-1/2">
-                  <img
-                    src={
-                      "https://testazfabucket.s3.us-east-2.amazonaws.com/4_sostenibilidad_ac200f3218.webp"
-                    }
-                    alt="Image Comision"
-                    className="w-full h-full object-cover"
-                  />
-                </div>
-              </div>
+                ))}
             </div>
           )}
 
@@ -546,14 +496,13 @@ export default function JuntaDirectivaView({
             <div>
               {/* Grid Team Members */}
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-16">
-                {azfaTeamMembers.length > 0 && (
+                {azfaTeamMembers.length > 0 &&
                   azfaTeamMembers.map((member) => (
                     <CardTeamMember
                       key={member.id}
                       {...formatMemberData(member)}
                     />
-                  ))
-                )}
+                  ))}
               </div>
             </div>
           )}
