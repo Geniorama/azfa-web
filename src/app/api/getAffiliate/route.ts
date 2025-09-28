@@ -4,8 +4,12 @@ import strapiClient from "@/lib/strapi";
 export async function GET() {
     try {
         // Configurar parámetros de consulta con sintaxis correcta de Strapi
+        // Usar un pageSize alto para obtener todos los afiliados
         const queryParams = {
-            populate: '*'
+            populate: '*',
+            pagination: {
+                pageSize: 1000  // Valor alto para obtener todos los registros
+            }
         };
 
         // Obtener todos los afiliados
@@ -23,21 +27,21 @@ export async function GET() {
                 // Si es un array, envolverlo en la estructura correcta
                 return NextResponse.json({
                     data: response,
-                    meta: { pagination: { page: 1, pageSize: 25, pageCount: 1, total: response.length } },
+                    meta: { pagination: { page: 1, pageSize: response.length, pageCount: 1, total: response.length } },
                     success: true
                 });
             } else {
                 // Si es un objeto pero no tiene data, envolverlo
                 return NextResponse.json({
                     data: [response],
-                    meta: { pagination: { page: 1, pageSize: 25, pageCount: 1, total: 1 } },
+                    meta: { pagination: { page: 1, pageSize: 1, pageCount: 1, total: 1 } },
                     success: true
                 });
             }
         } else {
             return NextResponse.json({
                 data: [],
-                meta: { pagination: { page: 1, pageSize: 25, pageCount: 0, total: 0 } },
+                meta: { pagination: { page: 1, pageSize: 0, pageCount: 0, total: 0 } },
                 success: true
             });
         }
