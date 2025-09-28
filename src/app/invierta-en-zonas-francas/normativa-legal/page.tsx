@@ -389,8 +389,6 @@ export default function NormativaLegal() {
                           id={`pais-${pais.id}`}
                           className="hidden lg:grid lg:grid-cols-3 h-full transition bg-primary text-white border-b border-gray-300"
                           key={index}
-                          onClick={() => handlePaisExpand(pais.id)}
-                          style={{ cursor: "pointer" }}
                         >
                           {/* Left column */}
                           <div className="flex lg:col-span-1 flex-col gap-4 px-4 py-8 transition justify-start h-full">
