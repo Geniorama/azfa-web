@@ -297,18 +297,21 @@ export default function NormativaLegal() {
   };
 
   const handleMapCountrySelect = (countryId: string) => {
-    // Buscar el país por el ID del mapa (que ahora es el código ISO)
-    const country = countriesInfo.find((p) => p.value === countryId);
+    console.log("Mapa seleccionó país:", countryId);
+    
+    // Convertir el ID del mapa (ej: "colombia") al código ISO (ej: "CO")
+    const countryCode = getCountryCode(countryId);
+    console.log("Código ISO convertido:", countryCode);
+    
+    // Buscar el país por el código ISO en countriesInfo
+    const country = countriesInfo.find((p) => p.value === countryCode);
+    console.log("País encontrado:", country);
 
     if (country) {
-      // Encontrar la opción correspondiente en countriesOptions
-      const countryOption = countriesOptions.find(
-        (p) => p.value === country.value
-      );
-      setSelectedPais(countryOption || null);
-      setCountryImageSelected(country.countryImage || null);
-      setExpandedPais(country.id || null);
-      setScrollToPais(country.id || null);
+      // Usar la función handlePaisExpand para expandir el país con toda la lógica
+      handlePaisExpand(country.id);
+    } else {
+      console.log("No se encontró país para el código:", countryCode);
     }
   };
 
