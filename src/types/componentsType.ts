@@ -591,3 +591,34 @@ export interface ContactPageType {
   updatedAt: string;
   publishedAt: string;
 }
+
+export interface ServicesPageType {
+  id: number;
+  documentId: string;
+  createdAt: string;
+  updatedAt: string;
+  publishedAt: string;
+  headingSection: {
+    id: number;
+    smallTitle: string | null;
+    title: string;
+    description: string | null;
+    alignment: "left" | "center" | "right";
+    backgroundImg: StrapiImageType;
+  };
+  intro: {
+    id: number;
+    content: string;
+    icon: StrapiImageType;
+  }[];
+  contentSection: {
+    id: number;
+    title: string;
+    description: string;
+    style: string;
+    orderReverse: boolean;
+    coverImage: StrapiImageType;
+    button: StrapiButtonType;
+  }[];
+  
+}
