@@ -1,5 +1,5 @@
 import ContactoView from "@/views/ContactoView"
-import { ContactPageType, ContactInfoType, SocialMediaItemType } from "@/types/componentsType"
+import { ContactPageType, ContactInfoType, SocialMediaItemType, ContactFormSettingsType } from "@/types/componentsType"
 import { fetchAPI } from "@/lib/api"
 
 const getContactPage = async (): Promise<{ data: ContactPageType } | null> => {
@@ -19,9 +19,28 @@ const getContactPage = async (): Promise<{ data: ContactPageType } | null> => {
   }
 }
 
+const getContactFormSettings = async () => {
+  try {
+    const response = await fetch(`${process.env.STRAPI_URL}/api/contact-form?populat=*`, {
+      cache: "force-cache",
+      next: { revalidate: 3600 }, // Revalidar cada hora
+    });
+    
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error("Error fetching contact form settings:", error);
+    return null;
+  }
+}
+
 export default async function Contacto() {
   const contactPageResponse = await getContactPage();
-  
+  const contactFormSettingsResponse = await getContactFormSettings();
   // Obtener datos de contacto globales y redes sociales
   const globalSettings = await fetchAPI("/api/global-setting?populate[0]=contactInfo&populate[1]=contactInfo.phoneIcon&populate[2]=contactInfo.phoneIcon.customImage&populate[3]=contactInfo.emailIcon&populate[4]=contactInfo.emailIcon.customImage&populate[5]=contactInfo.addressIcon&populate[6]=contactInfo.addressIcon.customImage&populate[7]=socialMedia&populate[8]=socialMedia.icon&populate[9]=socialMedia.icon.customImage");
   const contactInfoGlobal = globalSettings.data.contactInfo as ContactInfoType;
@@ -30,12 +49,16 @@ export default async function Contacto() {
   console.log("contactPageData", contactPageResponse);
   console.log("contactInfoGlobal", contactInfoGlobal);
   console.log("socialMedia", socialMedia);
+  console.log("contactFormSettingsResponse", contactFormSettingsResponse);
+
+  const contactFormSettings: ContactFormSettingsType | null = contactFormSettingsResponse?.data || null;
 
   return (
     <ContactoView 
       contactPageData={contactPageResponse?.data || null}
       contactInfoGlobal={contactInfoGlobal}
       socialMedia={socialMedia}
+      contactFormSettings={contactFormSettings}
     />
   )
 }
