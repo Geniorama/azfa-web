@@ -3,12 +3,12 @@ import { ManagementResponse } from "@/types/contentType";
 
 const getManagement = async (): Promise<ManagementResponse | null> => {
   try {
-    // Intentar primero con el endpoint de management
+    // Intentar primero con el endpoint de managements
     let response = await fetch(`${process.env.STRAPI_URL}/api/managements?populate[0]=featuredImage&populate[1]=downloadableFile&populate[2]=tags`)
     
     // Si falla con 404, usar studies como fallback
     if (!response.ok && response.status === 404) {
-      console.log("Management API not found, using studies as fallback")
+      console.log("Managements API not found, using studies as fallback")
       response = await fetch(`${process.env.STRAPI_URL}/api/studies?populate[0]=featuredImage&populate[1]=downloadableFile&populate[2]=tags`)
     }
     
