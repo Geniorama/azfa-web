@@ -8,6 +8,12 @@ interface User {
   email: string
   confirmed: boolean
   blocked: boolean
+  isEditor?: boolean
+  role?: {
+    id: number
+    name: string
+    description?: string
+  }
 }
 
 interface AuthContextType {
@@ -17,6 +23,8 @@ interface AuthContextType {
   logout: () => void
   isLoading: boolean
   isAuthenticated: boolean
+  isEditor: boolean
+  isAdmin: boolean
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined)
@@ -81,6 +89,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     localStorage.removeItem('strapi_user')
   }
 
+  // Verificar si el usuario es editor
+  const isEditor = user?.isEditor === true
+
+  // Verificar si el usuario es administrador (role.name === 'Administrator' o 'Super Admin')
+  const isAdmin = user?.role?.name === 'Administrator' || user?.role?.name === 'Super Admin'
+
   const value = {
     user,
     token,
@@ -88,6 +102,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     logout,
     isLoading,
     isAuthenticated: !!user && !!token,
+    isEditor,
+    isAdmin,
   }
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>

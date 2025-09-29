@@ -1,99 +1,38 @@
-"use client";
+import AffiliateStatisticsView from "@/views/AffiliateStatisticsView";
+import { AffiliateInvestmentStatisticsResponse } from "@/types/contentType";
 
-import HeadingPagePortal from "@/components/HeadingPagePortal";
-import CustomSelect from "@/utils/CustomSelect";
-import IconStatistic from "@/assets/img/chart-bar-connected.svg";
-import { useState } from "react";
-import Button from "@/utils/Button";
-import IconDeviceMonitor from "@/assets/img/device-monitor.svg";
+const getAffiliateStatistics = async (): Promise<AffiliateInvestmentStatisticsResponse | null> => {
+  try {
+    // Verificar que la URL de Strapi esté disponible
+    if (!process.env.STRAPI_URL) {
+      console.error("STRAPI_URL environment variable is not set");
+      return { data: null, meta: {} };
+    }
 
-export default function EstadisticasAfiliados() {
-  const [filters, setFilters] = useState({
-    tipoPublicacion: "",
-    anioPublicacion: "",
-  });
+    const response = await fetch(`${process.env.STRAPI_URL}/api/affiliate-portal-investment-statistics-page?populate[0]=heroBackground&populate[1]=ctaSection&populate[2]=ctaSection.button&populate[3]=iframeCollection&populate[4]=iframeCollection.desktopIframe&populate[5]=iframeCollection.mobileIframe`, {
+      cache: "force-cache",
+      next: { revalidate: 3600 },
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const data: AffiliateInvestmentStatisticsResponse = await response.json();
+    console.log("API affiliate-portal-investment-statistics-page response:", data);
+    console.log("API iframeCollection:", data.data?.iframeCollection);
+    return data;
+  } catch (error) {
+    console.error("Error fetching affiliate statistics:", error);
+    return { data: null, meta: {} };
+  }
+};
+
+export default async function EstadisticasAfiliados() {
+  const response = await getAffiliateStatistics();
+  const pageContent = response?.data || null;
 
   return (
-    <div>
-      <HeadingPagePortal
-        title="Portal afiliados"
-        smallTitle="Explore visualizaciones interactivas con datos comparativos y tendencias clave de las zonas francas en Iberoamérica"
-        image={"/images/estadisticas-afiliados.jpg"}
-        slug="estadisticas-afiliados"
-      />
-
-      {/* Filters */}
-      <section className="bg-white">
-        <div className="container mx-auto px-4">
-          <div className="flex flex-col md:flex-row gap-4 md:gap-8 py-6 text-text-primary justify-center">
-            <CustomSelect
-              options={[
-                { label: "Actuales desde 2024", value: "desde-2024" },
-                { label: "Actuales desde 2023", value: "desde-2023" },
-                { label: "Actuales desde 2022", value: "desde-2022" },
-              ]}
-              onChange={(value) =>
-                setFilters({ ...filters, tipoPublicacion: value })
-              }
-              name="periodo"
-              label="Período de estadísticas"
-              selected={filters.tipoPublicacion}
-              labelIcon={IconStatistic.src}
-              placeholder="Seleccione un período"
-            />
-          </div>
-        </div>
-      </section>
-      <div className="container mx-auto px-4">
-        <hr className="border-background-2 w-full" />
-      </div>
-      <section className="py-4 bg-white">
-        <div className="container mx-auto px-4">
-          <span className="text-button text-text-primary">
-            {" "}
-            Dashboard interactivo embebido (Power BI)
-          </span>
-          <div className="md:hidden flex items-start gap-2 mt-3">
-            <img src={IconDeviceMonitor.src} alt="Icon Device Monitor" />
-            <p className="text-caption font-light text-background-3">
-              Este tablero está optimizado para pantallas de escritorio. Le
-              recomendamos acceder desde un computador para visualizar
-              correctamente los datos.
-            </p>
-          </div>
-
-          <div className="my-12">
-            {/* Placeholder */}
-            <img
-              src="https://placehold.co/1920x1080"
-              alt="Dashboard interactivo embebido (Power BI)"
-            />
-          </div>
-
-          <div className="flex flex-col md:flex-row gap-6 max-w-screen-lg mx-auto items-center border border-[#94D133] p-12 mt-18">
-            <div className="w-full md:w-3/5 text-text-primary space-y-2">
-              <p className="text-h6">
-                ¿Necesita actualizar la información estadística de su país?
-              </p>
-              <p className="text-body font-light">
-                Haga clic en el botón a continuación para acceder al formulario
-                de edición.Recuerde ingresar con su usuario y contraseña
-                asignados para continuar.
-              </p>
-            </div>
-            <div className="w-full md:w-2/5">
-              <Button
-                variant="primary"
-                className="inline-flex justify-between h-auto"
-                icon
-                onClick={() => {}}
-              >
-                Editar información de mi país
-              </Button>
-            </div>
-          </div>
-        </div>
-      </section>
-    </div>
+    <AffiliateStatisticsView pageContent={pageContent} />
   );
 }

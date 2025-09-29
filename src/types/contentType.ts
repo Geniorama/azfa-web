@@ -248,13 +248,31 @@ export interface ManagementType {
 
 // Tipo para la respuesta de Strapi para Management
 export interface ManagementResponse {
-    data: ManagementType[];
-    meta: {
-        pagination?: {
-            page: number;
-            pageSize: number;
-            pageCount: number;
-            total: number;
-        };
+  data: ManagementType[];
+  meta: {
+    pagination?: {
+      page: number;
+      pageSize: number;
+      pageCount: number;
+      total: number;
     };
+  };
+}
+
+// Tipos para estadísticas de afiliados (misma estructura que estadísticas de inversión)
+export interface AffiliateInvestmentStatisticsType {
+  id: number;
+  title: string;
+  smallTitle: string;
+  heroBackground: HeroBackground;
+  ctaSection: CTASection;
+  iframeCollection: {
+    data: IframeCollectionItem[];
+  };
+  disclaimerText?: string;
+}
+
+export interface AffiliateInvestmentStatisticsResponse {
+  data: AffiliateInvestmentStatisticsType | null;
+  meta: unknown;
 }
