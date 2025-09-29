@@ -650,6 +650,18 @@ export interface TradeZonesPageType {
   };
 }
 
+export interface ContactFormSettingsType {
+  id: number;
+  documentId: string;
+  emailSubjectOptions: string;
+  toEmail: string;
+  privacyLink: string;
+  termsLink: string;
+  createdAt: string;
+  updatedAt: string;
+  publishedAt: string;
+}
+
 export interface ServicesPageType {
   id: number;
   documentId: string;

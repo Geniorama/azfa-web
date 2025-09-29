@@ -14,15 +14,16 @@ import Button from "@/utils/Button"
 import Link from "next/link"
 import { useState } from "react"
 import ReCAPTCHA from "react-google-recaptcha"
-import { ContactPageType, ContactInfoType, SocialMediaItemType } from "@/types/componentsType"
+import { ContactPageType, ContactInfoType, SocialMediaItemType, ContactFormSettingsType } from "@/types/componentsType"
 
 interface ContactoViewProps {
   contactPageData: ContactPageType | null;
   contactInfoGlobal: ContactInfoType;
   socialMedia: SocialMediaItemType[];
+  contactFormSettings: ContactFormSettingsType | null;
 }
 
-export default function ContactoView({ contactPageData, contactInfoGlobal, socialMedia }: ContactoViewProps) {
+export default function ContactoView({ contactPageData, contactInfoGlobal, socialMedia, contactFormSettings }: ContactoViewProps) {
   const [formData, setFormData] = useState({
     nombre: '',
     telefono: '',
@@ -34,7 +35,7 @@ export default function ContactoView({ contactPageData, contactInfoGlobal, socia
   const [recaptchaValue, setRecaptchaValue] = useState<string | null>(null)
   const [isSubmitting, setIsSubmitting] = useState(false)
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value, type } = e.target
     setFormData(prev => ({
       ...prev,
@@ -65,6 +66,17 @@ export default function ContactoView({ contactPageData, contactInfoGlobal, socia
       // Aquí puedes enviar los datos a tu API
       console.log('Datos del formulario:', formData)
       console.log('reCAPTCHA token:', recaptchaValue)
+      console.log('Email destino:', contactFormSettings?.toEmail)
+      
+      // Aquí se enviaría el email usando contactFormSettings?.toEmail
+      // const emailData = {
+      //   to: contactFormSettings?.toEmail || 'equipocreativo@ekon7.com',
+      //   subject: formData.asunto,
+      //   body: formData.mensaje,
+      //   from: formData.nombre,
+      //   empresa: formData.empresa,
+      //   telefono: formData.telefono
+      // }
       
       // Simular envío
       await new Promise(resolve => setTimeout(resolve, 2000))
@@ -201,15 +213,20 @@ export default function ContactoView({ contactPageData, contactInfoGlobal, socia
                         placeholder="Empresa" 
                         required 
                       />
-                      <input 
+                      <select 
                         name="asunto"
                         value={formData.asunto}
                         onChange={handleInputChange}
                         className="w-full border border-background-2 rounded-md p-3 focus:outline-details" 
-                        type="text" 
-                        placeholder="Asunto" 
                         required 
-                      />
+                      >
+                        <option value="">Seleccione un asunto</option>
+                        {contactFormSettings?.emailSubjectOptions?.split('\n').map((option, index) => (
+                          <option key={index} value={option.trim()}>
+                            {option.trim()}
+                          </option>
+                        ))}
+                      </select>
                     </div>
                     <textarea 
                       name="mensaje"
@@ -241,7 +258,7 @@ export default function ContactoView({ contactPageData, contactInfoGlobal, socia
                         required
                         className="mt-1 lg:mt-0"
                       />
-                      <label htmlFor="terms">He leído y acepto la <Link target="_blank" className="underline hover:text-details transition" href="/politica-de-privacidad">política de privacidad</Link> y el <Link target="_blank" className="underline hover:text-details transition" href="/aviso-legal">aviso legal</Link>. *</label>
+                      <label htmlFor="terms">He leído y acepto la <Link target="_blank" className="underline hover:text-details transition" href={contactFormSettings?.privacyLink || "/politica-de-privacidad"}>política de privacidad</Link> y el <Link target="_blank" className="underline hover:text-details transition" href={contactFormSettings?.termsLink || "/aviso-legal"}>aviso legal</Link>. *</label>
                     </div>
                     <Button 
                       variant="primary" 
