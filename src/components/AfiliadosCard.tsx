@@ -27,7 +27,7 @@ export default function AfiliadosCard({
   email, 
   website, 
   onLogoClick, 
-  coordinates 
+  coordinates
 }: AfiliadosCardProps) {
   return (
     <div className="border border-gray-600">
@@ -58,12 +58,13 @@ export default function AfiliadosCard({
         )}
         <hr className="w-full my-4 border-gray-200" />
         <div className="space-y-2">
-          {name && position && (
+          {(name || position) && (
             <p>
               {/* Name */}
-              <span className="font-medium">{name}</span>,{" "}
+              {name && <span className="font-medium">{name}</span>}
+              {name && position && <span>, </span>}
               {/* Position */}
-              <span className="italic">{position}</span>
+              {position && <span className="italic">{position}</span>}
             </p>
           )}
 
