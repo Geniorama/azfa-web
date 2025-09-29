@@ -743,7 +743,7 @@ export default function Home({ slidesData, introData, contentWithVideoData, serv
       <section className="bg-white pt-16">
         <div className="container mx-auto pb-8 lg:pb-16 px-0 md:px-16 max-w-6xl">
           <TitleDecorative dividerColor="bg-[#94D133]">
-            {affiliatesSectionData?.title || "Nuestros afiliados"}
+            {affiliatesSectionData?.title}
           </TitleDecorative>
 
           <Swiper

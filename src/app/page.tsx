@@ -106,11 +106,8 @@ export default async function Home() {
   const news = await getNews();
   const events = await getEvents();
   const testimonials = await getTestimonials();
-
-  console.log("home", home);
-  console.log("news", news);
-  console.log("events", events);
-  console.log("testimonials", testimonials);
+  const affiliates = home?.data?.affiliatesSection;
+  const partners = home?.data?.partnersSection;
 
   // Fallback data en caso de error de conexión
   const fallbackData = {
@@ -142,8 +139,8 @@ export default async function Home() {
       eventSectionData={home?.data?.upcomingEventsSection || fallbackData.upcomingEventsSection}
       testimonialsData={testimonials?.data || fallbackData.testimonialsData}
       testimonialsSectionData={home?.data?.testimonialsSection || fallbackData.testimonialsSectionData}
-      affiliatesSectionData={home?.data?.affiliatesSection || fallbackData.affiliatesSectionData}
-      partnersSectionData={home?.data?.partnersSection || fallbackData.partnersSectionData}
+      affiliatesSectionData={affiliates || fallbackData.affiliatesSectionData}
+      partnersSectionData={partners || fallbackData.partnersSectionData}
     />
   );
 }
