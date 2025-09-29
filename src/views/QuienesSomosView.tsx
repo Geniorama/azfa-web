@@ -240,13 +240,45 @@ export default function JuntaDirectivaView({
     email: member.email || undefined,
   });
 
+  // Debug: Ver qué datos están llegando
+  console.log("teamMembersData recibidos:", teamMembersData);
+  console.log("Cantidad total de miembros:", teamMembersData?.length || 0);
+  
+  // Debug: Ver estructura de los miembros
+  if (teamMembersData && teamMembersData.length > 0) {
+    console.log("Estructura del primer miembro:", teamMembersData[0]);
+    console.log("Tipos de memberType encontrados:", [...new Set(teamMembersData.map(m => m.memberType))]);
+    console.log("Tipos de subCategory encontrados:", [...new Set(teamMembersData.map(m => m.subCategory))]);
+  }
+  
   // Obtener miembros dinámicamente
   const boardMembers = getMembersByType("board-of-directors", "board-members");
   const honoraryPresidents = getMembersByType(
     "board-of-directors",
     "honorary-presidents"
   );
+  const vocalMembers = getMembersByType("committees", "vocal-members");
   const azfaTeamMembers = getMembersByType("azfa-team");
+  
+  // Debug: Ver cuántos miembros se están filtrando
+  console.log("boardMembers:", boardMembers.length);
+  console.log("honoraryPresidents:", honoraryPresidents.length);
+  console.log("vocalMembers:", vocalMembers.length);
+  console.log("azfaTeamMembers:", azfaTeamMembers.length);
+  
+  // Debug: Ver algunos ejemplos de cada categoría
+  if (boardMembers.length > 0) {
+    console.log("Ejemplo board member:", boardMembers[0]);
+  }
+  if (honoraryPresidents.length > 0) {
+    console.log("Ejemplo honorary president:", honoraryPresidents[0]);
+  }
+  if (vocalMembers.length > 0) {
+    console.log("Ejemplo vocal member:", vocalMembers[0]);
+  }
+  if (azfaTeamMembers.length > 0) {
+    console.log("Ejemplo azfa team member:", azfaTeamMembers[0]);
+  }
 
   // Detectar el tab activo basado en la URL solo en la carga inicial
   useEffect(() => {
@@ -406,6 +438,28 @@ export default function JuntaDirectivaView({
                     />
                   ))}
               </div>
+
+              {/* Miembros Vocales */}
+              {vocalMembers.length > 0 && (
+                <>
+                  <div className="text-center mt-16">
+                    <h2 className="text-h2 font-normal text-text-primary">
+                      Miembros Vocales
+                    </h2>
+                    <span className="w-12 block mx-auto h-[2px] bg-details my-2"></span>
+                  </div>
+
+                  {/* Grid Team Members */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mt-16">
+                    {vocalMembers.map((member) => (
+                      <CardTeamMember
+                        key={member.id}
+                        {...formatMemberData(member)}
+                      />
+                    ))}
+                  </div>
+                </>
+              )}
             </div>
           )}
 
