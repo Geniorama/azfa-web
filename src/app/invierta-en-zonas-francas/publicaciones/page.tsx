@@ -1,179 +1,27 @@
-"use client";
+import StudiesView from "@/views/StudiesView";
+import { StudiesResponse } from "@/types/contentType";
 
-import HeadingPage from "@/components/HeadingPage";
-import CustomSelect from "@/utils/CustomSelect";
-import IconCalendario from "@/assets/img/icon-calendario.svg";
-import IconOferta from "@/assets/img/icon-oferta.svg";
-import CardInfoPortal from "@/components/CardInfoPortal";
-import CoverImage from "@/assets/img/cover.jpg";
-import { truncateText } from "@/utils/truncateText";
-import Pagination from "@/components/Pagination";
+const getStudies = async (): Promise<StudiesResponse | null> => {
+  try {
+    const response = await fetch(`${process.env.STRAPI_URL}/api/studies?populate[0]=featuredImage&populate[1]=downloadableFile&populate[2]=tags`)
+    
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`)
+    }
+    
+    const data: StudiesResponse = await response.json()
+    return data
+  } catch (error) {
+    console.error("Error fetching studies:", error)
+    return null
+  }
+}
 
-export default function Publicaciones() {
+export default async function Publicaciones() {
+  const response = await getStudies()
+  const studies = response?.data || null
+
   return (
-    <div>
-      <HeadingPage
-        title="Publicaciones"
-        image={"/images/publicaciones.jpg"}
-        textAlign="left"
-      />
-
-      {/* Filters */}
-      <section className="bg-white">
-        <div className="container mx-auto px-4">
-          <div className="flex flex-col md:flex-row gap-4 md:gap-8 py-6 text-text-primary justify-center">
-            <CustomSelect
-              options={[]}
-              onChange={() => {}}
-              name="tipo-publicacion"
-              label="Tipo de publicación"
-              selected=""
-              labelIcon={IconOferta.src}
-              placeholder="Seleccione un tipo"
-            />
-            <CustomSelect
-              options={[]}
-              onChange={() => {}}
-              name="anio-publicacion"
-              label="Año de publicación"
-              selected=""
-              labelIcon={IconCalendario.src}
-              placeholder="Seleccione un año"
-            />
-          </div>
-        </div>
-      </section>
-
-      <section className="bg-white py-6 lg:py-16">
-        <div className="container mx-auto px-4">
-          {/* Grid cards */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            <CardInfoPortal
-              image={CoverImage.src}
-              title="Guía Legal de Zonas Francas de Iberoamérica 2024"
-              description={truncateText("¿Está interesado en las normativas y regulaciones que rigen las zonas francas en Iberoamérica? La Guía Legal de las Zonas Francas de Iberoamérica es un recurso esencial que proporciona un panorama completo de los marcos jurídicos, beneficios y obligaciones en cada país de la región.", 160)}
-              tags={["Estudio", "2025"]}
-              author="Autor"
-              arrowColor="text-details"
-              button={{
-                label: "Descargar",
-                onClick: () => {} 
-              }}
-            />
-
-            <CardInfoPortal
-              image={CoverImage.src}
-              title="Guía Legal de Zonas Francas de Iberoamérica 2024"
-              description={truncateText("¿Está interesado en las normativas y regulaciones que rigen las zonas francas en Iberoamérica? La Guía Legal de las Zonas Francas de Iberoamérica es un recurso esencial que proporciona un panorama completo de los marcos jurídicos, beneficios y obligaciones en cada país de la región.", 160)}
-              tags={["Estudio", "2025"]}
-              author="Autor"
-              arrowColor="text-details"
-              button={{
-                label: "Descargar",
-                onClick: () => {} 
-              }}
-            />
-
-            <CardInfoPortal
-              image={CoverImage.src}
-              title="Guía Legal de Zonas Francas de Iberoamérica 2024"
-              description={truncateText("¿Está interesado en las normativas y regulaciones que rigen las zonas francas en Iberoamérica? La Guía Legal de las Zonas Francas de Iberoamérica es un recurso esencial que proporciona un panorama completo de los marcos jurídicos, beneficios y obligaciones en cada país de la región.", 160)}
-              tags={["Estudio", "2025"]}
-              author="Autor"
-              arrowColor="text-details"
-              button={{
-                label: "Descargar",
-                onClick: () => {} 
-              }}
-            />
-
-            <CardInfoPortal
-              image={CoverImage.src}
-              title="Guía Legal de Zonas Francas de Iberoamérica 2024"
-              description={truncateText("¿Está interesado en las normativas y regulaciones que rigen las zonas francas en Iberoamérica? La Guía Legal de las Zonas Francas de Iberoamérica es un recurso esencial que proporciona un panorama completo de los marcos jurídicos, beneficios y obligaciones en cada país de la región.", 160)}
-              tags={["Estudio", "2025"]}
-              author="Autor"
-              arrowColor="text-details"
-              button={{
-                label: "Descargar",
-                onClick: () => {} 
-              }}
-            />
-
-            <CardInfoPortal
-              image={CoverImage.src}
-              title="Guía Legal de Zonas Francas de Iberoamérica 2024"
-              description={truncateText("¿Está interesado en las normativas y regulaciones que rigen las zonas francas en Iberoamérica? La Guía Legal de las Zonas Francas de Iberoamérica es un recurso esencial que proporciona un panorama completo de los marcos jurídicos, beneficios y obligaciones en cada país de la región.", 160)}
-              tags={["Estudio", "2025"]}
-              author="Autor"
-              arrowColor="text-details"
-              button={{
-                label: "Descargar",
-                onClick: () => {} 
-              }}
-            />
-
-            <CardInfoPortal
-              image={CoverImage.src}
-              title="Guía Legal de Zonas Francas de Iberoamérica 2024"
-              description={truncateText("¿Está interesado en las normativas y regulaciones que rigen las zonas francas en Iberoamérica? La Guía Legal de las Zonas Francas de Iberoamérica es un recurso esencial que proporciona un panorama completo de los marcos jurídicos, beneficios y obligaciones en cada país de la región.", 160)}
-              tags={["Estudio", "2025"]}
-              author="Autor"
-              arrowColor="text-details"
-              button={{
-                label: "Descargar",
-                onClick: () => {} 
-              }}
-            />
-
-            <CardInfoPortal
-              image={CoverImage.src}
-              title="Guía Legal de Zonas Francas de Iberoamérica 2024"
-              description={truncateText("¿Está interesado en las normativas y regulaciones que rigen las zonas francas en Iberoamérica? La Guía Legal de las Zonas Francas de Iberoamérica es un recurso esencial que proporciona un panorama completo de los marcos jurídicos, beneficios y obligaciones en cada país de la región.", 160)}
-              tags={["Estudio", "2025"]}
-              author="Autor"
-              arrowColor="text-details"
-              button={{
-                label: "Descargar",
-                onClick: () => {} 
-              }}
-            />
-
-            <CardInfoPortal
-              image={CoverImage.src}
-              title="Guía Legal de Zonas Francas de Iberoamérica 2024"
-              description={truncateText("¿Está interesado en las normativas y regulaciones que rigen las zonas francas en Iberoamérica? La Guía Legal de las Zonas Francas de Iberoamérica es un recurso esencial que proporciona un panorama completo de los marcos jurídicos, beneficios y obligaciones en cada país de la región.", 160)}
-              tags={["Estudio", "2025"]}
-              author="Autor"
-              arrowColor="text-details"
-              button={{
-                label: "Descargar",
-                onClick: () => {} 
-              }}
-            />
-
-            <CardInfoPortal
-              image={CoverImage.src}
-              title="Guía Legal de Zonas Francas de Iberoamérica 2024"
-              description={truncateText("¿Está interesado en las normativas y regulaciones que rigen las zonas francas en Iberoamérica? La Guía Legal de las Zonas Francas de Iberoamérica es un recurso esencial que proporciona un panorama completo de los marcos jurídicos, beneficios y obligaciones en cada país de la región.", 160)}
-              tags={["Estudio", "2025"]}
-              author="Autor"
-              arrowColor="text-details"
-              button={{
-                label: "Descargar",
-                onClick: () => {} 
-              }}
-            />
-          </div>
-
-          {/* Pagination */}
-          <div className="flex justify-center mt-16">
-            <Pagination currentPage={1} totalPages={10} onPageChange={() => {}} />
-          </div>
-        </div>
-      </section>
-
-      
-    </div>
+    <StudiesView studies={studies} />
   )
 }

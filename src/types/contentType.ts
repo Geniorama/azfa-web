@@ -136,3 +136,91 @@ export interface InvestmentStatisticsResponse {
         };
     };
 }
+
+// Tipos para Studies/Publications
+export interface StudyTag {
+    id: number;
+    name: string;
+    color: string;
+    slug: string | null;
+}
+
+export interface StudyImage {
+    id: number;
+    documentId: string;
+    name: string;
+    alternativeText: string | null;
+    caption: string | null;
+    width: number;
+    height: number;
+    formats: {
+        small: ImageFormat;
+        thumbnail: ImageFormat;
+    };
+    hash: string;
+    ext: string;
+    mime: string;
+    size: number;
+    url: string;
+    previewUrl: string | null;
+    provider: string;
+    provider_metadata: unknown;
+    createdAt: string;
+    updatedAt: string;
+    publishedAt: string;
+}
+
+export interface StudyDownloadableFile {
+    id: number;
+    documentId: string;
+    name: string;
+    alternativeText: string | null;
+    caption: string | null;
+    width: number | null;
+    height: number | null;
+    formats: unknown | null;
+    hash: string;
+    ext: string;
+    mime: string;
+    size: number;
+    url: string;
+    previewUrl: string | null;
+    provider: string;
+    provider_metadata: unknown;
+    createdAt: string;
+    updatedAt: string;
+    publishedAt: string;
+}
+
+export interface StudyType {
+    id: number;
+    documentId: string;
+    title: string;
+    slug: string;
+    description: string;
+    publishDate: string;
+    featured: boolean;
+    createdAt: string;
+    updatedAt: string;
+    publishedAt: string;
+    locale: string;
+    author: unknown | null;
+    featuredImage: StudyImage;
+    downloadableFile: StudyDownloadableFile;
+    tags: StudyTag[];
+    SEO: unknown | null;
+    localizations: unknown[];
+}
+
+// Tipo para la respuesta de Strapi para Studies
+export interface StudiesResponse {
+    data: StudyType[];
+    meta: {
+        pagination?: {
+            page: number;
+            pageSize: number;
+            pageCount: number;
+            total: number;
+        };
+    };
+}
