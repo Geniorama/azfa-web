@@ -35,7 +35,33 @@ export const countryMapping: Record<string, { code: string; name: string; nameEn
   'haiti': { code: 'HT', name: 'Haití', nameEn: 'Haiti' },
   'jamaica': { code: 'JM', name: 'Jamaica', nameEn: 'Jamaica' },
   'puerto-rico': { code: 'PR', name: 'Puerto Rico', nameEn: 'Puerto Rico' },
-  'trinidad-and-tobago': { code: 'TT', name: 'Trinidad y Tobago', nameEn: 'Trinidad and Tobago' }
+  'trinidad-and-tobago': { code: 'TT', name: 'Trinidad y Tobago', nameEn: 'Trinidad and Tobago' },
+
+  // Europa
+  'spain': { code: 'ES', name: 'España', nameEn: 'Spain' },
+  'portugal': { code: 'PT', name: 'Portugal', nameEn: 'Portugal' },
+  'france': { code: 'FR', name: 'Francia', nameEn: 'France' },
+  'italy': { code: 'IT', name: 'Italia', nameEn: 'Italy' },
+  'germany': { code: 'DE', name: 'Alemania', nameEn: 'Germany' },
+  'netherlands': { code: 'NL', name: 'Países Bajos', nameEn: 'Netherlands' },
+  'belgium': { code: 'BE', name: 'Bélgica', nameEn: 'Belgium' },
+  'sweden': { code: 'SE', name: 'Suecia', nameEn: 'Sweden' },
+  'norway': { code: 'NO', name: 'Noruega', nameEn: 'Norway' },
+  'denmark': { code: 'DK', name: 'Dinamarca', nameEn: 'Denmark' },
+  'finland': { code: 'FI', name: 'Finlandia', nameEn: 'Finland' },
+  'iceland': { code: 'IS', name: 'Islandia', nameEn: 'Iceland' },
+  'switzerland': { code: 'CH', name: 'Suiza', nameEn: 'Switzerland' },
+  'austria': { code: 'AT', name: 'Austria', nameEn: 'Austria' },
+  'poland': { code: 'PL', name: 'Polonia', nameEn: 'Poland' },
+  'czech-republic': { code: 'CZ', name: 'República Checa', nameEn: 'Czech Republic' },
+  'slovakia': { code: 'SK', name: 'Eslovaquia', nameEn: 'Slovakia' },
+  'croatia': { code: 'HR', name: 'Croacia', nameEn: 'Croatia' },
+  'slovenia': { code: 'SI', name: 'Eslovenia', nameEn: 'Slovenia' },
+  'bosnia-and-herzegovina': { code: 'BA', name: 'Bosnia y Herzegovina', nameEn: 'Bosnia and Herzegovina' },
+  'montenegro': { code: 'ME', name: 'Montenegro', nameEn: 'Montenegro' },
+  'albania': { code: 'AL', name: 'Albania', nameEn: 'Albania' },
+  'macedonia': { code: 'MK', name: 'Macedonia', nameEn: 'Macedonia' },
+  'serbia': { code: 'RS', name: 'Serbia', nameEn: 'Serbia' },
 };
 
 // Función para obtener el código ISO de un país por nombre
