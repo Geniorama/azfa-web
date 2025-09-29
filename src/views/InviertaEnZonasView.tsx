@@ -1,18 +1,30 @@
 "use client";
 
 import HeadingPage from "@/components/HeadingPage";
-import CoverImage from "@/assets/img/bg-sala-prensa.jpg";
+// import CoverImage from "@/assets/img/bg-sala-prensa.jpg";
 import ExampleImage from "@/assets/img/Frame 51.png";
 import TitleDecorative from "@/utils/TitleDecorative";
 import IconIberoamerica from "@/assets/img/icon-home-servicios 1.svg";
 import Counter from "@/utils/Counter";
+import type { TradeZonesPageType } from "@/types/componentsType";
+import ReactMarkdown from "react-markdown";
+import rehypeRaw from "rehype-raw";
 
-export default function InviertaEnZonasView() {
+interface InviertaEnZonasViewProps {
+  pageContent: TradeZonesPageType | null;
+}
+
+export default function InviertaEnZonasView({ pageContent }: InviertaEnZonasViewProps) {
+  // Fallback si no hay datos
+  if (!pageContent) {
+    return <div>No hay datos disponibles</div>;
+  }
+
   return (
     <div>
       <HeadingPage
-        title="Invierta en Zonas Francas"
-        image={CoverImage.src}
+        title={pageContent.headingSection.title || ""}
+        image={pageContent.headingSection.backgroundImg.url}
         textAlign="left"
         className="min-h-[500px] bg-top-right [&>div>h1]:text-center [&>div>p]:text-center [&>div>p]:lg:text-left [&>div>h1]:lg:text-left"
       />
@@ -21,19 +33,13 @@ export default function InviertaEnZonasView() {
         <div className="container mx-auto px-4">
           <div className="flex flex-col lg:flex-row gap-4 text-text-primary items-center py-10 px-4 lg:px-0">
             <div className="w-full lg:w-1/2 lg:pr-24">
-              <h2 className="text-h2 mb-10">Que son</h2>
-              <p className="text-body2 leading-8">
-                Las Zonas Francas son áreas geográficas delimitadas dentro de un
-                país, que ofrecen incentivos especiales para atraer inversión,
-                fomentar el comercio internacional y potenciar la
-                competitividad. En estos espacios, las empresas pueden operar en
-                general, con beneficios fiscales, aduaneros y logísticos, de
-                comercio exterior e innovación impulsando el desarrollo
-                económico y la generación de empleo.
-              </p>
+              <h2 className="text-h2 mb-10">{pageContent.about.title}</h2>
+              <div className="text-body2 leading-8 [&_ul]:list-disc [&_ul]:list-inside [&_ul]:pl-4 [&_ul]:space-y-2 [&_p]:mb-4">
+                <ReactMarkdown rehypePlugins={[rehypeRaw]}>{pageContent.about.description}</ReactMarkdown>
+              </div>
             </div>
             <div className="w-full lg:w-1/2">
-              <img className="w-full" src={ExampleImage.src} alt="Servicios" />
+              <img className="w-full" src={pageContent.about.coverImage.url} alt="Servicios" />
             </div>
           </div>
         </div>
@@ -46,80 +52,120 @@ export default function InviertaEnZonasView() {
               dividerColor="bg-[#94D133]"
               className="text-left items-start"
             >
-              Las Zonas Francas de Iberoamérica
+              {pageContent.statistics.title}
             </TitleDecorative>
           </div>
           <div className="w-full lg:w-1/3 space-y-10 mt-14 lg:mt-0">
-            <div className="flex items-center gap-6">
-              <img
-                src={IconIberoamerica.src}
-                alt="Icon Iberoamérica"
-                className="w-16 h-16"
-              />
-              <Counter
-                value={800}
-                prefix="+"
-                leyend="Zonas Francas"
-                thousandSeparator="."
-              />
-            </div>
+            {pageContent.statistics.statistics?.slice(0, 2).map((statistic, index) => (
+              <div key={statistic.id || index} className="flex items-center gap-6">
+                <img
+                  src={IconIberoamerica.src}
+                  alt={statistic.label || "Icon Iberoamérica"}
+                  className="w-16 h-16"
+                />
+                <Counter
+                  value={parseInt(statistic.value || "0")}
+                  prefix={statistic.prefix || "+"}
+                  leyend={statistic.label || ""}
+                  thousandSeparator={statistic.thousandsSeparator || "."}
+                />
+              </div>
+            ))}
+            {/* Fallback si no hay datos */}
+            {(!pageContent.statistics.statistics || pageContent.statistics.statistics.length === 0) && (
+              <>
+                <div className="flex items-center gap-6">
+                  <img
+                    src={IconIberoamerica.src}
+                    alt="Icon Iberoamérica"
+                    className="w-16 h-16"
+                  />
+                  <Counter
+                    value={800}
+                    prefix="+"
+                    leyend="Zonas Francas"
+                    thousandSeparator="."
+                  />
+                </div>
 
-            <div className="flex items-center gap-6">
-              <img
-                src={IconIberoamerica.src}
-                alt="Icon Iberoamérica"
-                className="w-16 h-16"
-              />
-              <Counter
+                <div className="flex items-center gap-6">
+                  <img
+                    src={IconIberoamerica.src}
+                    alt="Icon Iberoamérica"
+                    className="w-16 h-16"
+                  />
+                  <Counter
                 value={8000}
                 prefix="+"
                 leyend="Empresas"
                 thousandSeparator="."
               />
-            </div>
+                </div>
+              </>
+            )}
           </div>
           <div className="w-full lg:w-1/3 space-y-10">
-            <div className="flex items-center gap-6 mt-8 lg:mt-0">
-              <img
-                src={IconIberoamerica.src}
-                alt="Icon Iberoamérica"
-                className="w-16 h-16"
-              />
-              <Counter
-                value={1090000}
-                prefix="+"
-                leyend="Empleos"
-                thousandSeparator="."
-              />
-            </div>
+            {pageContent.statistics.statistics?.slice(2).map((statistic, index) => (
+              <div key={statistic.id || index} className={`flex items-center gap-6 ${index === 0 ? 'mt-8 lg:mt-0' : ''}`}>
+                <img
+                  src={IconIberoamerica.src}
+                  alt={statistic.label || "Icon Iberoamérica"}
+                  className="w-16 h-16"
+                />
+                <Counter
+                  value={parseInt(statistic.value || "0")}
+                  prefix={statistic.prefix || "+"}
+                  leyend={statistic.label || ""}
+                  thousandSeparator={statistic.thousandsSeparator || "."}
+                />
+              </div>
+            ))}
+            {/* Fallback si no hay datos */}
+            {(!pageContent.statistics.statistics || pageContent.statistics.statistics.length === 0) && (
+              <>
+                <div className="flex items-center gap-6 mt-8 lg:mt-0">
+                  <img
+                    src={IconIberoamerica.src}
+                    alt="Icon Iberoamérica"
+                    className="w-16 h-16"
+                  />
+                  <Counter
+                    value={1090000}
+                    prefix="+"
+                    leyend="Empleos"
+                    thousandSeparator="."
+                  />
+                </div>
 
-            <div className="flex items-center gap-6">
-              <img
-                src={IconIberoamerica.src}
-                alt="Icon Iberoamérica"
-                className="w-16 h-16"
-              />
-              <Counter
-                value={65800}
-                prefix="USD $"
-                leyend="millones EXPORTACIÓN"
-                thousandSeparator="."
-              />
-            </div>
+                <div className="flex items-center gap-6">
+                  <img
+                    src={IconIberoamerica.src}
+                    alt="Icon Iberoamérica"
+                    className="w-16 h-16"
+                  />
+                  <Counter
+                    value={65800}
+                    prefix="USD $"
+                    leyend="millones EXPORTACIÓN"
+                    thousandSeparator="."
+                  />
+                </div>
 
-            <div className="flex items-center gap-6">
-              <img
-                src={IconIberoamerica.src}
-                alt="Icon Iberoamérica"
-                className="w-16 h-16"
-              />
-              <Counter
-                value={48000}
-                prefix="USD $"
-                leyend="millones INVERSIONES"
-                thousandSeparator="."
-              />
-            </div>
+                <div className="flex items-center gap-6">
+                  <img
+                    src={IconIberoamerica.src}
+                    alt="Icon Iberoamérica"
+                    className="w-16 h-16"
+                  />
+                  <Counter
+                    value={48000}
+                    prefix="USD $"
+                    leyend="millones INVERSIONES"
+                    thousandSeparator="."
+                  />
+                </div>
+              </>
+            )}
           </div>
         </div>
       </section>
@@ -128,25 +174,10 @@ export default function InviertaEnZonasView() {
         <div className="container mx-auto px-4">
           <div className="flex flex-col lg:flex-row-reverse gap-4 text-text-primary items-center py-10 px-4 lg:px-0">
             <div className="w-full lg:w-1/2 lg:pl-24">
-              <h2 className="text-h2 mb-10">Para qué sirven</h2>
-              <p className="text-body2 leading-8">
-                Las Zonas Francas cumplen un papel clave en la economía,
-                impulsando:{" "}
-              </p>{" "}
-              <br /> <br />
-              <ul className="list-disc list-inside pl-4">
-                <li>Generación de empleo y desarrollo industrial.</li>
-                <li>Atracción de inversión extranjera directa.</li>
-                <li>
-                  Facilitación del comercio internacional y exportaciones.
-                </li>
-                <li>Innovación y transferencia de tecnología.</li>
-              </ul>{" "}
-              <br />
-              <p>
-                Estos espacios permiten que los países sean más competitivos y
-                se integren mejor a la economía global. <br />
-              </p>
+               <h2 className="text-h2 mb-10">{pageContent.about2.title}</h2>
+               <div className="text-body2 leading-8 [&_ul]:list-disc [&_ul]:list-inside [&_ul]:pl-4 [&_ul]:space-y-0 [&_p]:mb-4">
+                 <ReactMarkdown rehypePlugins={[rehypeRaw]}>{pageContent.about2.description}</ReactMarkdown>
+               </div>
             </div>
             <div className="w-full lg:w-1/2">
               <img className="w-full" src={ExampleImage.src} alt="Servicios" />
@@ -159,41 +190,13 @@ export default function InviertaEnZonasView() {
         <div className="container mx-auto px-4">
           <div className="flex flex-col lg:flex-row gap-4 text-white items-center py-5 lg:py-10 px-4 lg:px-0">
             <div className="w-full lg:w-1/2 lg:pr-24">
-              <h2 className="text-h2 mb-10">Beneficios</h2>
-              <p className="text-body2 leading-8">
-                Las compañías que operan en Zonas Francas disfrutan de ventajas
-                exclusivas:{" "}
-              </p> <br />
-
-              <ul className="list-disc list-inside pl-4 leading-8">
-                <li>
-                  Exoneraciones fiscales y aduaneras, reduciendo costos
-                  operativos.
-                </li>
-                <li>
-                  Acceso preferencial a mercados globales mediante acuerdos
-                  comerciales.
-                </li>
-                <li>
-                  Infraestructura moderna con soluciones logísticas eficientes.
-                </li>
-                <li>Entornos competitivos que impulsan la productividad.</li>
-                <li>
-                  Encadenamiento productivo con proveedores y aliados
-                  estratégicos.
-                </li>
-                <li>
-                  Cercanía con mercados objetivo, optimizando tiempos y
-                  distribución.
-                </li>
-                <li>
-                  Regulación flexible, fomentando la innovación y el
-                  crecimiento.
-                </li>
-              </ul>
+               <h2 className="text-h2 mb-10">{pageContent.benefits.title}</h2>
+               <div className="text-body2 leading-8 [&_ul]:list-disc [&_ul]:list-inside [&_ul]:pl-4 [&_ul]:space-y-0 [&_p]:mb-4">
+                 <ReactMarkdown rehypePlugins={[rehypeRaw]}>{pageContent.benefits.description}</ReactMarkdown>
+               </div>
             </div>
             <div className="w-full lg:w-1/2">
-              <img className="w-full" src={ExampleImage.src} alt="Servicios" />
+              <img className="w-full" src={pageContent.benefits.coverImage.url} alt="Servicios" />
             </div>
           </div>
         </div>

@@ -592,6 +592,64 @@ export interface ContactPageType {
   publishedAt: string;
 }
 
+export interface TradeZonesPageType {
+  id: number;
+  documentId: string;
+  createdAt: string;
+  updatedAt: string;
+  publishedAt: string;
+  headingSection: {
+    id: number;
+    smallTitle: string | null;
+    title: string;
+    description: string | null;
+    alignment: string | null;
+    backgroundImg: StrapiImageType;
+  };
+  about: {
+    id: number;
+    title: string;
+    description: string;
+    style: string;
+    orderReverse: boolean;
+    coverImage: StrapiImageType;
+  };
+  statistics: {
+    id: number;
+    title: string;
+    statistics: {
+      id: number;
+      documentId: string;
+      value: string;
+      label: string;
+      isActive: boolean;
+      createdAt: string;
+      updatedAt: string;
+      publishedAt: string;
+      locale: string;
+      prefix: string | null;
+      sufix: string | null;
+      thousandsSeparator: string | null;
+    }[];
+  };
+  about2: {
+    id: number;
+    title: string;
+    description: string;
+    style: string;
+    orderReverse: boolean;
+    coverImage: StrapiImageType;
+  };
+  benefits: {
+    id: number;
+    title: string;
+    description: string;
+    style: string;
+    orderReverse: boolean;
+    coverImage: StrapiImageType;
+  };
+}
+
 export interface ServicesPageType {
   id: number;
   documentId: string;
@@ -620,5 +678,4 @@ export interface ServicesPageType {
     coverImage: StrapiImageType;
     button: StrapiButtonType;
   }[];
-  
 }
