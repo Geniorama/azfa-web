@@ -18,25 +18,7 @@ import LoadingSpinner from "@/components/LoadingSpinner";
 import type { MapGoogleRef } from "@/components/MapGoogle";
 import type { Incentive, IncentiveMarker } from "@/types/incentiveType";
 import type { ContentType } from "@/types/contentType";
-
-
-// Función para obtener el nombre del país a partir del código
-const getCountryName = (countryCode: string): string => {
-  const countryNames: Record<string, string> = {
-    'AR': 'Argentina',
-    'CO': 'Colombia',
-    'BR': 'Brasil',
-    'MX': 'México',
-    'PE': 'Perú',
-    'CL': 'Chile',
-    'EC': 'Ecuador',
-    'UY': 'Uruguay',
-    'PY': 'Paraguay',
-    'BO': 'Bolivia',
-    'VE': 'Venezuela'
-  };
-  return countryNames[countryCode] || countryCode;
-};
+import { getCountryName } from "@/utils/countryMapping";
 
 // Función para transformar incentivos de Strapi al formato del mapa
 const transformIncentivesToMarkers = (incentives: Incentive[]): IncentiveMarker[] => {
