@@ -84,33 +84,78 @@ const transformAffiliatesToMarkers = (affiliates: Afiliado[]): Marker[] => {
     'VE': { lat: 10.480594, lng: -66.903606 },
   };
 
-  return affiliates.map(affiliate => {
+  const markers: Marker[] = [];
+
+  affiliates.forEach(affiliate => {
     const fallbackCoords = fallbackCoordinates[affiliate.country.code];
+    console.log(`Procesando afiliado ${affiliate.title}, mapLocation:`, affiliate.mapLocation);
+    console.log(`País del afiliado: ${affiliate.country.code}, fallbackCoords:`, fallbackCoords);
     
-    // Usar las coordenadas de mapLocation desde Strapi si están disponibles, sino usar las de fallback
-    const lat = affiliate.mapLocation?.latitude || fallbackCoords?.lat || 0;
-    const lng = affiliate.mapLocation?.longitude || fallbackCoords?.lng || 0;
-    
-    return {
-      id: `affiliate-${affiliate.id}`,
-      lat: lat,
-      lng: lng,
-      title: affiliate.title,
-      imgFlag: affiliate.logo,
-      numberZones: 0, // Los afiliados no tienen zonas francas
-      numberCompanies: 0, // Los afiliados no tienen empresas
-      directJobs: 0, // Los afiliados no tienen empleos directos
-      markerType: 'affiliate',
-      affiliateType: affiliate.type,
-      list: [
-        { label: 'País', value: affiliate.country.name },
-        { label: 'Ciudad', value: affiliate.city },
-        { label: 'Tipo', value: affiliate.type },
-        ...(affiliate.contactInfo?.email ? [{ label: 'Email', value: affiliate.contactInfo.email }] : []),
-        ...(affiliate.contactInfo?.website ? [{ label: 'Sitio web', value: affiliate.contactInfo.website }] : [])
-      ]
-    };
+    if (affiliate.mapLocation && affiliate.mapLocation.length > 0) {
+      // Si hay múltiples ubicaciones, crear un marcador para cada una
+      affiliate.mapLocation.forEach((location, index) => {
+        console.log(`Creando marcador para ubicación ${index}: lat=${location.latitude}, lng=${location.longitude}`);
+        
+        // Validar que las coordenadas sean números válidos (no null, undefined, o NaN)
+        if (location.latitude !== null && location.longitude !== null && 
+            typeof location.latitude === 'number' && typeof location.longitude === 'number' && 
+            !isNaN(location.latitude) && !isNaN(location.longitude)) {
+          markers.push({
+            id: `affiliate-${affiliate.id}-${index}`,
+            lat: location.latitude,
+            lng: location.longitude,
+            title: `${affiliate.title}${location.label ? ` - ${location.label}` : ''}`,
+            imgFlag: affiliate.logo,
+            numberZones: 0,
+            numberCompanies: 0,
+            directJobs: 0,
+            markerType: 'affiliate',
+            affiliateType: affiliate.type,
+            list: [
+              { label: 'País', value: affiliate.country.name },
+              { label: 'Ciudad', value: affiliate.city },
+              { label: 'Tipo', value: affiliate.type },
+              ...(location.label ? [{ label: 'Ubicación', value: location.label }] : []),
+              ...(affiliate.contactInfo?.email ? [{ label: 'Email', value: affiliate.contactInfo.email }] : []),
+              ...(affiliate.contactInfo?.website ? [{ label: 'Sitio web', value: affiliate.contactInfo.website }] : [])
+            ]
+          });
+          console.log(`Marcador creado exitosamente para ${affiliate.title} ubicación ${index}`);
+        } else {
+          console.warn(`Coordenadas inválidas para afiliado ${affiliate.title} ubicación ${index}: lat=${location.latitude}, lng=${location.longitude}`);
+        }
+      });
+    } else {
+      // Si no hay ubicaciones específicas y hay coordenadas de fallback, crear marcador
+      if (fallbackCoords) {
+        console.log(`Usando coordenadas de fallback para ${affiliate.title}: lat=${fallbackCoords.lat}, lng=${fallbackCoords.lng}`);
+        markers.push({
+          id: `affiliate-${affiliate.id}`,
+          lat: fallbackCoords.lat,
+          lng: fallbackCoords.lng,
+          title: affiliate.title,
+          imgFlag: affiliate.logo,
+          numberZones: 0,
+          numberCompanies: 0,
+          directJobs: 0,
+          markerType: 'affiliate',
+          affiliateType: affiliate.type,
+          list: [
+            { label: 'País', value: affiliate.country.name },
+            { label: 'Ciudad', value: affiliate.city },
+            { label: 'Tipo', value: affiliate.type },
+            ...(affiliate.contactInfo?.email ? [{ label: 'Email', value: affiliate.contactInfo.email }] : []),
+            ...(affiliate.contactInfo?.website ? [{ label: 'Sitio web', value: affiliate.contactInfo.website }] : [])
+          ]
+        });
+        console.log(`Marcador de fallback creado exitosamente para ${affiliate.title}`);
+      } else {
+        console.warn(`No hay coordenadas válidas para afiliado ${affiliate.title} (país: ${affiliate.country.code})`);
+      }
+    }
   });
+
+  return markers;
 };
 
 export interface Marker {
@@ -145,7 +190,7 @@ export interface Afiliado {
     latitude: number;
     longitude: number;
     label?: string;
-  };
+  }[];
   contactInfo?: {
     id: number;
     name?: string;
@@ -302,6 +347,7 @@ function NuestrosAfiliadosContent() {
       
       // Generar marcadores de afiliados para el mapa
       const affiliateMarkers = transformAffiliatesToMarkers(transformedAffiliates);
+      console.log("Marcadores de afiliados generados:", affiliateMarkers);
       setAllAffiliateMarkers(affiliateMarkers);
     } else {
       // Si no hay datos de la API, usar los datos de ejemplo
@@ -369,13 +415,16 @@ function NuestrosAfiliadosContent() {
   }, []);
 
   const handleGetTab = useCallback((dataTab: string): void => {
+    console.log("handleGetTab llamado con:", dataTab);
     setSelectedTab(dataTab);
     
     // Cambiar los marcadores del mapa según la pestaña seleccionada
     if (dataTab === "afiliados") {
+      console.log("Cambiando a marcadores de afiliados:", allAffiliateMarkers);
       setCurrentMarkers(allAffiliateMarkers);
       setIncentivos(allAffiliateMarkers); // Actualizar también el estado de incentivos para el mapa
     } else {
+      console.log("Cambiando a marcadores de incentivos:", allIncentives);
       setCurrentMarkers(allIncentives);
       setIncentivos(allIncentives);
     }
@@ -529,9 +578,9 @@ function NuestrosAfiliadosContent() {
                           email={afiliado.contactInfo?.email}
                           website={afiliado.contactInfo?.website}
                           onLogoClick={handleAffiliateLogoClick}
-                          coordinates={afiliado.mapLocation ? {
-                            lat: afiliado.mapLocation.latitude,
-                            lng: afiliado.mapLocation.longitude
+                          coordinates={afiliado.mapLocation && afiliado.mapLocation.length > 0 ? {
+                            lat: afiliado.mapLocation[0].latitude,
+                            lng: afiliado.mapLocation[0].longitude
                           } : undefined}
                           key={afiliado.id}
                         />

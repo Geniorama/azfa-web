@@ -50,6 +50,13 @@ const MapGoogle = forwardRef<MapGoogleRef, GoogleMapsProps>(({ markers, onMarker
     },
     zoomToCountry: (lat: number, lng: number) => {
       console.log("zoomToCountry llamado con:", lat, lng);
+      
+      // Validar que las coordenadas sean números válidos
+      if (typeof lat !== 'number' || typeof lng !== 'number' || isNaN(lat) || isNaN(lng)) {
+        console.warn("Coordenadas inválidas para zoom:", { lat, lng });
+        return;
+      }
+      
       if (mapInstanceRef.current) {
         // Usar setTimeout para asegurar que el mapa esté completamente renderizado
         setTimeout(() => {
@@ -94,31 +101,53 @@ const MapGoogle = forwardRef<MapGoogleRef, GoogleMapsProps>(({ markers, onMarker
       markersRef.current.forEach(marker => marker.map = null);
       markersRef.current = [];
 
+      console.log("Renderizando marcadores:", markers);
       markers.forEach((markerData) => {
+        console.log("Procesando marcador:", markerData);
+        
+        // Validar que las coordenadas sean números válidos antes de crear el marcador (no null, undefined, o NaN)
+        if (markerData.lat === null || markerData.lng === null || 
+            typeof markerData.lat !== 'number' || typeof markerData.lng !== 'number' || 
+            isNaN(markerData.lat) || isNaN(markerData.lng)) {
+          console.warn(`Marcador omitido por coordenadas inválidas:`, {
+            id: markerData.id,
+            title: markerData.title,
+            lat: markerData.lat,
+            lng: markerData.lng
+          });
+          return; // Saltar este marcador
+        }
+        
         // Obtener el icono personalizado según el tipo de marcador
         const iconUrl = getMarkerIcon(
           markerData.markerType || 'incentive'
         );
+        console.log("Icono generado para marcador:", iconUrl);
         
-        const marker = new AdvancedMarkerElement({
-          position: { lat: markerData.lat, lng: markerData.lng },
-          map: map,
-          title: markerData.title,
-          content: createMarkerContent(iconUrl, markerData.title),
-        });
+        try {
+          const marker = new AdvancedMarkerElement({
+            position: { lat: markerData.lat, lng: markerData.lng },
+            map: map,
+            title: markerData.title,
+            content: createMarkerContent(iconUrl, markerData.title),
+          });
 
-        // Agregar evento de clic al marcador
-        marker.addListener("click", () => {
-          console.log("Marcador clickeado:", markerData);
-          
-          // Llamar a la función callback si existe
-          if (onMarkerClick) {
-            onMarkerClick(markerData);
-          }
-        });
+          // Agregar evento de clic al marcador
+          marker.addListener("click", () => {
+            console.log("Marcador clickeado:", markerData);
+            
+            // Llamar a la función callback si existe
+            if (onMarkerClick) {
+              onMarkerClick(markerData);
+            }
+          });
 
-        // Agregar el marcador a la referencia
-        markersRef.current.push(marker);
+          // Agregar el marcador a la referencia
+          markersRef.current.push(marker);
+          console.log(`Marcador creado exitosamente para: ${markerData.title}`);
+        } catch (error) {
+          console.error(`Error al crear marcador para ${markerData.title}:`, error);
+        }
       });
 
     };
