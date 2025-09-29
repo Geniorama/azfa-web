@@ -232,7 +232,7 @@ export default function JuntaDirectivaView({
 
   // Función para formatear datos de miembros para CardTeamMember
   const formatMemberData = (member: TeamMemberType): CardTeamMemberProps => ({
-    image: member.photo.url,
+    image: member.photo?.url || "https://testazfabucket.s3.us-east-2.amazonaws.com/leader_44b2499b_23e6f45b3b.png",
     name: member.fullName,
     position: member.position,
     company: member.association,
@@ -439,9 +439,9 @@ export default function JuntaDirectivaView({
                                     (leader, index) => (
                                       <AvatarPerson
                                         key={index}
-                                        image={leader.photo.url}
+                                        image={leader.photo?.url || "https://testazfabucket.s3.us-east-2.amazonaws.com/leader_44b2499b_23e6f45b3b.png"}
                                         alternativeText={
-                                          leader.photo.alternativeText
+                                          leader.photo?.alternativeText || leader.fullName
                                         }
                                         name={leader.fullName}
                                       />
@@ -463,9 +463,9 @@ export default function JuntaDirectivaView({
                                   comission.teamProfiles.map((team, index) => (
                                     <AvatarPerson
                                       key={index}
-                                      image={team.photo.url}
+                                      image={team.photo?.url || "https://testazfabucket.s3.us-east-2.amazonaws.com/leader_44b2499b_23e6f45b3b.png"}
                                       alternativeText={
-                                        team.photo.alternativeText
+                                        team.photo?.alternativeText || team.fullName
                                       }
                                       name={team.fullName}
                                     />
@@ -478,8 +478,8 @@ export default function JuntaDirectivaView({
                       <div className="w-full lg:w-1/2">
                         <img
                           className="w-full h-full object-cover"
-                          src={comission.coverImage.url}
-                          alt={comission.coverImage.alternativeText}
+                          src={comission.coverImage?.url || "https://testazfabucket.s3.us-east-2.amazonaws.com/leader_44b2499b_23e6f45b3b.png"}
+                          alt={comission.coverImage?.alternativeText || comission.title}
                         />
                       </div>
                     </div>
