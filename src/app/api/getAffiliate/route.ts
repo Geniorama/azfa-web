@@ -6,7 +6,11 @@ export async function GET() {
         // Configurar parámetros de consulta con sintaxis correcta de Strapi
         // Usar un pageSize alto para obtener todos los afiliados
         const queryParams = {
-            populate: '*',
+            populate: {
+                logo: true,
+                mapLocation: true,
+                contactInfo: true
+            },
             pagination: {
                 pageSize: 1000  // Valor alto para obtener todos los registros
             }

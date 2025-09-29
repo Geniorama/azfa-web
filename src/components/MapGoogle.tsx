@@ -3,6 +3,7 @@
 import { Loader } from "@googlemaps/js-api-loader";
 import { useEffect, useRef, useImperativeHandle, forwardRef } from "react";
 import type { Marker } from "@/app/nuestros-afiliados/page";
+import { getMarkerIcon } from "@/utils/markerIcons";
 
 interface GoogleMapsProps {
   markers: Marker[];
@@ -13,6 +14,26 @@ export interface MapGoogleRef {
   resetZoom: () => void;
   zoomToCountry: (lat: number, lng: number) => void;
 }
+
+// Función para crear el contenido HTML del marcador
+const createMarkerContent = (iconUrl: string, title: string): HTMLElement => {
+  const content = document.createElement('div');
+  content.innerHTML = `
+    <div style="
+      width: 32px; 
+      height: 32px; 
+      cursor: pointer;
+      transition: transform 0.2s ease;
+    " 
+    onmouseover="this.style.transform='scale(1.1)'" 
+    onmouseout="this.style.transform='scale(1)'">
+      <img src="${iconUrl}" 
+           alt="${title}" 
+           style="width: 100%; height: 100%; object-fit: contain;" />
+    </div>
+  `;
+  return content;
+};
 
 const MapGoogle = forwardRef<MapGoogleRef, GoogleMapsProps>(({ markers, onMarkerClick }, ref) => {
   const mapRef = useRef<HTMLDivElement | null>(null);
@@ -74,10 +95,16 @@ const MapGoogle = forwardRef<MapGoogleRef, GoogleMapsProps>(({ markers, onMarker
       markersRef.current = [];
 
       markers.forEach((markerData) => {
+        // Obtener el icono personalizado según el tipo de marcador
+        const iconUrl = getMarkerIcon(
+          markerData.markerType || 'incentive'
+        );
+        
         const marker = new AdvancedMarkerElement({
           position: { lat: markerData.lat, lng: markerData.lng },
           map: map,
           title: markerData.title,
+          content: createMarkerContent(iconUrl, markerData.title),
         });
 
         // Agregar evento de clic al marcador
