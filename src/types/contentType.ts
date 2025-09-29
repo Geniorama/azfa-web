@@ -224,3 +224,37 @@ export interface StudiesResponse {
         };
     };
 }
+
+// Tipos para Management (reutilizando las mismas estructuras que Studies)
+export interface ManagementType {
+    id: number;
+    documentId: string;
+    title: string;
+    slug: string;
+    description: string;
+    publishDate: string;
+    featured: boolean;
+    createdAt: string;
+    updatedAt: string;
+    publishedAt: string;
+    locale: string;
+    author: unknown | null;
+    featuredImage: StudyImage;
+    downloadableFile: StudyDownloadableFile;
+    tags: StudyTag[];
+    SEO: unknown | null;
+    localizations: unknown[];
+}
+
+// Tipo para la respuesta de Strapi para Management
+export interface ManagementResponse {
+    data: ManagementType[];
+    meta: {
+        pagination?: {
+            page: number;
+            pageSize: number;
+            pageCount: number;
+            total: number;
+        };
+    };
+}
