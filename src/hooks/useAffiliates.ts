@@ -23,6 +23,11 @@ interface Affiliate {
   country: string; // Código del país (ej: "AR", "CO", "BR")
   city: string;
   type: "organizacion" | "empresa" | "zonaFranca";
+  mapLocation?: {
+    latitude: number;
+    longitude: number;
+    label?: string;
+  };
   contactInfo?: {
     id: number;
     fullName?: string;

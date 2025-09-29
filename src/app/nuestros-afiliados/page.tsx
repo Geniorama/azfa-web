@@ -15,12 +15,13 @@ import CoverDefault from "../../../public/Frame_56.jpg";
 import { useAffiliates } from "@/hooks/useAffiliates";
 import { useIncentives } from "@/hooks/useIncentives";
 import LoadingSpinner from "@/components/LoadingSpinner";
+import MapLegend from "@/components/MapLegend";
 import type { MapGoogleRef } from "@/components/MapGoogle";
 import type { Incentive, IncentiveMarker } from "@/types/incentiveType";
 import type { ContentType } from "@/types/contentType";
 import { getCountryName } from "@/utils/countryMapping";
 
-// Función para transformar incentivos de Strapi al formato del mapa
+  // Función para transformar incentivos de Strapi al formato del mapa
 const transformIncentivesToMarkers = (incentives: Incentive[]): IncentiveMarker[] => {
   // Coordenadas de fallback para países (solo si no hay ubicación en Strapi)
   const fallbackCoordinates: Record<string, { lat: number; lng: number; flag?: string }> = {
@@ -57,10 +58,57 @@ const transformIncentivesToMarkers = (incentives: Incentive[]): IncentiveMarker[
       numberZones: incentive.freeZones,
       numberCompanies: incentive.companies,
       directJobs: incentive.directJobs,
+      markerType: 'incentive',
       list: incentive.incentivesListItem.map(item => ({
         label: item.label,
         value: item.value
       }))
+    };
+  });
+};
+
+// Función para transformar afiliados de Strapi al formato del mapa
+const transformAffiliatesToMarkers = (affiliates: Afiliado[]): Marker[] => {
+  // Coordenadas de fallback para países (solo si no hay ubicación en Strapi)
+  const fallbackCoordinates: Record<string, { lat: number; lng: number }> = {
+    'CO': { lat: 4.570868, lng: -74.297332 },
+    'AR': { lat: -34.603722, lng: -58.381559 },
+    'BR': { lat: -15.793889, lng: -47.882777 },
+    'MX': { lat: 19.432608, lng: -99.133208 },
+    'PE': { lat: -12.046374, lng: -77.042793 },
+    'CL': { lat: -33.448890, lng: -70.669265 },
+    'EC': { lat: -0.180653, lng: -78.467838 },
+    'UY': { lat: -34.901113, lng: -56.164531 },
+    'PY': { lat: -25.263740, lng: -57.575926 },
+    'BO': { lat: -16.290154, lng: -63.588653 },
+    'VE': { lat: 10.480594, lng: -66.903606 },
+  };
+
+  return affiliates.map(affiliate => {
+    const fallbackCoords = fallbackCoordinates[affiliate.country.code];
+    
+    // Usar las coordenadas de mapLocation desde Strapi si están disponibles, sino usar las de fallback
+    const lat = affiliate.mapLocation?.latitude || fallbackCoords?.lat || 0;
+    const lng = affiliate.mapLocation?.longitude || fallbackCoords?.lng || 0;
+    
+    return {
+      id: `affiliate-${affiliate.id}`,
+      lat: lat,
+      lng: lng,
+      title: affiliate.title,
+      imgFlag: affiliate.logo,
+      numberZones: 0, // Los afiliados no tienen zonas francas
+      numberCompanies: 0, // Los afiliados no tienen empresas
+      directJobs: 0, // Los afiliados no tienen empleos directos
+      markerType: 'affiliate',
+      affiliateType: affiliate.type,
+      list: [
+        { label: 'País', value: affiliate.country.name },
+        { label: 'Ciudad', value: affiliate.city },
+        { label: 'Tipo', value: affiliate.type },
+        ...(affiliate.contactInfo?.email ? [{ label: 'Email', value: affiliate.contactInfo.email }] : []),
+        ...(affiliate.contactInfo?.website ? [{ label: 'Sitio web', value: affiliate.contactInfo.website }] : [])
+      ]
     };
   });
 };
@@ -74,6 +122,8 @@ export interface Marker {
   numberZones?: number;
   numberCompanies?: number;
   directJobs?: number;
+  markerType?: 'affiliate' | 'incentive';
+  affiliateType?: 'organizacion' | 'empresa' | 'zonaFranca';
   list?: {
     label: string; // Cambiado de 'name' a 'label' para coincidir con Strapi
     value: string;
@@ -91,6 +141,11 @@ export interface Afiliado {
   };
   city: string;
   type: "organizacion" | "empresa" | "zonaFranca";
+  mapLocation?: {
+    latitude: number;
+    longitude: number;
+    label?: string;
+  };
   contactInfo?: {
     id: number;
     name?: string;
@@ -126,6 +181,8 @@ function NuestrosAfiliadosContent() {
   // Usar la API real de incentivos
   const { incentives: apiIncentives, loading: incentivesLoading, error: incentivesError } = useIncentives();
   const [allIncentives, setAllIncentives] = useState<Marker[]>([]); // Datos completos sin filtrar
+  const [allAffiliateMarkers, setAllAffiliateMarkers] = useState<Marker[]>([]); // Marcadores de afiliados
+  const [currentMarkers, setCurrentMarkers] = useState<Marker[]>([]); // Marcadores actuales del mapa
 
   const countryParam = params.get("country");
   const tabParam = params.get("tab");
@@ -224,6 +281,7 @@ function NuestrosAfiliadosContent() {
           },
           city: affiliate.city,
           type: affiliate.type,
+          mapLocation: affiliate.mapLocation,
           contactInfo: {
             id: affiliate.contactInfo?.id || 0,
             name: affiliate.contactInfo?.fullName || "",
@@ -238,6 +296,10 @@ function NuestrosAfiliadosContent() {
       
       setAllAffiliates(transformedAffiliates); // Guardar todos los datos
       setAfiliados(transformedAffiliates); // Mostrar todos los datos inicialmente
+      
+      // Generar marcadores de afiliados para el mapa
+      const affiliateMarkers = transformAffiliatesToMarkers(transformedAffiliates);
+      setAllAffiliateMarkers(affiliateMarkers);
     } else {
       // Si no hay datos de la API, usar los datos de ejemplo
       setAllAffiliates(afiliadosExample);
@@ -252,10 +314,12 @@ function NuestrosAfiliadosContent() {
       const transformedIncentives = transformIncentivesToMarkers(apiIncentives);
       setAllIncentives(transformedIncentives); // Guardar todos los datos
       setIncentivos(transformedIncentives); // Mostrar todos los datos inicialmente
+      setCurrentMarkers(transformedIncentives); // Establecer incentivos como marcadores por defecto
     } else {
       // Si no hay datos de la API, usar los datos de ejemplo
       setAllIncentives(markers);
       setIncentivos(markers);
+      setCurrentMarkers(markers);
     }
   }, [apiIncentives]);
 
@@ -303,8 +367,40 @@ function NuestrosAfiliadosContent() {
 
   const handleGetTab = useCallback((dataTab: string): void => {
     setSelectedTab(dataTab);
-    // Ya no se resetea el país ni el zoom al cambiar de tab|
-  }, []);
+    
+    // Cambiar los marcadores del mapa según la pestaña seleccionada
+    if (dataTab === "afiliados") {
+      setCurrentMarkers(allAffiliateMarkers);
+      setIncentivos(allAffiliateMarkers); // Actualizar también el estado de incentivos para el mapa
+    } else {
+      setCurrentMarkers(allIncentives);
+      setIncentivos(allIncentives);
+    }
+    
+    // Resetear el país seleccionado al cambiar de pestaña
+    setSelectedCountry(null);
+    
+    // Resetear el zoom del mapa
+    mapRef.current?.resetZoom();
+  }, [allIncentives, allAffiliateMarkers]);
+
+  // Función para manejar el clic en el logo de un afiliado
+  const handleAffiliateLogoClick = useCallback((lat: number, lng: number, title: string) => {
+    console.log("Logo de afiliado clickeado:", title, "Coordenadas:", lat, lng);
+    
+    // Cambiar a la pestaña de afiliados si no está ya activa
+    if (selectedTab !== "afiliados") {
+      setSelectedTab("afiliados");
+      setCurrentMarkers(allAffiliateMarkers);
+      setIncentivos(allAffiliateMarkers);
+    }
+    
+    // Hacer zoom al afiliado en el mapa
+    mapRef.current?.zoomToCountry(lat, lng);
+    
+    // NO seleccionar el marcador para mantener la vista de la lista de afiliados
+    // Solo hacer zoom sin cambiar la selección actual
+  }, [selectedTab, allAffiliateMarkers]);
 
   if (!pageContent){
     return (
@@ -325,13 +421,15 @@ function NuestrosAfiliadosContent() {
 
       <section>
         <div className="flex flex-row">
-          <div className="hidden lg:block w-full lg:w-2/3 bg-primary">
+          <div className="hidden lg:block w-full lg:w-2/3 bg-primary relative">
                          {/* Map Google for countries*/}
              <MapGoogle 
                ref={mapRef}
-               markers={allIncentives} 
+               markers={currentMarkers} 
                onMarkerClick={handleGetCountry} 
              />
+             {/* Leyenda del mapa */}
+             <MapLegend showAffiliates={selectedTab === "afiliados"} />
           </div>
           <div className="w-full lg:w-1/3 bg-white">
             <div className="h-screen overflow-y-scroll">
@@ -427,6 +525,11 @@ function NuestrosAfiliadosContent() {
                           country={afiliado.country.name}
                           email={afiliado.contactInfo?.email}
                           website={afiliado.contactInfo?.website}
+                          onLogoClick={handleAffiliateLogoClick}
+                          coordinates={afiliado.mapLocation ? {
+                            lat: afiliado.mapLocation.latitude,
+                            lng: afiliado.mapLocation.longitude
+                          } : undefined}
                           key={afiliado.id}
                         />
                       ))}

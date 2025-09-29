@@ -12,9 +12,23 @@ interface AfiliadosCardProps {
   country: string;
   email?: string;
   website?: string;
+  onLogoClick?: (lat: number, lng: number, title: string) => void;
+  coordinates?: { lat: number; lng: number };
 }
 
-export default function AfiliadosCard({ index, logo, title, name, position, city, country, email, website }: AfiliadosCardProps) {
+export default function AfiliadosCard({ 
+  index, 
+  logo, 
+  title, 
+  name, 
+  position, 
+  city, 
+  country, 
+  email, 
+  website, 
+  onLogoClick, 
+  coordinates 
+}: AfiliadosCardProps) {
   return (
     <div className="border border-gray-600">
       <div className="flex flex-row gap-2 bg-[#F5F8FC]">
@@ -24,7 +38,14 @@ export default function AfiliadosCard({ index, logo, title, name, position, city
         <img
           src={logo || LogoCodevi.src}
           alt="company brand"
-          className="w-full max-w-fit max-h-[120px] mx-auto flex-grow p-4"
+          className={`w-full max-w-fit max-h-[120px] mx-auto flex-grow p-4 ${
+            coordinates && onLogoClick ? 'cursor-pointer hover:opacity-80 transition-opacity' : ''
+          }`}
+          onClick={() => {
+            if (coordinates && onLogoClick) {
+              onLogoClick(coordinates.lat, coordinates.lng, title);
+            }
+          }}
         />
       </div>
       <div className="p-8 text-text-primary">
