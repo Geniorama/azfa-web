@@ -21,18 +21,18 @@ export default function ServiciosView({ serviciosData }: ServiciosViewProps) {
 
 
   const transformedIntro = {
-    ...serviciosData?.intro[0],
+    ...serviciosData?.intro?.[0],
     icon: {
-      url: serviciosData?.intro[0]?.icon.url || "",
-      alternativeText: serviciosData?.intro[0]?.icon.alternativeText || "",
+      url: serviciosData?.intro?.[0]?.icon?.url || "",
+      alternativeText: serviciosData?.intro?.[0]?.icon?.alternativeText || "",
     },
   }
 
   return (
     <div>
       <HeadingPage
-        title={serviciosData?.headingSection.title}
-        image={serviciosData?.headingSection.backgroundImg.url}
+        title={serviciosData?.headingSection?.title}
+        image={serviciosData?.headingSection?.backgroundImg?.url}
         textAlign="left"
         className="min-h-[500px] bg-top-right [&>div>h1]:text-center [&>div>p]:text-center [&>div>p]:lg:text-left [&>div>h1]:lg:text-left"
       />
@@ -43,7 +43,7 @@ export default function ServiciosView({ serviciosData }: ServiciosViewProps) {
         </div>
       </section>
 
-      {serviciosData?.contentSection.map((section, index) => (
+      {serviciosData?.contentSection?.filter(section => section.title && section.description).map((section, index) => (
         <section key={index} className={`${section.style === "style-2" ? (section.orderReverse ? SecondarySectionReverse : SecondarySection) : "bg-white py-10 lg:pt-16"}`}>
           <div className="container mx-auto px-4">
             <div className= {`flex flex-col lg:${!section.orderReverse ? "flex-row" : "flex-row-reverse"} gap-4 text-text-primary items-center py-10 px-4 lg:px-0`}>
@@ -52,22 +52,26 @@ export default function ServiciosView({ serviciosData }: ServiciosViewProps) {
                 <div className={`text-body2 leading-8 ${section.style === "style-2" ? "text-white" : "text-text-primary"}`}>
                   <ReactMarkdown rehypePlugins={[rehypeRaw]}>{section.description}</ReactMarkdown>
                 </div>
-                <Button
-                  icon={true}
-                  onClick={() => {
-                    window.open(section.button.link, section.button.target);
-                  }}
-                  className="mt-5 justify-between text-left"
-                >
-                  {section.button.text}
-                </Button>
+                {section.button && (
+                  <Button
+                    icon={true}
+                    onClick={() => {
+                      window.open(section.button.link, section.button.target);
+                    }}
+                    className="mt-5 justify-between text-left"
+                  >
+                    {section.button.text}
+                  </Button>
+                )}
               </div>
               <div className="w-full lg:w-1/2">
-                <img
-                  className="w-full"
-                  src={section.coverImage.url}
-                  alt="Servicios"
-                />
+                {section.coverImage && (
+                  <img
+                    className="w-full"
+                    src={section.coverImage.url}
+                    alt="Servicios"
+                  />
+                )}
               </div>
             </div>
           </div>
