@@ -6,7 +6,10 @@ import MarkerIconAfiliados from '@/assets/img/marker-afiliados.svg';
 // Icono para afiliados usando el SVG personalizado
 export const getAffiliateMarkerIcon = (): string => {
   // Usar directamente la URL del SVG importado
-  return MarkerIconAfiliados.src || MarkerIconAfiliados;
+  const iconUrl = MarkerIconAfiliados.src || MarkerIconAfiliados;
+  console.log("MarkerIconAfiliados importado:", MarkerIconAfiliados);
+  console.log("URL del icono de afiliado:", iconUrl);
+  return iconUrl;
 };
 
 // Icono para incentivos (países)
@@ -54,10 +57,15 @@ export const getAffiliateTypeColor = (type: string): string => {
 
 // Función para obtener el icono correcto según el tipo de marcador
 export const getMarkerIcon = (markerType: 'affiliate' | 'incentive'): string => {
+  console.log("getMarkerIcon llamado con markerType:", markerType);
   if (markerType === 'affiliate') {
     // Usar el icono SVG personalizado de afiliados
-    return getAffiliateMarkerIcon();
+    const icon = getAffiliateMarkerIcon();
+    console.log("Icono de afiliado generado:", icon);
+    return icon;
   } else {
-    return getIncentiveMarkerIcon();
+    const icon = getIncentiveMarkerIcon();
+    console.log("Icono de incentivo generado:", icon);
+    return icon;
   }
 };

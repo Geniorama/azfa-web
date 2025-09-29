@@ -27,7 +27,7 @@ interface Affiliate {
     latitude: number;
     longitude: number;
     label?: string;
-  };
+  }[];
   contactInfo?: {
     id: number;
     fullName?: string;
@@ -84,8 +84,20 @@ export const useAffiliates = () => {
         }
 
         const data: StrapiResponse = await response.json();
+        console.log("Datos de afiliados recibidos de la API:", data);
         
         if (data.success && data.data && Array.isArray(data.data)) {
+          // Logging detallado de cada afiliado
+          data.data.forEach((affiliate, index) => {
+            console.log(`Afiliado ${index + 1}:`, {
+              id: affiliate.id,
+              title: affiliate.title,
+              country: affiliate.country,
+              mapLocation: affiliate.mapLocation,
+              type: affiliate.type
+            });
+          });
+          
           // Ordenar afiliados alfabéticamente por title
           const sortedAffiliates = data.data.sort((a, b) => {
             return a.title.localeCompare(b.title, 'es', { sensitivity: 'base' });
