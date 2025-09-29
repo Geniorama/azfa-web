@@ -149,12 +149,14 @@ export interface Afiliado {
   contactInfo?: {
     id: number;
     name?: string;
+    fullName?: string;
     position?: string;
     email?: string;
     website?: string;
   };
   createdAt: string;
   updatedAt: string;
+  fullName?: string;
 }
 
 // Los afiliados se cargan dinámicamente desde Strapi
@@ -287,7 +289,8 @@ function NuestrosAfiliadosContent() {
             name: affiliate.contactInfo?.fullName || "",
             position: affiliate.contactInfo?.position || "",
             email: affiliate.contactInfo?.email || "",
-            website: affiliate.contactInfo?.website || ""
+            website: affiliate.contactInfo?.website || "",
+            fullName: affiliate.contactInfo?.fullName || ""
           },
           createdAt: affiliate.createdAt,
           updatedAt: affiliate.updatedAt
@@ -519,7 +522,7 @@ function NuestrosAfiliadosContent() {
                           index={index}
                           logo={afiliado.logo || LogoCodevi.src}
                           title={afiliado.title}
-                          name={afiliado.contactInfo?.name || ""}
+                          name={afiliado.contactInfo?.fullName || ""}
                           position={afiliado.contactInfo?.position || ""}
                           city={afiliado.city}
                           country={afiliado.country.name}
