@@ -691,3 +691,58 @@ export interface ServicesPageType {
     button: StrapiButtonType;
   }[];
 }
+
+export interface PublicationType {
+  id: number;
+  documentId: string;
+  title: string;
+  slug: string;
+  description: string;
+  author: string;
+  publishDate: string;
+  featured: boolean;
+  locale: string;
+  createdAt: string;
+  updatedAt: string;
+  publishedAt: string;
+  downloadableFile?: StrapiImageType;
+  featuredImage?: StrapiImageType;
+  tags: {
+    id: number;
+    documentId: string;
+    name: string;
+    slug: string;
+    color?: string;
+    createdAt: string;
+    updatedAt: string;
+    publishedAt: string;
+  }[];
+}
+
+export interface PublicationsResponseType {
+  data: PublicationType[];
+  meta: {
+    pagination: {
+      page: number;
+      pageSize: number;
+      pageCount: number;
+      total: number;
+    };
+  };
+}
+
+export interface PublicationPageType {
+  id: number;
+  documentId: string;
+  createdAt: string;
+  updatedAt: string;
+  publishedAt: string;
+  headingSection: {
+    id: number;
+    smallTitle: string | null;
+    title: string;
+    description: string | null;
+    alignment: string | null;
+    backgroundImg: StrapiImageType;
+  };
+}
