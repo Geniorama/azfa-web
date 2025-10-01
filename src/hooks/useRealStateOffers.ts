@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { InmuebleType } from '@/types/inmuebleType';
-import { getCountryCode } from '@/utils/countryMapping';
+import { getCountryName } from '@/utils/countryMapping';
 
 interface StrapiResponse {
   data: Array<{
@@ -76,20 +76,28 @@ export const useRealStateOffers = (page: number = 1, pageSize: number = 9, filte
         // Agregar filtros solo si existen y no están vacíos
         if (filters) {
           console.log('Filtros recibidos en hook:', filters);
+          console.log('Tipos de filtros:', {
+            offerType: typeof filters.offerType,
+            propertyType: typeof filters.propertyType,
+            propertyUse: typeof filters.propertyUse,
+            city: typeof filters.city,
+            country: typeof filters.country,
+            propertyStatus: typeof filters.propertyStatus
+          });
           let hasActiveFilters = false;
           
           if (filters.offerType && filters.offerType.trim() !== '') {
-            filterParams.append('filters[offerType][$eq]', filters.offerType);
+            filterParams.append('filters[offerType][$containsi]', filters.offerType);
             console.log('Aplicando filtro offerType:', filters.offerType);
             hasActiveFilters = true;
           }
           if (filters.propertyType && filters.propertyType.trim() !== '') {
-            filterParams.append('filters[propertyType][$eq]', filters.propertyType);
+            filterParams.append('filters[propertyType][$containsi]', filters.propertyType);
             console.log('Aplicando filtro propertyType:', filters.propertyType);
             hasActiveFilters = true;
           }
           if (filters.propertyUse && filters.propertyUse.trim() !== '') {
-            filterParams.append('filters[propertyUse][$eq]', filters.propertyUse);
+            filterParams.append('filters[propertyUse][$containsi]', filters.propertyUse);
             console.log('Aplicando filtro propertyUse:', filters.propertyUse);
             hasActiveFilters = true;
           }
@@ -99,8 +107,16 @@ export const useRealStateOffers = (page: number = 1, pageSize: number = 9, filte
             hasActiveFilters = true;
           }
           if (filters.country && filters.country.trim() !== '') {
+            // Convertir código de país a nombre para buscar en Strapi
+            const countryName = getCountryName(filters.country);
+            console.log('=== DEBUG FILTRO PAÍS ===');
+            console.log('Código país recibido:', filters.country);
+            console.log('Nombre país convertido:', countryName);
+            console.log('¿Es el mismo?', filters.country === countryName);
+            
+            // Probar con el código original usando $eq
             filterParams.append('filters[country][$eq]', filters.country);
-            console.log('Aplicando filtro country:', filters.country);
+            console.log('Aplicando filtro country con código original y $eq:', filters.country);
             hasActiveFilters = true;
           }
           if (filters.propertyStatus && filters.propertyStatus.trim() !== '') {
@@ -114,13 +130,28 @@ export const useRealStateOffers = (page: number = 1, pageSize: number = 9, filte
           }
         }
         
-        const response = await fetch(`/api/getRealStateOffer?${filterParams.toString()}`);
+        const url = `/api/getRealStateOffer?${filterParams.toString()}`;
+        console.log('URL de la petición:', url);
+        
+        const response = await fetch(url);
         
         if (!response.ok) {
           throw new Error('Error al obtener las ofertas inmobiliarias');
         }
 
         const data: StrapiResponse = await response.json();
+        
+        // Debug: ver estructura de datos de países
+        if (data && data.data && Array.isArray(data.data) && data.data.length > 0) {
+          console.log('=== DEBUG DATOS PAÍSES ===');
+          data.data.slice(0, 3).forEach((item, index) => {
+            console.log(`Item ${index + 1}:`, {
+              title: item.title,
+              country: item.country,
+              'tipo country': typeof item.country
+            });
+          });
+        }
         
         // Transformar los datos de Strapi al formato esperado
         if (data && data.data && Array.isArray(data.data)) {
@@ -139,7 +170,7 @@ export const useRealStateOffers = (page: number = 1, pageSize: number = 9, filte
               propertyUse: item?.propertyUse,
               area: item?.area,
               city: item?.city,
-              country: item?.country ? getCountryCode(item.country) : undefined,
+              country: item?.country,
               region: item?.region,
               platinum: item?.platinum || false,
               image: item?.imgGallery?.[0]?.url,
