@@ -107,9 +107,9 @@ export default function CardInmueble({
           onClick={() => router.push(`/invierta-en-zonas-francas/oferta-inmobiliaria/${slug}`)}
           icon={true}
           fullWidth={true}
-          className="mt-4 bg-white text-text-primary hover:bg-text-secondary hover:text-white"
+          className="mt-4 bg-white text-text-primary hover:bg-white hover:text-text-primary hover:opacity-50 transition-all duration-300"
         >
-          Ver más
+         <span className="text-text-primary">Ver más</span>
         </Button>
       </div>
     </div>
