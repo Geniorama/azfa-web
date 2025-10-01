@@ -13,7 +13,7 @@ import "swiper/css/autoplay";
 import "swiper/css/navigation";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useRealStateOffers } from "@/hooks/useRealStateOffers";
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { ContentType } from "@/types/contentType";
 import { InmuebleType } from "@/types/inmuebleType";
 import type { FilterValuesProps } from "@/components/AdvancedSearchBar";
@@ -25,7 +25,7 @@ import IconNoResults from "@/assets/img/search-icon-offer.svg";
 import Button from "@/utils/Button";
 import IconError from "@/assets/img/icon-no-load.svg";
 
-export default function OfertaInmobiliaria() {
+function OfertaInmobiliariaContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [currentPage, setCurrentPage] = useState(1);
@@ -444,7 +444,15 @@ export default function OfertaInmobiliaria() {
             alt="Ciudad Oferta"
           />
         </div>
-      </section>
-    </div>
+       </section>
+     </div>
+   );
+ }
+
+export default function OfertaInmobiliaria() {
+  return (
+    <Suspense fallback={<LoadingSpinner message="Cargando..." />}>
+      <OfertaInmobiliariaContent />
+    </Suspense>
   );
 }
