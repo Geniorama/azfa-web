@@ -27,13 +27,13 @@ export default function SlideSingleTestimonial({ caption, title, description, im
         </div>
       </div>
       <div className="w-full lg:w-1/2">
-        <div className="bg-background-1 px-8 lg:px-12 py-12 lg:py-32 space-y-1">
+        <div className="bg-background-1 px-8 lg:px-12 py-12 lg:py-32 space-y-5">
           <p className="max-w-[539px] text-h5 tracking-[1px]">
             {description}
           </p>
           <div>
             <span className="text-h6 block">{title}</span>
-            <span className="text-button block">{caption}</span>
+            <span className="text-button block mt-1">{caption}</span>
           </div>
         </div>
       </div>

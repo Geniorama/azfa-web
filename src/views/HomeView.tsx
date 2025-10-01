@@ -132,11 +132,11 @@ export default function Home({ slidesData, introData, contentWithVideoData, serv
             )}
           </div>
       </Modal>
-      <section className=" bg-text-primary h-[calc(100vh-120px)]">
+      <section className=" bg-text-primary w-full aspect-video min-h-screen">
         {/* Slider */}
         <div className="relative h-full">
           <Swiper
-            modules={[Navigation]}
+            modules={[Navigation, Autoplay]}
             spaceBetween={50}
             slidesPerView={1}
             navigation={{
@@ -144,13 +144,17 @@ export default function Home({ slidesData, introData, contentWithVideoData, serv
               prevEl: ".custom-swiper-button-prev",
             }}
             className="h-full"
+            autoplay={{
+              delay: 5000,
+              disableOnInteraction: false,
+            }}
           >
             {slidesData && slidesData.length > 0 ? (
               slidesData.map((slide) => (
                 <SwiperSlide
                   style={{ backgroundImage: `url(${slide.backgroundImage?.url || '/inicio-slide (1).jpg'})` }}
                   key={slide.id}
-                  className="bg-text-primary py-16"
+                  className="bg-text-primary lg:py-62 py-16 bg-cover bg-right"
                 >
                   <SlideSingleHome
                     caption={slide.label || ""}
