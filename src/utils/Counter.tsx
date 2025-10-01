@@ -22,7 +22,7 @@ useEffect(() => {
           setHasAnimated(true);
           
           // Duración fija de 3 segundos para todos los contadores
-          const duration = 3000; // 3 segundos
+          const duration = 2000; // 2 segundos
           const steps = 60; // Número de pasos para suavizar la animación
           const stepDuration = duration / steps;
           const increment = value / steps;
