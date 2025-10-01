@@ -8,6 +8,8 @@ import ImageBanner from "@/assets/img/Frame 53.png";
 import Button from "@/utils/Button";
 import { NewsType, NewsCategoryType, NewsletterSectionType } from "@/types/componentsType";
 import { truncateText } from "@/utils/truncateText";
+import AdSection from "@/components/AdSection";
+
 
 // Interfaz extendida para newsletters con downloadDocument
 interface NewsletterType extends NewsType {
@@ -138,6 +140,12 @@ export default function NewsletterView({ newsletterData, categoriesData, paginat
                         <p className="text-caption mt-5">Al suscribirse, acepta nuestra política de privacidad y su tratamiento de datos *</p>
                     </div>
                 </div>
+            </div>
+        </section>
+
+        <section className="bg-white">
+            <div className="container mx-auto px-4">
+                <AdSection position="bottom-newsletter-archive" />
             </div>
         </section>
     </div>

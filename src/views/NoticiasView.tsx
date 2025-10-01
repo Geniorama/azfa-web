@@ -11,6 +11,7 @@ import CardInfoPortal from "@/components/CardInfoPortal";
 import Pagination from "@/components/Pagination";
 import { NewsType, NewsCategoryType, NewsSectionType } from "@/types/componentsType";
 import { truncateText } from "@/utils/truncateText";
+import AdSection from "@/components/AdSection";
 
 interface NoticiasViewProps {
   newsData: NewsType[];
@@ -217,6 +218,12 @@ export default function NoticiasView({ newsData, categoriesData, paginationMeta,
               />
             )}
           </div>
+        </div>
+      </section>
+
+      <section className="bg-white">
+        <div className="container mx-auto px-4">
+          <AdSection position="bottom-news-archive" />
         </div>
       </section>
     </div>
