@@ -22,7 +22,7 @@ export default function MapOne({
       
       // Si el elemento clicado no tiene ID, buscar en el elemento padre (grupo)
       if (!countryId) {
-        const parentElement = target.parentElement as SVGElement;
+        const parentElement = target.parentElement;
         if (parentElement && parentElement.tagName === 'g') {
           countryId = parentElement.getAttribute('id');
         }

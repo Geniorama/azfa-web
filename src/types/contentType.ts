@@ -276,3 +276,81 @@ export interface AffiliateInvestmentStatisticsResponse {
   data: AffiliateInvestmentStatisticsType | null;
   meta: unknown;
 }
+
+// Tipos para Oferta Inmobiliaria
+export interface CoverImage {
+  id: number;
+  documentId: string;
+  name: string;
+  alternativeText: string | null;
+  caption: string | null;
+  width: number;
+  height: number;
+  formats: ImageFormats;
+  hash: string;
+  ext: string;
+  mime: string;
+  size: number;
+  url: string;
+  previewUrl: string | null;
+  provider: string;
+  provider_metadata: unknown;
+  createdAt: string;
+  updatedAt: string;
+  publishedAt: string;
+}
+
+export interface LogoImage {
+  id: number;
+  documentId: string;
+  name: string;
+  alternativeText: string | null;
+  caption: string | null;
+  width: number;
+  height: number;
+  formats: ImageFormats;
+  hash: string;
+  ext: string;
+  mime: string;
+  size: number;
+  url: string;
+  previewUrl: string | null;
+  provider: string;
+  provider_metadata: unknown;
+  createdAt: string;
+  updatedAt: string;
+  publishedAt: string;
+}
+
+export interface LogosSection {
+  id: number;
+  title: string;
+  images: LogoImage[];
+}
+
+export interface OfertaInmobiliariaType {
+  id: number;
+  documentId: string;
+  title: string;
+  smallTitle: string;
+  description: string;
+  coverImage: CoverImage;
+  suppliersLogos: LogosSection;
+  consultantsLogos: LogosSection[];
+  createdAt: string;
+  updatedAt: string;
+  publishedAt: string;
+}
+
+// Tipo para la respuesta de Strapi para Oferta Inmobiliaria
+export interface OfertaInmobiliariaResponse {
+  data: OfertaInmobiliariaType;
+  meta: {
+    pagination?: {
+      page: number;
+      pageSize: number;
+      pageCount: number;
+      total: number;
+    };
+  };
+}
