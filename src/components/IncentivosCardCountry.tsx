@@ -31,7 +31,7 @@ export default function IncentivosCardCountry({ index, country, numberZones, num
                     {/* Circle */}
                 </span> 
                 <h5 className="text-text-primary text-[14px] text-center">
-                    Número Zonas Francas
+                    Número total Zonas Francas
                 </h5>
                 <p className="text-h6 font-medium">{numberZones}</p>
             </div>
