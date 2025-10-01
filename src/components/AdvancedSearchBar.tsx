@@ -219,14 +219,6 @@ export default function AdvancedSearchBar({ onSearch, options, currentFilters }:
     country: '',
     propertyStatus: ''
   })
-  const [searchFilters, setSearchFilters] = useState<FilterValuesProps>({
-    offerType: '',
-    propertyType: '',
-    propertyUse: '',
-    city: '',
-    country: '',
-    propertyStatus: ''
-  })
   const containerRef = useRef<HTMLDivElement>(null)
 
   // Inicializar valores por defecto o usar filtros actuales
@@ -246,7 +238,6 @@ export default function AdvancedSearchBar({ onSearch, options, currentFilters }:
         country: getLabelFromValue(currentFilters.country, filterOptions.country),
         propertyStatus: getLabelFromValue(currentFilters.propertyStatus, filterOptions.propertyStatus)
       });
-      setSearchFilters(currentFilters);
     } else {
       // Valores por defecto
       setSelectedValues({
@@ -256,14 +247,6 @@ export default function AdvancedSearchBar({ onSearch, options, currentFilters }:
         city: filterOptions.city[0]?.label || '',
         country: filterOptions.country[0]?.label || '',
         propertyStatus: filterOptions.propertyStatus[0]?.label || ''
-      });
-      setSearchFilters({
-        offerType: filterOptions.offerType[0]?.value || '',
-        propertyType: filterOptions.propertyType[0]?.value || '',
-        propertyUse: filterOptions.propertyUse[0]?.value || '',
-        city: filterOptions.city[0]?.value || '',
-        country: filterOptions.country[0]?.value || '',
-        propertyStatus: filterOptions.propertyStatus[0]?.value || ''
       });
     }
   }, [filterOptions, currentFilters])
@@ -275,15 +258,10 @@ export default function AdvancedSearchBar({ onSearch, options, currentFilters }:
 
   // Función para manejar cambios en los valores seleccionados
   const handleValueChange = (filterName: string, value: string, label: string) => {
-    // Actualizar valores visuales (labels)
+    // Solo actualizar valores visuales (labels) - NO aplicar filtros inmediatamente
     setSelectedValues(prev => ({
       ...prev,
       [filterName]: label
-    }))
-    // Actualizar filtros de búsqueda (values)
-    setSearchFilters(prev => ({
-      ...prev,
-      [filterName]: value
     }))
     
     setOpenFilter(null) // Cerrar el filtro después de seleccionar
@@ -293,6 +271,28 @@ export default function AdvancedSearchBar({ onSearch, options, currentFilters }:
   const closeAllFilters = () => {
     setOpenFilter(null)
   }
+
+  // Efecto para sincronizar filtros desde el componente padre
+  useEffect(() => {
+    if (currentFilters) {
+      // Convertir valores a labels para mostrar en la UI
+      const valueToLabel = (value: string, options: Option[]): string => {
+        const option = options.find(opt => opt.value === value);
+        return option ? option.label : '';
+      };
+
+      const syncedSelectedValues: FilterValuesProps = {
+        offerType: valueToLabel(currentFilters.offerType, filterOptions.offerType),
+        propertyType: valueToLabel(currentFilters.propertyType, filterOptions.propertyType),
+        propertyUse: valueToLabel(currentFilters.propertyUse, filterOptions.propertyUse),
+        city: valueToLabel(currentFilters.city, filterOptions.city),
+        country: valueToLabel(currentFilters.country, filterOptions.country),
+        propertyStatus: valueToLabel(currentFilters.propertyStatus, filterOptions.propertyStatus)
+      };
+
+      setSelectedValues(syncedSelectedValues);
+    }
+  }, [currentFilters, filterOptions]);
 
   // Manejar clic fuera del contenedor
   useEffect(() => {
@@ -321,17 +321,36 @@ export default function AdvancedSearchBar({ onSearch, options, currentFilters }:
   // Función para manejar la búsqueda
   const handleSearch = () => {
     if (onSearch) {
-      // Filtrar solo los valores que no son "todos" o vacíos
-      const activeFilters: FilterValuesProps = {
-        offerType: searchFilters.offerType !== 'todos' && searchFilters.offerType !== '' ? searchFilters.offerType : 'todos',
-        propertyType: searchFilters.propertyType !== 'todos' && searchFilters.propertyType !== '' ? searchFilters.propertyType : 'todos',
-        propertyUse: searchFilters.propertyUse !== 'todos' && searchFilters.propertyUse !== '' ? searchFilters.propertyUse : 'todos',
-        city: searchFilters.city !== 'todos' && searchFilters.city !== '' ? searchFilters.city : 'todos',
-        country: searchFilters.country !== 'todos' && searchFilters.country !== '' ? searchFilters.country : 'todos',
-        propertyStatus: searchFilters.propertyStatus !== 'todos' && searchFilters.propertyStatus !== '' ? searchFilters.propertyStatus : 'todos'
+      // Crear un mapeo de labels a values para convertir los valores visuales a valores de búsqueda
+      const labelToValue = (label: string, options: Option[]): string => {
+        const option = options.find(opt => opt.label === label);
+        return option ? option.value : '';
       };
-      console.log('Filtros enviados (values):', activeFilters);
-      onSearch(activeFilters)
+
+      // Convertir los valores visuales seleccionados a valores de filtro
+      const activeFilters: FilterValuesProps = {
+        offerType: labelToValue(selectedValues.offerType, filterOptions.offerType),
+        propertyType: labelToValue(selectedValues.propertyType, filterOptions.propertyType),
+        propertyUse: labelToValue(selectedValues.propertyUse, filterOptions.propertyUse),
+        city: labelToValue(selectedValues.city, filterOptions.city),
+        country: labelToValue(selectedValues.country, filterOptions.country),
+        propertyStatus: labelToValue(selectedValues.propertyStatus, filterOptions.propertyStatus)
+      };
+
+      // Filtrar solo los valores que no son "todos" o vacíos
+      const finalFilters: FilterValuesProps = {
+        offerType: activeFilters.offerType !== 'todos' && activeFilters.offerType !== '' ? activeFilters.offerType : '',
+        propertyType: activeFilters.propertyType !== 'todos' && activeFilters.propertyType !== '' ? activeFilters.propertyType : '',
+        propertyUse: activeFilters.propertyUse !== 'todos' && activeFilters.propertyUse !== '' ? activeFilters.propertyUse : '',
+        city: activeFilters.city !== 'todos' && activeFilters.city !== '' ? activeFilters.city : '',
+        country: activeFilters.country !== 'todos' && activeFilters.country !== '' ? activeFilters.country : '',
+        propertyStatus: activeFilters.propertyStatus !== 'todos' && activeFilters.propertyStatus !== '' ? activeFilters.propertyStatus : ''
+      };
+
+      // Actualizar los filtros de búsqueda internos para mantener el estado
+      
+      console.log('Filtros enviados:', finalFilters);
+      onSearch(finalFilters);
     }
   }
 

@@ -74,7 +74,15 @@ export const extractFilterOptions = (offers: InmuebleType[]): FilterOptions => {
     propertyType: createUniqueOptionsFromArrays([validPropertyTypes]),
     propertyUse: createUniqueOptionsFromArrays([validPropertyUses]),
     city: createUniqueOptions(cities),
-    country: createUniqueOptions(countries.map(country => getCountryName(country))),
+    country: (() => {
+      const uniqueCountries = Array.from(new Set(countries.filter(country => country && country.trim() !== '')));
+      const countryOptions = uniqueCountries.map(country => ({
+        label: getCountryName(country),
+        value: country
+      })).sort((a, b) => a.label.localeCompare(b.label));
+      
+      return [{ label: 'Todos', value: 'todos' }, ...countryOptions];
+    })(),
     propertyStatus: createUniqueOptions(propertyStatuses)
   };
 };
