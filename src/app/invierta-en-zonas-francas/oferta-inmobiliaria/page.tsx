@@ -11,14 +11,18 @@ import { Autoplay, Navigation } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/autoplay";
 import "swiper/css/navigation";
-
+import { useRouter } from "next/navigation";
 import { useRealStateOffers } from "@/hooks/useRealStateOffers";
 import { useState, useEffect } from "react";
 import { ContentType } from "@/types/contentType";
 import type { FilterValuesProps } from "@/components/AdvancedSearchBar";
 import { extractFilterOptions, FilterOptions } from "@/utils/extractFilterOptions";
+import IconNoResults from "@/assets/img/search-icon-offer.svg";
+import Button from "@/utils/Button";
+
 
 export default function OfertaInmobiliaria() {
+  const router = useRouter();
   const [currentPage, setCurrentPage] = useState(1);
   const [pageContent, setPageContent] = useState<ContentType | null>(null);
   const [filterOptions, setFilterOptions] = useState<FilterOptions | null>(null);
@@ -194,7 +198,36 @@ export default function OfertaInmobiliaria() {
             </div>
           ) : (
             <div className="text-center py-16">
-              <p className="text-text-primary text-lg">No se encontraron ofertas inmobiliarias</p>
+              <p className="text-text-primary text-h6 mb-1">No hay resultados con los filtros aplicados.</p>
+              <p className="text-text-primary text-body2">Ajuste los criterios de búsqueda o contáctenos si necesita ayuda para encontrar un inmueble específico.</p>
+              <img src={IconNoResults.src} alt="Icono" className="w-25 h-25 mx-auto my-2" />
+              <Button
+                onClick={() => {
+                  router.push("/contacto");
+                }}
+                className="mx-auto mt-8"
+                variant="primary"
+                icon
+              >
+                ¿Busca algo más específico? Contáctenos
+              </Button>
+
+              {/* Clear filters */}
+              <button
+                onClick={() => {
+                  setSearchFilters({
+                    offerType: '',
+                    propertyType: '',
+                    propertyUse: '',
+                    city: '',
+                    country: '',
+                    propertyStatus: ''
+                  });
+                }}
+                className="mt-4 text-background-3 hover:text-text-primary transition-colors duration-300 underline cursor-pointer"
+              >
+                Limpiar filtros
+              </button>
             </div>
           )}
           
