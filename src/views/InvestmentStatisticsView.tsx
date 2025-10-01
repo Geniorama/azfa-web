@@ -78,13 +78,6 @@ export default function InvestmentStatisticsView({ pageContent }: InvestmentStat
             </div>
           </div>
 
-          {/* Disclaimer */}
-          {data.disclaimerText && (
-            <div className="my-6 text-center">
-              <p className="text-caption text-text-secondary">{data.disclaimerText}</p>
-            </div>
-          )}
-
           {/* Tableros POWER BI */}
           {data.iframeCollection && data.iframeCollection.length > 0 ? (
             data.iframeCollection.map((iframeItem) => (
@@ -129,6 +122,13 @@ export default function InvestmentStatisticsView({ pageContent }: InvestmentStat
                           </div>
                         )}
                       </div>
+
+                      {/* Disclaimer */}
+                      {pageContent?.disclaimerText && (
+                        <div className="p-4 text-center">
+                          <p className="text-sm text-gray-500">{pageContent?.disclaimerText}</p>
+                        </div>
+                      )}
                     </div>
                   ) : (
                     <div className="w-full h-[300px] sm:h-[400px] lg:h-[500px] bg-gray-100 flex items-center justify-center rounded-lg">
