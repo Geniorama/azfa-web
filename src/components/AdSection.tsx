@@ -50,6 +50,10 @@ export default function AdSection({ position, className = "" }: AdSectionProps) 
   // Combinar todas las imágenes de todos los anuncios
   const allImages = ads.flatMap(ad => {
     const images = isMobile ? ad.mobileImages : ad.desktopImages;
+    // Validar que images existe y es un array antes de hacer map
+    if (!images || !Array.isArray(images)) {
+      return [];
+    }
     return images.map(image => ({
       ...image,
       adTitle: ad.title,

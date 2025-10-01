@@ -132,7 +132,7 @@ export default function Home({ slidesData, introData, contentWithVideoData, serv
             )}
           </div>
       </Modal>
-      <section className=" bg-text-primary w-full aspect-video min-h-screen">
+      <section className=" bg-text-primary w-full h-[calc(100vh-100px)]">
         {/* Slider */}
         <div className="relative h-full">
           <Swiper
@@ -154,8 +154,9 @@ export default function Home({ slidesData, introData, contentWithVideoData, serv
                 <SwiperSlide
                   style={{ backgroundImage: `url(${slide.backgroundImage?.url || '/inicio-slide (1).jpg'})` }}
                   key={slide.id}
-                  className="bg-text-primary lg:py-62 py-16 bg-cover bg-right"
+                  className="bg-text-primary lg:py-24 py-16 bg-cover bg-right"
                 >
+                  
                   <SlideSingleHome
                     caption={slide.label || ""}
                     title={slide.title || ""}
@@ -165,13 +166,14 @@ export default function Home({ slidesData, introData, contentWithVideoData, serv
                       onClick: () => router.push(slide.button?.link || "/"),
                     }}
                   />
+                  <div className="absolute lg:hidden top-0 left-0 w-full h-full bg-primary/80 z-10"></div>
                 </SwiperSlide>
               ))
             ) : (
               // Fallback slide cuando no hay datos
               <SwiperSlide
                 style={{ backgroundImage: `url('/inicio-slide (1).jpg')` }}
-                className="bg-text-primary py-16"
+                className="bg-text-primary"
               >
                 <SlideSingleHome
                   caption="AZFA"
@@ -644,13 +646,17 @@ export default function Home({ slidesData, introData, contentWithVideoData, serv
         {/* Swiper testimonials */}
         <div className="relative">
           <Swiper
-            modules={[Pagination]}
+            modules={[Pagination, Autoplay]}
             spaceBetween={50}
             slidesPerView={1}
             className="h-full mt-8"
             pagination={{
               clickable: true,
               el: ".custom-swiper-pagination",
+            }}
+            autoplay={{
+              delay: 5000,
+              disableOnInteraction: false,
             }}
           >
             {testimonialsData && testimonialsData.length > 0 ? (

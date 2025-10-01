@@ -15,7 +15,8 @@ interface SlideSingleHomeProps {
 export default function SlideSingleHome({ caption, title, description, button }: SlideSingleHomeProps) {
 
   return (
-    <div className="container mx-auto px-4">
+    <div className="container mx-auto px-4 relative z-20">
+      {/* overlay */}
       <div className="space-y-4 w-full lg:w-1/2 text-center lg:text-left">
         <h5 className="text-caption text-details">{caption}</h5>
         <h1 className="text-h2 md:text-h1 font-medium">{title}</h1>

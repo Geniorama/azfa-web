@@ -22,7 +22,7 @@ export default function CardInfoPortal({ image, title, description, tags, author
   return (
     <div className='bg-white border border-background-2 rounded-2xl overflow-hidden hover:shadow-xl hover:border-transparent transition-all duration-300'>
         <div className={`w-full bg-background-2 ${noSpaceImage ? "p-0" : "p-2"}`}>
-            <img src={image} alt="image" className={`${noSpaceImage ? "w-full h-full object-cover" : "w-auto max-w-full mx-auto"}`} />
+            <img src={image} alt="image" className={`${noSpaceImage ? "w-full aspect-video object-cover" : "w-auto max-w-full mx-auto"}`} />
         </div>
         <div className='p-4 px-6 text-text-primary'>
             <div className='flex flex-row gap-1'>
