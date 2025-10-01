@@ -747,23 +747,25 @@ export default function Home({ slidesData, introData, contentWithVideoData, serv
             modules={[Autoplay, Navigation]}
             spaceBetween={50}
             slidesPerView={5}
-            slidesPerGroup={5}
+            slidesPerGroup={1}
             className="mt-10 swiper-custom"
             autoplay={{ delay: 2500, disableOnInteraction: false }}
             navigation={true}
-            loop={true}
+            loop={affiliatesSectionData?.logos && affiliatesSectionData.logos.length > 5}
             speed={2000}
             breakpoints={{
               0: {
                 slidesPerView: 1.8,
                 centeredSlides: true,
+                slidesPerGroup: 1,
               },
               768: {
                 slidesPerView: 3,
+                slidesPerGroup: 1,
               },
-
               1024: {
                 slidesPerView: 5,
+                slidesPerGroup: 1,
               },
             }}
           >
@@ -839,22 +841,25 @@ export default function Home({ slidesData, introData, contentWithVideoData, serv
             modules={[Autoplay, Navigation]}
             spaceBetween={50}
             slidesPerView={5}
-            slidesPerGroup={5}
+            slidesPerGroup={1}
             className="mt-10 swiper-custom"
             autoplay={{ delay: 2500, disableOnInteraction: false }}
             navigation={true}
-            loop={true}
+            loop={partnersSectionData?.logos && partnersSectionData.logos.length > 5}
             speed={2000}
             breakpoints={{
               0: {
                 slidesPerView: 1.8,
                 centeredSlides: true,
+                slidesPerGroup: 1,
               },
               768: {
                 slidesPerView: 3,
+                slidesPerGroup: 1,
               },
               1024: {
                 slidesPerView: 5,
+                slidesPerGroup: 1,
               },
             }}
           >
@@ -892,22 +897,25 @@ export default function Home({ slidesData, introData, contentWithVideoData, serv
           modules={[Autoplay, Navigation]}
           spaceBetween={50}
           slidesPerView={5}
-          slidesPerGroup={5}
+          slidesPerGroup={1}
           className="mt-10 swiper-custom"
           autoplay={{ delay: 2500, disableOnInteraction: false }}
           navigation={true}
           speed={2000}
-          loop={true}
+          loop={sponsorsSectionData?.logos && sponsorsSectionData.logos.length > 5}
           breakpoints={{
             0: {
               slidesPerView: 1.8,
               centeredSlides: true,
+              slidesPerGroup: 1,
             },
             768: {
               slidesPerView: 3,
+              slidesPerGroup: 1,
             },
             1024: {
               slidesPerView: 5,
+              slidesPerGroup: 1,
             },
           }}
         >
