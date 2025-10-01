@@ -134,6 +134,7 @@ export default function ManagementView({
                     ...item.tags.map(tag => tag.name),
                     item.publishDate.split('-')[0] // Agregar el año como tag
                   ]}
+                  noSpaceImage={true}
                   button={{
                     label: "Descargar",
                     onClick: () => {
