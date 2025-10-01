@@ -124,6 +124,7 @@ export default function PublicacionesView({ pageData, publications }: Publicacio
                   image={publication.featuredImage?.url || CoverImage.src}
                   title={publication.title}
                   description={publication.description}
+                  author={publication.author}
                   tags={[
                     ...publication.tags.map(tag => tag.name),
                     publication.publishDate.split('-')[0] // Agregar el año de publicación
