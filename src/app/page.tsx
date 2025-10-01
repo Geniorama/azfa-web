@@ -14,7 +14,7 @@ export async function generateMetadata(): Promise<Metadata> {
 const getHome = async () => {
   try {
     const response = await fetch(
-      `${process.env.STRAPI_URL}/api/homepage?populate[0]=heroSlides&populate[1]=heroSlides.backgroundImage&populate[2]=heroSlides.button&populate[3]=heroSlides.iconLinks&populate[4]=heroSlides.iconLinks.icon.customImage&populate[5]=introContent&populate[6]=introContent.icon&populate[7]=contentWithVideo&populate[8]=contentWithVideo.video&populate[9]=contentWithVideo.video.thumbnail&populate[10]=contentWithVideo.video.uploadedVideo&populate[11]=servicesSection&populate[12]=servicesSection.services&populate[13]=servicesSection.services.coverImage&populate[14]=statisticsSection&populate[15]=statisticsSection.statistics&populate[16]=statisticsSection.statistics.icon&populate[17]=statisticsSection.statistics.icon.customImage&populate[18]=newsSection&populate[19]=newsSection.viewAllLink&populate[20]=upcomingEventsSection&populate[21]=upcomingEventsSection.viewAllLink&populate[22]=testimonialsSection&populate[23]=affiliatesSection&populate[24]=affiliatesSection.logos&populate[25]=affiliatesSection.logos.logo&populate[26]=partnersSection&populate[27]=partnersSection.logos&populate[28]=partnersSection.logos.logo`,
+      `${process.env.STRAPI_URL}/api/homepage?populate[0]=heroSlides&populate[1]=heroSlides.backgroundImage&populate[2]=heroSlides.button&populate[3]=heroSlides.iconLinks&populate[4]=heroSlides.iconLinks.icon.customImage&populate[5]=introContent&populate[6]=introContent.icon&populate[7]=contentWithVideo&populate[8]=contentWithVideo.video&populate[9]=contentWithVideo.video.thumbnail&populate[10]=contentWithVideo.video.uploadedVideo&populate[11]=servicesSection&populate[12]=servicesSection.services&populate[13]=servicesSection.services.coverImage&populate[14]=statisticsSection&populate[15]=statisticsSection.statistics&populate[16]=statisticsSection.statistics.icon&populate[17]=statisticsSection.statistics.icon.customImage&populate[18]=newsSection&populate[19]=newsSection.viewAllLink&populate[20]=upcomingEventsSection&populate[21]=upcomingEventsSection.viewAllLink&populate[22]=testimonialsSection&populate[23]=affiliatesSection&populate[24]=affiliatesSection.logos&populate[25]=affiliatesSection.logos.logo&populate[26]=partnersSection&populate[27]=partnersSection.logos&populate[28]=partnersSection.logos.logo&populate[29]=sponsorsSection&populate[30]=sponsorsSection.logos&populate[31]=sponsorsSection.logos.logo`,
       {
         cache: "force-cache", // Cache estático por defecto
         next: { revalidate: 3600 }, // Revalidar cada hora (3600 segundos)
@@ -108,6 +108,7 @@ export default async function Home() {
   const testimonials = await getTestimonials();
   const affiliates = home?.data?.affiliatesSection;
   const partners = home?.data?.partnersSection;
+  const sponsors = home?.data?.sponsorsSection;
 
   // Fallback data en caso de error de conexión
   const fallbackData = {
@@ -123,7 +124,8 @@ export default async function Home() {
     testimonialsData: null,
     testimonialsSectionData: null,
     affiliatesSectionData: null,
-    partnersSectionData: null
+    partnersSectionData: null,
+    sponsorsSectionData: null
   };
 
   return (
@@ -141,6 +143,7 @@ export default async function Home() {
       testimonialsSectionData={home?.data?.testimonialsSection || fallbackData.testimonialsSectionData}
       affiliatesSectionData={affiliates || fallbackData.affiliatesSectionData}
       partnersSectionData={partners || fallbackData.partnersSectionData}
+      sponsorsSectionData={sponsors || fallbackData.sponsorsSectionData}
     />
   );
 }

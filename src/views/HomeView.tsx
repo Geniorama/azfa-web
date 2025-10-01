@@ -79,20 +79,12 @@ interface HomeViewProps {
   };
   affiliatesSectionData?: AffiliateSectionType | null;
   partnersSectionData?: PartnersSectionType | null;
+  sponsorsSectionData?: PartnersSectionType | null;
 }
 
-export default function Home({ slidesData, introData, contentWithVideoData, servicesData, statisticsData, newsData, newsSectionData, eventsData, eventSectionData, testimonialsData, testimonialsSectionData, affiliatesSectionData, partnersSectionData }: HomeViewProps) {
+export default function Home({ slidesData, introData, contentWithVideoData, servicesData, statisticsData, newsData, newsSectionData, eventsData, eventSectionData, testimonialsData, testimonialsSectionData, affiliatesSectionData, partnersSectionData, sponsorsSectionData }: HomeViewProps) {
   const router = useRouter();
   const [openModalVideo, setOpenModalVideo] = useState(false);
-
-  console.log("statisticsData", statisticsData);
-  console.log("newsData", newsData);
-  console.log("newsSectionData", newsSectionData);
-  console.log("eventsData", eventsData);
-  console.log("eventSectionData", eventSectionData);
-  console.log("testimonialsData", testimonialsData);
-  console.log("affiliatesSectionData", affiliatesSectionData);
-  console.log("partnersSectionData", partnersSectionData);
 
   const handleOpenNews = (url: string) => {
     window.open(url, "_blank");
@@ -740,6 +732,7 @@ export default function Home({ slidesData, introData, contentWithVideoData, serv
         </div>
       </section>
 
+      {/* Afiliados */}
       <section className="bg-white pt-16">
         <div className="container mx-auto pb-8 lg:pb-16 px-0 md:px-16 max-w-6xl">
           <TitleDecorative dividerColor="bg-[#94D133]">
@@ -750,10 +743,12 @@ export default function Home({ slidesData, introData, contentWithVideoData, serv
             modules={[Autoplay, Navigation]}
             spaceBetween={50}
             slidesPerView={5}
+            slidesPerGroup={5}
             className="mt-10 swiper-custom"
             autoplay={{ delay: 2500, disableOnInteraction: false }}
             navigation={true}
             loop={true}
+            speed={2000}
             breakpoints={{
               0: {
                 slidesPerView: 1.8,
@@ -828,17 +823,41 @@ export default function Home({ slidesData, introData, contentWithVideoData, serv
         </div>
       </section>
 
-      <section className="bg-white py-16">
-        <div className="container mx-auto px-4">
+      {/* Aliados */}
+      <section className="bg-white pt-16">
+        <div className="container mx-auto pb-8 lg:pb-16 px-0 md:px-16 max-w-6xl">
           <TitleDecorative className="text-center">
             {partnersSectionData?.title || "Nuestros aliados"}
           </TitleDecorative>
 
-          {/* Grid sponsors */}
-          <div className="flex flex-wrap gap-8 justify-center items-center mt-8 [&>img]:grayscale [&>img]:hover:grayscale-0 [&>img]:transition-all [&>img]:duration-300 [&>img]:cursor-pointer">
-            {partnersSectionData?.logos && partnersSectionData.logos.length > 0 ? (
+          {/* Swiper sponsors */}
+          <Swiper
+            modules={[Autoplay, Navigation]}
+            spaceBetween={50}
+            slidesPerView={5}
+            slidesPerGroup={5}
+            className="mt-10 swiper-custom"
+            autoplay={{ delay: 2500, disableOnInteraction: false }}
+            navigation={true}
+            loop={true}
+            speed={2000}
+            breakpoints={{
+              0: {
+                slidesPerView: 1.8,
+                centeredSlides: true,
+              },
+              768: {
+                slidesPerView: 3,
+              },
+              1024: {
+                slidesPerView: 5,
+              },
+            }}
+          >
+            {partnersSectionData?.logos && partnersSectionData.logos.length > 0 && (
               partnersSectionData.logos.map((partner) => (
-                <img
+                <SwiperSlide key={partner.id}>
+                  <img
                   key={partner.id}
                   className="w-full max-w-fit max-h-16 object-contain"
                   src={partner.logo?.url || 'https://testazfabucket.s3.us-east-2.amazonaws.com/logo_aliado_4_oecd_b53ef2d06d.webp'}
@@ -849,44 +868,74 @@ export default function Home({ slidesData, introData, contentWithVideoData, serv
                     }
                   }}
                   style={{ cursor: partner.url ? 'pointer' : 'default' }}
-                />
+                  />
+                </SwiperSlide>
               ))
-            ) : (
-              // Fallback cuando no hay datos de aliados
-              <>
-                <img
-                  className="w-full max-w-fit max-h-16 object-contain"
-                  src={'https://testazfabucket.s3.us-east-2.amazonaws.com/logo_aliado_4_oecd_b53ef2d06d.webp'}
-                  alt="Logo"
-                />
-                <img
-                  className="w-full max-w-fit max-h-16 object-contain"
-                  src={'https://testazfabucket.s3.us-east-2.amazonaws.com/logo_aliado_2_aezo_bdff6064f2.webp'}
-                  alt="Logo"
-                />
-                <img
-                  className="w-full max-w-fit max-h-16 object-contain"
-                  src={'https://testazfabucket.s3.us-east-2.amazonaws.com/logo_aliado_5_naftz_a0eadf16d0.webp'}
-                  alt="Logo"
-                />
-                <img
-                  className="w-full max-w-fit max-h-16 object-contain"
-                  src={'https://testazfabucket.s3.us-east-2.amazonaws.com/logo_aliado_6_world_fzo_d63743d79b.webp'}
-                  alt="Logo"
-                />
-                <img
-                  className="w-full max-w-fit max-h-16 object-contain"
-                  src={'https://testazfabucket.s3.us-east-2.amazonaws.com/logo_aliado_3_gasez_7b5989cd81.webp'}
-                  alt="Logo"
-                />
-                <img
-                  className="w-full max-w-fit max-h-16 object-contain"
-                  src={'https://testazfabucket.s3.us-east-2.amazonaws.com/logo_aliado_1_aezo_b9ff07b6ec.webp'}
-                  alt="Logo"
-                />
-              </>
             )}
-          </div>
+          </Swiper>
+        </div>
+      </section>
+
+      {/* Sponsors */}
+      <section className="bg-white pt-16">
+        <div className="container mx-auto pb-8 lg:pb-16 px-0 md:px-16 max-w-6xl">
+          <TitleDecorative className="text-center">
+            {sponsorsSectionData?.title || "Nuestros sponsors"}
+          </TitleDecorative>
+
+          {/* Swiper sponsors */}
+          <Swiper
+          modules={[Autoplay, Navigation]}
+          spaceBetween={50}
+          slidesPerView={5}
+          slidesPerGroup={5}
+          className="mt-10 swiper-custom"
+          autoplay={{ delay: 2500, disableOnInteraction: false }}
+          navigation={true}
+          speed={2000}
+          loop={true}
+          breakpoints={{
+            0: {
+              slidesPerView: 1.8,
+              centeredSlides: true,
+            },
+            768: {
+              slidesPerView: 3,
+            },
+            1024: {
+              slidesPerView: 5,
+            },
+          }}
+        >
+          {sponsorsSectionData?.logos && sponsorsSectionData.logos.length > 0 ? (
+            sponsorsSectionData.logos.map((sponsor) => (
+              <SwiperSlide key={sponsor.id}>
+                <img
+                  className="w-full h-24 object-contain max-w-fit mx-auto grayscale md:grayscale hover:grayscale-0 transition-all duration-300 swiper-slide-mobile"
+                  src={sponsor.logo?.url || 'https://testazfabucket.s3.us-east-2.amazonaws.com/logo_sponsor_1_oecd_b53ef2d06d.webp'}
+                  alt={sponsor.name || "Logo"}
+                  onClick={() => {
+                    if (sponsor.url) {
+                      window.open(sponsor.url, "_blank");
+                    }
+                  }}
+                  style={{ cursor: sponsor.url ? 'pointer' : 'default' }}
+                />
+              </SwiperSlide>
+            ))
+          ) : (
+            // Fallback cuando no hay datos de sponsors
+            <>
+              <SwiperSlide>
+                <img
+                  className="w-full h-24 object-contain max-w-fit mx-auto grayscale md:grayscale hover:grayscale-0 transition-all duration-300 swiper-slide-mobile"
+                  src="https://testazfabucket.s3.us-east-2.amazonaws.com/logo_sponsor_1_oecd_b53ef2d06d.webp"
+                  alt="Logo sponsor"
+                />
+              </SwiperSlide>
+            </>
+          )}
+        </Swiper>
         </div>
       </section>
     </>
