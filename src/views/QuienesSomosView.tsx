@@ -512,7 +512,7 @@ export default function JuntaDirectivaView({
                             <img src={IconPerson.src} alt="Icon Person" />
                             <div>
                               <p>{comission.teamLabel}</p>
-                              <div className="flex flex-row gap-4">
+                              <div className="flex flex-row flex-wrap gap-4">
                                 {comission.teamProfiles.length > 0 &&
                                   comission.teamProfiles.map((team, index) => (
                                     <AvatarPerson
