@@ -124,6 +124,7 @@ export default function StudiesView({ studies }: StudiesViewProps) {
                     ...study.tags.map(tag => tag.name),
                     study.publishDate.split('-')[0] // Agregar el año como tag
                   ]}
+                  noSpaceImage={true}
                   button={{
                     label: "Descargar",
                     onClick: () => {

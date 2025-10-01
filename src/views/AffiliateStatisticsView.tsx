@@ -153,6 +153,13 @@ export default function AffiliateStatisticsView({ pageContent }: AffiliateStatis
                         />
                       )}
                     </div>
+
+                      {/* Disclaimer */}
+                      {pageContent?.disclaimerText && (
+                        <div className="p-4 text-center">
+                          <p className="text-sm text-gray-500">{pageContent?.disclaimerText}</p>
+                        </div>
+                      )}
                   </div>
                 );
               })}
