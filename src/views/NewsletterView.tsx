@@ -45,6 +45,7 @@ export default function NewsletterView({ newsletterData, categoriesData, paginat
       title: item.title,
       date: formatDate(item.publishedAt),
       description: truncateText(item.extract, 100),
+      thumbnail: item.thumbnail,
       url: item.downloadDocument?.url || item.externalLink || "#",
       hasDocument: !item.externalLink && !!item.downloadDocument?.url,
     }));
@@ -81,7 +82,8 @@ export default function NewsletterView({ newsletterData, categoriesData, paginat
                             <CardNewsletter 
                               key={index}
                               title={item.title} 
-                              date={item.date} 
+                              date={item.date}
+                              thumbnail={item.thumbnail}
                               button={{ 
                                 label: "Leer boletín", 
                                 onClick: () => handleOpenNewsletter(item.url) 

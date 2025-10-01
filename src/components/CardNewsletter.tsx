@@ -1,9 +1,11 @@
 import IconNewsletter from "@/assets/img/icon-newsletter.svg";
 import IconArrowRight from "@/assets/img/btn-arrow-blue.svg";
+import { StrapiImageType } from "@/types/componentsType";
 
 interface CardNewsletterProps {
   title: string;
   date: string;
+  thumbnail?: StrapiImageType;
   button: {
     label: string;
     onClick: () => void;
@@ -11,10 +13,21 @@ interface CardNewsletterProps {
   background: string; // Color de fondo
 }
 
-export default function CardNewsletter({ title, date, button, background }: CardNewsletterProps) {
+export default function CardNewsletter({ title, date, thumbnail, button, background }: CardNewsletterProps) {
   return (
     <div className="bg-white border border-background-2 rounded-tr-2xl rounded-bl-2xl rounded-br-2xl overflow-hidden text-text-primary hover:shadow-xl hover:border-transparent transition-all duration-300">
-        <div className={`w-full h-60 relative ${background || "bg-background-1"}`}>
+        <div className={`w-full h-60 relative ${background || "bg-background-1"} overflow-hidden`}>
+            {thumbnail ? (
+              <img 
+                src={thumbnail.url} 
+                alt={thumbnail.alternativeText || title}
+                className="w-full h-full object-cover"
+              />
+            ) : (
+              <div className="w-full h-full flex items-center justify-center">
+                <img src={IconNewsletter.src} alt="Icon Newsletter" className="w-16 h-16 opacity-50" />
+              </div>
+            )}
             <div className="absolute top-4 right-4 w-14 h-14 flex flex-col justify-center items-center p-3 bg-white rounded-lg">
                 <img src={IconNewsletter.src} alt="Icon Newsletter" className="w-10 h-10" />
             </div>
