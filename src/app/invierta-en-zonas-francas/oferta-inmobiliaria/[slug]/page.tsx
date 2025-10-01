@@ -78,6 +78,36 @@ const renderStrapiBlocks = (blocks: StrapiBlock[]): string => {
     .join("");
 };
 
+// Función para validar si las certificaciones tienen contenido real
+const hasCertificationContent = (certifications: StrapiBlock[]): boolean => {
+  if (!Array.isArray(certifications) || certifications.length === 0) {
+    return false;
+  }
+
+  return certifications.some(block => {
+    // Verificar si el bloque tiene children
+    if (!block.children || block.children.length === 0) {
+      return false;
+    }
+
+    // Verificar si algún child tiene texto no vacío
+    return block.children.some(child => {
+      if (child.type === "text" && child.text) {
+        return child.text.trim().length > 0;
+      }
+      
+      // Si tiene children anidados, verificar recursivamente
+      if (child.children && child.children.length > 0) {
+        return child.children.some(nestedChild => 
+          nestedChild.type === "text" && nestedChild.text && nestedChild.text.trim().length > 0
+        );
+      }
+      
+      return false;
+    });
+  });
+};
+
 export default function OfertaInmobiliariaSingle() {
   const [inmueble, setInmueble] = useState<InmuebleType | null>(null);
   const { slug } = useParams();
@@ -119,6 +149,8 @@ export default function OfertaInmobiliariaSingle() {
             }) || [],
           };
 
+
+          console.log("dataWithGallery", dataWithGallery);
           setInmueble(dataWithGallery);
         } else {
           console.error("Error al obtener el inmueble:", "No se encontró el inmueble");
@@ -231,7 +263,7 @@ export default function OfertaInmobiliariaSingle() {
                 </div>
 
                 {/* Certifications */}
-                {inmueble.certifications && (
+                {inmueble.certifications && hasCertificationContent(inmueble.certifications) && (
                   <div className="mt-10">
                     <div className="flex items-center gap-2">
                       <img
