@@ -19,6 +19,8 @@ import { useParams } from "next/navigation";
 import { StrapiButtonType } from "@/types/componentsType";
 import { getCountryCode, getCountryName } from "@/utils/countryMapping";
 import ReactMarkdown from 'react-markdown';
+import type { FilterValuesProps } from "@/components/AdvancedSearchBar";
+import { extractFilterOptions, FilterOptions } from "@/utils/extractFilterOptions";
 
 // Función para convertir bloques de Strapi a HTML
 interface StrapiBlock {
@@ -110,6 +112,7 @@ const hasCertificationContent = (certifications: StrapiBlock[]): boolean => {
 
 export default function OfertaInmobiliariaSingle() {
   const [inmueble, setInmueble] = useState<InmuebleType | null>(null);
+  const [filterOptions, setFilterOptions] = useState<FilterOptions | null>(null);
   const { slug } = useParams();
   const router = useRouter();
 
@@ -128,6 +131,26 @@ export default function OfertaInmobiliariaSingle() {
     if (ctaButton.link) {
       window.open(ctaButton.link, ctaButton.target || "_self");
     }
+  };
+
+  // Función para manejar la búsqueda desde la barra de filtros
+  const handleSearch = (filters: FilterValuesProps) => {
+    // Crear query parameters con los filtros
+    const queryParams = new URLSearchParams();
+    
+    Object.entries(filters).forEach(([key, value]) => {
+      if (value && value.trim() !== '') {
+        queryParams.append(key, value);
+      }
+    });
+    
+    // Redirigir a la página principal de oferta inmobiliaria con los filtros
+    const queryString = queryParams.toString();
+    const url = queryString 
+      ? `/invierta-en-zonas-francas/oferta-inmobiliaria?${queryString}`
+      : '/invierta-en-zonas-francas/oferta-inmobiliaria';
+    
+    router.push(url);
   };
 
   useEffect(() => {
@@ -164,6 +187,45 @@ export default function OfertaInmobiliariaSingle() {
     fetchInmueble();
   }, [slug]);
 
+  // Cargar opciones de filtro desde la API
+  useEffect(() => {
+    const fetchFilterOptions = async () => {
+      try {
+        const response = await fetch('/api/getRealStateOffer?pagination[pageSize]=1000');
+        const data = await response.json();
+        
+        if (data.success && data.data && Array.isArray(data.data)) {
+          const offers = data.data.map((item: InmuebleType) => ({
+            id: item.id,
+            title: item.title,
+            slug: item.slug,
+            offerType: item.offerType || [],
+            propertyType: item.propertyType || [],
+            propertyUse: item.propertyUse || [],
+            city: item.city || '',
+            country: item.country || '',
+            propertyStatus: item.propertyStatus || '',
+            area: item.area || 0,
+            imgGallery: item.imgGallery || [],
+            description: item.description || '',
+            certifications: item.certifications || [],
+            ctaButton: item.ctaButton || null,
+            createdAt: item.createdAt,
+            updatedAt: item.updatedAt,
+            publishedAt: item.publishedAt
+          }));
+          
+          const options = extractFilterOptions(offers);
+          setFilterOptions(options);
+        }
+      } catch (error) {
+        console.error("Error al obtener opciones de filtro:", error);
+      }
+    };
+    
+    fetchFilterOptions();
+  }, []);
+
   if (!inmueble) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -184,7 +246,17 @@ export default function OfertaInmobiliariaSingle() {
       />
 
       <div className="container mx-auto px-4 -mt-16 z-10 relative">
-        <AdvancedSearchBar onSearch={() => {}} />
+        <AdvancedSearchBar 
+          onSearch={handleSearch} 
+          options={filterOptions || {
+            offerType: [{ label: 'Todos', value: 'todos' }],
+            propertyType: [{ label: 'Todos', value: 'todos' }],
+            propertyUse: [{ label: 'Todos', value: 'todos' }],
+            city: [{ label: 'Todos', value: 'todos' }],
+            country: [{ label: 'Todos', value: 'todos' }],
+            propertyStatus: [{ label: 'Todos', value: 'todos' }]
+          }}
+        />
 
         <article className="py-16">
           <div className="container mx-auto px-4">

@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useRef, useEffect, useMemo } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import SelectorFilter from '../utils/SelectorFilter'
 import IconTipoOferta from "@/assets/img/icon-oferta.svg"
 import IconTipoInmueble from "@/assets/img/icon-inmueble.svg"
@@ -14,163 +14,6 @@ interface Option {
     value: string;
 }
 
-const optionsTipoOferta: Option[] = [
-    {
-        label: 'Todos',
-        value: 'todos'
-    },
-    {
-        label: 'Venta',
-        value: 'venta'
-    },
-    {
-        label: 'Alquiler',
-        value: 'alquiler'
-    },
-    {
-        label: 'Venta y Alquiler',
-        value: 'venta-y-alquiler'
-    }
-]
-
-const optionsTipoInmueble: Option[] = [
-    {
-        label: 'Todos',
-        value: 'todos'
-    },
-
-    {
-        label: 'Casa',
-        value: 'casa'
-    },
-    {
-        label: 'Terreno',
-        value: 'terreno'
-    },
-    {
-        label: 'Local',
-        value: 'local'
-    },
-    {
-        label: 'Oficina',
-        value: 'oficina'
-    }
-]
-
-const optionsUsoInmueble: Option[] = [
-
-    {
-        label: 'Todos',
-        value: 'todos'
-    },
-    {
-        label: 'Industria',
-        value: 'industria'
-    },
-    {
-        label: 'Oficinas',
-        value: 'oficinas'
-    },
-    {
-        label: 'Comercial',
-        value: 'comercial'
-    },
-    {
-        label: 'Residencial',
-        value: 'residencial'
-    },
-    {
-        label: 'Hotel',
-        value: 'hotel'
-    },
-    {
-        label: 'Terreno',
-        value: 'terreno'
-    },
-]
-
-const optionsCiudad: Option[] = [
-
-    {
-        label: 'Todos',
-        value: 'todos'
-    },
-    
-    {
-        label: 'San José',
-        value: 'san-jose'
-    },
-    {
-        label: 'Alajuela',
-        value: 'alajuela'
-    },
-    {
-        label: 'Cartago',
-        value: 'cartago'
-    },
-    {
-        label: 'Heredia',
-        value: 'heredia'
-    },
-    {
-        label: 'Guanacaste',
-        value: 'guanacaste'
-    },
-    {
-        label: 'Puntarenas',
-        value: 'puntarenas'
-    },  
-]
-
-const optionsPais: Option[] = [ 
-    {
-        label: 'Todos',
-        value: 'todos'
-    },
-    {
-        label: 'Costa Rica',
-        value: 'CR'
-    },
-    {
-        label: 'Colombia',
-        value: 'CO'
-    },
-    {
-        label: 'Brasil',
-        value: 'BR'
-    },
-    {
-        label: 'Argentina',
-        value: 'AR'
-    },
-    {
-        label: 'Chile',
-        value: 'CL'
-    },
-    {
-        label: 'México',
-        value: 'MX'
-    },
-    {
-        label: 'Perú',
-        value: 'PE'
-    }
-]
-
-const optionsEstado: Option[] = [   
-    {
-        label: 'Todos',
-        value: 'todos'
-    },
-    {
-        label: 'Nuevo',
-        value: 'nuevo'
-    },
-    {
-        label: 'Usado',
-        value: 'usado'
-    },
-]
 
 export interface FilterValuesProps {
   offerType: string;
@@ -192,32 +35,26 @@ interface FilterOptions {
 
 interface AdvancedSearchBarProps {
   onSearch: (filters: FilterValuesProps) => void;
-  options?: FilterOptions;
+  options: FilterOptions;
   currentFilters?: FilterValuesProps;
 }
 
 export default function AdvancedSearchBar({ onSearch, options, currentFilters }: AdvancedSearchBarProps) {
   const [openFilter, setOpenFilter] = useState<string | null>(null)
   
-  // Usar opciones por props o opciones por defecto
-  const filterOptions = useMemo(() => {
-    return options || {
-      offerType: optionsTipoOferta,
-      propertyType: optionsTipoInmueble,
-      propertyUse: optionsUsoInmueble,
-      city: optionsCiudad,
-      country: optionsPais,
-      propertyStatus: optionsEstado
-    };
-  }, [options]);
+  // Usar opciones dinámicas proporcionadas como prop
+  const filterOptions = options;
+  
+  console.log('AdvancedSearchBar recibió opciones:', filterOptions);
+  console.log('Países en AdvancedSearchBar:', filterOptions.country);
   
   const [selectedValues, setSelectedValues] = useState<FilterValuesProps>({
-    offerType: '',
-    propertyType: '',
-    propertyUse: '',
-    city: '',
-    country: '',
-    propertyStatus: ''
+    offerType: 'Todos',
+    propertyType: 'Todos',
+    propertyUse: 'Todos',
+    city: 'Todos',
+    country: 'Todos',
+    propertyStatus: 'Todos'
   })
   const containerRef = useRef<HTMLDivElement>(null)
 
@@ -241,15 +78,29 @@ export default function AdvancedSearchBar({ onSearch, options, currentFilters }:
     } else {
       // Valores por defecto
       setSelectedValues({
-        offerType: filterOptions.offerType[0]?.label || '',
-        propertyType: filterOptions.propertyType[0]?.label || '',
-        propertyUse: filterOptions.propertyUse[0]?.label || '',
-        city: filterOptions.city[0]?.label || '',
-        country: filterOptions.country[0]?.label || '',
-        propertyStatus: filterOptions.propertyStatus[0]?.label || ''
+        offerType: filterOptions.offerType[0]?.label || 'Todos',
+        propertyType: filterOptions.propertyType[0]?.label || 'Todos',
+        propertyUse: filterOptions.propertyUse[0]?.label || 'Todos',
+        city: filterOptions.city[0]?.label || 'Todos',
+        country: filterOptions.country[0]?.label || 'Todos',
+        propertyStatus: filterOptions.propertyStatus[0]?.label || 'Todos'
       });
     }
   }, [filterOptions, currentFilters])
+
+  // Actualizar valores iniciales cuando las opciones cambien
+  useEffect(() => {
+    if (filterOptions && !currentFilters) {
+      setSelectedValues({
+        offerType: filterOptions.offerType[0]?.label || 'Todos',
+        propertyType: filterOptions.propertyType[0]?.label || 'Todos',
+        propertyUse: filterOptions.propertyUse[0]?.label || 'Todos',
+        city: filterOptions.city[0]?.label || 'Todos',
+        country: filterOptions.country[0]?.label || 'Todos',
+        propertyStatus: filterOptions.propertyStatus[0]?.label || 'Todos'
+      });
+    }
+  }, [filterOptions, currentFilters]);
 
   // Función para manejar la apertura/cierre de filtros
   const handleFilterToggle = (filterName: string) => {
