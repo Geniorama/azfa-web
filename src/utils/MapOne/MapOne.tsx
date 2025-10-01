@@ -18,7 +18,16 @@ export default function MapOne({
     const isValidCountry = target.className.baseVal === "st3"
 
     if(isValidCountry){
-      const countryId = target.getAttribute('id')
+      let countryId = target.getAttribute('id')
+      
+      // Si el elemento clicado no tiene ID, buscar en el elemento padre (grupo)
+      if (!countryId) {
+        const parentElement = target.parentElement as SVGElement;
+        if (parentElement && parentElement.tagName === 'g') {
+          countryId = parentElement.getAttribute('id');
+        }
+      }
+      
       if(countryId){
         setSelectedCountry(countryId)
         if(onCountrySelect){
@@ -30,15 +39,22 @@ export default function MapOne({
 
   useEffect(() => {
     // Remover la clase selected de todos los países
-    document.querySelectorAll('svg path.st3, svg polygon.st3').forEach(country => {
+    document.querySelectorAll('svg path.st3, svg polygon.st3, svg g.st3').forEach(country => {
       country.classList.remove('selected');
     });
 
     // Aplicar la clase selected al país seleccionado
     if (selectedCountry) {
       const selectedElement = document.getElementById(selectedCountry);
-      if (selectedElement && selectedElement.classList.contains('st3')) {
-        selectedElement.classList.add('selected');
+      if (selectedElement) {
+        // Si es un grupo (como España), aplicar la clase a todos sus hijos
+        if (selectedElement.tagName === 'g') {
+          selectedElement.querySelectorAll('path.st3, polygon.st3').forEach(child => {
+            child.classList.add('selected');
+          });
+        } else if (selectedElement.classList.contains('st3')) {
+          selectedElement.classList.add('selected');
+        }
       }
     }
   }, [selectedCountry]);
