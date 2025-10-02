@@ -1,8 +1,9 @@
 "use client"
 
 import CardEventsMonth from '@/components/CardEventsMonth'
+import CardEvent from '@/components/CardEvent'
 import BackgroundEventos from '@/assets/img/bg-eventos.jpg'
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 import { EventType, EventsPageType } from '@/types/componentsType'
 import CardNextEvent from '@/components/CardNextEvent'
 
@@ -70,6 +71,7 @@ export default function EventosView({ eventsData, eventsPageData, isLoading = fa
   const transformedEvents = transformEventsData(eventsData);
   const [events] = useState<MonthEvents[]>(transformedEvents)
   const [activeTab, setActiveTab] = useState("todos")
+  const gridSectionRef = useRef<HTMLElement>(null)
 
   // Función para encontrar el evento destacado más próximo en fecha futura
   const getNextEvent = (): EventType | null => {
@@ -225,6 +227,63 @@ export default function EventosView({ eventsData, eventsPageData, isLoading = fa
 
   const filteredEvents = getFilteredEvents()
 
+  // Función para obtener eventos filtrados para mostrar en grid (próximos/pasados)
+  const getFilteredEventsForGrid = (): EventType[] => {
+    const today = new Date()
+    today.setHours(0, 0, 0, 0)
+
+    let filtered: EventType[] = []
+
+    switch (activeTab) {
+      case "proximos":
+        filtered = eventsData
+          .filter(event => {
+            const eventDate = new Date(event.startDate)
+            eventDate.setHours(0, 0, 0, 0)
+            return eventDate >= today
+          })
+          .sort((a, b) => {
+            const dateA = new Date(a.startDate)
+            const dateB = new Date(b.startDate)
+            return dateA.getTime() - dateB.getTime()
+          })
+        break;
+      case "pasados":
+        filtered = eventsData
+          .filter(event => {
+            const eventDate = new Date(event.startDate)
+            eventDate.setHours(0, 0, 0, 0)
+            return eventDate < today
+          })
+          .sort((a, b) => {
+            const dateA = new Date(a.startDate)
+            const dateB = new Date(b.startDate)
+            return dateB.getTime() - dateA.getTime() // Más recientes primero
+          })
+        break;
+      default:
+        filtered = []
+    }
+
+    return filtered
+  }
+
+  const eventsForGrid = getFilteredEventsForGrid()
+
+  // Función para cambiar tab y hacer scroll al grid
+  const handleTabChange = (tab: string) => {
+    setActiveTab(tab)
+    // Solo hacer scroll si es una tab que muestra grid (no "todos")
+    if (tab !== "todos" && gridSectionRef.current) {
+      setTimeout(() => {
+        gridSectionRef.current?.scrollIntoView({ 
+          behavior: 'smooth',
+          block: 'start'
+        })
+      }, 100) // Pequeño delay para asegurar que el contenido se haya renderizado
+    }
+  }
+
   // Manejo de estados de carga y error
   if (isLoading) {
     return (
@@ -259,9 +318,9 @@ export default function EventosView({ eventsData, eventsPageData, isLoading = fa
 
                 {/* Tabs */}
                 <div className='flex flex-col md:flex-row w-full max-w-screen-lg gap-0.5 md:gap-0 justify-center mx-auto mt-10'>
-                    <button className={`text-body1 text-text-primary p-2 px-6 md:w-1/3 lg:rounded-tl-lg lg:rounded-bl-lg cursor-pointer transition-colors border-r border-gray-300 font-medium ${activeTab === "todos" ? "bg-details-hover text-gray-800" : "bg-white hover:bg-gray-50"}`} onClick={() => setActiveTab("todos")}>Calendario Anual</button>
-                    <button className={`text-body1 text-text-primary p-2 px-6 md:w-1/3 cursor-pointer transition-colors border-r border-gray-300 font-medium ${activeTab === "proximos" ? "bg-details-hover text-gray-800" : "bg-white hover:bg-gray-50"}`} onClick={() => setActiveTab("proximos")}>Próximos</button>
-                    <button className={`text-body1 text-text-primary p-2 px-6 md:w-1/3 lg:rounded-tr-lg lg:rounded-br-lg cursor-pointer transition-colors border-l border-gray-300 font-medium ${activeTab === "pasados" ? "bg-details-hover text-gray-800" : "bg-white hover:bg-gray-50"}`} onClick={() => setActiveTab("pasados")}>Pasados</button>
+                    <button className={`text-body1 text-text-primary p-2 px-6 md:w-1/3 lg:rounded-tl-lg lg:rounded-bl-lg cursor-pointer transition-colors border-r border-gray-300 font-medium ${activeTab === "todos" ? "bg-details-hover text-gray-800" : "bg-white hover:bg-gray-50"}`} onClick={() => handleTabChange("todos")}>Calendario Anual</button>
+                    <button className={`text-body1 text-text-primary p-2 px-6 md:w-1/3 cursor-pointer transition-colors border-r border-gray-300 font-medium ${activeTab === "proximos" ? "bg-details-hover text-gray-800" : "bg-white hover:bg-gray-50"}`} onClick={() => handleTabChange("proximos")}>Próximos</button>
+                    <button className={`text-body1 text-text-primary p-2 px-6 md:w-1/3 lg:rounded-tr-lg lg:rounded-br-lg cursor-pointer transition-colors border-l border-gray-300 font-medium ${activeTab === "pasados" ? "bg-details-hover text-gray-800" : "bg-white hover:bg-gray-50"}`} onClick={() => handleTabChange("pasados")}>Pasados</button>
                 </div>
             </div>
         </section>
@@ -295,46 +354,90 @@ export default function EventosView({ eventsData, eventsPageData, isLoading = fa
           </section>
         )}
 
-        <section className='bg-white lg:py-16 py-0'>
+        <section ref={gridSectionRef} className='bg-white lg:py-16 py-0'>
             <div className="container mx-auto px-4">
-                 <div className='flex flex-col md:flex-row flex-wrap'>
-                     <div className='w-full md:w-1/2 lg:w-1/4 p-3'>
-                         <CardEventsMonth month="Enero" events={filteredEvents[0].events} />
-                     </div>
-                     <div className='w-full md:w-1/2 lg:w-1/4 p-3'>
-                         <CardEventsMonth month="Febrero" events={filteredEvents[1].events} />
-                     </div>
-                     <div className='w-full md:w-1/2 lg:w-1/4 p-3'>
-                         <CardEventsMonth month="Marzo" events={filteredEvents[2].events} />
-                     </div>
-                     <div className='w-full md:w-1/2 lg:w-1/4 p-3'>
-                         <CardEventsMonth month="Abril" events={filteredEvents[3].events} />
-                     </div>
-                     <div className='w-full md:w-1/2 lg:w-1/4 p-3'>
-                         <CardEventsMonth month="Mayo" events={filteredEvents[4].events} />
-                     </div>
-                     <div className='w-full md:w-1/2 lg:w-1/4 p-3'>
-                         <CardEventsMonth month="Junio" events={filteredEvents[5].events} />
-                     </div>
-                     <div className='w-full md:w-1/2 lg:w-1/4 p-3'>
-                         <CardEventsMonth month="Julio" events={filteredEvents[6].events} />
-                     </div>
-                     <div className='w-full md:w-1/2 lg:w-1/4 p-3'>
-                         <CardEventsMonth month="Agosto" events={filteredEvents[7].events} />
-                     </div>
-                     <div className='w-full md:w-1/2 lg:w-1/4 p-3'>
-                         <CardEventsMonth month="Septiembre" events={filteredEvents[8].events} />
-                     </div>
-                     <div className='w-full md:w-1/2 lg:w-1/4 p-3'>
-                         <CardEventsMonth month="Octubre" events={filteredEvents[9].events} />
-                     </div>
-                     <div className='w-full md:w-1/2 lg:w-1/4 p-3'>
-                         <CardEventsMonth month="Noviembre" events={filteredEvents[10].events} />
-                     </div>
-                     <div className='w-full md:w-1/2 lg:w-1/4 p-3'>
-                         <CardEventsMonth month="Diciembre" events={filteredEvents[11].events} />
-                     </div>
-                 </div>
+                {activeTab === "todos" ? (
+                    // Mostrar calendario anual cuando tab "todos" está activo
+                    <div className='flex flex-col md:flex-row flex-wrap'>
+                        <div className='w-full md:w-1/2 lg:w-1/4 p-3'>
+                            <CardEventsMonth month="Enero" events={filteredEvents[0].events} />
+                        </div>
+                        <div className='w-full md:w-1/2 lg:w-1/4 p-3'>
+                            <CardEventsMonth month="Febrero" events={filteredEvents[1].events} />
+                        </div>
+                        <div className='w-full md:w-1/2 lg:w-1/4 p-3'>
+                            <CardEventsMonth month="Marzo" events={filteredEvents[2].events} />
+                        </div>
+                        <div className='w-full md:w-1/2 lg:w-1/4 p-3'>
+                            <CardEventsMonth month="Abril" events={filteredEvents[3].events} />
+                        </div>
+                        <div className='w-full md:w-1/2 lg:w-1/4 p-3'>
+                            <CardEventsMonth month="Mayo" events={filteredEvents[4].events} />
+                        </div>
+                        <div className='w-full md:w-1/2 lg:w-1/4 p-3'>
+                            <CardEventsMonth month="Junio" events={filteredEvents[5].events} />
+                        </div>
+                        <div className='w-full md:w-1/2 lg:w-1/4 p-3'>
+                            <CardEventsMonth month="Julio" events={filteredEvents[6].events} />
+                        </div>
+                        <div className='w-full md:w-1/2 lg:w-1/4 p-3'>
+                            <CardEventsMonth month="Agosto" events={filteredEvents[7].events} />
+                        </div>
+                        <div className='w-full md:w-1/2 lg:w-1/4 p-3'>
+                            <CardEventsMonth month="Septiembre" events={filteredEvents[8].events} />
+                        </div>
+                        <div className='w-full md:w-1/2 lg:w-1/4 p-3'>
+                            <CardEventsMonth month="Octubre" events={filteredEvents[9].events} />
+                        </div>
+                        <div className='w-full md:w-1/2 lg:w-1/4 p-3'>
+                            <CardEventsMonth month="Noviembre" events={filteredEvents[10].events} />
+                        </div>
+                        <div className='w-full md:w-1/2 lg:w-1/4 p-3'>
+                            <CardEventsMonth month="Diciembre" events={filteredEvents[11].events} />
+                        </div>
+                    </div>
+                ) : (
+                    // Mostrar grid con CardEvent vertical para pestañas "próximos" y "pasados"
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        {eventsForGrid.length > 0 ? (
+                            eventsForGrid.map((event) => (
+                                <CardEvent
+                                    key={event.id}
+                                    image={event.featuredImage?.url || "https://testazfabucket.s3.us-east-2.amazonaws.com/img_evento_1a_World_FZO_af2dc47ee4.webp"}
+                                    title={event.title}
+                                    category={event.tag || "Evento"}
+                                    date={formatDateRange(event.startDate, event.endDate)}
+                                    location={event.location}
+                                    hotel={event.address}
+                                    calendarIcon={event.calendarIcon}
+                                    locationIcon={event.locationIcon}
+                                    addressIcon={event.addressIcon}
+                                    direction="vertical"
+                                    button={{
+                                        label: event.buttonText || "Ver más",
+                                        onClick: () => {
+                                            if (event.buttonUrl) {
+                                                window.open(event.buttonUrl, "_blank");
+                                            } else {
+                                                window.location.href = "/eventos";
+                                            }
+                                        },
+                                    }}
+                                />
+                            ))
+                        ) : (
+                            // Mensaje cuando no hay eventos en esa categoría
+                            <div className="col-span-full text-center py-12">
+                                <p className="text-lg text-text-primary">
+                                    {activeTab === "proximos" 
+                                        ? "No hay eventos próximos por el momento" 
+                                        : "No hay eventos pasados disponibles"
+                                    }
+                                </p>
+                            </div>
+                        )}
+                    </div>
+                )}
             </div>
         </section>
     </div>
