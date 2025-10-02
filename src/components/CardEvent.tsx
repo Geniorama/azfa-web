@@ -1,5 +1,6 @@
 import { GoCalendar, GoHome } from "react-icons/go";
 import ArrowRightGreen from "@/assets/img/btn-arrow-green.svg";
+import { EventIconType } from "@/types/componentsType";
 
 interface CardEventProps {
     image: string;
@@ -8,13 +9,24 @@ interface CardEventProps {
     date?: string;
     location?: string;
     hotel?: string;
+    calendarIcon?: EventIconType;
+    locationIcon?: EventIconType;
+    addressIcon?: EventIconType;
     button: {
         label: string;
         onClick: () => void;
     }
 }
 
-export default function CardEvent({ image, title, category, date, location, hotel, button }: CardEventProps) {
+// Helper function to render icon
+const renderIcon = (iconData: EventIconType | undefined, fallbackIcon: React.ReactNode) => {
+  if (iconData?.customImage?.url) {
+    return <img src={iconData.customImage.url} alt="icon" className="w-5 h-5" />;
+  }
+  return fallbackIcon;
+};
+
+export default function CardEvent({ image, title, category, date, location, hotel, calendarIcon, locationIcon, addressIcon, button }: CardEventProps) {
   return (
     <div className="flex flex-col lg:flex-row border border-background-2 rounded-tr-2xl rounded-bl-2xl rounded-br-2xl overflow-hidden">
         <div className="w-full lg:w-2/5">
@@ -29,19 +41,19 @@ export default function CardEvent({ image, title, category, date, location, hote
             <div className="flex flex-row gap-y-2 justify-between flex-wrap">
                 {date && (
                     <div className="flex flex-row gap-2 items-start w-full lg:w-1/2">
-                        <GoCalendar className="w-5 h-5" />
+                        {renderIcon(calendarIcon, <GoCalendar className="w-5 h-5" />)}
                         <span className="text-body2 inline-block">{date}</span>
                     </div>
                 )}
                 {location && (
                     <div className="flex flex-row gap-2 items-start w-full lg:w-1/2">
-                        <GoHome className="w-5 h-5" />
+                        {renderIcon(locationIcon, <GoHome className="w-5 h-5" />)}
                         <span className="text-body2 inline-block">{location}</span>
                     </div>
                 )}
                 {hotel && (
                     <div className="flex flex-row gap-2 items-start w-full">
-                        <GoHome className="w-5 h-5 min-w-5" />
+                        {renderIcon(addressIcon, <GoHome className="w-5 h-5 min-w-5" />)}
                         <span className="text-body2 inline-block">{hotel}</span>
                     </div>
                 )}

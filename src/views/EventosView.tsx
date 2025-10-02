@@ -4,6 +4,7 @@ import CardEventsMonth from '@/components/CardEventsMonth'
 import BackgroundEventos from '@/assets/img/bg-eventos.jpg'
 import { useState } from 'react'
 import { EventType, EventsPageType } from '@/types/componentsType'
+import CardNextEvent from '@/components/CardNextEvent'
 
 interface EventosViewProps {
   eventsData: EventType[];
@@ -69,6 +70,58 @@ export default function EventosView({ eventsData, eventsPageData, isLoading = fa
   const transformedEvents = transformEventsData(eventsData);
   const [events] = useState<MonthEvents[]>(transformedEvents)
   const [activeTab, setActiveTab] = useState("todos")
+
+  // Función para encontrar el evento más próximo en fecha futura
+  const getNextEvent = (): EventType | null => {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    // Filtrar eventos futuros y ordenarlos por fecha
+    const futureEvents = eventsData
+      .filter(event => {
+        const eventDate = new Date(event.startDate);
+        eventDate.setHours(0, 0, 0, 0);
+        return eventDate >= today;
+      })
+      .sort((a, b) => {
+        const dateA = new Date(a.startDate);
+        const dateB = new Date(b.startDate);
+        return dateA.getTime() - dateB.getTime();
+      });
+
+    return futureEvents.length > 0 ? futureEvents[0] : null;
+  };
+
+  const nextEvent = getNextEvent();
+
+  // Función para formatear fechas como "Mayo 5 al 9"
+  const formatDateRange = (startDate: string, endDate: string): string => {
+    const start = new Date(startDate);
+    const end = new Date(endDate);
+    
+    const monthNames = [
+      'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
+      'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'
+    ];
+    
+    const startMonth = monthNames[start.getMonth()];
+    const startDay = start.getDate();
+    const endDay = end.getDate();
+    
+    // Si es el mismo día
+    if (startDate === endDate) {
+      return `${startMonth} ${startDay}`;
+    }
+    
+    // Si es el mismo mes
+    if (start.getMonth() === end.getMonth()) {
+      return `${startMonth} ${startDay} al ${endDay}`;
+    }
+    
+    // Si son meses diferentes
+    const endMonth = monthNames[end.getMonth()];
+    return `${startMonth} ${startDay} al ${endMonth} ${endDay}`;
+  };
 
   // Función para filtrar eventos según el tab activo
   const getFilteredEvents = () => {
@@ -191,21 +244,50 @@ export default function EventosView({ eventsData, eventsPageData, isLoading = fa
     <div>
         <section style={{
             backgroundImage: `url(${eventsPageData?.headingSection?.backgroundImg?.url || BackgroundEventos.src})`
-        }} className='py-16 bg-primary bg-cover bg-center bg-no-repeat text-center'>
+        }} className='pt-16 bg-primary bg-cover bg-center bg-no-repeat text-center lg:pb-40 pb-16'>
             <div className="container mx-auto px-4">
                 <h1 className='text-h1'>{eventsPageData?.headingSection?.title || "Eventos"}</h1>
                 <p className='text-body1 lg:text-lg'>{eventsPageData?.headingSection?.description || "Conozca aquí los próximos eventos del año"}</p>
 
                 {/* Tabs */}
                 <div className='flex flex-col md:flex-row w-full max-w-screen-lg gap-0.5 md:gap-0 justify-center mx-auto mt-10'>
-                    <button className={`text-body1 text-text-primary p-2 px-6 md:w-1/3 lg:rounded-tl-lg lg:rounded-bl-lg cursor-pointer transition-colors border-r border-gray-300 font-medium ${activeTab === "todos" ? "bg-details-hover text-gray-800" : "bg-white hover:bg-gray-50"}`} onClick={() => setActiveTab("todos")}>Todos</button>
+                    <button className={`text-body1 text-text-primary p-2 px-6 md:w-1/3 lg:rounded-tl-lg lg:rounded-bl-lg cursor-pointer transition-colors border-r border-gray-300 font-medium ${activeTab === "todos" ? "bg-details-hover text-gray-800" : "bg-white hover:bg-gray-50"}`} onClick={() => setActiveTab("todos")}>Calendario Anual</button>
                     <button className={`text-body1 text-text-primary p-2 px-6 md:w-1/3 cursor-pointer transition-colors border-r border-gray-300 font-medium ${activeTab === "proximos" ? "bg-details-hover text-gray-800" : "bg-white hover:bg-gray-50"}`} onClick={() => setActiveTab("proximos")}>Próximos</button>
                     <button className={`text-body1 text-text-primary p-2 px-6 md:w-1/3 lg:rounded-tr-lg lg:rounded-br-lg cursor-pointer transition-colors border-l border-gray-300 font-medium ${activeTab === "pasados" ? "bg-details-hover text-gray-800" : "bg-white hover:bg-gray-50"}`} onClick={() => setActiveTab("pasados")}>Pasados</button>
                 </div>
             </div>
         </section>
 
-        <section className='bg-white lg:py-16 py-10'>
+        {nextEvent && (
+          <section className='bg-white lg:py-16 py-10'>
+            <div className="container mx-auto px-4 lg:-mt-40 z-10">
+              <CardNextEvent 
+                tag={nextEvent.tag}
+                title={nextEvent.title}
+                date={formatDateRange(nextEvent.startDate, nextEvent.endDate)}
+                location={nextEvent.location}
+                address={nextEvent.address}
+                image={nextEvent.featuredImage?.url || "https://testazfabucket.s3.us-east-2.amazonaws.com/img_evento_1a_World_FZO_af2dc47ee4.webp"}
+                calendarIcon={nextEvent.calendarIcon}
+                locationIcon={nextEvent.locationIcon}
+                addressIcon={nextEvent.addressIcon}
+                button={{ 
+                  label: nextEvent.buttonText || "Ver más", 
+                  onClick: () => {
+                    if (nextEvent.buttonUrl) {
+                      window.open(nextEvent.buttonUrl, "_blank");
+                    } else {
+                      // Redirigir a la página de eventos si no hay URL específica
+                      window.location.href = "/eventos";
+                    }
+                  }
+                }}
+              />
+            </div>
+          </section>
+        )}
+
+        <section className='bg-white lg:py-16 py-0'>
             <div className="container mx-auto px-4">
                  <div className='flex flex-col md:flex-row flex-wrap'>
                      <div className='w-full md:w-1/2 lg:w-1/4 p-3'>

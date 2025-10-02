@@ -588,6 +588,9 @@ export default function Home({ slidesData, introData, contentWithVideoData, serv
                     category={"Evento"}
                     date={event.startDate}
                     location={event.location}
+                    calendarIcon={event.calendarIcon}
+                    locationIcon={event.locationIcon}
+                    addressIcon={event.addressIcon}
                     button={{
                       label: event.buttonText || "Ver más",
                       onClick: () => {
