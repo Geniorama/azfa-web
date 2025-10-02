@@ -746,3 +746,18 @@ export interface PublicationPageType {
     backgroundImg: StrapiImageType;
   };
 }
+
+export interface PodcastType {
+  id: number;
+  title: string;
+  slug: string;
+  description?: string;
+  createdAt: string;
+  updatedAt: string;
+  publishedAt: string;
+  extract: string;
+  externalLink: string | null;
+  thumbnail: StrapiImageType;
+  category: NewsCategoryType;
+  downloadDocument: StrapiImageType;
+}
