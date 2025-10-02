@@ -273,8 +273,8 @@ export default function EventosView({ eventsData, eventsPageData, isLoading = fa
   // Función para cambiar tab y hacer scroll al grid
   const handleTabChange = (tab: string) => {
     setActiveTab(tab)
-    // Solo hacer scroll si es una tab que muestra grid (no "todos")
-    if (tab !== "todos" && gridSectionRef.current) {
+    // Hacer scroll después del cambio de tab
+    if (gridSectionRef.current) {
       setTimeout(() => {
         gridSectionRef.current?.scrollIntoView({ 
           behavior: 'smooth',
@@ -311,47 +311,62 @@ export default function EventosView({ eventsData, eventsPageData, isLoading = fa
     <div>
         <section style={{
             backgroundImage: `url(${eventsPageData?.headingSection?.backgroundImg?.url || BackgroundEventos.src})`
-        }} className='pt-16 bg-primary bg-cover bg-center bg-no-repeat text-center lg:pb-40 pb-16'>
+        }} className={`pt-16 bg-primary bg-cover bg-center bg-no-repeat text-center ${nextEvent ? 'pb-16 lg:pb-40' : 'lg:pb-40 pb-16'}`}>
             <div className="container mx-auto px-4">
                 <h1 className='text-h1'>{eventsPageData?.headingSection?.title || "Eventos"}</h1>
                 <p className='text-body1 lg:text-lg'>{eventsPageData?.headingSection?.description || "Conozca aquí los próximos eventos del año"}</p>
 
-                {/* Tabs */}
-                <div className='flex flex-col md:flex-row w-full max-w-screen-lg gap-0.5 md:gap-0 justify-center mx-auto mt-10'>
-                    <button className={`text-body1 text-text-primary p-2 px-6 md:w-1/3 lg:rounded-tl-lg lg:rounded-bl-lg cursor-pointer transition-colors border-r border-gray-300 font-medium ${activeTab === "todos" ? "bg-details-hover text-gray-800" : "bg-white hover:bg-gray-50"}`} onClick={() => handleTabChange("todos")}>Calendario Anual</button>
-                    <button className={`text-body1 text-text-primary p-2 px-6 md:w-1/3 cursor-pointer transition-colors border-r border-gray-300 font-medium ${activeTab === "proximos" ? "bg-details-hover text-gray-800" : "bg-white hover:bg-gray-50"}`} onClick={() => handleTabChange("proximos")}>Próximos</button>
-                    <button className={`text-body1 text-text-primary p-2 px-6 md:w-1/3 lg:rounded-tr-lg lg:rounded-br-lg cursor-pointer transition-colors border-l border-gray-300 font-medium ${activeTab === "pasados" ? "bg-details-hover text-gray-800" : "bg-white hover:bg-gray-50"}`} onClick={() => handleTabChange("pasados")}>Pasados</button>
-                </div>
+                {/* Tabs - Solo mostrar aquí cuando NO hay evento destacado */}
+                {!nextEvent && (
+                    <div className='flex flex-col md:flex-row w-full max-w-screen-lg gap-0.5 md:gap-0 justify-center mx-auto mt-10'>
+                        <button className={`text-body1 text-text-primary p-2 px-6 md:w-1/3 lg:rounded-tl-lg lg:rounded-bl-lg cursor-pointer transition-colors border-r border-gray-300 font-medium ${activeTab === "todos" ? "bg-details-hover text-gray-800" : "bg-white hover:bg-gray-50"}`} onClick={() => handleTabChange("todos")}>Calendario Anual</button>
+                        <button className={`text-body1 text-text-primary p-2 px-6 md:w-1/3 cursor-pointer transition-colors border-r border-gray-300 font-medium ${activeTab === "proximos" ? "bg-details-hover text-gray-800" : "bg-white hover:bg-gray-50"}`} onClick={() => handleTabChange("proximos")}>Próximos</button>
+                        <button className={`text-body1 text-text-primary p-2 px-6 md:w-1/3 lg:rounded-tr-lg lg:rounded-br-lg cursor-pointer transition-colors border-l border-gray-300 font-medium ${activeTab === "pasados" ? "bg-details-hover text-gray-800" : "bg-white hover:bg-gray-50"}`} onClick={() => handleTabChange("pasados")}>Pasados</button>
+                    </div>
+                )}
             </div>
         </section>
 
         {nextEvent && (
-          <section className='bg-white lg:py-16 py-10'>
-            <div className="container mx-auto px-4 lg:-mt-40 z-10">
-              <CardNextEvent 
-                tag={nextEvent.tag}
-                title={nextEvent.title}
-                date={formatDateRange(nextEvent.startDate, nextEvent.endDate)}
-                location={nextEvent.location}
-                address={nextEvent.address}
-                image={nextEvent.featuredImage?.url || "https://testazfabucket.s3.us-east-2.amazonaws.com/img_evento_1a_World_FZO_af2dc47ee4.webp"}
-                calendarIcon={nextEvent.calendarIcon}
-                locationIcon={nextEvent.locationIcon}
-                addressIcon={nextEvent.addressIcon}
-                button={{ 
-                  label: nextEvent.buttonText || "Ver más", 
-                  onClick: () => {
-                    if (nextEvent.buttonUrl) {
-                      window.open(nextEvent.buttonUrl, "_blank");
-                    } else {
-                      // Redirigir a la página de eventos si no hay URL específica
-                      window.location.href = "/eventos";
+          <>
+            <section className='bg-white lg:py-16 py-10'>
+              <div className="container mx-auto px-4 lg:-mt-40 z-10">
+                <CardNextEvent 
+                  tag={nextEvent.tag}
+                  title={nextEvent.title}
+                  date={formatDateRange(nextEvent.startDate, nextEvent.endDate)}
+                  location={nextEvent.location}
+                  address={nextEvent.address}
+                  image={nextEvent.featuredImage?.url || "https://testazfabucket.s3.us-east-2.amazonaws.com/img_evento_1a_World_FZO_af2dc47ee4.webp"}
+                  calendarIcon={nextEvent.calendarIcon}
+                  locationIcon={nextEvent.locationIcon}
+                  addressIcon={nextEvent.addressIcon}
+                  button={{ 
+                    label: nextEvent.buttonText || "Ver más", 
+                    onClick: () => {
+                      if (nextEvent.buttonUrl) {
+                        window.open(nextEvent.buttonUrl, "_blank");
+                      } else {
+                        // Redirigir a la página de eventos si no hay URL específica
+                        window.location.href = "/eventos";
+                      }
                     }
-                  }
-                }}
-              />
-            </div>
-          </section>
+                  }}
+                />
+              </div>
+            </section>
+
+            {/* Tabs - Mostrar aquí cuando SÍ hay evento destacado */}
+            <section className='bg-white py-8'>
+              <div className="container mx-auto px-4">
+                <div className='flex flex-col md:flex-row w-full max-w-screen-lg gap-0.5 md:gap-0 justify-center mx-auto border border-gray-300 rounded-lg overflow-hidden'>
+                  <button className={`text-body1 text-text-primary p-2 px-6 md:w-1/3 lg:rounded-tl-lg lg:rounded-bl-lg cursor-pointer transition-colors border-r border-gray-300 font-medium ${activeTab === "todos" ? "bg-details-hover text-gray-800" : "bg-white hover:bg-gray-50"}`} onClick={() => handleTabChange("todos")}>Calendario Anual</button>
+                  <button className={`text-body1 text-text-primary p-2 px-6 md:w-1/3 cursor-pointer transition-colors border-r border-gray-300 font-medium ${activeTab === "proximos" ? "bg-details-hover text-gray-800" : "bg-white hover:bg-gray-50"}`} onClick={() => handleTabChange("proximos")}>Próximos</button>
+                  <button className={`text-body1 text-text-primary p-2 px-6 md:w-1/3 lg:rounded-tr-lg lg:rounded-br-lg cursor-pointer transition-colors border-l border-gray-300 font-medium ${activeTab === "pasados" ? "bg-details-hover text-gray-800" : "bg-white hover:bg-gray-50"}`} onClick={() => handleTabChange("pasados")}>Pasados</button>
+                </div>
+              </div>
+            </section>
+          </>
         )}
 
         <section ref={gridSectionRef} className='bg-white lg:py-16 py-0'>
