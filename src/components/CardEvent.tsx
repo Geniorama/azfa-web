@@ -12,6 +12,7 @@ interface CardEventProps {
     calendarIcon?: EventIconType;
     locationIcon?: EventIconType;
     addressIcon?: EventIconType;
+    direction?: 'vertical' | 'horizontal';
     button: {
         label: string;
         onClick: () => void;
@@ -26,19 +27,19 @@ const renderIcon = (iconData: EventIconType | undefined, fallbackIcon: React.Rea
   return fallbackIcon;
 };
 
-export default function CardEvent({ image, title, category, date, location, hotel, calendarIcon, locationIcon, addressIcon, button }: CardEventProps) {
+export default function CardEvent({ image, title, category, date, location, hotel, calendarIcon, locationIcon, addressIcon, button, direction = 'horizontal'  }: CardEventProps) {
   return (
-    <div className="flex flex-col lg:flex-row border border-background-2 rounded-tr-2xl rounded-bl-2xl rounded-br-2xl overflow-hidden">
-        <div className="w-full lg:w-2/5">
+    <div className={`flex flex-col ${direction === 'horizontal' && 'lg:flex-row'} border border-background-2 rounded-tr-2xl rounded-bl-2xl rounded-br-2xl overflow-hidden`}>
+        <div className={`w-full ${direction === 'horizontal' ? 'lg:w-2/5' : 'aspect-video'}`}>
             <img src={image} alt={title} className='w-full h-full object-cover' />
         </div>
 
         {/* Content */}
-        <div className="py-6 px-8 w-full lg:w-3/5">
+        <div className={`py-6 px-8 w-full ${direction === 'horizontal' ? 'lg:w-3/5' : ''}`}>
             <span className="text-body2 mb-1 inline-block">{category}</span>
             <h3 className="text-h6">{title}</h3>
             <hr className="my-4 border-background-2" />
-            <div className="flex flex-row gap-y-2 justify-between flex-wrap">
+            <div className={`flex gap-y-2 justify-between flex-wrap ${direction === 'horizontal' ? 'flex-row' : 'flex-col'}`}>
                 {date && (
                     <div className="flex flex-row gap-2 items-start w-full lg:w-1/2">
                         {renderIcon(calendarIcon, <GoCalendar className="w-5 h-5" />)}

@@ -71,13 +71,21 @@ export default function EventosView({ eventsData, eventsPageData, isLoading = fa
   const [events] = useState<MonthEvents[]>(transformedEvents)
   const [activeTab, setActiveTab] = useState("todos")
 
-  // Función para encontrar el evento más próximo en fecha futura
+  // Función para encontrar el evento destacado más próximo en fecha futura
   const getNextEvent = (): EventType | null => {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
 
-    // Filtrar eventos futuros y ordenarlos por fecha
-    const futureEvents = eventsData
+    // Primero filtrar eventos destacados (featured: true)
+    const featuredEvents = eventsData.filter(event => event.featured === true);
+
+    // Si no hay eventos destacados, no mostrar ninguno
+    if (featuredEvents.length === 0) {
+      return null;
+    }
+
+    // Filtrar eventos destacados futuros y ordenarlos por fecha (más reciente primero)
+    const futureFeaturedEvents = featuredEvents
       .filter(event => {
         const eventDate = new Date(event.startDate);
         eventDate.setHours(0, 0, 0, 0);
@@ -89,7 +97,7 @@ export default function EventosView({ eventsData, eventsPageData, isLoading = fa
         return dateA.getTime() - dateB.getTime();
       });
 
-    return futureEvents.length > 0 ? futureEvents[0] : null;
+    return futureFeaturedEvents.length > 0 ? futureFeaturedEvents[0] : null;
   };
 
   const nextEvent = getNextEvent();
