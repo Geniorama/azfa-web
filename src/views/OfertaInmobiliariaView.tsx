@@ -282,11 +282,32 @@ function OfertaInmobiliariaContent({ pageContent }: OfertaInmobiliariaViewProps)
       </section>
 
       <section>
-        <div className="container mx-auto pb-16 px-4 md:px-16">
-          <p className="text-5 text-text-primary text-center my-10">
-            Se encontraron <span className="font-bold">{pagination.total}</span>{" "}
-            inmuebles que coinciden con su búsqueda
-          </p>
+        <div className="container mx-auto px-4 ">
+          <div className="flex flex-col items-center justify-center mb-10">
+            <p className="text-5 text-text-primary text-center mt-10">
+              Se encontraron <span className="font-bold">{pagination.total}</span>{" "}
+              inmuebles que coinciden con su búsqueda
+            </p>
+
+            {/* Clear filters */}
+            {(searchFilters.offerType !== "" || searchFilters.propertyType !== "" || searchFilters.propertyUse !== "" || searchFilters.city !== "" || searchFilters.country !== "" || searchFilters.propertyStatus !== "") && (
+              <button
+                onClick={() => {
+                  setSearchFilters({
+                    offerType: "",
+                    propertyType: "",
+                    propertyUse: "",
+                    city: "",
+                    country: "",
+                    propertyStatus: "",
+                  });
+                }}
+                className="mt-4 text-background-3 hover:text-text-primary transition-colors duration-300 underline cursor-pointer"
+              >
+                Limpiar filtros
+              </button>
+            )}
+          </div>
 
           {/* Grid Cards */}
           {offers.length > 0 ? (
