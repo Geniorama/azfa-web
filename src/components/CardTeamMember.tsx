@@ -43,7 +43,7 @@ export default function CardTeamMember({
             <hr className="my-2 border-slate-300" />
             <div className="flex flex-row items-center gap-2">
                 <img src={IconEmail.src} alt="icon-email" className="w-5 h-5" />
-                <p className="text-button">{email}</p>
+                <a href={`mailto:${email}`} target="_blank" rel="noopener noreferrer" className="text-button hover:underline">{email}</a>
             </div>
           </>
         )}

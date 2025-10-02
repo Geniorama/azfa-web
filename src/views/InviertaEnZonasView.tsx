@@ -34,7 +34,7 @@ export default function InviertaEnZonasView({ pageContent }: InviertaEnZonasView
           <div className="flex flex-col lg:flex-row gap-4 text-text-primary items-center py-10 px-4 lg:px-0">
             <div className="w-full lg:w-1/2 lg:pr-24">
               <h2 className="text-h2 mb-10">{pageContent.about.title}</h2>
-              <div className="text-body2 leading-8 [&_ul]:list-disc [&_ul]:list-inside [&_ul]:pl-4 [&_ul]:space-y-2 [&_p]:mb-4">
+              <div className="text-[18px] leading-[31px] [&_ul]:list-disc [&_ul]:list-inside [&_ul]:pl-4 [&_ul]:space-y-2 [&_p]:mb-4">
                 <ReactMarkdown rehypePlugins={[rehypeRaw]}>{pageContent.about.description}</ReactMarkdown>
               </div>
             </div>
@@ -175,7 +175,7 @@ export default function InviertaEnZonasView({ pageContent }: InviertaEnZonasView
           <div className="flex flex-col lg:flex-row-reverse gap-4 text-text-primary items-center py-10 px-4 lg:px-0">
             <div className="w-full lg:w-1/2 lg:pl-24">
                <h2 className="text-h2 mb-10">{pageContent.about2.title}</h2>
-               <div className="text-body2 leading-8 [&_ul]:list-disc [&_ul]:list-inside [&_ul]:pl-4 [&_ul]:space-y-0 [&_p]:mb-4">
+               <div className="text-[18px] leading-[31px] [&_ul]:list-disc [&_ul]:list-inside [&_ul]:pl-4 [&_ul]:space-y-0 [&_p]:mb-4">
                  <ReactMarkdown rehypePlugins={[rehypeRaw]}>{pageContent.about2.description}</ReactMarkdown>
                </div>
             </div>
@@ -191,7 +191,7 @@ export default function InviertaEnZonasView({ pageContent }: InviertaEnZonasView
           <div className="flex flex-col lg:flex-row gap-4 text-white items-center py-5 lg:py-10 px-4 lg:px-0">
             <div className="w-full lg:w-1/2 lg:pr-24">
                <h2 className="text-h2 mb-10">{pageContent.benefits.title}</h2>
-               <div className="text-body2 leading-8 [&_ul]:list-disc [&_ul]:list-inside [&_ul]:pl-4 [&_ul]:space-y-0 [&_p]:mb-4">
+               <div className="text-[18px] leading-[31px] [&_ul]:list-disc [&_ul]:list-inside [&_ul]:pl-4 [&_ul]:space-y-0 [&_p]:mb-4">
                  <ReactMarkdown rehypePlugins={[rehypeRaw]}>{pageContent.benefits.description}</ReactMarkdown>
                </div>
             </div>

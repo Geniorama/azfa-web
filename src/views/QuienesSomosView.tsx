@@ -13,6 +13,8 @@ import { usePathname, useRouter } from "next/navigation";
 import IconPerson from "@/assets/img/person-1.svg";
 import AvatarPerson from "@/components/AvatarPerson";
 import { getCountryName } from "@/utils/countryMapping";
+import ReactMarkdown from "react-markdown";
+import rehypeRaw from "rehype-raw";
 
 interface TeamMemberType {
   id: number;
@@ -217,7 +219,7 @@ export default function JuntaDirectivaView({
   console.log("tabsSection from QuienesSomosView", tabsSection);
   console.log("commissionSections from QuienesSomosView", commissionSections);
 
-  // Función para filtrar miembros por tipo
+  // Función para filtrar miembros por tipo y ordenarlos alfabéticamente
   const getMembersByType = (memberType: string, subCategory?: string) => {
     if (!teamMembersData) return [];
     return teamMembersData.filter((member) => {
@@ -227,6 +229,12 @@ export default function JuntaDirectivaView({
         );
       }
       return member.memberType === memberType;
+    }).sort((a, b) => {
+      // Ordenar alfabéticamente por fullName (ignorando mayúsculas/minúsculas)
+      return a.fullName.localeCompare(b.fullName, undefined, { 
+        sensitivity: 'base',
+        numeric: true 
+      });
     });
   };
 
@@ -478,7 +486,10 @@ export default function JuntaDirectivaView({
                         <h2 className="text-h2 font-normal text-text-primary mb-8">
                           {comission.title}
                         </h2>
-                        <div>{comission.description}</div>
+                        <div className="text-[18px] leading-[31px] [&>p]:text[18px]"
+                        >
+                          <ReactMarkdown rehypePlugins={[rehypeRaw]}>{comission.description}</ReactMarkdown>
+                        </div>
 
                         {/* Leader Profiles */}
                         {comission.leaderProfiles.length > 0 && (
