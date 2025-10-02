@@ -49,7 +49,7 @@ export default function ServiciosView({ serviciosData }: ServiciosViewProps) {
             <div className= {`flex flex-col lg:${!section.orderReverse ? "flex-row" : "flex-row-reverse"} gap-4 text-text-primary items-center py-10 px-4 lg:px-0`}>
               <div className={`w-full lg:w-1/2 ${!section.orderReverse ? "lg:pr-24" : "lg:pl-24"}`}>
                 <h2 className={`text-h2 mb-10 ${section.style === "style-2" ? "text-white" : "text-text-primary"}`}>{section.title}</h2>
-                <div className={`text-body2 leading-8 ${section.style === "style-2" ? "text-white" : "text-text-primary"}`}>
+                <div className={`text-[18px] leading-[31px] ${section.style === "style-2" ? "text-white" : "text-text-primary"}`}>
                   <ReactMarkdown rehypePlugins={[rehypeRaw]}>{section.description}</ReactMarkdown>
                 </div>
                 {section.button && (
