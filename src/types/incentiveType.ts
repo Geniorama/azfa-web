@@ -1,7 +1,7 @@
 export interface IncentiveListItem {
   id: number;
   label: string; // En Strapi se llama 'label', no 'name'
-  value: string;
+  content: string; // Cambiado de 'value' a 'content' y ahora es Markdown
 }
 
 export interface GoogleMapsLocation {
@@ -59,6 +59,6 @@ export interface IncentiveMarker {
   directJobs: number;
   list: {
     label: string; // Cambiado de 'name' a 'label' para coincidir con Strapi
-    value: string;
+    content: string; // Cambiado de 'value' a 'content' para Markdown
   }[];
 }

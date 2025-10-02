@@ -61,7 +61,7 @@ const transformIncentivesToMarkers = (incentives: Incentive[]): IncentiveMarker[
       markerType: 'incentive',
       list: incentive.incentivesListItem.map(item => ({
         label: item.label,
-        value: item.value
+        content: item.content
       }))
     };
   });
@@ -112,12 +112,12 @@ const transformAffiliatesToMarkers = (affiliates: Afiliado[]): Marker[] => {
             markerType: 'affiliate',
             affiliateType: affiliate.type,
             list: [
-              { label: 'País', value: affiliate.country.name },
-              { label: 'Ciudad', value: affiliate.city },
-              { label: 'Tipo', value: affiliate.type },
-              ...(location.label ? [{ label: 'Ubicación', value: location.label }] : []),
-              ...(affiliate.contactInfo?.email ? [{ label: 'Email', value: affiliate.contactInfo.email }] : []),
-              ...(affiliate.contactInfo?.website ? [{ label: 'Sitio web', value: affiliate.contactInfo.website }] : [])
+              { label: 'País', content: affiliate.country.name },
+              { label: 'Ciudad', content: affiliate.city },
+              { label: 'Tipo', content: affiliate.type },
+              ...(location.label ? [{ label: 'Ubicación', content: location.label }] : []),
+              ...(affiliate.contactInfo?.email ? [{ label: 'Email', content: affiliate.contactInfo.email }] : []),
+              ...(affiliate.contactInfo?.website ? [{ label: 'Sitio web', content: affiliate.contactInfo.website }] : [])
             ]
           });
           console.log(`Marcador creado exitosamente para ${affiliate.title} ubicación ${index}`);
@@ -141,11 +141,11 @@ const transformAffiliatesToMarkers = (affiliates: Afiliado[]): Marker[] => {
           markerType: 'affiliate',
           affiliateType: affiliate.type,
           list: [
-            { label: 'País', value: affiliate.country.name },
-            { label: 'Ciudad', value: affiliate.city },
-            { label: 'Tipo', value: affiliate.type },
-            ...(affiliate.contactInfo?.email ? [{ label: 'Email', value: affiliate.contactInfo.email }] : []),
-            ...(affiliate.contactInfo?.website ? [{ label: 'Sitio web', value: affiliate.contactInfo.website }] : [])
+            { label: 'País', content: affiliate.country.name },
+            { label: 'Ciudad', content: affiliate.city },
+            { label: 'Tipo', content: affiliate.type },
+            ...(affiliate.contactInfo?.email ? [{ label: 'Email', content: affiliate.contactInfo.email }] : []),
+            ...(affiliate.contactInfo?.website ? [{ label: 'Sitio web', content: affiliate.contactInfo.website }] : [])
           ]
         });
         console.log(`Marcador de fallback creado exitosamente para ${affiliate.title}`);
@@ -171,7 +171,7 @@ export interface Marker {
   affiliateType?: 'organizacion' | 'empresa' | 'zonaFranca';
   list?: {
     label: string; // Cambiado de 'name' a 'label' para coincidir con Strapi
-    value: string;
+    content: string; // Cambiado de 'value' a 'content' para Markdown
   }[];
 }
 

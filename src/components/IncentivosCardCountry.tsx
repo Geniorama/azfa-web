@@ -1,3 +1,6 @@
+import ReactMarkdown from "react-markdown";
+import rehypeRaw from "rehype-raw";
+
 interface IncentivosCardCountryProps {
   index: number;
   country: string;
@@ -6,7 +9,7 @@ interface IncentivosCardCountryProps {
   directJobs: number;
   list: {
     label: string;
-    value: string;
+    content: string; // Cambiado de 'value' a 'content' para Markdown
   }[];
   imgFlag?: string;
 }
@@ -62,7 +65,21 @@ export default function IncentivosCardCountry({ index, country, numberZones, num
             {list && list.map((item, index) => (
                 <li key={index} className={`flex flex-row items-start py-2 border-b border-gray-200 ${index === list.length - 1 ? "border-b-0" : ""}`}>
                     <span className="block w-1/2 font-medium">{item.label}</span>
-                    <span className="block w-1/2 font-light">{item.value}</span>
+                    <div className="block w-1/2 font-light prose prose-sm max-w-none">
+                        <ReactMarkdown 
+                            rehypePlugins={[rehypeRaw]}
+                            components={{
+                                p: ({children}) => <span>{children}</span>,
+                                ul: ({children}) => <ul className="[&>li]:before:content-['-'] [&>li]:before:mr-2 pl-4">{children}</ul>,
+                                ol: ({children}) => <ol className="list-decimal pl-4">{children}</ol>,
+                                li: ({children}) => <li className="mb-1">{children}</li>,
+                                strong: ({children}) => <strong className="font-medium">{children}</strong>,
+                                em: ({children}) => <em className="italic">{children}</em>
+                            }}
+                        >
+                            {item.content}
+                        </ReactMarkdown>
+                    </div>
                 </li>
             ))}
         </ul>
