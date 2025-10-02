@@ -35,7 +35,7 @@ export default function CardEvent({ image, title, category, date, location, hote
         </div>
 
         {/* Content */}
-        <div className={`py-6 px-8 w-full ${direction === 'horizontal' ? 'lg:w-3/5' : ''}`}>
+        <div className={`py-6 px-8 w-full ${direction === 'horizontal' ? 'lg:w-3/5' : ''} text-text-primary`}>
             <span className="text-body2 mb-1 inline-block">{category}</span>
             <h3 className="text-h6">{title}</h3>
             <hr className="my-4 border-background-2" />
