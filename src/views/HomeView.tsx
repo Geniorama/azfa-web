@@ -220,7 +220,7 @@ export default function Home({ slidesData, introData, contentWithVideoData, serv
 
       <section className="bg-white lg:pb-16 pt-16 pb-0">
         <div className="container mx-auto px-4">
-          <div className="flex flex-col lg:flex-row items-center justify-center text-text-primary lg:gap-16 gap-6 w-full lg:w-2/3 mx-auto">
+          <div data-aos="fade-up" className="flex flex-col lg:flex-row items-center justify-center text-text-primary lg:gap-16 gap-6 w-full lg:w-2/3 mx-auto">
             <img
               className="w-[109px] lg:w-60"
               src={IconIntroStar.src}
@@ -239,7 +239,7 @@ export default function Home({ slidesData, introData, contentWithVideoData, serv
       <section className="bg-white lg:py-16 py-10">
         <div className="container mx-auto lg:px-4">
           <div className="flex flex-col lg:flex-row items-center justify-center text-text-primary">
-            <div className="w-full lg:w-1/2">
+            <div data-aos="fade-right" className="w-full lg:w-1/2">
               <div className="relative">
                 <img
                   src={CoverVideo.src}
@@ -257,7 +257,7 @@ export default function Home({ slidesData, introData, contentWithVideoData, serv
               </div>
             </div>
 
-            <div className="w-full lg:w-1/2 lg:pl-30 text-body1 p-4 lg:p-0">
+            <div data-aos="fade-left" className="w-full lg:w-1/2 lg:pl-30 text-body1 p-4 lg:p-0">
               <div>
                 <ReactMarkdown rehypePlugins={[rehypeRaw]}>
                   {contentWithVideoData?.content}

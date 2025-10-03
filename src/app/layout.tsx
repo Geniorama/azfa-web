@@ -1,6 +1,7 @@
 import { Inter_Tight } from "next/font/google";
 import "./globals.css";
 import ClientLayoutWrapper from "../components/ClientLayoutWrapper";
+import AOSProvider from "../components/AOSProvider";
 import { fetchAPI } from "@/lib/api";
 import { HeaderTypeData, SocialMediaItemType, FooterType, ContactInfoType } from "@/types/componentsType";
 
@@ -23,10 +24,6 @@ export default async function RootLayout({
   const footer = globalSettings.data.footer as FooterType;
   const contactInfoGlobal = globalSettings.data.contactInfo as ContactInfoType;
 
-  console.log('header', header);
-  console.log('socialMedia', socialMedia);
-  console.log('footer', footer);
-  console.log('contactInfo', contactInfoGlobal);
 
   const footerWithContactInfo = {
     ...footer,
@@ -41,9 +38,11 @@ export default async function RootLayout({
       <body
         className={`${interTight.variable} antialiased bg-background-1`}
       >
-        <ClientLayoutWrapper header={header} footer={footerWithContactInfo}>
-          {children}
-        </ClientLayoutWrapper>
+        <AOSProvider>
+          <ClientLayoutWrapper header={header} footer={footerWithContactInfo}>
+            {children}
+          </ClientLayoutWrapper>
+        </AOSProvider>
       </body>
     </html>
   );
