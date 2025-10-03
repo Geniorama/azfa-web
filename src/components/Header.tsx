@@ -83,13 +83,12 @@ export default function Header({ header }: { header: HeaderTypeData }) {
               <div className="flex flex-row items-start lg:items-center space-x-1 space-y-3 lg:space-y-0 lg:space-x-4 flex-wrap justify-between">
                 {/* Logout button */}
                 {isAuthenticated && (
-                  <Button
-                    className="py-2 w-full lg:w-auto"
-                    variant="outline-primary"
+                  <button
+                    className="py-2 w-full lg:w-auto text-text-primary hover:text-details cursor-pointer underline"
                     onClick={handleLogout}
                   >
                     Cerrar sesión
-                  </Button>
+                  </button>
                 )}
 
                 {header.topButtons?.map((button, index) => (

@@ -22,8 +22,8 @@ export interface CountryResponse {
     };
     items?: {
       id: string;
-      text: string;
-      link: string;
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      content: any[]; // Estructura de blocks de Strapi (campo content, no jsonBlocks)
     }[];
   }[];
 }
