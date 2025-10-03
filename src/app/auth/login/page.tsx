@@ -22,7 +22,7 @@ export default function Login() {
   // Redirigir si ya está autenticado
   useEffect(() => {
     if (isAuthenticated) {
-      router.push('/');
+      router.push('/portal-afiliados');
     }
   }, [isAuthenticated, router]);
 
@@ -40,8 +40,8 @@ export default function Login() {
       const result = await login(email, password);
       
       if (result.success) {
-        // Redirigir al dashboard o página principal
-        router.push('/');
+        // Redirigir al portal de afiliados
+        router.push('/portal-afiliados');
       } else {
         setError(result.error || 'Error al iniciar sesión');
       }

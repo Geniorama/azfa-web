@@ -16,12 +16,202 @@ import type { OptionType } from "@/types/componentsType";
 import MapResponsive from "@/assets/img/azfa-mapa-marco-legal-responsive.jpg";
 import { getCountryCode, getCountryName } from "@/utils/countryMapping";
 
+// Función para renderizar content blocks como JSX con bullets diferenciados
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const renderContentBlocksJSX = (contentBlocks: any[]) => {
+  if (!contentBlocks || contentBlocks.length === 0) return <span>Sin contenido</span>;
+  
+  console.log("Content Blocks recibidos:", JSON.stringify(contentBlocks, null, 2));
+  
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const processBlocks = (blocks: any[], level: number = 0) => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    return blocks.map((block: any, index: number) => {
+      if (typeof block === 'string') return <span key={index}>{block}</span>;
+      if (!block || typeof block !== 'object') return <span key={index}></span>;
+      
+      console.log(`Procesando block tipo: ${block.type}`, block);
+      
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      switch (block.type) {
+        case 'paragraph':
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          const processedParagraphChildren = block.children?.map((child: any, childIndex: number) => {
+            if (child.type === 'text') {
+              return child.text || '';
+            } else if (child.type === 'link') {
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              const linkText = child.children?.map((textChild: any) => textChild?.text || '').join('') || '';
+              const href = child.url || '#';
+              return (
+                <a 
+                  key={`para-link-${index}-${childIndex}`}
+                  href={href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-blue-600 hover:text-blue-800 underline"
+                >
+                  {linkText}
+                </a>
+              );
+            }
+            return '';
+          });
+          
+          return <p key={index} className="mb-2">{processedParagraphChildren}</p>;
+          
+        case 'list':
+          console.log(`Lista encontrada con ${block.children?.length || 0} items`);
+          const children = block.children || [];
+          const processedChildren: React.ReactElement[] = [];
+          
+          // Procesar los children secuencialmente
+          for (let i = 0; i < children.length; i++) {
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            const child: any = children[i];
+            
+            if (child.type === 'list-item') {
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              const processedItemChildren = child.children?.map((child: any, childIndex: number) => {
+                if (child.type === 'text') {
+                  return child.text || '';
+                } else if (child.type === 'link') {
+                  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                  const linkText = child.children?.map((textChild: any) => textChild?.text || '').join('') || '';
+                  const href = child.url || '#';
+                  return (
+                    <a 
+                      key={`main-link-${i}-${childIndex}`}
+                      href={href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-blue-600 hover:text-blue-800 underline"
+                    >
+                      {linkText}
+                    </a>
+                  );
+                }
+                return '';
+              });
+              
+              processedChildren.push(
+                <li key={`main-${i}`} className="mb-1">
+                  {processedItemChildren}
+                </li>
+              );
+            } else if (child.type === 'list' && child.indentLevel === 1) {
+              // Esta es una sublista, agregar al último list-item
+              if (processedChildren.length > 0) {
+                const lastIndex = processedChildren.length - 1;
+                const lastProcessed = processedChildren[lastIndex];
+                
+                // Crear elementos de sub-lista
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                const subItemElements = child.children?.map((subItem: any, subIndex: number) => {
+                  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                  const processedChildren = subItem.children?.map((child: any, childIndex: number) => {
+                    if (child.type === 'text') {
+                      return child.text || '';
+                    } else if (child.type === 'link') {
+                      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                      const linkText = child.children?.map((textChild: any) => textChild?.text || '').join('') || '';
+                      const href = child.url || '#';
+                      return (
+                        <a 
+                          key={`sub-link-${i}-${subIndex}-${childIndex}`}
+                          href={href}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-text-primary hover:text-blue-800 underline"
+                        >
+                          {linkText}
+                        </a>
+                      );
+                    }
+                    return '';
+                  });
+                  
+                  return (
+                    <li key={`sub-${i}-${subIndex}`} className="flex items-start mb-1">
+                      <span className="text-gray-700 mr-2 mt-1 shrink-0">-</span>
+                      <span className="flex-1">{processedChildren}</span>
+                    </li>
+                  );
+                });
+                
+                // Actualizar el último elemento para incluir la sublista
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                const originalContent = (lastProcessed as any).props?.children;
+                processedChildren[lastIndex] = (
+                  <li key={`main-${lastIndex}`} className="mb-1">
+                    {originalContent}
+                    <ul className="list-none ml-0 mt-1">
+                      {subItemElements}
+                    </ul>
+                  </li>
+                );
+              }
+            }
+          }
+          
+          return (
+            <ul key={index} className="list-disc ml-4 space-y-2">
+              {processedChildren}
+            </ul>
+          );
+          
+        case 'listItem':
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          const itemText = block.children?.map((child: any) => child?.text || '').join('') || '';
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          const nestedList = block.children?.find((child: any) => child.type === 'list');
+          
+          if (nestedList) {
+            return (
+              <div key={index}>
+                <div className="flex items-start mb-1">
+                  <span className="text-gray-700 mr-2 mt-1 shrink-0">-</span>
+                  <span className="flex-1">{itemText}</span>
+                </div>
+                {processBlocks(nestedList.children || [], level + 1)}
+              </div>
+            );
+          }
+          
+          return (
+            <div key={index} className="flex items-start mb-1">
+              <span className="text-gray-700 mr-2 mt-1 shrink-0">-</span>
+              <span className="flex-1">{itemText}</span>
+            </div>
+          );
+          
+        default:
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          const text = block.children?.map((child: any) => child?.text || '').join('') || block.text || '';
+          return <span key={index}>{text}</span>;
+      }
+    });
+  };
+  
+  try {
+    const jsxContent = processBlocks(contentBlocks);
+    console.log("JSX Content generado:", jsxContent);
+    return <div>{jsxContent}</div>;
+  } catch (error) {
+    console.log("Error procesando content blocks:", error, contentBlocks);
+    return <span>Error en contenido</span>;
+  }
+};
+
 interface Item {
   id: string;
   icon?: React.ReactNode | string;
   title: string;
-  link?: string;
-  subitems?: Item[];
+  subitems?: {
+    id: string;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    content: any[]; // Estructura de blocks de Strapi (campo content, no jsonBlocks)
+  }[];
 }
 
 interface InfoCountry {
@@ -115,6 +305,9 @@ export default function NormativaLegal() {
             const countryCode = getCountryCode(country.country);
             const countryName = getCountryName(countryCode);
 
+            // Debug: Ver estructura de items del país
+            console.log(`Items del país ${countryName}:`, country.items);
+
             return {
               id: country.id,
               label: countryName,
@@ -130,13 +323,16 @@ export default function NormativaLegal() {
                     item.items?.map(
                       (subitem: {
                         id: string;
-                        text: string;
-                        link: string;
-                      }) => ({
-                        id: subitem.id,
-                        title: subitem.text,
-                        link: subitem.link,
-                      })
+                        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                        content: any[];
+                      }) => {
+                        // Debug: Ver estructura del subitem
+                        console.log(`Subitem de ${item.headingList?.title}:`, subitem);
+                        return {
+                          id: subitem.id,
+                          content: subitem.content,
+                        };
+                      }
                     ) || [],
                 })) || [],
             };
@@ -459,15 +655,15 @@ export default function NormativaLegal() {
                                   {item.title}
                                 </h4>
                                 {item.subitems && (
-                                  <ul className="list-disc pl-7 mt-2 font-light">
+                                  <div className="pl-6 mt-2 font-light space-y-2">
                                     {item.subitems.map((subitem, index) => (
-                                      <li key={index}>
-                                        <p className="text-button">
-                                          {subitem.title}
-                                        </p>
-                                      </li>
+                                      <div key={index}>
+                                        <div className="prose prose-sm max-w-none">
+                                          {renderContentBlocksJSX(subitem.content)}
+                                        </div>
+                                      </div>
                                     ))}
-                                  </ul>
+                                  </div>
                                 )}
                               </div>
                             ))}
@@ -541,19 +737,15 @@ export default function NormativaLegal() {
                                 {item.title}
                               </h4>
                               {item.subitems && (
-                                <ul className="list-disc pl-7 mt-2 font-light">
+                                <div className="pl-6 mt-2 font-light space-y-2">
                                   {item.subitems.map((subitem, index) => (
-                                    <li key={index}>
-                                      {subitem.link ? (
-                                        <Link href={subitem.link} className="font-normal underline underline-offset-4 hover:opacity-60" target={"_blank"}>
-                                          {subitem.title}
-                                        </Link>
-                                      ) : (
-                                        <p className="text-button">{subitem.title}</p>
-                                      )}
-                                    </li>
+                                    <div key={index}>
+                                      <div className="prose prose-sm max-w-none">
+                                        {renderContentBlocksJSX(subitem.content)}
+                                      </div>
+                                    </div>
                                   ))}
-                                </ul>
+                                </div>
                               )}
                             </div>
                           ))}
