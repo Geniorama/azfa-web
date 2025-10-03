@@ -29,6 +29,7 @@ interface TeamMemberType {
     url: string;
     alternativeText?: string;
   };
+  displayOrder?: number;
 }
 
 interface TabType {
@@ -219,28 +220,87 @@ export default function JuntaDirectivaView({
   console.log("tabsSection from QuienesSomosView", tabsSection);
   console.log("commissionSections from QuienesSomosView", commissionSections);
 
-  // Función para filtrar miembros por tipo y ordenarlos alfabéticamente
+  // Función para filtrar miembros por tipo y ordenarlos según displayOrder o alfabéticamente
   const getMembersByType = (memberType: string, subCategory?: string) => {
     if (!teamMembersData) return [];
-    return teamMembersData.filter((member) => {
+
+    const filtered = teamMembersData.filter((member) => {
       if (subCategory) {
         return (
           member.memberType === memberType && member.subCategory === subCategory
         );
       }
       return member.memberType === memberType;
-    }).sort((a, b) => {
-      // Ordenar alfabéticamente por fullName (ignorando mayúsculas/minúsculas)
-      return a.fullName.localeCompare(b.fullName, undefined, { 
-        sensitivity: 'base',
-        numeric: true 
-      });
     });
+
+    console.log(
+      `Filtrados para ${memberType}${subCategory ? `/${subCategory}` : ""}:`,
+      filtered.length
+    );
+    console.log(
+      `Miembros antes del sort:`,
+      filtered.map((m) => ({ name: m.fullName, displayOrder: m.displayOrder }))
+    );
+
+    const sorted = filtered.sort((a, b) => {
+      console.log(
+        `Comparando ${a.fullName} (displayOrder: ${a.displayOrder}) vs ${b.fullName} (displayOrder: ${b.displayOrder})`
+      );
+
+      // Convertir null y undefined a valores verificables
+      const aOrder =
+        a.displayOrder !== null && a.displayOrder !== undefined
+          ? a.displayOrder
+          : null;
+      const bOrder =
+        b.displayOrder !== null && b.displayOrder !== undefined
+          ? b.displayOrder
+          : null;
+
+      // Si ambos tienen displayOrder válido, ordenar por displayOrder (menor número primero)
+      if (aOrder !== null && bOrder !== null) {
+        console.log(
+          `Ambos tienen displayOrder: ${aOrder} - ${bOrder} = ${
+            aOrder - bOrder
+          }`
+        );
+        return aOrder - bOrder;
+      }
+
+      // Si solo uno tiene displayOrder, el que lo tiene va primero
+      if (aOrder !== null && bOrder === null) {
+        console.log(`${a.fullName} tiene displayOrder, va primero`);
+        return -1;
+      }
+      if (aOrder === null && bOrder !== null) {
+        console.log(`${b.fullName} tiene displayOrder, va primero`);
+        return 1;
+      }
+
+      // Si ninguno tiene displayOrder, ordenar alfabéticamente por fullName
+      const comparison = a.fullName.localeCompare(b.fullName, undefined, {
+        sensitivity: "base",
+        numeric: true,
+      });
+      console.log(
+        `Orden alfabético: ${a.fullName} vs ${b.fullName} = ${comparison}`
+      );
+      return comparison;
+    });
+
+    console.log(
+      `Miembros después del sort:`,
+      sorted.map((m) => ({ name: m.fullName, displayOrder: m.displayOrder }))
+    );
+
+    return sorted;
   };
 
   // Función para formatear datos de miembros para CardTeamMember
   const formatMemberData = (member: TeamMemberType): CardTeamMemberProps => ({
-    image: member.photo?.url || "https://testazfabucket.s3.us-east-2.amazonaws.com/leader_44b2499b_23e6f45b3b.png",
+    image:
+      member.photo?.url ||
+      "https://testazfabucket.s3.us-east-2.amazonaws.com/leader_44b2499b_23e6f45b3b.png",
     name: member.fullName,
     position: member.position,
     company: member.association,
@@ -251,14 +311,18 @@ export default function JuntaDirectivaView({
   // Debug: Ver qué datos están llegando
   console.log("teamMembersData recibidos:", teamMembersData);
   console.log("Cantidad total de miembros:", teamMembersData?.length || 0);
-  
+
   // Debug: Ver estructura de los miembros
   if (teamMembersData && teamMembersData.length > 0) {
     console.log("Estructura del primer miembro:", teamMembersData[0]);
-    console.log("Tipos de memberType encontrados:", [...new Set(teamMembersData.map(m => m.memberType))]);
-    console.log("Tipos de subCategory encontrados:", [...new Set(teamMembersData.map(m => m.subCategory))]);
+    console.log("Tipos de memberType encontrados:", [
+      ...new Set(teamMembersData.map((m) => m.memberType)),
+    ]);
+    console.log("Tipos de subCategory encontrados:", [
+      ...new Set(teamMembersData.map((m) => m.subCategory)),
+    ]);
   }
-  
+
   // Obtener miembros dinámicamente
   const boardMembers = getMembersByType("board-of-directors", "board-members");
   const honoraryPresidents = getMembersByType(
@@ -267,25 +331,53 @@ export default function JuntaDirectivaView({
   );
   const vocalMembers = getMembersByType("committees", "vocal-members");
   const azfaTeamMembers = getMembersByType("azfa-team");
-  
+
   // Debug: Ver cuántos miembros se están filtrando
   console.log("boardMembers:", boardMembers.length);
   console.log("honoraryPresidents:", honoraryPresidents.length);
   console.log("vocalMembers:", vocalMembers.length);
   console.log("azfaTeamMembers:", azfaTeamMembers.length);
-  
+
   // Debug: Ver algunos ejemplos de cada categoría
   if (boardMembers.length > 0) {
     console.log("Ejemplo board member:", boardMembers[0]);
+    console.log(
+      "Todos los board members con displayOrder:",
+      boardMembers.map((m) => ({
+        name: m.fullName,
+        displayOrder: m.displayOrder,
+      }))
+    );
   }
   if (honoraryPresidents.length > 0) {
     console.log("Ejemplo honorary president:", honoraryPresidents[0]);
+    console.log(
+      "Todos los honorary presidents con displayOrder:",
+      honoraryPresidents.map((m) => ({
+        name: m.fullName,
+        displayOrder: m.displayOrder,
+      }))
+    );
   }
   if (vocalMembers.length > 0) {
     console.log("Ejemplo vocal member:", vocalMembers[0]);
+    console.log(
+      "Todos los vocal members con displayOrder:",
+      vocalMembers.map((m) => ({
+        name: m.fullName,
+        displayOrder: m.displayOrder,
+      }))
+    );
   }
   if (azfaTeamMembers.length > 0) {
     console.log("Ejemplo azfa team member:", azfaTeamMembers[0]);
+    console.log(
+      "Todos los azfa team members con displayOrder:",
+      azfaTeamMembers.map((m) => ({
+        name: m.fullName,
+        displayOrder: m.displayOrder,
+      }))
+    );
   }
 
   // Detectar el tab activo basado en la URL solo en la carga inicial
@@ -429,24 +521,6 @@ export default function JuntaDirectivaView({
                   ))}
               </div>
 
-              <div className="text-center mt-16">
-                <h2 className="text-h2 font-normal text-text-primary">
-                  Presidentes Honorarios
-                </h2>
-                <span className="w-12 block mx-auto h-[2px] bg-details my-2"></span>
-              </div>
-
-              {/* Grid Team Members */}
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mt-16">
-                {honoraryPresidents.length > 0 &&
-                  honoraryPresidents.map((member) => (
-                    <CardTeamMember
-                      key={member.id}
-                      {...formatMemberData(member)}
-                    />
-                  ))}
-              </div>
-
               {/* Miembros Vocales */}
               {vocalMembers.length > 0 && (
                 <>
@@ -468,6 +542,24 @@ export default function JuntaDirectivaView({
                   </div>
                 </>
               )}
+
+              <div className="text-center mt-16">
+                <h2 className="text-h2 font-normal text-text-primary">
+                  Presidentes Honorarios
+                </h2>
+                <span className="w-12 block mx-auto h-[2px] bg-details my-2"></span>
+              </div>
+
+              {/* Grid Team Members */}
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mt-16">
+                {honoraryPresidents.length > 0 &&
+                  honoraryPresidents.map((member) => (
+                    <CardTeamMember
+                      key={member.id}
+                      {...formatMemberData(member)}
+                    />
+                  ))}
+              </div>
             </div>
           )}
 
@@ -480,15 +572,22 @@ export default function JuntaDirectivaView({
                   <div key={index}>
                     <div
                       key={index}
-                      className={`flex flex-col ${index % 2 === 0 ? "lg:flex-row" : "lg:flex-row-reverse"} gap-6`}
+                      className={`flex flex-col ${
+                        index % 2 === 0 ? "lg:flex-row" : "lg:flex-row-reverse"
+                      } gap-6`}
                     >
-                      <div className={`w-full lg:w-1/2 ${index % 2 === 0 ? "lg:pr-32" : "lg:pl-32"} pt-6 text-text-primary`}>
+                      <div
+                        className={`w-full lg:w-1/2 ${
+                          index % 2 === 0 ? "lg:pr-32" : "lg:pl-32"
+                        } pt-6 text-text-primary`}
+                      >
                         <h2 className="text-h2 font-normal text-text-primary mb-8">
                           {comission.title}
                         </h2>
-                        <div className="text-[18px] leading-[31px] [&>p]:text[18px]"
-                        >
-                          <ReactMarkdown rehypePlugins={[rehypeRaw]}>{comission.description}</ReactMarkdown>
+                        <div className="text-[18px] leading-[31px] [&>p]:text[18px]">
+                          <ReactMarkdown rehypePlugins={[rehypeRaw]}>
+                            {comission.description}
+                          </ReactMarkdown>
                         </div>
 
                         {/* Leader Profiles */}
@@ -504,9 +603,13 @@ export default function JuntaDirectivaView({
                                     (leader, index) => (
                                       <AvatarPerson
                                         key={index}
-                                        image={leader.photo?.url || "https://testazfabucket.s3.us-east-2.amazonaws.com/leader_44b2499b_23e6f45b3b.png"}
+                                        image={
+                                          leader.photo?.url ||
+                                          "https://testazfabucket.s3.us-east-2.amazonaws.com/leader_44b2499b_23e6f45b3b.png"
+                                        }
                                         alternativeText={
-                                          leader.photo?.alternativeText || leader.fullName
+                                          leader.photo?.alternativeText ||
+                                          leader.fullName
                                         }
                                         name={leader.fullName}
                                       />
@@ -528,9 +631,13 @@ export default function JuntaDirectivaView({
                                   comission.teamProfiles.map((team, index) => (
                                     <AvatarPerson
                                       key={index}
-                                      image={team.photo?.url || "https://testazfabucket.s3.us-east-2.amazonaws.com/leader_44b2499b_23e6f45b3b.png"}
+                                      image={
+                                        team.photo?.url ||
+                                        "https://testazfabucket.s3.us-east-2.amazonaws.com/leader_44b2499b_23e6f45b3b.png"
+                                      }
                                       alternativeText={
-                                        team.photo?.alternativeText || team.fullName
+                                        team.photo?.alternativeText ||
+                                        team.fullName
                                       }
                                       name={team.fullName}
                                     />
@@ -543,8 +650,14 @@ export default function JuntaDirectivaView({
                       <div className="w-full lg:w-1/2">
                         <img
                           className="w-full h-full object-cover"
-                          src={comission.coverImage?.url || "https://testazfabucket.s3.us-east-2.amazonaws.com/leader_44b2499b_23e6f45b3b.png"}
-                          alt={comission.coverImage?.alternativeText || comission.title}
+                          src={
+                            comission.coverImage?.url ||
+                            "https://testazfabucket.s3.us-east-2.amazonaws.com/leader_44b2499b_23e6f45b3b.png"
+                          }
+                          alt={
+                            comission.coverImage?.alternativeText ||
+                            comission.title
+                          }
                         />
                       </div>
                     </div>
