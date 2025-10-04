@@ -311,7 +311,7 @@ function OfertaInmobiliariaContent({ pageContent }: OfertaInmobiliariaViewProps)
 
           {/* Grid Cards */}
           {offers.length > 0 ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 md:gap-12">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 md:gap-12 pb-12">
               {offers.map((offer) => (
                 <CardInmueble
                   key={offer.id}
@@ -327,6 +327,12 @@ function OfertaInmobiliariaContent({ pageContent }: OfertaInmobiliariaViewProps)
                   platinum={offer.platinum}
                   slug={offer.slug}
                   image={offer.image}
+                  button={{
+                    label: "Ver más",
+                    onClick: () => {
+                      router.push(`/invierta-en-zonas-francas/oferta-inmobiliaria/${offer.slug}`);
+                    },
+                  }}
                 />
               ))}
             </div>
