@@ -11,9 +11,9 @@ export default function MisInmueblesView() {
   const [availableProperties] = useState(5);
   const router = useRouter();
 
-  const handleEditInmueble = (id: string) => {
-    router.push(`/portal-afiliados/mis-inmuebles/editar/${id}`);
-  };
+  // const handleEditInmueble = (id: string) => {
+  //   router.push(`/portal-afiliados/mis-inmuebles/editar/${id}`);
+  // };
 
   const handleAddInmueble = () => {
     router.push(`/portal-afiliados/mis-inmuebles/agregar-inmueble`);
