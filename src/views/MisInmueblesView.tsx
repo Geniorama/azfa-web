@@ -5,9 +5,19 @@ import bgInmuebles from "@/assets/img/bg-inmuebles.png";
 import CardInmueble from "@/components/CardInmueble";
 import { useState } from "react";
 import Button from "@/utils/Button";
+import { useRouter } from "next/navigation";
 
 export default function MisInmueblesView() {
   const [availableProperties] = useState(5);
+  const router = useRouter();
+
+  const handleEditInmueble = (id: string) => {
+    router.push(`/portal-afiliados/mis-inmuebles/editar/${id}`);
+  };
+
+  const handleAddInmueble = () => {
+    router.push(`/portal-afiliados/mis-inmuebles/agregar-inmueble`);
+  };
 
   return (
     <div className="bg-background-1">
@@ -27,7 +37,7 @@ export default function MisInmueblesView() {
                 title={`Sin asignar`}
                 button={{
                     label: "Editar",
-                    onClick: () => console.log("Editar"),
+                    onClick: () => handleAddInmueble(),
                 }}
                 />
             ))}
