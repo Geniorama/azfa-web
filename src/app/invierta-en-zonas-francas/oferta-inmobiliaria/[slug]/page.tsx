@@ -113,6 +113,14 @@ const hasCertificationContent = (certifications: StrapiBlock[]): boolean => {
 export default function OfertaInmobiliariaSingle() {
   const [inmueble, setInmueble] = useState<InmuebleType | null>(null);
   const [filterOptions, setFilterOptions] = useState<FilterOptions | null>(null);
+  const [searchFilters, setSearchFilters] = useState<FilterValuesProps>({
+    offerType: "",
+    propertyType: "",
+    propertyUse: "",
+    city: "",
+    country: "",
+    propertyStatus: "",
+  });
   const { slug } = useParams();
   const router = useRouter();
 
@@ -135,10 +143,38 @@ export default function OfertaInmobiliariaSingle() {
 
   // Función para manejar la búsqueda desde la barra de filtros
   const handleSearch = (filters: FilterValuesProps) => {
+    // Solo actualizar filtros que no sean "todos" o vacíos
+    const activeFilters: FilterValuesProps = {
+      offerType:
+        filters.offerType !== "todos" && filters.offerType !== ""
+          ? filters.offerType
+          : "",
+      propertyType:
+        filters.propertyType !== "todos" && filters.propertyType !== ""
+          ? filters.propertyType
+          : "",
+      propertyUse:
+        filters.propertyUse !== "todos" && filters.propertyUse !== ""
+          ? filters.propertyUse
+          : "",
+      city: filters.city !== "todos" && filters.city !== "" ? filters.city : "",
+      country:
+        filters.country !== "todos" && filters.country !== ""
+          ? filters.country
+          : "",
+      propertyStatus:
+        filters.propertyStatus !== "todos" && filters.propertyStatus !== ""
+          ? filters.propertyStatus
+          : "",
+    };
+
+    // Actualizar estado local
+    setSearchFilters(activeFilters);
+
     // Crear query parameters con los filtros
     const queryParams = new URLSearchParams();
     
-    Object.entries(filters).forEach(([key, value]) => {
+    Object.entries(activeFilters).forEach(([key, value]) => {
       if (value && value.trim() !== '') {
         queryParams.append(key, value);
       }
@@ -191,10 +227,15 @@ export default function OfertaInmobiliariaSingle() {
   useEffect(() => {
     const fetchFilterOptions = async () => {
       try {
+        console.log('Cargando opciones de filtro en single...');
         const response = await fetch('/api/getRealStateOffer?pagination[pageSize]=1000');
         const data = await response.json();
         
-        if (data.success && data.data && Array.isArray(data.data)) {
+        console.log('Respuesta de la API para opciones:', data);
+        
+        if (data.data && Array.isArray(data.data)) {
+          console.log('Datos recibidos:', data.data.length, 'elementos');
+          
           const offers = data.data.map((item: InmuebleType) => ({
             id: item.id,
             title: item.title,
@@ -216,7 +257,14 @@ export default function OfertaInmobiliariaSingle() {
           }));
           
           const options = extractFilterOptions(offers);
+          console.log('Opciones de filtro extraídas:', options);
           setFilterOptions(options);
+        } else {
+          console.log('No se cumplió la condición para cargar opciones:', {
+            hasData: !!data.data,
+            isArray: Array.isArray(data.data),
+            dataType: typeof data.data
+          });
         }
       } catch (error) {
         console.error("Error al obtener opciones de filtro:", error);
@@ -256,6 +304,7 @@ export default function OfertaInmobiliariaSingle() {
             country: [{ label: 'Todos', value: 'todos' }],
             propertyStatus: [{ label: 'Todos', value: 'todos' }]
           }}
+          currentFilters={searchFilters}
         />
 
         <article className="py-16">

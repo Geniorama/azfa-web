@@ -1,6 +1,6 @@
 import React from 'react';
 import { getMarkerIcon } from '@/utils/markerIcons';
-import MarkerIconAfiliados from '@/assets/img/marker-afiliados.svg';
+import MarkerIconAfiliadosDefault from '@/assets/img/icon-mapa-afiliados-default (2).svg';
 
 interface MapLegendProps {
   showAffiliates?: boolean;
@@ -32,9 +32,9 @@ const MapLegend: React.FC<MapLegendProps> = ({ showAffiliates = false }) => {
       <div className="space-y-2">
         <div className="flex items-center gap-2">
           <img 
-            src={MarkerIconAfiliados.src || MarkerIconAfiliados} 
+            src={MarkerIconAfiliadosDefault.src} 
             alt="Afiliados" 
-            className="w-5 h-5" 
+            className="w-6 h-6" 
           />
           <span className="text-sm text-gray-700">Afiliados</span>
         </div>
