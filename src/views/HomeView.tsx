@@ -24,7 +24,18 @@ import SlideSingleHome from "@/components/SlideSingleHome";
 import SlideSingleTestimonial from "@/components/SlideSingleTestimonial";
 import Modal from "@/components/Modal";
 import { useState } from "react";
-import { HeroSlideData, IntroData, ServiceData, VideoType, StatisticsItemData, NewsType, EventType, TestimonialType, AffiliateSectionType, PartnersSectionType } from "@/types/componentsType";
+import {
+  HeroSlideData,
+  IntroData,
+  ServiceData,
+  VideoType,
+  StatisticsItemData,
+  NewsType,
+  EventType,
+  TestimonialType,
+  AffiliateSectionType,
+  PartnersSectionType,
+} from "@/types/componentsType";
 import ReactMarkdown from "react-markdown";
 import rehypeRaw from "rehype-raw";
 import { formatYouTubeUrl } from "@/utils/formatYouTubeUrl";
@@ -82,7 +93,22 @@ interface HomeViewProps {
   sponsorsSectionData?: PartnersSectionType | null;
 }
 
-export default function Home({ slidesData, introData, contentWithVideoData, servicesData, statisticsData, newsData, newsSectionData, eventsData, eventSectionData, testimonialsData, testimonialsSectionData, affiliatesSectionData, partnersSectionData, sponsorsSectionData }: HomeViewProps) {
+export default function Home({
+  slidesData,
+  introData,
+  contentWithVideoData,
+  servicesData,
+  statisticsData,
+  newsData,
+  newsSectionData,
+  eventsData,
+  eventSectionData,
+  testimonialsData,
+  testimonialsSectionData,
+  affiliatesSectionData,
+  partnersSectionData,
+  sponsorsSectionData,
+}: HomeViewProps) {
   const router = useRouter();
   const [openModalVideo, setOpenModalVideo] = useState(false);
 
@@ -93,44 +119,44 @@ export default function Home({ slidesData, introData, contentWithVideoData, serv
   return (
     <>
       <Modal open={openModalVideo} onClose={() => setOpenModalVideo(false)}>
-          <div className="bg-black overflow-hidden">
-            {
-              contentWithVideoData?.video?.videoType === "uploaded" && (
-                <video 
-                  src={contentWithVideoData?.video?.uploadedVideo?.url}
-                  autoPlay 
-                  muted 
-                  loop 
-                  className="w-full h-auto max-h-[80vh] aspect-video"
-                  controls
-                />
-              )
-            }
-            {contentWithVideoData?.video?.videoType === "youtube" && (
+        <div className="bg-black overflow-hidden">
+          {contentWithVideoData?.video?.videoType === "uploaded" && (
+            <video
+              src={contentWithVideoData?.video?.uploadedVideo?.url}
+              autoPlay
+              muted
+              loop
+              className="w-full h-auto max-h-[80vh] aspect-video"
+              controls
+            />
+          )}
+          {contentWithVideoData?.video?.videoType === "youtube" && (
             <div className="relative w-full h-0 pb-[56.25%] max-h-[80vh]">
               <iframe
                 className="absolute top-0 left-0 w-full h-full"
-                src={formatYouTubeUrl(contentWithVideoData?.video?.youtubeUrl || "")}
+                src={formatYouTubeUrl(
+                  contentWithVideoData?.video?.youtubeUrl || ""
+                )}
                 title="YouTube video player"
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                 referrerPolicy="strict-origin-when-cross-origin"
                 allowFullScreen
               ></iframe>
             </div>
-            )}
-            {contentWithVideoData?.video?.videoType === "vimeo" && (
-              <div className="relative w-full h-0 pb-[56.25%] max-h-[80vh]">
-                <iframe
-                  className="absolute top-0 left-0 w-full h-full"
-                  src={contentWithVideoData?.video?.vimeoUrl}
-                  title="Vimeo video player"
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                  referrerPolicy="strict-origin-when-cross-origin"
-                  allowFullScreen
-                ></iframe>
-              </div>
-            )}
-          </div>
+          )}
+          {contentWithVideoData?.video?.videoType === "vimeo" && (
+            <div className="relative w-full h-0 pb-[56.25%] max-h-[80vh]">
+              <iframe
+                className="absolute top-0 left-0 w-full h-full"
+                src={contentWithVideoData?.video?.vimeoUrl}
+                title="Vimeo video player"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                referrerPolicy="strict-origin-when-cross-origin"
+                allowFullScreen
+              ></iframe>
+            </div>
+          )}
+        </div>
       </Modal>
       <section className=" bg-text-primary w-full h-[calc(100vh-100px)]">
         {/* Slider */}
@@ -152,11 +178,14 @@ export default function Home({ slidesData, introData, contentWithVideoData, serv
             {slidesData && slidesData.length > 0 ? (
               slidesData.map((slide) => (
                 <SwiperSlide
-                  style={{ backgroundImage: `url(${slide.backgroundImage?.url || '/inicio-slide (1).jpg'})` }}
+                  style={{
+                    backgroundImage: `url(${
+                      slide.backgroundImage?.url || "/inicio-slide (1).jpg"
+                    })`,
+                  }}
                   key={slide.id}
                   className="bg-text-primary lg:py-24 py-16 bg-cover bg-right"
                 >
-                  
                   <SlideSingleHome
                     caption={slide.label || ""}
                     title={slide.title || ""}
@@ -204,7 +233,10 @@ export default function Home({ slidesData, introData, contentWithVideoData, serv
                   >
                     <img
                       className="w-12"
-                      src={slide.iconLinks?.[0]?.icon?.customImage?.url || ServicioInfoImg.src}
+                      src={
+                        slide.iconLinks?.[0]?.icon?.customImage?.url ||
+                        ServicioInfoImg.src
+                      }
                       alt={slide.label || ""}
                     />
                     <p className="text-body2 text-center lg:text-left">
@@ -220,7 +252,10 @@ export default function Home({ slidesData, introData, contentWithVideoData, serv
 
       <section className="bg-white lg:pb-16 pt-16 pb-0">
         <div className="container mx-auto px-4">
-          <div data-aos="fade-up" className="flex flex-col lg:flex-row items-center justify-center text-text-primary lg:gap-16 gap-6 w-full lg:w-2/3 mx-auto">
+          <div
+            data-aos="fade-up"
+            className="flex flex-col lg:flex-row items-center justify-center text-text-primary lg:gap-16 gap-6 w-full lg:w-2/3 mx-auto"
+          >
             <img
               className="w-[109px] lg:w-60"
               src={IconIntroStar.src}
@@ -228,10 +263,10 @@ export default function Home({ slidesData, introData, contentWithVideoData, serv
             />
             <div className="lg:text-h3 text-h4 font-light text-center lg:text-left">
               <ReactMarkdown rehypePlugins={[rehypeRaw]}>
-                {introData?.content || "Con más de <span class='text-details'>27 años</span> de trayectoria, la AZFA es la organización que lidera y representa al ecosistema de zonas francas en Iberoamérica."}
+                {introData?.content ||
+                  "Con más de <span class='text-details'>27 años</span> de trayectoria, la AZFA es la organización que lidera y representa al ecosistema de zonas francas en Iberoamérica."}
               </ReactMarkdown>
             </div>
-            
           </div>
         </div>
       </section>
@@ -257,7 +292,10 @@ export default function Home({ slidesData, introData, contentWithVideoData, serv
               </div>
             </div>
 
-            <div data-aos="fade-left" className="w-full lg:w-1/2 lg:pl-30 text-body1 p-4 lg:p-0">
+            <div
+              data-aos="fade-left"
+              className="w-full lg:w-1/2 lg:pl-30 text-body1 p-4 lg:p-0"
+            >
               <div>
                 <ReactMarkdown rehypePlugins={[rehypeRaw]}>
                   {contentWithVideoData?.content}
@@ -270,7 +308,9 @@ export default function Home({ slidesData, introData, contentWithVideoData, serv
 
       <section className="bg-white lg:pt-16">
         <div className="container mx-auto px-4">
-          <TitleDecorative>{servicesData?.title || "Nuestros Servicios"}</TitleDecorative>
+          <TitleDecorative>
+            {servicesData?.title || "Nuestros Servicios"}
+          </TitleDecorative>
         </div>
 
         {/* Services cards */}
@@ -281,10 +321,14 @@ export default function Home({ slidesData, introData, contentWithVideoData, serv
                 key={service.id}
                 title={service.title || ""}
                 subtitle={service.tag || "Servicio"}
-                image={service.coverImage?.url || "https://placehold.co/600x1000/10356B/FFFFFF"}
+                image={
+                  service.coverImage?.url ||
+                  "https://placehold.co/600x1000/10356B/FFFFFF"
+                }
                 button={{
                   label: service.button?.text || "Ver más",
-                  onClick: () => router.push(service.button?.link || "/servicios"),
+                  onClick: () =>
+                    router.push(service.button?.link || "/servicios"),
                 }}
               />
             ))
@@ -356,10 +400,14 @@ export default function Home({ slidesData, introData, contentWithVideoData, serv
                 <ServiceCard
                   title={service.title || ""}
                   subtitle={service.tag || "Servicio"}
-                  image={service.coverImage?.url || "https://placehold.co/600x1000/10356B/FFFFFF"}
+                  image={
+                    service.coverImage?.url ||
+                    "https://placehold.co/600x1000/10356B/FFFFFF"
+                  }
                   button={{
                     label: service.button?.text || "Ver más",
-                    onClick: () => router.push(service.button?.link || "/servicios"),
+                    onClick: () =>
+                      router.push(service.button?.link || "/servicios"),
                   }}
                 />
               </SwiperSlide>
@@ -380,7 +428,10 @@ export default function Home({ slidesData, introData, contentWithVideoData, serv
           </div>
           <div className="w-full lg:w-1/3 space-y-10 mt-14 lg:mt-0">
             {statisticsData?.statistics?.slice(0, 2).map((statistic, index) => (
-              <div key={statistic.id || index} className="flex items-center gap-6">
+              <div
+                key={statistic.id || index}
+                className="flex items-center gap-6"
+              >
                 <img
                   src={statistic.icon?.customImage?.url || IconIberoamerica.src}
                   alt={statistic.label || "Icon Iberoamérica"}
@@ -395,7 +446,8 @@ export default function Home({ slidesData, introData, contentWithVideoData, serv
               </div>
             ))}
             {/* Fallback si no hay datos */}
-            {(!statisticsData?.statistics || statisticsData.statistics.length === 0) && (
+            {(!statisticsData?.statistics ||
+              statisticsData.statistics.length === 0) && (
               <>
                 <div className="flex items-center gap-6">
                   <img
@@ -429,7 +481,12 @@ export default function Home({ slidesData, introData, contentWithVideoData, serv
           </div>
           <div className="w-full lg:w-1/3 space-y-10">
             {statisticsData?.statistics?.slice(2).map((statistic, index) => (
-              <div key={statistic.id || index} className={`flex items-center gap-6 ${index === 0 ? 'mt-8 lg:mt-0' : ''}`}>
+              <div
+                key={statistic.id || index}
+                className={`flex items-center gap-6 ${
+                  index === 0 ? "mt-8 lg:mt-0" : ""
+                }`}
+              >
                 <img
                   src={statistic.icon?.customImage?.url || IconIberoamerica.src}
                   alt={statistic.label || "Icon Iberoamérica"}
@@ -444,7 +501,8 @@ export default function Home({ slidesData, introData, contentWithVideoData, serv
               </div>
             ))}
             {/* Fallback si no hay datos */}
-            {(!statisticsData?.statistics || statisticsData.statistics.length === 0) && (
+            {(!statisticsData?.statistics ||
+              statisticsData.statistics.length === 0) && (
               <>
                 <div className="flex items-center gap-6 mt-8 lg:mt-0">
                   <img
@@ -513,7 +571,10 @@ export default function Home({ slidesData, introData, contentWithVideoData, serv
                 newsData.slice(0, 2).map((newsItem) => (
                   <CardNews
                     key={newsItem.id}
-                    image={newsItem.thumbnail?.formats?.small?.url || "https://testazfabucket.s3.us-east-2.amazonaws.com/noticias_3_adfc8dd1e2.png"}
+                    image={
+                      newsItem.thumbnail?.formats?.small?.url ||
+                      "https://testazfabucket.s3.us-east-2.amazonaws.com/noticias_3_adfc8dd1e2.png"
+                    }
                     title={newsItem.title}
                     category={"Noticia"}
                     description={truncateText(newsItem.extract, 100)}
@@ -542,7 +603,10 @@ export default function Home({ slidesData, introData, contentWithVideoData, serv
                     )}
                     button={{
                       label: "Ver más",
-                      onClick: () => handleOpenNews("https://www.elfinancierocr.com/economia-y-politica/economia-de-costa-rica-crece-46-en-julio-impulsada/NNWQX52JYZDOFKCHKUS3GKS7ZM/story/"),
+                      onClick: () =>
+                        handleOpenNews(
+                          "https://www.elfinancierocr.com/economia-y-politica/economia-de-costa-rica-crece-46-en-julio-impulsada/NNWQX52JYZDOFKCHKUS3GKS7ZM/story/"
+                        ),
                     }}
                   />
                   <CardNews
@@ -583,7 +647,10 @@ export default function Home({ slidesData, introData, contentWithVideoData, serv
                 eventsData.slice(0, 2).map((event) => (
                   <CardEvent
                     key={event.id}
-                    image={event.featuredImage?.url || "https://testazfabucket.s3.us-east-2.amazonaws.com/img_evento_1a_World_FZO_af2dc47ee4.webp"}
+                    image={
+                      event.featuredImage?.url ||
+                      "https://testazfabucket.s3.us-east-2.amazonaws.com/img_evento_1a_World_FZO_af2dc47ee4.webp"
+                    }
                     title={event.title}
                     category={"Evento"}
                     date={event.startDate}
@@ -644,7 +711,9 @@ export default function Home({ slidesData, introData, contentWithVideoData, serv
           <h6 className="text-body2 text-text-primary text-center">
             {testimonialsSectionData?.label || "Testimonios"}
           </h6>
-          <TitleDecorative>{testimonialsSectionData?.title || "Lo que dicen nuestros clientes"}</TitleDecorative>
+          <TitleDecorative>
+            {testimonialsSectionData?.title || "Lo que dicen nuestros clientes"}
+          </TitleDecorative>
         </div>
         {/* Not container content */}
         {/* Swiper testimonials */}
@@ -670,7 +739,10 @@ export default function Home({ slidesData, introData, contentWithVideoData, serv
                     caption={testimonial.company}
                     title={testimonial.name}
                     description={testimonial.testimonial}
-                    image={testimonial.coverImage?.url || 'https://testazfabucket.s3.us-east-2.amazonaws.com/img_Testimonio_1_Patricia_Figueroa_color_f9ca828652.jpg'}
+                    image={
+                      testimonial.coverImage?.url ||
+                      "https://testazfabucket.s3.us-east-2.amazonaws.com/img_Testimonio_1_Patricia_Figueroa_color_f9ca828652.jpg"
+                    }
                     button={{
                       label: "Ver más",
                       onClick: () => setOpenModalVideo(true),
@@ -686,7 +758,9 @@ export default function Home({ slidesData, introData, contentWithVideoData, serv
                     caption="Directora Ejecutiva, Camtex"
                     title="Patricia Figueroa"
                     description="CAMTEX forma parte de AZFA desde hace más de 10 años. Una decisión sumamente acertada dado que AZFA nos brinda un importante espacio de diálogo del más alto nivel donde se intercambian conocimientos y se establece una red de contactos con los otros miembros que nos permiten estar a la vanguardia de lo que acaece en el entorno internacional…"
-                    image={'https://testazfabucket.s3.us-east-2.amazonaws.com/img_Testimonio_1_Patricia_Figueroa_color_f9ca828652.jpg'}
+                    image={
+                      "https://testazfabucket.s3.us-east-2.amazonaws.com/img_Testimonio_1_Patricia_Figueroa_color_f9ca828652.jpg"
+                    }
                     button={{
                       label: "Ver más",
                       onClick: () => setOpenModalVideo(true),
@@ -698,7 +772,9 @@ export default function Home({ slidesData, introData, contentWithVideoData, serv
                     caption="Presidente, AraújoIbarra"
                     title="Martín Ibarra"
                     description="Para mí es un gran honor ser miembro de AZFA y estoy vinculado a AZFA hace 26 años cuando se crió AZFA en República Dominicana y tuve el honor de ser su primer presidente. En estos 26 años de trabajo ininterrumpido, no hemos descansado en trabajar por la defensa del régimen franco en la región…"
-                    image={'https://testazfabucket.s3.us-east-2.amazonaws.com/img_Testimonio_3_Martin_Ibarra_Negro_f01f8bdd75.jpg'}
+                    image={
+                      "https://testazfabucket.s3.us-east-2.amazonaws.com/img_Testimonio_3_Martin_Ibarra_Negro_f01f8bdd75.jpg"
+                    }
                     button={{
                       label: "Ver más",
                       onClick: () => setOpenModalVideo(true),
@@ -710,7 +786,9 @@ export default function Home({ slidesData, introData, contentWithVideoData, serv
                     caption="Gerente General, La Lima Free Zone and Business Park"
                     title="Fernando Carazo"
                     description="Somos miembros de azfa desde ya hace unos 5 años aproximadamente. El papel de AZFA nos parece importantísimo, la unificación de la voz de los stateholders de regimenes de zona franca y regímenes especiales no solo de la región sino del mundo nos parece muy importante que sea unificada por medio de AZFA…"
-                    image={'https://testazfabucket.s3.us-east-2.amazonaws.com/img_Testimonio_2_Fernando_Carazo_negro_9d35c882c6.jpg'}
+                    image={
+                      "https://testazfabucket.s3.us-east-2.amazonaws.com/img_Testimonio_2_Fernando_Carazo_negro_9d35c882c6.jpg"
+                    }
                     button={{
                       label: "Ver más",
                       onClick: () => setOpenModalVideo(true),
@@ -761,7 +839,10 @@ export default function Home({ slidesData, introData, contentWithVideoData, serv
             className="mt-10 swiper-custom"
             autoplay={{ delay: 2500, disableOnInteraction: false }}
             navigation={true}
-            loop={affiliatesSectionData?.logos && affiliatesSectionData.logos.length > 5}
+            loop={
+              affiliatesSectionData?.logos &&
+              affiliatesSectionData.logos.length > 5
+            }
             speed={2000}
             breakpoints={{
               0: {
@@ -779,19 +860,23 @@ export default function Home({ slidesData, introData, contentWithVideoData, serv
               },
             }}
           >
-            {affiliatesSectionData?.logos && affiliatesSectionData.logos.length > 0 ? (
+            {affiliatesSectionData?.logos &&
+            affiliatesSectionData.logos.length > 0 ? (
               affiliatesSectionData.logos.map((affiliate) => (
                 <SwiperSlide key={affiliate.id}>
                   <img
                     className="w-full h-24 object-contain max-w-fit mx-auto grayscale md:grayscale hover:grayscale-0 transition-all duration-300 swiper-slide-mobile"
-                    src={affiliate.logo?.url || 'https://testazfabucket.s3.us-east-2.amazonaws.com/Costa_Rica_piasa_7371f1e8b5.jpg'}
+                    src={
+                      affiliate.logo?.url ||
+                      "https://testazfabucket.s3.us-east-2.amazonaws.com/Costa_Rica_piasa_7371f1e8b5.jpg"
+                    }
                     alt={affiliate.name || "Logo"}
                     onClick={() => {
                       if (affiliate.url) {
                         window.open(affiliate.url, "_blank");
                       }
                     }}
-                    style={{ cursor: affiliate.url ? 'pointer' : 'default' }}
+                    style={{ cursor: affiliate.url ? "pointer" : "default" }}
                   />
                 </SwiperSlide>
               ))
@@ -801,35 +886,45 @@ export default function Home({ slidesData, introData, contentWithVideoData, serv
                 <SwiperSlide>
                   <img
                     className="w-full h-24 object-contain max-w-fit mx-auto grayscale md:grayscale hover:grayscale-0 transition-all duration-300 swiper-slide-mobile"
-                    src={'https://testazfabucket.s3.us-east-2.amazonaws.com/Costa_Rica_piasa_7371f1e8b5.jpg'}
+                    src={
+                      "https://testazfabucket.s3.us-east-2.amazonaws.com/Costa_Rica_piasa_7371f1e8b5.jpg"
+                    }
                     alt="Logo"
                   />
                 </SwiperSlide>
                 <SwiperSlide>
                   <img
                     className="w-full h-24 object-contain max-w-fit mx-auto grayscale md:grayscale hover:grayscale-0 transition-all duration-300 swiper-slide-mobile"
-                    src={'https://testazfabucket.s3.us-east-2.amazonaws.com/zeta_group_logo_f6f20bc67d.jpg'}
+                    src={
+                      "https://testazfabucket.s3.us-east-2.amazonaws.com/zeta_group_logo_f6f20bc67d.jpg"
+                    }
                     alt="Logo"
                   />
                 </SwiperSlide>
                 <SwiperSlide>
                   <img
                     className="w-full h-24 object-contain max-w-fit mx-auto grayscale md:grayscale hover:grayscale-0 transition-all duration-300 swiper-slide-mobile"
-                    src={'https://testazfabucket.s3.us-east-2.amazonaws.com/TMF_Logo_ENG_aedf88b6c2.png'}
+                    src={
+                      "https://testazfabucket.s3.us-east-2.amazonaws.com/TMF_Logo_ENG_aedf88b6c2.png"
+                    }
                     alt="Logo"
                   />
                 </SwiperSlide>
                 <SwiperSlide>
                   <img
                     className="w-full h-24 object-contain max-w-fit mx-auto grayscale md:grayscale hover:grayscale-0 transition-all duration-300 swiper-slide-mobile"
-                    src={'https://testazfabucket.s3.us-east-2.amazonaws.com/Hemistion_36554b1aff.png'}
+                    src={
+                      "https://testazfabucket.s3.us-east-2.amazonaws.com/Hemistion_36554b1aff.png"
+                    }
                     alt="Logo"
                   />
                 </SwiperSlide>
                 <SwiperSlide>
                   <img
                     className="w-full h-24 object-contain max-w-fit mx-auto grayscale md:grayscale hover:grayscale-0 transition-all duration-300 swiper-slide-mobile"
-                    src={'https://testazfabucket.s3.us-east-2.amazonaws.com/Colombia_zonamerica_jpg_e3da5e9653.webp'}
+                    src={
+                      "https://testazfabucket.s3.us-east-2.amazonaws.com/Colombia_zonamerica_jpg_e3da5e9653.webp"
+                    }
                     alt="Logo"
                   />
                 </SwiperSlide>
@@ -855,7 +950,9 @@ export default function Home({ slidesData, introData, contentWithVideoData, serv
             className="mt-10 swiper-custom"
             autoplay={{ delay: 2500, disableOnInteraction: false }}
             navigation={true}
-            loop={partnersSectionData?.logos && partnersSectionData.logos.length > 5}
+            loop={
+              partnersSectionData?.logos && partnersSectionData.logos.length > 5
+            }
             speed={2000}
             breakpoints={{
               0: {
@@ -873,93 +970,63 @@ export default function Home({ slidesData, introData, contentWithVideoData, serv
               },
             }}
           >
-            {partnersSectionData?.logos && partnersSectionData.logos.length > 0 && (
+            {partnersSectionData?.logos &&
+              partnersSectionData.logos.length > 0 &&
               partnersSectionData.logos.map((partner) => (
                 <SwiperSlide key={partner.id}>
                   <img
-                  key={partner.id}
-                  className="w-full max-w-fit max-h-16 object-contain"
-                  src={partner.logo?.url || 'https://testazfabucket.s3.us-east-2.amazonaws.com/logo_aliado_4_oecd_b53ef2d06d.webp'}
-                  alt={partner.name || "Logo"}
-                  onClick={() => {
-                    if (partner.url) {
-                      window.open(partner.url, "_blank");
-                    }
-                  }}
-                  style={{ cursor: partner.url ? 'pointer' : 'default' }}
+                    key={partner.id}
+                    className="w-full max-w-fit max-h-16 object-contain"
+                    src={partner.logo?.url}
+                    alt={partner.name || "Logo"}
+                    onClick={() => {
+                      if (partner.url) {
+                        window.open(partner.url, "_blank");
+                      }
+                    }}
+                    style={{ cursor: partner.url ? "pointer" : "default" }}
                   />
                 </SwiperSlide>
-              ))
-            )}
+              ))}
           </Swiper>
         </div>
       </section>
 
       {/* Sponsors */}
-      <section className="bg-white pt-16">
-        <div className="container mx-auto pb-8 lg:pb-16 px-0 md:px-16 max-w-6xl">
-          <TitleDecorative className="text-center">
-            {sponsorsSectionData?.title || "Nuestros sponsors"}
-          </TitleDecorative>
-
-          {/* Swiper sponsors */}
+      {sponsorsSectionData?.logos && sponsorsSectionData.logos.length > 0 && (
+        <section className="bg-white pt-16">
+          <div className="container mx-auto pb-8 lg:pb-16 px-0 md:px-16 max-w-6xl">
+            <TitleDecorative className="text-center">
+              {sponsorsSectionData?.title || "Nuestros sponsors"}
+            </TitleDecorative>
+          
           <Swiper
-          modules={[Autoplay, Navigation]}
-          spaceBetween={50}
-          slidesPerView={5}
-          slidesPerGroup={1}
-          className="mt-10 swiper-custom"
-          autoplay={{ delay: 2500, disableOnInteraction: false }}
-          navigation={true}
-          speed={2000}
-          loop={sponsorsSectionData?.logos && sponsorsSectionData.logos.length > 5}
-          breakpoints={{
-            0: {
-              slidesPerView: 1.8,
-              centeredSlides: true,
-              slidesPerGroup: 1,
-            },
-            768: {
-              slidesPerView: 3,
-              slidesPerGroup: 1,
-            },
-            1024: {
-              slidesPerView: 5,
-              slidesPerGroup: 1,
-            },
-          }}
-        >
-          {sponsorsSectionData?.logos && sponsorsSectionData.logos.length > 0 ? (
-            sponsorsSectionData.logos.map((sponsor) => (
+            modules={[Autoplay, Navigation]}
+            spaceBetween={50}
+            slidesPerView={5}
+            slidesPerGroup={1}
+            className="mt-10 swiper-custom"
+          >
+            {sponsorsSectionData.logos.map((sponsor) => (
               <SwiperSlide key={sponsor.id}>
                 <img
-                  className="w-full h-24 object-contain max-w-fit mx-auto grayscale md:grayscale hover:grayscale-0 transition-all duration-300 swiper-slide-mobile"
-                  src={sponsor.logo?.url || 'https://testazfabucket.s3.us-east-2.amazonaws.com/logo_sponsor_1_oecd_b53ef2d06d.webp'}
+                  key={sponsor.id}
+                  className="w-full max-w-fit max-h-16 object-contain"
+                  src={sponsor.logo?.url}
                   alt={sponsor.name || "Logo"}
                   onClick={() => {
                     if (sponsor.url) {
                       window.open(sponsor.url, "_blank");
                     }
                   }}
-                  style={{ cursor: sponsor.url ? 'pointer' : 'default' }}
+                  style={{ cursor: sponsor.url ? "pointer" : "default" }}
                 />
               </SwiperSlide>
-            ))
-          ) : (
-            // Fallback cuando no hay datos de sponsors
-            <>
-              <SwiperSlide>
-                <img
-                  className="w-full h-24 object-contain max-w-fit mx-auto grayscale md:grayscale hover:grayscale-0 transition-all duration-300 swiper-slide-mobile"
-                  src="https://testazfabucket.s3.us-east-2.amazonaws.com/logo_sponsor_1_oecd_b53ef2d06d.webp"
-                  alt="Logo sponsor"
-                />
-              </SwiperSlide>
-            </>
-          )}
-        </Swiper>
-        </div>
-      </section>
+            ))}
+          </Swiper>
+          </div>
+        </section>
+      )}
     </>
   );
 }
