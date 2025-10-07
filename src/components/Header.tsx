@@ -84,8 +84,11 @@ export default function Header({ header }: { header: HeaderTypeData }) {
                 {/* Logout button */}
                 {isAuthenticated && (
                   <button
-                    className="py-2 w-full lg:w-auto text-text-primary hover:text-details cursor-pointer underline"
-                    onClick={handleLogout}
+                    className="py-2 w-full lg:w-auto text-text-primary hover:text-details cursor-pointer underline hidden lg:block"
+                    onClick={() => {
+                      setIsMobileMenuOpen(false);
+                      handleLogout();
+                    }}
                   >
                     Cerrar sesión
                   </button>
@@ -98,6 +101,7 @@ export default function Header({ header }: { header: HeaderTypeData }) {
                     variant={index === header.topButtons?.length - 1 ? "primary-blue" : "outline-primary"}
                     onClick={() => {
                       if (button.url) {
+                        setIsMobileMenuOpen(false);
                         if (button.openInNewTab) {
                           window.open(button.url, '_blank');
                         } else {
@@ -109,11 +113,24 @@ export default function Header({ header }: { header: HeaderTypeData }) {
                     {button.label}
                   </Button>
                 ))}
+
+                {/* Logout button */}
+                {isAuthenticated && (
+                  <button
+                    className="py-2 w-full lg:w-auto text-text-primary hover:text-details cursor-pointer underline lg:hidden"
+                    onClick={() => {
+                      setIsMobileMenuOpen(false);
+                      handleLogout();
+                    }}
+                  >
+                    Cerrar sesión
+                  </button>
+                )}
               </div>
             </div>
 
             {/* Bottom bar */}
-            <nav className="w-full lg:w-auto -mt-3 lg:mt-0 px-4 lg:px-0">
+            <nav className="w-full lg:w-auto -mt-3 lg:mt-0 px-4 lg:px-0 overflow-y-auto lg:overflow-y-visible max-h-[60vh] lg:max-h-none">
               <ul className="flex flex-col lg:flex-row items-center gap-0 lg:gap-6">
                 {header.mainMenu?.map((item, index) => (
                   <li 
@@ -126,6 +143,18 @@ export default function Header({ header }: { header: HeaderTypeData }) {
                       href={item.url || "#"}
                       target={item.openInNewTab ? "_blank" : "_self"}
                       className="flex items-center gap-2 text-black border-[#DDDDDD] border-b lg:border-transparent lg:border-b-2 py-5 lg:pb-1 mb-0 lg:-mb-1 hover:border-details transition justify-between"
+                      onClick={(e) => {
+                        // Si tiene submenú, prevenir navegación en móvil
+                        if (item.submenu && item.submenu.length > 0) {
+                          // En móvil, no navegar, solo abrir/cerrar submenú
+                          if (window.innerWidth < 1024) {
+                            e.preventDefault();
+                          }
+                        } else {
+                          // Si no tiene submenú, cerrar el menú móvil
+                          setIsMobileMenuOpen(false);
+                        }
+                      }}
                     >
                       {item.icon && item.icon.type === "react-icon" && item.icon.reactIconName && (
                         <span className="text-xl">{item.icon.reactIconName}</span>
@@ -134,11 +163,11 @@ export default function Header({ header }: { header: HeaderTypeData }) {
                         <img src={item.icon.customImage.url} alt={item.icon.customImage.alternativeText || ""} className="w-5 h-5" />
                       )}
                       {item.label && (
-                        <span className="text-button font-medium">
+                        <span className={`text-button font-medium ${item.url === "/" ? "hidden lg:block" : "block"}`}>
                           {item.label}
                         </span>
                       )}
-                      {item.submenu && (
+                      {item.submenu && item.submenu.length > 0 && (
                         <button 
                           className="lg:hidden text-details transition-transform duration-300"
                           onClick={(e) => {
@@ -179,7 +208,14 @@ export default function Header({ header }: { header: HeaderTypeData }) {
                           <ul className="flex flex-col text-black">
                             {item.submenu.map((subItem, subIndex) => (
                               <li className="p-4 hover:bg-background-2 transition-all duration-300 border-b border-gray-200" key={subIndex}>
-                                <Link className="block" href={subItem.url || "#"} target={subItem.openInNewTab ? "_blank" : "_self"}>{subItem.label}</Link>
+                                <Link 
+                                  className="block" 
+                                  href={subItem.url || "#"} 
+                                  target={subItem.openInNewTab ? "_blank" : "_self"}
+                                  onClick={() => setIsMobileMenuOpen(false)}
+                                >
+                                  {subItem.label}
+                                </Link>
                               </li>
                             ))}
                           </ul>
@@ -199,6 +235,11 @@ export default function Header({ header }: { header: HeaderTypeData }) {
                     <Link 
                       href="#" 
                       className="flex items-center gap-2 text-black border-[#DDDDDD] border-b lg:border-transparent lg:border-b-2 py-5 lg:pb-1 mb-0 lg:-mb-1 hover:border-details transition justify-between"
+                      onClick={(e) => {
+                        if (window.innerWidth < 1024) {
+                          e.preventDefault();
+                        }
+                      }}
                     >
                       <span className="text-button font-medium">
                         {header.availableLanguages.find(lang => lang.value === 'es')?.label || 'Esp'}
@@ -241,7 +282,11 @@ export default function Header({ header }: { header: HeaderTypeData }) {
                       <ul className="flex flex-col text-black">
                         {header.availableLanguages.map((lang, langIndex) => (
                           <li className="p-4 hover:bg-background-2 transition-all duration-300 border-b border-gray-200" key={lang.id || langIndex}>
-                            <Link className="block" href={lang.value ? `/${lang.value}` : "#"}>
+                            <Link 
+                              className="block" 
+                              href={lang.value ? `/${lang.value}` : "#"}
+                              onClick={() => setIsMobileMenuOpen(false)}
+                            >
                               {lang.label}
                             </Link>
                           </li>
