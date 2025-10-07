@@ -271,13 +271,57 @@ filters: {
 }
 ```
 
+## Funcionalidad de Edición de Inmuebles ✅ IMPLEMENTADO
+
+### Vista de Edición (`src/views/EditarInmuebleView.tsx`)
+
+Vista completa para editar inmuebles existentes con las siguientes características:
+
+1. **Carga automática de datos**: Obtiene el inmueble por ID y pre-llena el formulario
+2. **Gestión de imágenes**:
+   - Muestra las imágenes existentes con etiqueta "Existente"
+   - Permite agregar nuevas imágenes con etiqueta "Nueva"
+   - Permite eliminar tanto existentes como nuevas
+   - Valida el límite de 5 imágenes totales (existentes + nuevas)
+3. **Slug preservation**: Mantiene el slug original (no lo regenera)
+4. **Estados de carga**: Loading spinner mientras carga los datos
+5. **Manejo de errores**: Mensajes claros si no se encuentra el inmueble
+6. **Validaciones**: Mismas validaciones que la creación
+
+### APIs Implementadas
+
+**GET `/api/getRealStateOffer/[id]/route.ts`**
+- Obtiene un inmueble específico por ID
+- Popula todas las relaciones (affiliateCompany, users, imgGallery, ctaButton)
+
+**PUT `/api/updateRealStateOffer/[id]/route.ts`**
+- Actualiza un inmueble existente
+- Maneja nuevas imágenes y conserva las existentes
+- Valida permisos del usuario
+
+### Ruta Dinámica
+
+**`/portal-afiliados/mis-inmuebles/editar/[id]`**
+- Ruta protegida (requiere autenticación)
+- Parámetro dinámico `[id]` para el ID del inmueble
+- Integrada con el botón "Editar" de cada tarjeta
+
+### Hook Personalizado
+
+**`useSingleRealStateOffer(id)`**
+- Obtiene los datos de un inmueble específico
+- Maneja estados de loading y error
+- Transforma los datos de Strapi al formato de la aplicación
+
 ## Próximos Pasos Sugeridos
 
 1. ✅ ~~**Validación en Creación**: Asegurar que al crear una propiedad se valide el límite~~ **COMPLETADO**
-2. **Permisos de Edición**: Implementar niveles de permisos si es necesario
-3. **Auditoría**: Registrar qué usuario creó/modificó cada propiedad
-4. **Notificaciones**: Alertar a administradores cuando una empresa alcanza su límite
-5. **Dashboard de Administrador**: Vista para administradores para gestionar límites de empresas
+2. ✅ ~~**Funcionalidad de Edición**: Permitir editar inmuebles existentes~~ **COMPLETADO**
+3. **Permisos de Edición**: Validar que solo usuarios de la misma empresa puedan editar
+4. **Auditoría**: Registrar qué usuario creó/modificó cada propiedad
+5. **Notificaciones**: Alertar a administradores cuando una empresa alcanza su límite
+6. **Dashboard de Administrador**: Vista para administradores para gestionar límites de empresas
+7. **Funcionalidad de Eliminación**: Permitir eliminar propiedades
 
 ## Notas Técnicas
 

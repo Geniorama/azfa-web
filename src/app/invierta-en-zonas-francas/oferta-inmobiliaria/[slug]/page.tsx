@@ -330,12 +330,14 @@ export default function OfertaInmobiliariaSingle() {
                     </div>
                   )}
                 </div>
-                <div className="text-body font-light mt-4">
-                  <ReactMarkdown>{inmueble.description || ''}</ReactMarkdown>
-                </div>
+                {inmueble.description && (
+                  <div className="text-body font-light mt-4">
+                    <ReactMarkdown>{String(inmueble.description)}</ReactMarkdown>
+                  </div>
+                )}
 
                 {/* Certifications */}
-                {inmueble.certifications && hasCertificationContent(inmueble.certifications) && (
+                {Array.isArray(inmueble.certifications) && hasCertificationContent(inmueble.certifications as StrapiBlock[]) && (
                   <div className="mt-10">
                     <div className="flex items-center gap-2">
                       <img
@@ -348,7 +350,7 @@ export default function OfertaInmobiliariaSingle() {
                     <div
                       className="mt-4 [&>ul]:list-disc [&>ul]:list-inside [&>ul]:text-body [&>ul]:font-light [&>ul]:space-y-1 [&>ul]:pl-5 [&>p]:text-body [&>p]:font-light [&>h1]:text-h4 [&>h2]:text-h5 [&>h3]:text-h6 [&>strong]:font-semibold [&>em]:italic"
                       dangerouslySetInnerHTML={{
-                        __html: renderStrapiBlocks(inmueble.certifications),
+                        __html: renderStrapiBlocks(inmueble.certifications as StrapiBlock[]),
                       }}
                     />
                   </div>
