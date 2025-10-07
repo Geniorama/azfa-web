@@ -805,7 +805,7 @@ export default function Home({
         </div>
       </section>
 
-      <section className="bg-white py-16">
+      <section className="bg-white py-16 hidden">
         <div className="container mx-auto px-4">
           <div className="flex justify-center items-center">
             <div className="w-auto border border-gray-200 rounded-lg flex justify-center items-center text-3xl text-primary font-medium">
