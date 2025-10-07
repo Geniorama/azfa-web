@@ -22,11 +22,12 @@ export async function POST(request: NextRequest) {
         const strapiBaseUrl = process.env.NEXT_PUBLIC_STRAPI_URL?.replace('/api', '') || process.env.NEXT_PUBLIC_STRAPI_URL;
         console.log('URL base de Strapi:', strapiBaseUrl);
 
-        // Obtener información del usuario autenticado
+        // Obtener información del usuario autenticado con su affiliateCompany
         let userId = null;
-        console.log('Intentando obtener información del usuario...');
+        let userAffiliateCompany = null;
+        console.log('Intentando obtener información del usuario con affiliateCompany...');
         try {
-            const userUrl = `${strapiBaseUrl}/api/users/me`;
+            const userUrl = `${strapiBaseUrl}/api/users/me?populate[affiliateCompany][fields][0]=id&populate[affiliateCompany][fields][1]=documentId&populate[affiliateCompany][fields][2]=title&populate[affiliateCompany][fields][3]=propertiesLimit`;
             console.log('URL de usuario:', userUrl);
             
             const userResponse = await fetch(userUrl, {
@@ -40,13 +41,68 @@ export async function POST(request: NextRequest) {
             if (userResponse.ok) {
                 const userData = await userResponse.json();
                 userId = userData.id;
+                userAffiliateCompany = userData.affiliateCompany;
                 console.log('Usuario autenticado:', userData.username, 'ID:', userId);
+                console.log('Affiliate Company:', userAffiliateCompany);
+                
+                // Validar que el usuario tenga affiliateCompany asignado
+                if (!userAffiliateCompany) {
+                    console.log('Error: Usuario sin empresa afiliada');
+                    return NextResponse.json({ 
+                        error: 'Su cuenta no tiene una empresa afiliada asignada. Contacte al administrador.',
+                        success: false 
+                    }, { status: 403 });
+                }
             } else {
                 const errorText = await userResponse.text();
                 console.error('Error obteniendo usuario:', userResponse.status, errorText);
+                return NextResponse.json({ 
+                    error: 'Error al validar usuario',
+                    success: false 
+                }, { status: 401 });
             }
         } catch (userError) {
             console.error('Error obteniendo usuario:', userError);
+            return NextResponse.json({ 
+                error: 'Error al validar usuario',
+                success: false 
+            }, { status: 500 });
+        }
+        
+        // Validar el límite de propiedades del afiliado
+        console.log('Validando límite de propiedades...');
+        try {
+            const countUrl = `${strapiBaseUrl}/api/real-state-offers?filters[affiliateCompany][documentId][$eq]=${userAffiliateCompany.documentId}&pagination[pageSize]=1`;
+            console.log('URL de conteo:', countUrl);
+            
+            const countResponse = await fetch(countUrl, {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+            
+            if (countResponse.ok) {
+                const countData = await countResponse.json();
+                const currentCount = countData.meta?.pagination?.total || 0;
+                const limit = userAffiliateCompany.propertiesLimit || 0;
+                
+                console.log(`Propiedades actuales: ${currentCount}, Límite: ${limit}`);
+                
+                if (currentCount >= limit) {
+                    console.log('Error: Límite de propiedades alcanzado');
+                    return NextResponse.json({ 
+                        error: `Ha alcanzado el límite de ${limit} propiedades para su empresa. Contacte al administrador para solicitar más espacios.`,
+                        success: false,
+                        currentCount,
+                        limit
+                    }, { status: 403 });
+                }
+            } else {
+                console.error('Error verificando límite:', countResponse.status);
+            }
+        } catch (limitError) {
+            console.error('Error validando límite:', limitError);
+            // Continuar aunque falle la validación para no bloquear
         }
 
         // Crear FormData para manejar archivos
@@ -89,8 +145,16 @@ export async function POST(request: NextRequest) {
             offerType: jsonData.offerType,
             propertyUse: jsonData.propertyUse,
             propertyType: jsonData.propertyType,
-            platinum: jsonData.platinum || false
+            platinum: jsonData.platinum || false,
+            // Asignar automáticamente al affiliateCompany y usuario
+            affiliateCompany: userAffiliateCompany.id,
+            users: userId
         };
+        
+        console.log('Propiedad será asignada a:', {
+            affiliateCompany: userAffiliateCompany.title,
+            userId: userId
+        });
 
         // Created_by_api - omitir hasta resolver configuración definitiva en Strapi
         if (userId) {

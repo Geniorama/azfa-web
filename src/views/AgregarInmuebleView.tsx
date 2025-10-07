@@ -10,6 +10,7 @@ import { TfiClose } from "react-icons/tfi";
 import Image from "next/image";
 import { useAuth } from "@/context/AuthContext";
 import { useRouter } from "next/navigation";
+import { useAffiliateRealStateOffers } from "@/hooks/useAffiliateRealStateOffers";
 
 // Tipo para el formulario
 interface FormData {
@@ -33,6 +34,8 @@ export default function AgregarInmuebleView() {
   // Hooks para autenticación y navegación
   const { token, isAuthenticated } = useAuth();
   const router = useRouter();
+  const { offers, propertiesLimit } = useAffiliateRealStateOffers();
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
   // Función para generar slug a partir del título
   const generateSlug = (title: string): string => {
@@ -226,13 +229,24 @@ export default function AgregarInmuebleView() {
         alert('Inmueble creado exitosamente');
         reset(); // Resetear formulario
         setUploadError(null); // Limpiar errores
-        // Opcional: redirigir a la lista de inmuebles
-        // router.push('/portal-afiliados/mis-inmuebles');
+        // Redirigir a la lista de inmuebles
+        setSuccessMessage('El inmueble ha sido guardado correctamente.');
+        
+        setTimeout(() => {
+          router.push('/portal-afiliados/mis-inmuebles');
+        }, 5000);
       } else {
         console.error('Error del servidor:', result);
         
-        const errorMessage = result?.error || result?.details || `Error ${response.status}: ${response.statusText}`;
-        alert(`Error al crear el inmueble: ${errorMessage}`);
+        // Si es error de límite alcanzado, mostrar mensaje específico
+        if (response.status === 403 && result.currentCount !== undefined) {
+          alert(`⚠️ Límite alcanzado\n\nSu empresa ha alcanzado el límite de ${result.limit} propiedades (${result.currentCount} actualmente publicadas).\n\nPara agregar más propiedades, contacte al equipo AZFA para solicitar una ampliación de su límite.`);
+          setSuccessMessage('Límite alcanzado');
+          router.push('/portal-afiliados/mis-inmuebles');
+        } else {
+          const errorMessage = result?.error || result?.details || `Error ${response.status}: ${response.statusText}`;
+          alert(`Error al crear el inmueble: ${errorMessage}`);
+        }
       }
 
     } catch (error) {
@@ -386,7 +400,7 @@ export default function AgregarInmuebleView() {
                             <h5 className="text-h5 font-medium">Formulario de inmueble</h5>
                         </div>
                         <div className="w-full md:w-1/2 text-right">
-                            <p className="text-body1">3/5 inmuebles usados</p>
+                            <p className="text-body1">{offers.length}/{propertiesLimit} inmuebles usados</p>
                         </div>
                     </div>
 
@@ -727,6 +741,13 @@ export default function AgregarInmuebleView() {
                             </Button>
                         </div>
                     </form>
+
+                    {/* Succes message */}
+                    {successMessage && (
+                        <div className="bg-[#94D133] bg-opacity-30 p-3 mt-5 text-center">
+                            <p className="text-text-primary text-body1 font-light">{successMessage}</p>
+                        </div>
+                    )}
                 </div>
 
                 

@@ -4,14 +4,14 @@ import strapiClient from "@/lib/strapi";
 interface QueryParams {
     populate: Record<string, unknown>;
     pagination?: Record<string, number>;
-    filters?: Record<string, string | Record<string, string>>;
+    filters?: Record<string, string | number | Record<string, unknown>>;
 }
 
 export async function GET(request: NextRequest) {
     const { searchParams } = new URL(request.url);
     const populateParams: Record<string, string> = {};
     const paginationParams: Record<string, number> = {};
-    const filterParams: Record<string, string | Record<string, string>> = {};
+    const filterParams: Record<string, string | number | Record<string, unknown>> = {};
 
     for (const [key, value] of searchParams.entries()) {
         if (key.startsWith('populate[')) {
@@ -29,6 +29,15 @@ export async function GET(request: NextRequest) {
                     paginationParams[paginationKey] = numValue;
                 }
             }
+        } else if (key === 'affiliateCompanyId') {
+            // Manejar el filtro de affiliateCompany de forma especial
+            // En Strapi v5, usar documentId en lugar de id
+            const affiliateId = value;
+            filterParams['affiliateCompany'] = {
+                documentId: {
+                    $eq: affiliateId
+                }
+            };
         } else if (key.startsWith('filters[')) {
             // Procesar filtros anidados como filters[offerType][$eq]
             const filterMatch = key.match(/filters\[([^\]]+)\]\[([^\]]+)\]/);
@@ -148,3 +157,4 @@ export async function GET(request: NextRequest) {
         }, { status: 500 });
     }
 }
+

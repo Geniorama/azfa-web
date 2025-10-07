@@ -16,6 +16,7 @@ interface CardInmuebleProps extends InmuebleType {
     label: string;
     onClick?: () => void;
   };
+  showPlusIcon?: boolean; // Controla si mostrar el ícono plus cuando no hay imagen
 }
 
 export default function CardInmueble({
@@ -31,6 +32,7 @@ export default function CardInmueble({
   area,
   platinum,
   button,
+  showPlusIcon = false,
 }: CardInmuebleProps) {
   // Función para formatear offerType array
   const formatOfferType = (offerTypes?: string[]) => {
@@ -77,8 +79,8 @@ export default function CardInmueble({
             )}
           </>
         ) : (
-          <div onClick={button.onClick || (() => {})} className="cursor-pointer w-full h-full object-cover aspect-video bg-background-2 flex items-center justify-center">
-            <TfiPlus className="text-5xl text-white" />
+          <div onClick={button.onClick || (() => {})} className={`${showPlusIcon ? 'cursor-pointer' : ''} w-full h-full object-cover aspect-video bg-background-2 flex items-center justify-center`}>
+            {showPlusIcon && <TfiPlus className="text-5xl text-white" />}
           </div>
         )}
       </div>

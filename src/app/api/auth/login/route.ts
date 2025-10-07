@@ -23,7 +23,26 @@ export async function POST(request: NextRequest) {
     // Autenticar con Strapi usando fetch
     // Probar diferentes endpoints según la versión de Strapi
     let response: Response
-    let data: { user: { id: number; username: string; email: string; confirmed: boolean; blocked: boolean }; jwt: string }
+    let data: { 
+      user: { 
+        id: number; 
+        username: string; 
+        email: string; 
+        confirmed: boolean; 
+        blocked: boolean;
+        affiliateCompany?: {
+          id: number;
+          documentId?: string;
+          title: string;
+          propertiesLimit: number;
+        };
+        role?: {
+          id: number;
+          name: string;
+        };
+      }; 
+      jwt: string 
+    }
 
     try {
       // Intentar con Strapi v4 (endpoint estándar)
@@ -74,6 +93,37 @@ export async function POST(request: NextRequest) {
 
     const { user, jwt } = data
 
+    // Obtener información completa del usuario incluyendo affiliateCompany
+    try {
+      // Normalizar STRAPI_URL (remover /api si ya está incluido)
+      const baseUrl = STRAPI_URL?.endsWith('/api') ? STRAPI_URL.slice(0, -4) : STRAPI_URL
+      
+      // Intentar con la API directa de users usando el ID del usuario
+      // Especificar los campos de affiliateCompany incluyendo documentId
+      const userDetailsUrl = `${baseUrl}/api/users/${user.id}?populate[affiliateCompany][fields][0]=id&populate[affiliateCompany][fields][1]=documentId&populate[affiliateCompany][fields][2]=title&populate[affiliateCompany][fields][3]=propertiesLimit&populate=role`
+      
+      const userDetailsResponse = await fetch(userDetailsUrl, {
+        headers: {
+          'Authorization': `Bearer ${jwt}`,
+        },
+      })
+
+      if (userDetailsResponse.ok) {
+        const userDetails = await userDetailsResponse.json()
+        
+        // Actualizar el objeto user con la información completa
+        Object.assign(user, {
+          affiliateCompany: userDetails.affiliateCompany,
+          role: userDetails.role,
+        })
+      } else {
+        console.error('Error al obtener detalles del usuario:', userDetailsResponse.status)
+      }
+    } catch (userDetailsError) {
+      console.error('Error al obtener detalles del usuario:', userDetailsError instanceof Error ? userDetailsError.message : userDetailsError)
+      // Continuar sin la información adicional
+    }
+
     // Verificar que el usuario no esté bloqueado
     if (user.blocked) {
       return NextResponse.json(
@@ -98,6 +148,8 @@ export async function POST(request: NextRequest) {
         email: user.email,
         confirmed: user.confirmed,
         blocked: user.blocked,
+        affiliateCompany: user.affiliateCompany,
+        role: user.role,
       },
     })
   } catch (error) {
