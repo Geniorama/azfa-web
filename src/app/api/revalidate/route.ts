@@ -68,6 +68,12 @@ export async function POST(request: NextRequest) {
         console.log('✅ Cache revalidado: Incentivos');
         break;
 
+      case 'services-page':
+        // Revalidar página de servicios
+        revalidatePath('/servicios');
+        console.log('✅ Cache revalidado: Servicios');
+        break;
+
       default:
         console.log(`⚠️ Modelo no configurado para revalidación: ${model}`);
     }
