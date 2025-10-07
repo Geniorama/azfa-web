@@ -805,20 +805,12 @@ export default function Home({
         </div>
       </section>
 
-      <section className="bg-white py-16 hidden">
+      <section className="bg-white py-16">
         <div className="container mx-auto px-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-screen-lg mx-auto">
-            <div className="w-full h-100 border border-gray-200 rounded-lg flex justify-center items-center text-3xl text-primary font-medium">
-              {/* Widget */}
-              <p>Widget 1</p>
-            </div>
-            <div className="w-full h-100 border border-gray-200 rounded-lg flex justify-center items-center text-3xl text-primary font-medium">
-              {/* Widget */}
-              <p>Widget 2</p>
-            </div>
-            <div className="w-full h-100 border border-gray-200 rounded-lg flex justify-center items-center text-3xl text-primary font-medium">
-              {/* Widget */}
-              <p>Widget 3</p>
+          <div className="flex justify-center items-center">
+            <div className="w-auto border border-gray-200 rounded-lg flex justify-center items-center text-3xl text-primary font-medium">
+              {/* Widget facebook */}
+              <iframe src="https://www.facebook.com/plugins/page.php?href=https%3A%2F%2Fwww.facebook.com%2Fasociacionzfa&tabs=timeline&width=340&height=500&small_header=false&adapt_container_width=true&hide_cover=false&show_facepile=true&appId=939575044228291" width="340" height="500" style={{ border: 'none', overflow: 'hidden' }} scrolling="no" allowFullScreen={true} allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"></iframe>
             </div>
           </div>
         </div>
@@ -856,19 +848,18 @@ export default function Home({
               },
               1024: {
                 slidesPerView: 5,
-                slidesPerGroup: 1,
+                slidesPerGroup: 4,
               },
             }}
           >
-            {affiliatesSectionData?.logos &&
-            affiliatesSectionData.logos.length > 0 ? (
+          {affiliatesSectionData?.logos &&
+            affiliatesSectionData.logos.length > 0 && (
               affiliatesSectionData.logos.map((affiliate) => (
                 <SwiperSlide key={affiliate.id}>
                   <img
                     className="w-full h-24 object-contain max-w-fit mx-auto grayscale md:grayscale hover:grayscale-0 transition-all duration-300 swiper-slide-mobile"
                     src={
-                      affiliate.logo?.url ||
-                      "https://testazfabucket.s3.us-east-2.amazonaws.com/Costa_Rica_piasa_7371f1e8b5.jpg"
+                      affiliate.logo?.url
                     }
                     alt={affiliate.name || "Logo"}
                     onClick={() => {
@@ -880,55 +871,6 @@ export default function Home({
                   />
                 </SwiperSlide>
               ))
-            ) : (
-              // Fallback cuando no hay datos de afiliados
-              <>
-                <SwiperSlide>
-                  <img
-                    className="w-full h-24 object-contain max-w-fit mx-auto grayscale md:grayscale hover:grayscale-0 transition-all duration-300 swiper-slide-mobile"
-                    src={
-                      "https://testazfabucket.s3.us-east-2.amazonaws.com/Costa_Rica_piasa_7371f1e8b5.jpg"
-                    }
-                    alt="Logo"
-                  />
-                </SwiperSlide>
-                <SwiperSlide>
-                  <img
-                    className="w-full h-24 object-contain max-w-fit mx-auto grayscale md:grayscale hover:grayscale-0 transition-all duration-300 swiper-slide-mobile"
-                    src={
-                      "https://testazfabucket.s3.us-east-2.amazonaws.com/zeta_group_logo_f6f20bc67d.jpg"
-                    }
-                    alt="Logo"
-                  />
-                </SwiperSlide>
-                <SwiperSlide>
-                  <img
-                    className="w-full h-24 object-contain max-w-fit mx-auto grayscale md:grayscale hover:grayscale-0 transition-all duration-300 swiper-slide-mobile"
-                    src={
-                      "https://testazfabucket.s3.us-east-2.amazonaws.com/TMF_Logo_ENG_aedf88b6c2.png"
-                    }
-                    alt="Logo"
-                  />
-                </SwiperSlide>
-                <SwiperSlide>
-                  <img
-                    className="w-full h-24 object-contain max-w-fit mx-auto grayscale md:grayscale hover:grayscale-0 transition-all duration-300 swiper-slide-mobile"
-                    src={
-                      "https://testazfabucket.s3.us-east-2.amazonaws.com/Hemistion_36554b1aff.png"
-                    }
-                    alt="Logo"
-                  />
-                </SwiperSlide>
-                <SwiperSlide>
-                  <img
-                    className="w-full h-24 object-contain max-w-fit mx-auto grayscale md:grayscale hover:grayscale-0 transition-all duration-300 swiper-slide-mobile"
-                    src={
-                      "https://testazfabucket.s3.us-east-2.amazonaws.com/Colombia_zonamerica_jpg_e3da5e9653.webp"
-                    }
-                    alt="Logo"
-                  />
-                </SwiperSlide>
-              </>
             )}
           </Swiper>
         </div>
@@ -950,9 +892,7 @@ export default function Home({
             className="mt-10 swiper-custom"
             autoplay={{ delay: 2500, disableOnInteraction: false }}
             navigation={true}
-            loop={
-              partnersSectionData?.logos && partnersSectionData.logos.length > 5
-            }
+            loop={true}
             speed={2000}
             breakpoints={{
               0: {
@@ -966,7 +906,7 @@ export default function Home({
               },
               1024: {
                 slidesPerView: 5,
-                slidesPerGroup: 1,
+                slidesPerGroup: 4,
               },
             }}
           >
