@@ -37,14 +37,19 @@ function OfertaInmobiliariaContent({ pageContent }: OfertaInmobiliariaViewProps)
     null
   );
   const [optionsLoading, setOptionsLoading] = useState(true);
-  const [searchFilters, setSearchFilters] = useState<FilterValuesProps>({
-    offerType: "",
-    propertyType: "",
-    propertyUse: "",
-    city: "",
-    country: "",
-    propertyStatus: "",
-  });
+  const [filtersInitialized, setFiltersInitialized] = useState(false);
+  
+  // Inicializar filtros desde la URL si existen
+  const initialFilters: FilterValuesProps = {
+    offerType: searchParams?.get('offerType') || '',
+    propertyType: searchParams?.get('propertyType') || '',
+    propertyUse: searchParams?.get('propertyUse') || '',
+    city: searchParams?.get('city') || '',
+    country: searchParams?.get('country') || '',
+    propertyStatus: searchParams?.get('propertyStatus') || ''
+  };
+  
+  const [searchFilters, setSearchFilters] = useState<FilterValuesProps>(initialFilters);
   const pageSize = 9; // 3x3 grid
 
   const { offers, loading, error, pagination } = useRealStateOffers(
@@ -53,9 +58,10 @@ function OfertaInmobiliariaContent({ pageContent }: OfertaInmobiliariaViewProps)
     searchFilters
   );
 
-  // Capturar parámetros de la URL y aplicarlos como filtros
+  // Capturar parámetros de la URL y aplicarlos como filtros solo una vez
   useEffect(() => {
-    if (searchParams) {
+    if (!filtersInitialized && searchParams) {
+      console.log('=== INICIALIZANDO FILTROS DESDE URL ===');
       const urlFilters: FilterValuesProps = {
         offerType: searchParams.get('offerType') || '',
         propertyType: searchParams.get('propertyType') || '',
@@ -65,14 +71,20 @@ function OfertaInmobiliariaContent({ pageContent }: OfertaInmobiliariaViewProps)
         propertyStatus: searchParams.get('propertyStatus') || ''
       };
 
-      // Solo actualizar si hay parámetros en la URL
+      console.log('Filtros de URL:', urlFilters);
+
+      // Solo actualizar si hay parámetros en la URL y no se han inicializado
       const hasUrlParams = Object.values(urlFilters).some(value => value !== '');
+      
       if (hasUrlParams) {
-        console.log('Parámetros de URL detectados:', urlFilters);
+        console.log('Aplicando filtros de URL por única vez');
         setSearchFilters(urlFilters);
+        setCurrentPage(1);
       }
+      
+      setFiltersInitialized(true);
     }
-  }, [searchParams]);
+  }, [searchParams, filtersInitialized]);
 
   // Cargar opciones de filtro desde la API (independientemente de los resultados filtrados)
   useEffect(() => {
@@ -137,7 +149,14 @@ function OfertaInmobiliariaContent({ pageContent }: OfertaInmobiliariaViewProps)
   }, []);
 
   useEffect(() => {
-    console.log("offers", offers);
+    console.log("=== SEARCH FILTERS CHANGED ===");
+    console.log("Nuevos filtros de búsqueda:", searchFilters);
+  }, [searchFilters]);
+
+  useEffect(() => {
+    console.log("=== OFFERS LOADED ===");
+    console.log("Cantidad de ofertas:", offers.length);
+    console.log("Ofertas:", offers);
   }, [offers]);
 
   useEffect(() => {
@@ -153,6 +172,7 @@ function OfertaInmobiliariaContent({ pageContent }: OfertaInmobiliariaViewProps)
   };
 
   const handleSearch = (filters: FilterValuesProps) => {
+    console.log("=== HANDLE SEARCH ===");
     console.log("Filtros recibidos en página:", filters);
 
     // Solo actualizar filtros que no sean "todos" o vacíos
@@ -180,9 +200,10 @@ function OfertaInmobiliariaContent({ pageContent }: OfertaInmobiliariaViewProps)
           : "",
     };
 
-    console.log("Filtros activos aplicados:", activeFilters);
+    console.log("Filtros activos después de limpiar:", activeFilters);
     setSearchFilters(activeFilters);
     setCurrentPage(1); // Reset to first page when searching
+    console.log("Estado de filtros actualizado");
     // Scroll to results
     window.scrollTo({ top: 0, behavior: "smooth" });
   };

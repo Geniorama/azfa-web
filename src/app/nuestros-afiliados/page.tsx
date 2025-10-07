@@ -376,19 +376,29 @@ function NuestrosAfiliadosContent() {
     if (selectedCountry) {
       const countryId = selectedCountry.id;
       if (countryId) {
-        // Filtrar los afiliados por país seleccionado usando allAffiliates
-        const filteredAffiliates = allAffiliates.filter((afiliado) => afiliado.country.code === countryId);
-        setAfiliados(filteredAffiliates);
-        
-        const filteredIncentivos = allIncentives.filter((marker) => marker.id === countryId);
-        setIncentivos(filteredIncentivos);
+        // Si el id empieza con "affiliate-", NO filtrar (es un marcador de afiliado individual)
+        // Solo filtrar cuando es un código de país (incentivo)
+        if (countryId.startsWith('affiliate-')) {
+          // Es un afiliado individual, NO filtrar la lista
+          console.log("Marcador de afiliado seleccionado, manteniendo lista completa");
+          setAfiliados(allAffiliates);
+          setIncentivos(allAffiliateMarkers);
+        } else {
+          // Es un código de país (incentivo), filtrar normalmente
+          console.log("Marcador de incentivo seleccionado, filtrando por país:", countryId);
+          const filteredAffiliates = allAffiliates.filter((afiliado) => afiliado.country.code === countryId);
+          setAfiliados(filteredAffiliates);
+          
+          const filteredIncentivos = allIncentives.filter((marker) => marker.id === countryId);
+          setIncentivos(filteredIncentivos);
+        }
       }
     } else {
       // Si no hay país seleccionado, restaurar todos los datos
       setAfiliados(allAffiliates);
       setIncentivos(allIncentives);
     }
-  }, [selectedCountry, allAffiliates, allIncentives]);
+  }, [selectedCountry, allAffiliates, allIncentives, allAffiliateMarkers]);
 
   useEffect(() => {
     if (tabParam) {
@@ -447,11 +457,29 @@ function NuestrosAfiliadosContent() {
       setIncentivos(allAffiliateMarkers);
     }
     
-    // Hacer zoom al afiliado en el mapa
-    mapRef.current?.zoomToCountry(lat, lng);
+    // Buscar el marcador correspondiente en allAffiliateMarkers
+    const selectedMarker = allAffiliateMarkers.find(marker => {
+      const latMatch = Math.abs(marker.lat - lat) < 0.0001;
+      const lngMatch = Math.abs(marker.lng - lng) < 0.0001;
+      return latMatch && lngMatch;
+    });
     
-    // NO seleccionar el marcador para mantener la vista de la lista de afiliados
-    // Solo hacer zoom sin cambiar la selección actual
+    if (selectedMarker) {
+      console.log("Marcador de afiliado encontrado:", selectedMarker);
+      
+      // Actualizar selectedCountry INMEDIATAMENTE para que la info no desaparezca
+      setSelectedCountry(selectedMarker);
+      
+      // Hacer zoom al afiliado en el mapa
+      mapRef.current?.zoomToCountry(lat, lng);
+      
+      // Seleccionar el marcador correspondiente en el mapa
+      setTimeout(() => {
+        mapRef.current?.selectMarkerByCoords(lat, lng);
+      }, 150);
+    } else {
+      console.warn("No se encontró marcador de afiliado con coordenadas:", lat, lng);
+    }
   }, [selectedTab, allAffiliateMarkers]);
 
   if (!pageContent){
