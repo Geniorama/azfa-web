@@ -225,7 +225,7 @@ export default function Home({
                 <SliderArrowRight className="custom-swiper-button-next" />
               </div>
               <hr className="my-8 border-background-3" />
-              <div className="flex items-start justify-center gap-4 max-w-screen-md mx-auto">
+              <div className="flex items-start justify-center gap-4 max-w-screen-md mx-auto text-white">
                 {slidesData?.slice(0, 3).map((slide) => (
                   <div
                     key={slide.id}
