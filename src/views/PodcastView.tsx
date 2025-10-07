@@ -1,5 +1,4 @@
 import HeadingPageSalaPrensa from "@/components/HeadingPageSalaPrensa";
-import ImageIntro from "@/assets/img/PHOTO-2025-07-21-17-38-57 3.jpg";
 import TitleDecorative from "@/utils/TitleDecorative";
 import { PodcastSectionType, PodcastType } from "@/types/componentsType";
 import AdSection from "@/components/AdSection";
@@ -15,6 +14,10 @@ export default function PodcastView({
   podcastSectionData,
   podcastData,
 }: PodcastViewProps) {
+  // Separar el podcast más reciente del resto
+  const featuredPodcast = podcastData?.[0];
+  const remainingPodcasts = podcastData?.slice(1) || [];
+
   return (
     <div>
       <HeadingPageSalaPrensa
@@ -27,28 +30,36 @@ export default function PodcastView({
 
       <section className="bg-white lg:py-16 py-10">
         <div className="container mx-auto px-4">
-          <img
-            src={ImageIntro.src}
-            alt="Podcast"
-            className="w-full h-full object-cover max-w-screen-lg mx-auto"
-          />
-
-          <div className="mt-10">
-            <TitleDecorative className="text-center">
-              Todos los episodios
-            </TitleDecorative>
-
-            {/* Embed podcast*/}
-            <div className="flex flex-wrap mt-10">
-              {podcastData?.map((podcast) => (
-                <div key={podcast.id} className="lg:mb-2 w-full lg:w-1/2 p-2 [&>iframe]:w-full [&>iframe]:lg:h-[250px]">
-                  <ReactMarkdown rehypePlugins={[rehypeRaw]}>
-                    {podcast.extract}
-                  </ReactMarkdown>
-                </div>
-              ))}
+          {/* Podcast destacado (más reciente) */}
+          {featuredPodcast && (
+            <div className="max-w-screen-lg mx-auto mb-16">
+              <div className="[&>iframe]:w-full [&>iframe]:h-[200px] [&>iframe]:lg:h-[400px]">
+                <ReactMarkdown rehypePlugins={[rehypeRaw]}>
+                  {featuredPodcast.extract}
+                </ReactMarkdown>
+              </div>
             </div>
-          </div>
+          )}
+
+          {/* Resto de episodios */}
+          {remainingPodcasts.length > 0 && (
+            <div className="mt-10">
+              <TitleDecorative className="text-center">
+                Todos los episodios
+              </TitleDecorative>
+
+              {/* Embed podcast*/}
+              <div className="flex flex-wrap mt-10">
+                {remainingPodcasts.map((podcast) => (
+                  <div key={podcast.id} className="lg:mb-2 w-full lg:w-1/2 p-2 [&>iframe]:w-full [&>iframe]:lg:h-[250px]">
+                    <ReactMarkdown rehypePlugins={[rehypeRaw]}>
+                      {podcast.extract}
+                    </ReactMarkdown>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
       </section>
 
