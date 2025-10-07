@@ -22,7 +22,7 @@ const getPressRoomPage = async (): Promise<{ data: PressRoomPageType } | null> =
 
 const getPodcast = async () => {
   try {
-    const response = await fetch(`${process.env.STRAPI_URL}/api/press-rooms?filters[type][$eq]=podcast&populate=*`, {
+    const response = await fetch(`${process.env.STRAPI_URL}/api/press-rooms?filters[type][$eq]=podcast&populate=*&sort=publishDate:desc`, {
       cache: "force-cache",
       next: { revalidate: 3600 }, // Revalidar cada hora
     });
