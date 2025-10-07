@@ -59,7 +59,7 @@ export default function InviertaEnZonasView({ pageContent }: InviertaEnZonasView
             {pageContent.statistics.statistics?.slice(0, 2).map((statistic, index) => (
               <div key={statistic.id || index} className="flex items-center gap-6">
                 <img
-                  src={IconIberoamerica.src}
+                  src={statistic.icon?.customImage?.url || IconIberoamerica.src}
                   alt={statistic.label || "Icon Iberoamérica"}
                   className="w-16 h-16"
                 />
@@ -108,7 +108,7 @@ export default function InviertaEnZonasView({ pageContent }: InviertaEnZonasView
             {pageContent.statistics.statistics?.slice(2).map((statistic, index) => (
               <div key={statistic.id || index} className={`flex items-center gap-6 ${index === 0 ? 'mt-8 lg:mt-0' : ''}`}>
                 <img
-                  src={IconIberoamerica.src}
+                  src={statistic.icon?.customImage?.url || IconIberoamerica.src}
                   alt={statistic.label || "Icon Iberoamérica"}
                   className="w-16 h-16"
                 />

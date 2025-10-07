@@ -74,6 +74,12 @@ export async function POST(request: NextRequest) {
         console.log('✅ Cache revalidado: Servicios');
         break;
 
+      case 'trade-zones-page':
+        // Revalidar página de Invierta en Zonas Francas
+        revalidatePath('/invierta-en-zonas-francas');
+        console.log('✅ Cache revalidado: Invierta en Zonas Francas');
+        break;
+
       default:
         console.log(`⚠️ Modelo no configurado para revalidación: ${model}`);
     }

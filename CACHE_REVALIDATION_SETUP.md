@@ -90,6 +90,20 @@ Repite el proceso para otros content types:
 - **Content-Type**: `Global Setting`
 - **Events**: Todos
 
+#### Webhook para Services Page
+- **Nombre**: `Revalidate Services Page`
+- **URL**: `https://tu-dominio.com/api/revalidate`
+- **Headers**: `Authorization: Bearer tu-token-...`
+- **Content-Type**: `Services Page`
+- **Events**: Todos
+
+#### Webhook para Trade Zones Page (Invierta en Zonas Francas)
+- **Nombre**: `Revalidate Trade Zones Page`
+- **URL**: `https://tu-dominio.com/api/revalidate`
+- **Headers**: `Authorization: Bearer tu-token-...`
+- **Content-Type**: `Trade Zones Page`
+- **Events**: Todos
+
 ## 📝 Paso 3: Payload del Webhook
 
 Strapi enviará automáticamente un payload como este:
@@ -134,6 +148,12 @@ El endpoint `/api/revalidate` procesará esto automáticamente.
 
 ### Incentive
 - `/invierta-en-zonas-francas/incentivos`
+
+### Services Page
+- `/servicios`
+
+### Trade Zones Page
+- `/invierta-en-zonas-francas`
 
 ## 🧪 Probar los Webhooks
 
