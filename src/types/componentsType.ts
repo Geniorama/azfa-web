@@ -653,6 +653,7 @@ export interface TradeZonesPageType {
     orderReverse: boolean;
     coverImage: StrapiImageType;
   };
+  bannerImage: StrapiImageType;
 }
 
 export interface ContactFormSettingsType {

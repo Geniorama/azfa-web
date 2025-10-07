@@ -1,10 +1,7 @@
 "use client";
 
 import HeadingPage from "@/components/HeadingPage";
-// import CoverImage from "@/assets/img/bg-sala-prensa.jpg";
-import ExampleImage from "@/assets/img/Frame 51.png";
 import TitleDecorative from "@/utils/TitleDecorative";
-import IconIberoamerica from "@/assets/img/icon-home-servicios 1.svg";
 import Counter from "@/utils/Counter";
 import type { TradeZonesPageType } from "@/types/componentsType";
 import ReactMarkdown from "react-markdown";
@@ -15,10 +12,11 @@ interface InviertaEnZonasViewProps {
 }
 
 export default function InviertaEnZonasView({ pageContent }: InviertaEnZonasViewProps) {
-  // Fallback si no hay datos
   if (!pageContent) {
-    return <div>No hay datos disponibles</div>;
+    return null;
   }
+
+  console.log("pageContent", pageContent)
 
   return (
     <div>
@@ -58,114 +56,40 @@ export default function InviertaEnZonasView({ pageContent }: InviertaEnZonasView
           <div className="w-full lg:w-1/3 space-y-10 mt-14 lg:mt-0">
             {pageContent.statistics.statistics?.slice(0, 2).map((statistic, index) => (
               <div key={statistic.id || index} className="flex items-center gap-6">
-                <img
-                  src={statistic.icon?.customImage?.url || IconIberoamerica.src}
-                  alt={statistic.label || "Icon Iberoamérica"}
-                  className="w-16 h-16"
-                />
+                {statistic.icon?.customImage?.url && (
+                  <img
+                    src={statistic.icon.customImage.url}
+                    alt={statistic.label || "Estadística"}
+                    className="w-16 h-16"
+                  />
+                )}
                 <Counter
                   value={parseInt(statistic.value || "0")}
-                  prefix={statistic.prefix || "+"}
+                  prefix={statistic.prefix || ""}
                   leyend={statistic.label || ""}
                   thousandSeparator={statistic.thousandsSeparator || "."}
                 />
               </div>
             ))}
-            {/* Fallback si no hay datos */}
-            {(!pageContent.statistics.statistics || pageContent.statistics.statistics.length === 0) && (
-              <>
-                <div className="flex items-center gap-6">
-                  <img
-                    src={IconIberoamerica.src}
-                    alt="Icon Iberoamérica"
-                    className="w-16 h-16"
-                  />
-                  <Counter
-                    value={800}
-                    prefix="+"
-                    leyend="Zonas Francas"
-                    thousandSeparator="."
-                  />
-                </div>
-
-                <div className="flex items-center gap-6">
-                  <img
-                    src={IconIberoamerica.src}
-                    alt="Icon Iberoamérica"
-                    className="w-16 h-16"
-                  />
-                  <Counter
-                value={8000}
-                prefix="+"
-                leyend="Empresas"
-                thousandSeparator="."
-              />
-                </div>
-              </>
-            )}
           </div>
           <div className="w-full lg:w-1/3 space-y-10">
             {pageContent.statistics.statistics?.slice(2).map((statistic, index) => (
               <div key={statistic.id || index} className={`flex items-center gap-6 ${index === 0 ? 'mt-8 lg:mt-0' : ''}`}>
-                <img
-                  src={statistic.icon?.customImage?.url || IconIberoamerica.src}
-                  alt={statistic.label || "Icon Iberoamérica"}
-                  className="w-16 h-16"
-                />
+                {statistic.icon?.customImage?.url && (
+                  <img
+                    src={statistic.icon.customImage.url}
+                    alt={statistic.label || "Estadística"}
+                    className="w-16 h-16"
+                  />
+                )}
                 <Counter
                   value={parseInt(statistic.value || "0")}
-                  prefix={statistic.prefix || "+"}
+                  prefix={statistic.prefix || ""}
                   leyend={statistic.label || ""}
                   thousandSeparator={statistic.thousandsSeparator || "."}
                 />
               </div>
             ))}
-            {/* Fallback si no hay datos */}
-            {(!pageContent.statistics.statistics || pageContent.statistics.statistics.length === 0) && (
-              <>
-                <div className="flex items-center gap-6 mt-8 lg:mt-0">
-                  <img
-                    src={IconIberoamerica.src}
-                    alt="Icon Iberoamérica"
-                    className="w-16 h-16"
-                  />
-                  <Counter
-                    value={1090000}
-                    prefix="+"
-                    leyend="Empleos"
-                    thousandSeparator="."
-                  />
-                </div>
-
-                <div className="flex items-center gap-6">
-                  <img
-                    src={IconIberoamerica.src}
-                    alt="Icon Iberoamérica"
-                    className="w-16 h-16"
-                  />
-                  <Counter
-                    value={65800}
-                    prefix="USD $"
-                    leyend="millones EXPORTACIÓN"
-                    thousandSeparator="."
-                  />
-                </div>
-
-                <div className="flex items-center gap-6">
-                  <img
-                    src={IconIberoamerica.src}
-                    alt="Icon Iberoamérica"
-                    className="w-16 h-16"
-                  />
-                  <Counter
-                    value={48000}
-                    prefix="USD $"
-                    leyend="millones INVERSIONES"
-                    thousandSeparator="."
-                  />
-                </div>
-              </>
-            )}
           </div>
         </div>
       </section>
@@ -179,9 +103,11 @@ export default function InviertaEnZonasView({ pageContent }: InviertaEnZonasView
                  <ReactMarkdown rehypePlugins={[rehypeRaw]}>{pageContent.about2.description}</ReactMarkdown>
                </div>
             </div>
-            <div className="w-full lg:w-1/2">
-              <img className="w-full" src={ExampleImage.src} alt="Servicios" />
-            </div>
+            {pageContent.about2.coverImage?.url && (
+              <div className="w-full lg:w-1/2">
+                <img className="w-full" src={pageContent.about2.coverImage.url} alt="Inversión en Zonas Francas" />
+              </div>
+            )}
           </div>
         </div>
       </section>
@@ -201,6 +127,14 @@ export default function InviertaEnZonasView({ pageContent }: InviertaEnZonasView
           </div>
         </div>
       </section>
+
+      {pageContent.bannerImage?.url && (
+        <section className="bg-white py-10 lg:pt-16">
+          <div className="container mx-auto px-4">
+            <img className="w-full" src={pageContent.bannerImage.url} alt={pageContent.bannerImage.alternativeText || "Inversión en Zonas Francas"} />
+          </div>
+        </section>
+      )}
     </div>
   );
 }
