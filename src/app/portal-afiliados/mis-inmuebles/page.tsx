@@ -1,3 +1,5 @@
+"use client";
+
 import MisInmueblesView from "@/views/MisInmueblesView";
 
 export default function MisInmuebles() {

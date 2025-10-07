@@ -14,6 +14,12 @@ interface User {
     name: string
     description?: string
   }
+  affiliateCompany?: {
+    id: number
+    documentId?: string
+    title: string
+    propertiesLimit: number
+  }
 }
 
 interface AuthContextType {
