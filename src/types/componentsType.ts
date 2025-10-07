@@ -630,6 +630,11 @@ export interface TradeZonesPageType {
       prefix: string | null;
       sufix: string | null;
       thousandsSeparator: string | null;
+      icon?: {
+        type?: string;
+        customImage?: ImageType;
+        reactIconName?: string;
+      };
     }[];
   };
   about2: {
