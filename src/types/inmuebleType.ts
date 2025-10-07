@@ -2,6 +2,7 @@ import { StrapiButtonType } from "./componentsType";
 
 export interface InmuebleType {
     id: string;
+    documentId?: string;
     title: string;
     image?: string;
     offerType?: string[];
@@ -18,13 +19,23 @@ export interface InmuebleType {
     publishedAt?: string;
     locale?: string;
     imgGallery?: {
+        id?: number;
         url: string;
         alternativeText?: string;
     }[];
     description?: string;
     platinum?: boolean;
-    certifications?: StrapiBlock[];
+    certifications?: StrapiBlock[] | unknown;
     ctaButton?: StrapiButtonType;
+    affiliateCompany?: {
+        id: number;
+        documentId?: string;
+        title: string;
+    };
+    users?: {
+        id: number;
+        username: string;
+    };
 }
 
 interface StrapiBlock {

@@ -13,8 +13,8 @@ export default function MisInmueblesView() {
   const { user } = useAuth();
   const { offers, loading, error, availableSlots, propertiesLimit, hasAvailableSlots } = useAffiliateRealStateOffers();
 
-  const handleEditInmueble = (id: string) => {
-    router.push(`/portal-afiliados/mis-inmuebles/editar/${id}`);
+  const handleEditInmueble = (documentId: string) => {
+    router.push(`/portal-afiliados/mis-inmuebles/editar/${documentId}`);
   };
 
   const handleAddInmueble = () => {
@@ -88,7 +88,7 @@ export default function MisInmueblesView() {
                 platinum={offer.platinum}
                 button={{
                   label: "Editar",
-                  onClick: () => handleEditInmueble(offer.id),
+                  onClick: () => handleEditInmueble(offer.documentId || offer.id),
                 }}
               />
             ))}

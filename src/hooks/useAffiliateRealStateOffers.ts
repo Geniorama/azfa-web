@@ -5,6 +5,7 @@ import { useAuth } from '@/context/AuthContext';
 interface StrapiResponse {
   data: Array<{
     id: string;
+    documentId?: string;
     title: string;
     slug: string;
     propertyType?: string[];
@@ -113,6 +114,7 @@ export const useAffiliateRealStateOffers = (page: number = 1, pageSize: number =
             
             return {
               id: item?.id || '',
+              documentId: item?.documentId || '',
               title,
               slug,
               propertyType: item?.propertyType,
