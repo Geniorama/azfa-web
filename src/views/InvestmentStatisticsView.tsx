@@ -62,8 +62,16 @@ export default function InvestmentStatisticsView({ pageContent }: InvestmentStat
               <p className="text-h6">
                 {data.ctaSection?.title}
               </p>
-              <div className="text-body font-light">
-                <ReactMarkdown rehypePlugins={[rehypeRaw]}>{data.ctaSection?.description}</ReactMarkdown>
+              <div className="text-body font-light [&_a]:underline [&_a]:underline-offset-2 [&_a]:decoration-1 [&_a]:text-text-primary [&_a:hover]:text-details [&_a]:transition-colors">
+                <ReactMarkdown 
+                  rehypePlugins={[rehypeRaw]}
+                  components={{
+                    strong: ({children}) => <span className="font-bold">{children}</span>,
+                    b: ({children}) => <span className="font-bold">{children}</span>,
+                  }}
+                >
+                  {data.ctaSection?.description}
+                </ReactMarkdown>
               </div>
             </div>
             <div className="w-full md:w-2/5 lg:text-right">

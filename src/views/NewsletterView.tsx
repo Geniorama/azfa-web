@@ -17,6 +17,7 @@ interface NewsletterType extends NewsType {
     url: string;
     alternativeText?: string;
   };
+  publishDate?: string;
 }
 
 interface NewsletterViewProps {
@@ -27,16 +28,21 @@ interface NewsletterViewProps {
 }
 
 export default function NewsletterView({ newsletterData, categoriesData, paginationMeta, newsletterSectionData }: NewsletterViewProps) {
-  // Función para formatear la fecha como "JUN 25"
+  // Función para formatear la fecha como "JUN 25, 2024"
   const formatDate = (dateString: string): string => {
-    const date = new Date(dateString);
+    // Extraer año, mes y día directamente del string para evitar problemas de zona horaria
+    const datePart = dateString.split('T')[0]; // "2024-08-28"
+    const [year, month, day] = datePart.split('-').map(Number);
+    
     const monthNames = [
       "ENE", "FEB", "MAR", "ABR", "MAY", "JUN",
       "JUL", "AGO", "SEP", "OCT", "NOV", "DIC"
     ];
-    const month = monthNames[date.getMonth()];
-    const day = date.getDate().toString().padStart(2, '0');
-    return `${month} ${day}`;
+    
+    const monthName = monthNames[month - 1]; // month viene como 1-12, array es 0-11
+    const dayFormatted = day.toString().padStart(2, '0');
+    
+    return `${monthName} ${dayFormatted}, ${year}`;
   };
 
   console.log("categoriesData", categoriesData);
@@ -45,7 +51,7 @@ export default function NewsletterView({ newsletterData, categoriesData, paginat
   const formatNewsletterData = (newsletters: NewsletterType[]) => {
     return newsletters.map((item) => ({
       title: item.title,
-      date: formatDate(item.publishedAt),
+      date: formatDate(item.publishDate || item.publishedAt),
       description: truncateText(item.extract, 100),
       thumbnail: item.thumbnail,
       url: item.downloadDocument?.url || item.externalLink || "#",
