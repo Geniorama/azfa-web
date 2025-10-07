@@ -16,13 +16,14 @@ interface NewsletterType extends NewsType {
     url: string;
     alternativeText?: string;
   };
+  publishDate?: string;
 }
 
 // Función para obtener newsletters desde Strapi
 const getNewsletters = async (page: number = 1, pageSize: number = 9): Promise<{ data: NewsletterType[], meta: { pagination: { page: number, pageCount: number, pageSize: number, total: number } } } | null> => {
   try {
     const response = await fetch(
-      `${process.env.STRAPI_URL}/api/press-rooms?filters[type][$eq]=newsletter&populate[0]=thumbnail&populate[1]=category&populate[2]=downloadDocument&fields[0]=title&fields[1]=slug&fields[2]=extract&fields[3]=type&fields[4]=externalLink&fields[5]=createdAt&fields[6]=updatedAt&fields[7]=publishedAt&pagination[page]=${page}&pagination[pageSize]=${pageSize}&sort=publishedAt:desc`,
+      `${process.env.STRAPI_URL}/api/press-rooms?filters[type][$eq]=newsletter&populate[0]=thumbnail&populate[1]=category&populate[2]=downloadDocument&fields[0]=title&fields[1]=slug&fields[2]=extract&fields[3]=type&fields[4]=externalLink&fields[5]=createdAt&fields[6]=updatedAt&fields[7]=publishedAt&fields[8]=publishDate&pagination[page]=${page}&pagination[pageSize]=${pageSize}&sort=publishDate:desc`,
       {
         cache: "force-cache",
         next: { revalidate: 3600 }, // Revalidar cada hora

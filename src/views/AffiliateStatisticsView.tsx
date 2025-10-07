@@ -6,6 +6,8 @@ import HeadingPagePortal from "@/components/HeadingPagePortal";
 import { AffiliateInvestmentStatisticsType } from "@/types/contentType";
 import LoadingSpinner from "@/components/LoadingSpinner";
 import { useAuth } from "@/context/AuthContext";
+import ReactMarkdown from "react-markdown";
+import rehypeRaw from "rehype-raw";
 
 interface AffiliateStatisticsViewProps {
   pageContent: AffiliateInvestmentStatisticsType | null;
@@ -190,9 +192,17 @@ export default function AffiliateStatisticsView({ pageContent }: AffiliateStatis
                 <p className="text-h6">
                   {data.ctaSection.title}
                 </p>
-                <p className="text-body font-light">
-                  {data.ctaSection.description}
-                </p>
+                <div className="text-body font-light [&_a]:underline [&_a]:underline-offset-2 [&_a]:decoration-1 [&_a]:text-text-primary [&_a:hover]:text-details [&_a]:transition-colors">
+                  <ReactMarkdown 
+                    rehypePlugins={[rehypeRaw]}
+                    components={{
+                      strong: ({children}) => <span className="font-bold">{children}</span>,
+                      b: ({children}) => <span className="font-bold">{children}</span>,
+                    }}
+                  >
+                    {data.ctaSection.description}
+                  </ReactMarkdown>
+                </div>
               </div>
               <div className="w-full md:w-2/5">
                 <button
