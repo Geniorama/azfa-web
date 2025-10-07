@@ -158,7 +158,7 @@ export default function Home({
           )}
         </div>
       </Modal>
-      <section className=" bg-text-primary w-full h-[calc(100vh-100px)]">
+      <section className=" bg-text-primary w-full h-[800px] lg:h-[calc(100vh-100px)]">
         {/* Slider */}
         <div className="relative h-full">
           <Swiper
