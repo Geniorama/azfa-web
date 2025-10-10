@@ -5,7 +5,6 @@ import Header from "./Header";
 import Footer from "./Footer";
 import { AuthProvider } from "../context/AuthContext";
 import { HeaderTypeData, FooterType } from "@/types/componentsType";
-
 interface ClientLayoutWrapperProps {
   children: React.ReactNode;
   header: HeaderTypeData;
