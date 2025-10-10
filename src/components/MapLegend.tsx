@@ -10,7 +10,7 @@ const MapLegend: React.FC<MapLegendProps> = ({ showAffiliates = false }) => {
   if (!showAffiliates) {
     // Leyenda para incentivos (países)
     return (
-      <div className="absolute top-4 right-4 bg-white rounded-lg shadow-lg p-4 z-10">
+      <div className="hidden lg:block absolute top-4 right-4 bg-white rounded-lg shadow-lg p-4 z-10">
         <h3 className="text-sm font-semibold text-gray-800 mb-2">Leyenda</h3>
         <div className="flex items-center gap-2 mb-2">
           <img 
@@ -26,7 +26,7 @@ const MapLegend: React.FC<MapLegendProps> = ({ showAffiliates = false }) => {
 
   // Leyenda para afiliados
   return (
-    <div className="absolute top-4 right-4 bg-white rounded-lg shadow-lg p-4 z-10 max-w-xs">
+    <div className="hidden lg:block absolute top-4 right-4 bg-white rounded-lg shadow-lg p-4 z-10 max-w-xs">
       <h3 className="text-sm font-semibold text-gray-800 mb-3">Tipos de Afiliados</h3>
       
       <div className="space-y-2">
