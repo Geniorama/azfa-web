@@ -43,7 +43,7 @@ export const countryMapping: Record<string, { code: string; name: string; nameEn
   'dominican-republic': { code: 'DO', name: 'República Dominicana', nameEn: 'Dominican Republic' },
   'republicadominicana': { code: 'DO', name: 'República Dominicana', nameEn: 'Dominican Republic' },
   'haiti': { code: 'HT', name: 'Haití', nameEn: 'Haiti' },
-  'ahiti': { code: 'HT', name: 'Haití', nameEn: 'Haiti' },
+  'ahiti': { code: 'HT', name: 'Haití', nameEn: 'Haiti' }, // Corrección para datos mal escritos en Strapi
   'jamaica': { code: 'JM', name: 'Jamaica', nameEn: 'Jamaica' },
   'puerto-rico': { code: 'PR', name: 'Puerto Rico', nameEn: 'Puerto Rico' },
   'puertorico': { code: 'PR', name: 'Puerto Rico', nameEn: 'Puerto Rico' },
@@ -81,6 +81,12 @@ export const countryMapping: Record<string, { code: string; name: string; nameEn
 // Función para obtener el código ISO de un país por nombre
 export const getCountryCode = (countryName: string): string => {
   const normalizedName = countryName.toLowerCase().trim();
+  
+  // Si ya es un código ISO válido de 2 letras, devolverlo en mayúsculas
+  if (countryName.length === 2) {
+    return countryName.toUpperCase();
+  }
+  
   return countryMapping[normalizedName]?.code || countryName.toUpperCase();
 };
 
