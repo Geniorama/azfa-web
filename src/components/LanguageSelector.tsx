@@ -44,6 +44,13 @@ export default function LanguageSelector() {
   // Cerrar dropdown al hacer clic fuera
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
+      const target = event.target as Element;
+      
+      // No cerrar el dropdown si el clic es en el mapa
+      if (target.closest('svg') || target.closest('[data-map-container]')) {
+        return;
+      }
+      
       if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
         setIsOpen(false);
       }

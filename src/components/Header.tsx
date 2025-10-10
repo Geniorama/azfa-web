@@ -38,6 +38,13 @@ export default function Header({ header }: { header: HeaderTypeData }) {
   // Cerrar menú de usuario al hacer clic fuera
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
+      const target = event.target as Element;
+      
+      // No cerrar el menú si el clic es en el mapa
+      if (target.closest('svg') || target.closest('[data-map-container]')) {
+        return;
+      }
+      
       if (
         userMenuRef.current &&
         !userMenuRef.current.contains(event.target as Node)

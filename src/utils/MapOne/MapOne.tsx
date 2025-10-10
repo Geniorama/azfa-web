@@ -22,6 +22,9 @@ export default function MapOne({
   const svgRef = useRef<SVGSVGElement>(null);
 
   const handleClickCountry = (e: React.MouseEvent<SVGElement>) => {
+    // Prevenir que el evento se propague y afecte otros componentes
+    e.stopPropagation();
+    
     const target = e.target as SVGElement;
     const isValidCountry = target.className.baseVal === "st3"
 

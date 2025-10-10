@@ -504,8 +504,18 @@ export default function NormativaLegal() {
     console.log("País encontrado:", country);
 
     if (country) {
-      // Usar la función handlePaisExpand para expandir el país con toda la lógica
-      handlePaisExpand(country.id);
+      // Solo actualizar el estado sin manipular el DOM para evitar interferir con el header
+      const newExpandedPais = expandedPais === country.id ? null : country.id;
+      setExpandedPais(newExpandedPais);
+      setCountryImageSelected(
+        countriesInfo.find((p) => p.id === country.id)?.countryImage || null
+      );
+      
+      // Actualizar el país seleccionado para sincronizar con el buscador
+      if (newExpandedPais) {
+        const pais = countriesOptions.find((p) => p.id === countryCode);
+        if (pais) setSelectedPais(pais);
+      }
     } else {
       console.log("No se encontró país para el código:", countryCode);
     }
@@ -547,6 +557,7 @@ export default function NormativaLegal() {
           className={`hidden md:flex w-full md:w-5/8 bg-[#73DAEB] justify-center ${
             countryImageSelected ? "items-start pt-16" : "items-start"
           } h-full overflow-hidden`}
+          data-map-container
         >
           {countryImageSelected ? (
             <img

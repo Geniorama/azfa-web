@@ -24,6 +24,13 @@ export default function FloatMenu({ socialMedia = [] }: FloatMenuProps) {
   // Cerrar el menú cuando se hace click fuera de él
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
+      const target = event.target as Element;
+      
+      // No cerrar el menú si el clic es en el mapa
+      if (target.closest('svg') || target.closest('[data-map-container]')) {
+        return;
+      }
+      
       if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
         setIsOpen(false);
       }
