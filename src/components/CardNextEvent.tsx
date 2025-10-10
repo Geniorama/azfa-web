@@ -51,12 +51,16 @@ export default function CardNextEvent({ tag, title, date, location, address, ima
                     </div>
                 </div>
 
-                <div className='w-full lg:w-1/2 lg:space-y-4 space-y-2 mt-2 lg:mt-0'>
-                    <div className='flex flex-row gap-2 items-start'>
-                        {renderIcon(addressIcon, <GoZap className="w-5 h-5" />)}   
-                        <span className="text-body2 inline-block">{address}</span>
-                    </div>
-                </div>
+                {
+                    address && (
+                        <div className='w-full lg:w-1/2 lg:space-y-4 space-y-2 mt-2 lg:mt-0'>
+                            <div className='flex flex-row gap-2 items-start'>
+                                {renderIcon(addressIcon, <GoZap className="w-5 h-5" />)}   
+                                <span className="text-body2 inline-block">{address}</span>
+                            </div>
+                        </div>
+                    )
+                }
             </div>
 
             <Button className='mt-10 lg:absolute bottom-10 left-10 z-10 w-full lg:w-auto justify-between' variant='secondary' icon onClick={button.onClick}>
