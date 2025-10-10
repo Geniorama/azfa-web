@@ -31,7 +31,7 @@ export default function CardEvent({ image, title, category, date, location, hote
   return (
     <div className={`flex flex-col ${direction === 'horizontal' && 'lg:flex-row'} border border-background-2 rounded-tr-2xl rounded-bl-2xl rounded-br-2xl overflow-hidden`}>
         <div className={`w-full ${direction === 'horizontal' ? 'lg:w-2/5' : 'aspect-video'}`}>
-            <img src={image} alt={title} className='w-full h-full object-cover' />
+            <img src={image} alt={title} className='w-full aspect-video object-cover' />
         </div>
 
         {/* Content */}
