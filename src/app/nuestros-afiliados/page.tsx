@@ -382,13 +382,31 @@ function NuestrosAfiliadosContent() {
     if (selectedCountry) {
       const countryId = selectedCountry.id;
       if (countryId) {
-        // Si el id empieza con "affiliate-", NO filtrar (es un marcador de afiliado individual)
-        // Solo filtrar cuando es un código de país (incentivo)
+        // Si el id empieza con "affiliate-", filtrar para mostrar solo ese afiliado
         if (countryId.startsWith('affiliate-')) {
-          // Es un afiliado individual, NO filtrar la lista
-          console.log("Marcador de afiliado seleccionado, manteniendo lista completa");
-          setAfiliados(allAffiliates);
-          setIncentivos(allAffiliateMarkers);
+          // Es un afiliado individual, filtrar para mostrar solo este
+          console.log("Marcador de afiliado seleccionado, filtrando para mostrar solo este afiliado:", countryId);
+          
+          // Buscar el afiliado por sus coordenadas
+          const selectedAffiliate = allAffiliates.find(afiliado => {
+            if (!afiliado.mapLocation || afiliado.mapLocation.length === 0) return false;
+            
+            // Comparar coordenadas con un margen de error
+            const latMatch = Math.abs(afiliado.mapLocation[0].latitude - selectedCountry.lat) < 0.0001;
+            const lngMatch = Math.abs(afiliado.mapLocation[0].longitude - selectedCountry.lng) < 0.0001;
+            return latMatch && lngMatch;
+          });
+          
+          if (selectedAffiliate) {
+            // Mostrar solo el afiliado seleccionado
+            setAfiliados([selectedAffiliate]);
+            
+            // Mostrar solo el marcador del afiliado seleccionado
+            const selectedMarker = allAffiliateMarkers.find(marker => marker.id === countryId);
+            if (selectedMarker) {
+              setCurrentMarkers([selectedMarker]);
+            }
+          }
         } else {
           // Es un código de país (incentivo), filtrar normalmente
           console.log("Marcador de incentivo seleccionado, filtrando por país:", countryId);
@@ -403,8 +421,15 @@ function NuestrosAfiliadosContent() {
       // Si no hay país seleccionado, restaurar todos los datos
       setAfiliados(allAffiliates);
       setIncentivos(allIncentives);
+      
+      // Restaurar marcadores según la pestaña activa
+      if (selectedTab === "afiliados") {
+        setCurrentMarkers(allAffiliateMarkers);
+      } else {
+        setCurrentMarkers(allIncentives);
+      }
     }
-  }, [selectedCountry, allAffiliates, allIncentives, allAffiliateMarkers]);
+  }, [selectedCountry, allAffiliates, allIncentives, allAffiliateMarkers, selectedTab]);
 
   useEffect(() => {
     if (tabParam) {
@@ -600,7 +625,23 @@ function NuestrosAfiliadosContent() {
                     </div>
                   ) : (
                     <>
-
+                      {/* Botón para volver a ver todos los afiliados */}
+                      {selectedCountry && selectedCountry.id.startsWith('affiliate-') && (
+                        <div className="p-4 bg-gray-50 border-b border-gray-200">
+                          <button
+                            onClick={() => {
+                              setSelectedCountry(null);
+                              mapRef.current?.resetZoom();
+                            }}
+                            className="w-full flex items-center justify-center gap-2 px-4 py-2 bg-primary text-white rounded hover:bg-primary-dark transition-colors"
+                          >
+                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                            </svg>
+                            Regresar
+                          </button>
+                        </div>
+                      )}
                       
                       {/* Lista de afiliados */}
                       {afiliados.map((afiliado, index) => (
