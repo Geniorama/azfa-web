@@ -380,8 +380,8 @@ export default function NormativaLegal() {
     if (scrollToPais && countriesInfo.length > 0) {
       setTimeout(() => {
         const paisElement = document.getElementById(`pais-${scrollToPais}`);
-        const container = document.querySelector(
-          ".overflow-y-auto"
+        const container = document.getElementById(
+          "countries-scroll-container"
         ) as HTMLElement;
         if (paisElement && container) {
           const containerRect = container.getBoundingClientRect();
@@ -407,12 +407,14 @@ export default function NormativaLegal() {
       setExpandedPais(null);
       setScrollToPais(null);
       setCountryImageSelected(null); // Limpiar la imagen del país para mostrar el mapa
-      // Habilitar el scroll por si estaba bloqueado
-      const container = document.querySelector(
-        ".overflow-y-auto"
-      ) as HTMLElement;
-      if (container) {
-        container.style.overflow = "auto";
+      // Habilitar el scroll por si estaba bloqueado - usar ID específico
+      if (window.innerWidth >= 768) {
+        const container = document.getElementById(
+          "countries-scroll-container"
+        ) as HTMLElement;
+        if (container) {
+          container.style.overflow = "auto";
+        }
       }
       return;
     }
@@ -429,9 +431,9 @@ export default function NormativaLegal() {
       // Solo expandir automáticamente en pantallas grandes
       if (window.innerWidth >= 768) {
         setExpandedPais(selectedCountryInfo.id);
-        // Bloquear el scroll cuando se selecciona desde el buscador
-        const container = document.querySelector(
-          ".overflow-y-auto"
+        // Bloquear el scroll cuando se selecciona desde el buscador - usar ID específico
+        const container = document.getElementById(
+          "countries-scroll-container"
         ) as HTMLElement;
         if (container) {
           container.style.overflow = "hidden";
@@ -459,8 +461,8 @@ export default function NormativaLegal() {
       if (pais) setSelectedPais(pais);
     }
 
-    // Obtener el contenedor de scroll
-    const container = document.querySelector(".overflow-y-auto") as HTMLElement;
+    // Obtener el contenedor de scroll usando ID específico
+    const container = document.getElementById("countries-scroll-container") as HTMLElement;
 
     if (newExpandedPais) {
       // Si se está expandiendo, bloquear el scroll
@@ -588,7 +590,7 @@ export default function NormativaLegal() {
               />
             </div>
 
-            <div className="flex flex-col text-text-primary overflow-y-auto h-screen pt-26 md:pt-26 xl:pt-19 custom-scrollbar">
+            <div id="countries-scroll-container" className="flex flex-col text-text-primary overflow-y-auto h-screen pt-26 md:pt-26 xl:pt-19 custom-scrollbar">
               {expandedPais
                 ? // Si hay un país expandido, mostrar solo ese país
                   countriesInfo
@@ -614,12 +616,14 @@ export default function NormativaLegal() {
                                   setCountryImageSelected(null);
                                   setScrollToPais(null);
 
-                                  // Habilitar el scroll cuando se cierra
-                                  const container = document.querySelector(
-                                    ".overflow-y-auto"
-                                  ) as HTMLElement;
-                                  if (container) {
-                                    container.style.overflow = "auto";
+                                  // Habilitar el scroll cuando se cierra - usar ID específico para evitar afectar el header
+                                  if (window.innerWidth >= 768) {
+                                    const container = document.getElementById(
+                                      "countries-scroll-container"
+                                    ) as HTMLElement;
+                                    if (container) {
+                                      container.style.overflow = "auto";
+                                    }
                                   }
                                 }}
                                 className="p-2 hover:bg-gray-200 hover:text-primary rounded-full transition-colors cursor-pointer"
