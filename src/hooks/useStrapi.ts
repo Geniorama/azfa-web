@@ -56,7 +56,7 @@ export function useStrapi<T>(options: UseStrapiOptions): StrapiResponse<T> {
     if (options.autoFetch !== false) {
       fetchData();
     }
-  }, [options.endpoint, JSON.stringify(options.filters), JSON.stringify(options.populate)]);
+  }, [options.endpoint, options.filters, options.populate, options.autoFetch, fetchData]);
 
   return {
     data,

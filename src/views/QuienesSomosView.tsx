@@ -8,7 +8,7 @@ import IconTabs from "@/assets/img/icon-home-iberoamerica-empleos 2.svg";
 import CardTeamMember, {
   CardTeamMemberProps,
 } from "@/components/CardTeamMember";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import IconPerson from "@/assets/img/person-1.svg";
 import AvatarPerson from "@/components/AvatarPerson";
@@ -211,8 +211,10 @@ export default function JuntaDirectivaView({
   commissionSections,
 }: QuienesSomosViewProps) {
   const [activeTab, setActiveTab] = useState("junta-directiva");
+  const [hasScrolled, setHasScrolled] = useState(false);
   const pathname = usePathname();
   const router = useRouter();
+  const tabsContentRef = useRef<HTMLDivElement>(null);
 
   console.log("hero from QuienesSomosView", hero);
   console.log("intro from QuienesSomosView", intro);
@@ -380,7 +382,7 @@ export default function JuntaDirectivaView({
     );
   }
 
-  // Detectar el tab activo basado en la URL solo en la carga inicial
+  // Detectar el tab activo basado en la URL y hacer scroll automático
   useEffect(() => {
     const pathSegments = pathname.split("/");
     const lastSegment = pathSegments[pathSegments.length - 1];
@@ -394,16 +396,43 @@ export default function JuntaDirectivaView({
 
     if (slugToTab[lastSegment]) {
       setActiveTab(slugToTab[lastSegment]);
+      
+      // Scroll automático hacia el contenido de los tabs cuando se navega desde el menú
+      // Solo hacer scroll si no se ha hecho scroll automático en esta sesión
+      if (!hasScrolled) {
+        setTimeout(() => {
+          if (tabsContentRef.current) {
+            tabsContentRef.current.scrollIntoView({ 
+              behavior: 'smooth',
+              block: 'start'
+            });
+            setHasScrolled(true);
+          }
+        }, 200); // Delay un poco más para asegurar que el contenido se haya renderizado
+      }
     } else if (pathname === "/quienes-somos") {
       // Si está en la página principal, redirigir al tab junta-directiva
       router.replace("/quienes-somos/junta-directiva");
     }
-  }, []); // Solo ejecutar en el montaje inicial
+  }, [pathname, hasScrolled, router]); // Ejecutar cuando cambie la URL (incluyendo navegación desde menú)
 
   const handleTabClick = (tab: string) => {
     setActiveTab(tab);
     // Actualizar la URL usando pushState para evitar recarga
     window.history.pushState(null, "", `/quienes-somos/${tab}`);
+    
+    // Scroll suave hacia el inicio del contenido de los tabs
+    setTimeout(() => {
+      if (tabsContentRef.current) {
+        tabsContentRef.current.scrollIntoView({ 
+          behavior: 'smooth',
+          block: 'start'
+        });
+      }
+    }, 100); // Pequeño delay para asegurar que el contenido se haya renderizado
+    
+    // Resetear el estado de scroll para permitir scroll futuro desde menú
+    setHasScrolled(false);
   };
 
   return (
@@ -498,7 +527,7 @@ export default function JuntaDirectivaView({
       </section>
 
       {/* Section Content */}
-      <section className="bg-background-1 py-10 lg:py-28">
+      <section ref={tabsContentRef} className="bg-background-1 py-10 lg:py-28">
         <div className="container mx-auto px-4">
           {/* Tab Junta Directiva */}
           {activeTab === "junta-directiva" && (
