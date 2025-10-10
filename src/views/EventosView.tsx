@@ -44,8 +44,10 @@ const transformEventsData = (apiEvents: EventType[]): MonthEvents[] => {
 
   // Agrupar eventos por mes
   apiEvents.forEach(event => {
-    const eventDate = new Date(event.startDate);
-    const monthIndex = eventDate.getMonth();
+    // Extraer solo la parte de fecha para evitar problemas de zona horaria
+    const eventDatePart = event.startDate.split('T')[0]; // "2024-05-05"
+    const [, month] = eventDatePart.split('-').map(Number); // Extraer mes directamente
+    const monthIndex = month - 1; // Los meses van de 1-12, array es 0-11
     
     const formattedEvent: FormattedEvent = {
       title: event.title,
@@ -61,7 +63,10 @@ const transformEventsData = (apiEvents: EventType[]): MonthEvents[] => {
 
   // Ordenar eventos dentro de cada mes por fecha
   monthsData.forEach(monthData => {
-    monthData.events.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+    monthData.events.sort((a, b) => {
+      // Comparar fechas sin crear objetos Date para evitar problemas de zona horaria
+      return a.date.localeCompare(b.date);
+    });
   });
 
   return monthsData;
@@ -106,51 +111,55 @@ export default function EventosView({ eventsData, eventsPageData, isLoading = fa
 
   // Función para formatear fechas como "Mayo 5 al 9"
   const formatDateRange = (startDate: string, endDate: string): string => {
-    const start = new Date(startDate);
-    const end = new Date(endDate);
+    // Extraer solo la parte de fecha para evitar problemas de zona horaria
+    const startDatePart = startDate.split('T')[0]; // "2024-05-05"
+    const endDatePart = endDate.split('T')[0]; // "2024-05-09"
+    
+    // Parsear las fechas directamente desde los componentes
+    const [startYear, startMonth, startDay] = startDatePart.split('-').map(Number);
+    const [endYear, endMonth, endDay] = endDatePart.split('-').map(Number);
     
     const monthNames = [
       'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
       'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'
     ];
     
-    const startMonth = monthNames[start.getMonth()];
-    const startDay = start.getDate();
-    const endDay = end.getDate();
+    const startMonthName = monthNames[startMonth - 1]; // Los meses van de 1-12, array es 0-11
+    const endMonthName = monthNames[endMonth - 1];
     
     // Si es el mismo día
-    if (startDate === endDate) {
-      return `${startMonth} ${startDay}`;
+    if (startDatePart === endDatePart) {
+      return `${startMonthName} ${startDay}`;
     }
     
     // Si es el mismo mes
-    if (start.getMonth() === end.getMonth()) {
-      return `${startMonth} ${startDay} al ${endDay}`;
+    if (startMonth === endMonth) {
+      return `${startMonthName} ${startDay} al ${endDay}`;
     }
     
     // Si son meses diferentes
-    const endMonth = monthNames[end.getMonth()];
-    return `${startMonth} ${startDay} al ${endMonth} ${endDay}`;
+    return `${startMonthName} ${startDay} al ${endMonthName} ${endDay}`;
   };
 
   // Función para filtrar eventos según el tab activo
   const getFilteredEvents = () => {
+    // Obtener la fecha de hoy en formato YYYY-MM-DD para comparación directa
     const today = new Date()
-    today.setHours(0, 0, 0, 0) // Resetear horas para comparar solo fechas
+    const todayString = today.toISOString().split('T')[0] // "2024-05-05"
 
     // Primero obtener todos los eventos filtrados de todos los meses
     const allFilteredEvents: Array<{event: FormattedEvent, monthIndex: number, eventIndex: number}> = []
     
     events.forEach((monthData, monthIndex) => {
       const filteredEvents = monthData.events.filter(event => {
-        const eventDate = new Date(event.date)
-        eventDate.setHours(0, 0, 0, 0)
+        // Extraer solo la parte de fecha del evento para comparación directa
+        const eventDateString = event.date.split('T')[0] // "2024-05-05"
 
         switch (activeTab) {
           case "proximos":
-            return eventDate >= today
+            return eventDateString >= todayString
           case "pasados":
-            return eventDate < today
+            return eventDateString < todayString
           case "todos":
           default:
             return true
