@@ -4,7 +4,6 @@ import ClientLayoutWrapper from "../components/ClientLayoutWrapper";
 import AOSProvider from "../components/AOSProvider";
 import { fetchAPI } from "@/lib/api";
 import { HeaderTypeData, SocialMediaItemType, FooterType, ContactInfoType } from "@/types/componentsType";
-import FloatMenu from "@/components/FloatMenu";
 
 const interTight = Inter_Tight({
   variable: "--font-inter-tight",
@@ -41,9 +40,6 @@ export default async function RootLayout({
       >
         <AOSProvider>
           <ClientLayoutWrapper header={header} footer={footerWithContactInfo}>
-            <div className="hidden lg:block fixed top-[50%] -translate-y-[50%] right-0 z-50">
-             <FloatMenu socialMedia={socialMedia} />
-            </div>
             {children}
           </ClientLayoutWrapper>
         </AOSProvider>
