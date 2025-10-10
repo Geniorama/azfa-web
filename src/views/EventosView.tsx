@@ -116,8 +116,8 @@ export default function EventosView({ eventsData, eventsPageData, isLoading = fa
     const endDatePart = endDate.split('T')[0]; // "2024-05-09"
     
     // Parsear las fechas directamente desde los componentes
-    const [startYear, startMonth, startDay] = startDatePart.split('-').map(Number);
-    const [endYear, endMonth, endDay] = endDatePart.split('-').map(Number);
+    const [, startMonth, startDay] = startDatePart.split('-').map(Number);
+    const [, endMonth, endDay] = endDatePart.split('-').map(Number);
     
     const monthNames = [
       'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',

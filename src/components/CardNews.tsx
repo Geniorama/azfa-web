@@ -14,7 +14,7 @@ interface CardNewsProps {
 export default function CardNews({ image, title, category, description, button }: CardNewsProps) {
   return (
     <div className='border border-background-2 rounded-tr-2xl rounded-bl-2xl rounded-br-2xl overflow-hidden'>
-        <img src={image} alt={title} className='w-full h-60 object-cover' />
+        <img src={image} alt={title} className='w-full aspect-video object-cover' />
 
         {/* Content */}
         <div className="py-6 px-8">

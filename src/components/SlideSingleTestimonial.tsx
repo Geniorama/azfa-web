@@ -18,7 +18,7 @@ export default function SlideSingleTestimonial({ caption, title, description, im
         <img
           src={image}
           alt={title}
-          className="w-full h-full object-cover"
+          className="w-full aspect-square max-h-[calc(100vh-50px)] 2xl:max-h-screen object-cover"
         />
         <div className="absolute top-0 left-0 w-full h-full flex items-center justify-center hidden">
           <button onClick={button.onClick} className="bg-white/20 rounded-full cursor-pointer flex items-center justify-center w-20 h-20 hover:scale-110 transition-all duration-300">
@@ -28,7 +28,7 @@ export default function SlideSingleTestimonial({ caption, title, description, im
       </div>
       <div className="w-full lg:w-1/2">
         <div className="bg-background-1 px-8 lg:px-12 py-12 lg:py-32 space-y-5">
-          <p className="max-w-[539px] text-h5 tracking-[1px]">
+          <p className="max-w-[539px] text-h5 tracking-[1px] lg:text-[20px] lg:leading-[30px]">
             {description}
           </p>
           <div>

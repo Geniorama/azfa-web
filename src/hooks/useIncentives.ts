@@ -55,7 +55,7 @@ export function useIncentives(options: UseIncentivesOptions = {}): UseIncentives
 
   useEffect(() => {
     fetchIncentives()
-  }, [country, page, pageSize])
+  }, [country, page, pageSize, fetchIncentives])
 
   const refetch = () => {
     fetchIncentives()

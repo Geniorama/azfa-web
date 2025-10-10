@@ -10,7 +10,6 @@ import "swiper/css/pagination";
 import SliderArrowLeft from "@/utils/SliderArrowLeft";
 import SliderArrowRight from "@/utils/SliderArrowRight";
 import ServicioInfoImg from "@/assets/img/icon-home-informacion 1.svg";
-import IconIntroStar from "@/assets/img/icon-home-trayectoria-AZFA 2.svg";
 import CoverVideo from "@/assets/img/cover-video.jpg";
 import { IoMdPlay } from "react-icons/io";
 import TitleDecorative from "@/utils/TitleDecorative";
@@ -24,6 +23,7 @@ import { truncateText } from "@/utils/truncateText";
 import SlideSingleHome from "@/components/SlideSingleHome";
 import SlideSingleTestimonial from "@/components/SlideSingleTestimonial";
 import Modal from "@/components/Modal";
+import IntroPage from "@/components/IntroPage";
 import { useState, useRef } from "react";
 import {
   HeroSlideData,
@@ -262,22 +262,11 @@ export default function Home({
         </div>
       </section>
 
+      {/* Intro */}
       <section className="bg-white lg:pb-16 pt-16 pb-0">
         <div className="container mx-auto px-4">
-          <div
-            data-aos="fade-up"
-            className="flex flex-col lg:flex-row items-center justify-center text-text-primary lg:gap-16 gap-6 w-full lg:w-2/3 mx-auto"
-          >
-            <img
-              className="w-[109px] lg:w-60"
-              src={IconIntroStar.src}
-              alt="Servicio de información especializada"
-            />
-            <div className="lg:text-h3 text-h4 font-light text-center lg:text-left">
-              <ReactMarkdown rehypePlugins={[rehypeRaw]}>
-                {introData?.content}
-              </ReactMarkdown>
-            </div>
+          <div data-aos="fade-up">
+            {introData && <IntroPage introData={introData} />}
           </div>
         </div>
       </section>
@@ -433,8 +422,8 @@ export default function Home({
         </div>
       </section>
 
-      <section className="bg-[#D5E3EA] py-16">
-        <div className="container mx-auto px-4 flex flex-col lg:flex-row items-start justify-center text-text-primary">
+      <section className="bg-[#D5E3EA] py-16 lg:py-24">
+        <div className="container mx-auto px-4 gap-6 flex flex-col lg:flex-row items-start justify-center text-text-primary">
           <div className="w-full lg:w-1/3" data-aos="fade-right">
             <TitleDecorative
               dividerColor="bg-[#94D133]"

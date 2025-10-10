@@ -19,7 +19,7 @@ export default function CardEventsMonth({
 }: CardEventsMonthProps) {
   return (
     <div className="border border-background-2 rounded-sm overflow-hidden text-text-primary p-3">
-      <h3 className="text-h3 leading-8">{month}</h3>
+      <h3 className="2xl:text-h3 text-[20px] leading-[28px] 2xl:leading-8">{month}</h3>
       <hr className="my-3 border-background-2" />
       {events && events.length > 0 ? (
         events.map((event, index) => (
@@ -31,7 +31,7 @@ export default function CardEventsMonth({
               <div>
                 {/* Day of the event */}
                 <span
-                  className={`rounded-lg p-2 text-h4 w-16 h-16 flex items-center justify-center ${
+                  className={`rounded-lg p-2 2xl:text-h4 text-[16px] leading-[25px] 2xl:leading-8 w-12 h-12 2xl:w-16 2xl:h-16 flex font-semibold items-center justify-center ${
                     event.isFirst
                       ? "bg-details-hover text-white"
                       : event.isNext
@@ -45,7 +45,7 @@ export default function CardEventsMonth({
                 </span>
               </div>
               <div className="p-2 py-3">
-                <h4 className="text-h4">{event.title}</h4>
+                <h4 className="2xl:text-h4 text-[16px] leading-[25px] 2xl:leading-8">{event.title}</h4>
                 <img
                   src={ArrowRightGreen.src}
                   alt="arrow-right-green"

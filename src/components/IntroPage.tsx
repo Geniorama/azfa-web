@@ -16,7 +16,7 @@ export default function IntroPage({ introData }: IntroPageProps) {
           introData.icon?.alternativeText || ""
         }
       />
-      <div className="lg:text-h3 text-h4 font-light text-center lg:text-left">
+      <div className="text-h4 leading-[38px] font-light text-center lg:text-left">
         <ReactMarkdown rehypePlugins={[rehypeRaw]}>
           {introData.content}
         </ReactMarkdown>
