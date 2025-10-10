@@ -158,7 +158,7 @@ export default function Home({
           )}
         </div>
       </Modal>
-      <section className=" bg-text-primary w-full h-[800px] lg:h-[calc(100vh-100px)]">
+      <section className=" bg-text-primary w-full h-[800px] lg:h-[calc(100vh-100px)] lg:min-h-[800px]">
         {/* Slider */}
         <div className="relative h-full">
           <Swiper
@@ -195,7 +195,7 @@ export default function Home({
                       onClick: () => router.push(slide.button?.link || "/"),
                     }}
                   />
-                  <div className="absolute lg:hidden top-0 left-0 w-full h-full bg-primary/80 z-10"></div>
+                  <div className="absolute lg:hidden top-0 left-0 w-full h-full bg-primary/80 z-1"></div>
                 </SwiperSlide>
               ))
             ) : (
@@ -218,7 +218,7 @@ export default function Home({
           </Swiper>
 
           {/* Botones de navegación personalizados */}
-          <div className="absolute bottom-0 right-0 left-0 pb-10 z-10">
+          <div className="absolute bottom-0 right-0 left-0 pb-10 z-[1]">
             <div className="container mx-auto px-4">
               <div className="hidden lg:flex justify-end gap-4">
                 <SliderArrowLeft className="custom-swiper-button-prev" />
