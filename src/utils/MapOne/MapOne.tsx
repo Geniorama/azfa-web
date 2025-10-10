@@ -1,7 +1,8 @@
 "use client";
 
 import type { SVGProps } from "react";
-import { useEffect, useState} from "react";
+import { useEffect, useState, useRef} from "react";
+import { createPortal } from "react-dom";
 import styles from "./MapOne.module.css";
 
 interface MapOneProps extends SVGProps<SVGSVGElement> {
@@ -12,6 +13,13 @@ export default function MapOne({
   onCountrySelect,
 }: MapOneProps) {
   const [selectedCountry, setSelectedCountry] = useState<string | null>(null);
+  const [tooltip, setTooltip] = useState<{ visible: boolean; x: number; y: number; text: string }>({
+    visible: false,
+    x: 0,
+    y: 0,
+    text: ''
+  });
+  const svgRef = useRef<SVGSVGElement>(null);
 
   const handleClickCountry = (e: React.MouseEvent<SVGElement>) => {
     const target = e.target as SVGElement;
@@ -37,6 +45,66 @@ export default function MapOne({
     }
   }
 
+  const getCountryNameFromId = (countryId: string): string => {
+    // Mapeo directo de IDs a nombres con caracteres especiales
+    const countryNames: Record<string, string> = {
+      'espana': 'España',
+      'mexico': 'México',
+      'panama': 'Panamá',
+      'peru': 'Perú',
+      'haiti': 'Haití',
+      'canada': 'Canadá',
+      'argentina': 'Argentina',
+      'brasil': 'Brasil',
+      'chile': 'Chile',
+      'colombia': 'Colombia',
+      'uruguay': 'Uruguay',
+      'paraguay': 'Paraguay',
+      'ecuador': 'Ecuador',
+      'costarica': 'Costa Rica',
+      'elsalvador': 'El Salvador',
+      'guatemala': 'Guatemala',
+      'honduras': 'Honduras',
+      'nicaragua': 'Nicaragua',
+      'curazao': 'Curazao',
+      'estadosunidos': 'Estados Unidos',
+      'cuba': 'Cuba',
+      'republicadominicana': 'República Dominicana',
+      'jamaica': 'Jamaica',
+    };
+    
+    return countryNames[countryId.toLowerCase()] || countryId.charAt(0).toUpperCase() + countryId.slice(1);
+  };
+
+  const handleMouseMove = (e: React.MouseEvent<SVGElement>) => {
+    const target = e.target as SVGElement;
+    const isValidCountry = target.className.baseVal === "st3"
+
+    if(isValidCountry){
+      let countryId = target.getAttribute('id')
+      
+      // Si el elemento clicado no tiene ID, buscar en el elemento padre (grupo)
+      if (!countryId) {
+        const parentElement = target.parentElement;
+        if (parentElement && parentElement.tagName === 'g') {
+          countryId = parentElement.getAttribute('id');
+        }
+      }
+      
+      if(countryId){
+        const countryName = getCountryNameFromId(countryId);
+        setTooltip({
+          visible: true,
+          x: e.clientX,
+          y: e.clientY,
+          text: countryName
+        });
+      }
+    } else {
+      setTooltip(prev => ({ ...prev, visible: false }));
+    }
+  }
+
   useEffect(() => {
     // Remover la clase selected de todos los países
     document.querySelectorAll('svg path.st3, svg polygon.st3, svg g.st3').forEach(country => {
@@ -59,17 +127,19 @@ export default function MapOne({
     }
   }, [selectedCountry]);
 
-
   return (
-    <svg
-      id="Layer_1"
-      xmlns="http://www.w3.org/2000/svg"
-      xmlnsXlink="http://www.w3.org/1999/xlink"
-      version="1.1"
-      viewBox="0 0 710.2 848.5"
-      className={`w-full h-full ${styles.map}`}
-      onClick={(e) => handleClickCountry(e)}
-    >
+    <>
+      <svg
+        ref={svgRef}
+        id="Layer_1"
+        xmlns="http://www.w3.org/2000/svg"
+        xmlnsXlink="http://www.w3.org/1999/xlink"
+        version="1.1"
+        viewBox="0 0 710.2 848.5"
+        className={`w-full h-full ${styles.map}`}
+        onClick={(e) => handleClickCountry(e)}
+        onMouseMove={handleMouseMove}
+      >
       <defs>
         <style>
           {`
@@ -455,6 +525,23 @@ export default function MapOne({
         className="st3"
         d="M490.2,555.9l-4.5-.5-.6,3.4v4.1l-1.6,5-4.2.7-1.8,3.4-6.2,1.9-7.3-3.1-5.1.7c-.3,0-.6,0-.9-.2-.2-.2-.4-.5-.4-.8l-.2-2.2,3.7-2.5-.4-4.4,2.6-2.2c.3-.3.5-.7.5-1.1s0-.8-.4-1.1l-3.7-4.3-6.5-.7-4.8-5.5c-.2-.2-.5-.4-.8-.4h-6.3c-.5,0-.9-.3-1.2-.7l-4.3-7.7c0-.2-.3-.3-.4-.4l-5.6-1.8-3.7-4.6s-5.3-.9-5.8-.9-2.8,4.2-2.8,4.2l-2.3.5c-.5,0-1-.2-1.2-.7l-.9-2.5c0-.4-.5-.6-.9-.5l-3.8,1c-.3,0-.7,0-.9-.2l-2.7-2.1h-4.2c-.4,0-.8.2-1,.6l-2.9,5.9-1.6,10.1c0,.6-.5,1.1-1.1,1.2l-6.7,1.9c-.5,0-.8.6-.9,1.1l-.2,1.8c0,.3,0,.7.2.9l3,4.4c0,.2.2.4.2.7v3.7l-2.1,3.4c-.2.3-.2.7,0,1l2,4.1c.3.5,0,1.2-.3,1.6l-3.6,3.3c-.6.5-1,1.2-1.3,1.9l-3.5,8.8c0,.4,0,.8,0,1.1l1.9,3.9-.4,8.2c0,.4-.3.8-.6.9l-3,1.5c-.4.2-.7.6-.7,1.1v3.7c0,0,6,9.9,6,9.9l2.4,11.3c0,.7-.1,1.3-.7,1.7l-2.8,1.8-1.3,7.9,3.2,6c.2.4.1,1-.3,1.3l-2.6,2c-.3.3-.6.6-.6,1.1l-.8,10.8,3,3.9,1.7,3.9c.3.7,0,1.4-.3,1.9l-1.9,2-2.8,4.7c-.2.4-.3.8-.2,1.2l.9,4.4v10.5l2.5,6.1c0,.3,0,.6,0,.9l-1.8,4.2c-.2.6,0,1.2.3,1.7l3.3,3.5c.2.2.3.5.3.8v13.5c0,.3.2.7.5.8l3.7,2.1c1,.5,1.4,1.7,1,2.8l-1.5,3.8,2.8,11.1c0,.4,0,.9,0,1.3l-2.2,6,1.7,12.2c0,.3,0,.5,0,.8l-5.6,11.5c-.2.4-.2.9,0,1.2l3.4,6.9c.2.4.6.5,1,.4l4.6-2.1h.6c.2,0,.3.3.3.5,0,.9.3,2.2.3,2.7s2,1.9,2.4,2c.3,0,.7,4.3.9,6.4,0,.7.7,1.3,1.4,1.3h14.5c.6,0,1.2.4,1.7.8l3.5,3.5v.2c.1,0,2,1.8,2,1.8.2.2.4.6.5.9l6.2,23.6,5.2,2.9c.5.2,1.2.2,1.8.2l10.4-2.2c.5-.1.9-.4,1.2-.8l1.3-1.7c.4-.5.4-1.2,0-1.7l-1-1.8c-.2-.4-.7-.6-1.1-.4l-2.4,1c-.6.3-1.2,0-1.6-.3-1.3-1.4-3.8-4.2-4.3-4.4-.7-.3-10.9-3.4-11.2-3.8s-.3-6.5-.3-9.2-.4-1.6-1.1-2l-4.5-3.2-3.2-13.1-2.3-2.9c-.6-.7-.7-1.6-.3-2.4l1.4-3c.2-.5.7-.7,1.2-.7l2.4.2c.7,0,1.4-.3,1.8-1l2.5-4.5c.3-.4.2-.9,0-1.2l-1.6-1.7c-.5-.5-.6-1.1-.3-1.7l2.1-4.4c.2-.5.6-.8,1.1-1l2.7-.8c.5-.2,1-.5,1.2-1l3.5-7.1c0-.4,0-.8,0-1.2l-1.3-4c-.2-.8-1-1.3-1.9-1.3l-3.8.2c-.5,0-.9-.2-1.3-.5l-8-7.6c-.4-.3-.5-.8-.4-1.2v-4.1c0-.7.4-1.3,1-1.7l6.8-4.3c.4-.4.9-.4,1.4-.4l4.4.3c.6,0,1.1-.3,1.3-.9v-1.3c0-.4-.1-.8-.5-1l-1.9-1.1c-.2-.1-.4-.3-.4-.6s.1-.5.2-.7l1.8-2.3c.2-.3.2-.7.2-1l-1.7-7c0-.5.1-1.1.6-1.3l3.5-1.7c.2,0,.4-.3.4-.5s0-.4-.2-.6l-1.6-1.4c-.3-.2-.3-.6-.3-.9s.3-.6.6-.6l3.8-1c.5,0,.9-.5.9-1l.4-3c0-.3-.1-.5-.3-.7s-.5-.2-.7-.2l-4.1,1.2c-.4,0-.9,0-1.1-.4l-3.9-5.5-2.2-5.9c-.2-.5,0-1.1.6-1.4l2.7-1.4c.6-.3,1.2-.3,1.7,0l8.6,4.8c.5.4,1.1.3,1.5,0l5.4-4.2c.6-.4.8-1.1.6-1.7l-3.6-15.4c-.1-.3,0-.5.2-.7h.7l8.5,2.7c.9.3,1.8.3,2.7,0l20.8-6.7c.5-.2.8-.7.8-1.3l-.6-4.6c0-.3,0-.6.2-.9l4.7-8.5c.2-.4,0-.9-.2-1.2l-1-1.1c-.5-.4-1.4-.5-1.9,0l-1.1,1c-.5.5-1.1.4-1.5,0l-2.2-2.4c-.3-.3-.4-.8-.2-1.2l2.2-4.5c.3-.7,0-1.4-.5-1.7-2.3-1.3-7.8-4.4-8.2-5-.4-.6-2.6-8.3-2.7-8.8,0,0,0,0,0,0l1.6-3.6c.2-.4.2-.9,0-1.3l-1.8-4.5c-.2-.4-.2-.9,0-1.4l1.6-3.5c.4-.7.5-1.6.3-2.4l-1.2-6.8c0-.4,0-.7.2-1l2.9-4.8,5.2-7.9,3.8-6c.2-.4.7-.6,1.2-.6l2.9.3,1.8-4.9,9.1-5.3,1.6-4.5-2.6-8.8Z"
       />
-    </svg>
+      </svg>
+      
+      {/* Tooltip Portal */}
+      {tooltip.visible && typeof window !== 'undefined' && createPortal(
+        <div 
+          className="fixed pointer-events-none z-50 bg-black text-white text-xs px-2 py-1 rounded-sm whitespace-nowrap"
+          style={{
+            left: tooltip.x,
+            top: tooltip.y - 30,
+            transform: 'translateX(-50%)'
+          }}
+        >
+          <span className="w-2 h-2 bg-black rotate-45 absolute -bottom-1 left-1/2 transform -translate-x-1/2"></span>
+          {tooltip.text}
+        </div>,
+        document.body
+      )}
+    </>
   );
 }
