@@ -60,7 +60,7 @@ const getNews = async (): Promise<{ data: NewsType[] } | null> => {
 const getEvents = async (): Promise<{ data: EventType[] } | null> => {
   try {
     const response = await fetch(
-      `${process.env.STRAPI_URL}/api/events?populate[0]=featuredImage&populate[1]=calendarIcon&populate[2]=locationIcon&populate[3]=addressIcon&populate[4]=calendarIcon.customImage&populate[5]=locationIcon.customImage&populate[6]=addressIcon.customImage&pagination[pageSize]=2`,
+      `${process.env.STRAPI_URL}/api/events?populate[0]=featuredImage&populate[1]=calendarIcon&populate[2]=locationIcon&populate[3]=addressIcon&populate[4]=calendarIcon.customImage&populate[5]=locationIcon.customImage&populate[6]=addressIcon.customImage&pagination[pageSize]=100&sort=startDate:asc`,
       {
         cache: "force-cache",
         next: { revalidate: 3600 }, // Revalidar cada hora
@@ -72,6 +72,28 @@ const getEvents = async (): Promise<{ data: EventType[] } | null> => {
     }
 
     const data = await response.json();
+    
+    // Filtrar eventos futuros y tomar solo los próximos 2
+    if (data.data && Array.isArray(data.data)) {
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      
+      const futureEvents = data.data
+        .filter((event: EventType) => {
+          const eventDate = new Date(event.startDate);
+          eventDate.setHours(0, 0, 0, 0);
+          return eventDate >= today;
+        })
+        .sort((a: EventType, b: EventType) => {
+          const dateA = new Date(a.startDate);
+          const dateB = new Date(b.startDate);
+          return dateA.getTime() - dateB.getTime();
+        })
+        .slice(0, 2); // Tomar solo los próximos 2 eventos
+      
+      return { data: futureEvents };
+    }
+    
     return data;
   } catch (error) {
     console.error("Error fetching events:", error);
