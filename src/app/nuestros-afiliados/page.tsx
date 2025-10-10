@@ -234,12 +234,14 @@ function NuestrosAfiliadosContent() {
   const countryParam = params.get("country");
   const tabParam = params.get("tab");
 
-  // Crear opciones de países para el campo de búsqueda usando los incentivos
-  const countryOptions = allIncentives.map(marker => ({
-    id: marker.id,
-    label: marker.title,
-    value: marker.id
-  }));
+  // Crear opciones de países para el campo de búsqueda usando los incentivos (ordenadas alfabéticamente)
+  const countryOptions = allIncentives
+    .map(marker => ({
+      id: marker.id,
+      label: marker.title,
+      value: marker.id
+    }))
+    .sort((a, b) => a.label.localeCompare(b.label, 'es'));
 
   const getContentBySlug = async (slug: string) => {
     try {
@@ -361,9 +363,13 @@ function NuestrosAfiliadosContent() {
     if (apiIncentives && apiIncentives.length > 0) {
       // Transformar los datos de incentivos de la API al formato esperado
       const transformedIncentives = transformIncentivesToMarkers(apiIncentives);
-      setAllIncentives(transformedIncentives); // Guardar todos los datos
-      setIncentivos(transformedIncentives); // Mostrar todos los datos inicialmente
-      setCurrentMarkers(transformedIncentives); // Establecer incentivos como marcadores por defecto
+      // Ordenar alfabéticamente por nombre del país
+      const sortedIncentives = transformedIncentives.sort((a, b) => 
+        a.title.localeCompare(b.title, 'es')
+      );
+      setAllIncentives(sortedIncentives); // Guardar todos los datos
+      setIncentivos(sortedIncentives); // Mostrar todos los datos inicialmente
+      setCurrentMarkers(sortedIncentives); // Establecer incentivos como marcadores por defecto
     } else {
       // Si no hay datos de la API, usar los datos de ejemplo
       setAllIncentives(markers);
