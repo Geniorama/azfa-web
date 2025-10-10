@@ -3,6 +3,7 @@ import FooterImgTop from "@/assets/img/footer-img.svg";
 import LogoAzfaBlanco from "@/assets/img/logo-azfa-blanco.svg";
 import Link from "next/link";
 import { FooterType } from "@/types/componentsType";
+import { HiOutlineArrowUp } from "react-icons/hi2";
 
 interface FooterProps {
   showBanner?: boolean;
@@ -10,7 +11,13 @@ interface FooterProps {
 }
 
 export default function Footer({ showBanner = true, footer }: FooterProps) {
-  console.log("footer from footer component", footer);
+  
+  const handleScrollToTop = () => {
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth"
+    });
+  };
 
   // Función para formatear el teléfono para WhatsApp
   const formatPhoneForWhatsApp = (phone: string): string => {
@@ -20,6 +27,14 @@ export default function Footer({ showBanner = true, footer }: FooterProps) {
   };
   return (
     <footer className="bg-text-primary text-white">
+
+      {/* Up Button */}
+      <div className="fixed bottom-5 right-5 z-50 inline-block">
+        <button className="bg-details-hover rounded-full p-2 w-16 h-16 flex items-center justify-center cursor-pointer hover:bg-details-hover/80 transition-all duration-300 outline-none" onClick={handleScrollToTop} aria-label="Scroll to top">
+          <HiOutlineArrowUp className="w-6 h-6 text-white" />
+        </button>
+      </div>
+
       {showBanner && (
         <div className="bg-white">
           <div className="container mx-auto h-100 md:h-auto">
