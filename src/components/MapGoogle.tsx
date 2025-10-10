@@ -48,7 +48,7 @@ const MapGoogle = forwardRef<MapGoogleRef, GoogleMapsProps>(({ markers, onMarker
     resetZoom: () => {
       if (mapInstanceRef.current) {
         mapInstanceRef.current.setCenter({ lat: 4.570868, lng: -74.297332 });
-        mapInstanceRef.current.setZoom(3);
+        mapInstanceRef.current.setZoom(2);
       }
       
       // Limpiar selección de marcador
@@ -74,12 +74,16 @@ const MapGoogle = forwardRef<MapGoogleRef, GoogleMapsProps>(({ markers, onMarker
       }
       
       if (mapInstanceRef.current) {
+        // Detectar si es móvil
+        const isMobile = window.innerWidth < 1024;
+        const zoomLevel = isMobile ? 5 : 6; // Zoom más alejado en móviles para mejor contexto
+        
         // Usar setTimeout para asegurar que el mapa esté completamente renderizado
         setTimeout(() => {
           if (mapInstanceRef.current) {
-            console.log("Aplicando zoom al mapa");
+            console.log("Aplicando zoom al mapa (nivel:", zoomLevel, ")");
             mapInstanceRef.current.setCenter({ lat, lng });
-            mapInstanceRef.current.setZoom(12); // Mayor zoom para ver mejor el afiliado
+            mapInstanceRef.current.setZoom(zoomLevel);
           }
         }, 100);
       } else {
@@ -194,7 +198,7 @@ const MapGoogle = forwardRef<MapGoogleRef, GoogleMapsProps>(({ markers, onMarker
 
       const options: google.maps.MapOptions = {
         center: location,
-        zoom: 3,
+        zoom: 2,
         mapId: "map",
       }
 
@@ -345,7 +349,7 @@ const MapGoogle = forwardRef<MapGoogleRef, GoogleMapsProps>(({ markers, onMarker
   
   return (
     <div className="relative">
-      <div ref={mapRef} className="w-full h-screen" />
+      <div ref={mapRef} className="w-full h-[50vh] lg:h-screen" />
     </div>
   )
 });

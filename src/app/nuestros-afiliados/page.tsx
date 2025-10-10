@@ -506,20 +506,23 @@ function NuestrosAfiliadosContent() {
       />
 
       <section>
-        <div className="flex flex-row">
-          <div className="hidden lg:block w-full lg:w-2/3 bg-primary relative">
-                         {/* Map Google for countries*/}
-             <MapGoogle 
-               ref={mapRef}
-               markers={currentMarkers} 
-               onMarkerClick={handleGetCountry} 
-             />
-             {/* Leyenda del mapa */}
-             <MapLegend showAffiliates={selectedTab === "afiliados"} />
+        <div className="flex flex-col lg:flex-row lg:h-screen">
+          {/* Mapa - Visible en todos los dispositivos */}
+          <div className="w-full lg:w-2/3 bg-primary relative h-[50vh] lg:h-full">
+            {/* Map Google for countries*/}
+            <MapGoogle 
+              ref={mapRef}
+              markers={currentMarkers} 
+              onMarkerClick={handleGetCountry} 
+            />
+            {/* Leyenda del mapa */}
+            <MapLegend showAffiliates={selectedTab === "afiliados"} />
           </div>
-          <div className="w-full lg:w-1/3 bg-white">
-            <div className="h-screen overflow-y-scroll">
-              <div className="sticky top-0 z-1">
+          
+          {/* Panel lateral */}
+          <div className="w-full lg:w-1/3 bg-white relative lg:h-full">
+            <div className="h-auto min-h-screen lg:h-full overflow-y-scroll">
+              <div className="sticky top-0 z-10 bg-white">
                 <div className="flex flex-row">
                   <div className="w-1/2">
                     <button
