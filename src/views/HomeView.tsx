@@ -810,7 +810,7 @@ export default function Home({
           <div className="flex justify-center items-center">
             <div className="w-auto border border-gray-200 rounded-lg flex justify-center items-center text-3xl text-primary font-medium">
               {/* Widget facebook */}
-              <iframe src="https://www.facebook.com/plugins/page.php?href=https%3A%2F%2Fwww.facebook.com%2Fasociacionzfa&tabs=timeline&width=340&height=500&small_header=false&adapt_container_width=true&hide_cover=false&show_facepile=true&appId=939575044228291" width="340" height="500" style={{ border: 'none', overflow: 'hidden' }} scrolling="no" allowFullScreen={true} allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"></iframe>
+              {/* <iframe src="https://www.facebook.com/plugins/page.php?href=https%3A%2F%2Fwww.facebook.com%2Fasociacionzfa&tabs=timeline&width=340&height=500&small_header=false&adapt_container_width=true&hide_cover=false&show_facepile=true&appId=939575044228291" width="340" height="500" style={{ border: 'none', overflow: 'hidden' }} scrolling="no" allowFullScreen={true} allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"></iframe> */}
             </div>
           </div>
         </div>

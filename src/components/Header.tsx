@@ -16,12 +16,19 @@ export default function Header({ header }: { header: HeaderTypeData }) {
   const [openSubmenu, setOpenSubmenu] = useState<number | null>(null);
   const [mobileOpenSubmenu, setMobileOpenSubmenu] = useState<number | null>(null);
   const [showUserMenu, setShowUserMenu] = useState(false);
+  const [logoUrl, setLogoUrl] = useState("");
   
   const { isAuthenticated, logout } = useAuth();
   const router = useRouter();
   const userMenuRef = useRef<HTMLDivElement>(null);
 
   console.log(showUserMenu);
+
+  useEffect(() => {
+    console.log(header);
+    if(!header.logo.url) return;
+    setLogoUrl(header.logo.url);
+  }, [header]);
 
   // Cerrar menú de usuario al hacer clic fuera
   useEffect(() => {
@@ -59,12 +66,12 @@ export default function Header({ header }: { header: HeaderTypeData }) {
     <header className="bg-white py-4 relative z-50">
       <div className="container mx-auto px-4">
         <div className="flex flex-col lg:flex-row justify-between items-center">
-          <div className="w-full lg:w-1/3 flex justify-between items-center gap-4 px-4 lg:px-0">
+          <div className="w-full lg:w-[30%] flex justify-between items-center gap-4 px-4 lg:px-0">
             <div>
               <Link href={header.logoUrl || "/"}>
                 <img
-                  className="max-w-[130px] lg:max-w-none"
-                  src={header.logo.url || LogoAzfa.src}
+                  className="w-full max-w-[130px] lg:max-w-[180px]"
+                  src={logoUrl || LogoAzfa.src}
                   alt="Logo Azfa"
                 />
               </Link>
@@ -77,7 +84,7 @@ export default function Header({ header }: { header: HeaderTypeData }) {
             </button>
           </div>
 
-          <div className={`w-full lg:w-2/3 flex flex-col-reverse justify-end lg:justify-start lg:flex-col items-center lg:items-end gap-4 p-0 lg:px-0 z-10 fixed top-0 left-0 bg-white h-screen lg:h-auto lg:relative lg:translate-x-0 transition-all duration-300 ${isMobileMenuOpen ? "translate-x-0" : "translate-x-[-100%]"}`}>
+          <div className={`w-full lg:w-[70%] flex flex-col-reverse justify-end lg:justify-start lg:flex-col items-center lg:items-end gap-4 p-0 lg:px-0 z-10 fixed top-0 left-0 bg-white h-screen lg:h-auto lg:relative lg:translate-x-0 transition-all duration-300 ${isMobileMenuOpen ? "translate-x-0" : "translate-x-[-100%]"}`}>
             {/* Top bar */}
             <div className="flex items-center gap-4 mt-5 lg:mt-0 px-4 lg:px-0">
               <div className="flex flex-row items-start lg:items-center space-x-1 space-y-3 lg:space-y-0 lg:space-x-4 flex-wrap justify-between">
