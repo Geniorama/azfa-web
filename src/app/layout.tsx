@@ -40,7 +40,10 @@ export default async function RootLayout({
 
   return (
     <html lang="es">
-      <body className={`${interTight.variable} antialiased bg-background-1`}>
+      <body 
+        className={`${interTight.variable} antialiased bg-background-1`}
+        suppressHydrationWarning={true}
+      >
         <AOSProvider>
           <ClientLayoutWrapper header={header} footer={footerWithContactInfo}>
             {/* --- SCRIPTS DE GOOGLE TRANSLATE --- */}
