@@ -1,6 +1,7 @@
 import HomeView from "@/views/HomeView";
 import { Metadata } from "next";
-import { NewsType, EventType, TestimonialType } from "@/types/componentsType";
+import { NewsType, EventType, TestimonialType, SocialMediaItemType } from "@/types/componentsType";
+import FloatMenu from "@/components/FloatMenu";
 
 export async function generateMetadata(): Promise<Metadata> {
   return {
@@ -100,12 +101,34 @@ const getTestimonials = async (): Promise<{ data: TestimonialType[] } | null> =>
   }
 };
 
+const getSocialMedia = async (): Promise<SocialMediaItemType[] | null> => {
+  try {
+    const response = await fetch(
+      `${process.env.STRAPI_URL}/api/global-setting?populate[0]=socialMedia&populate[1]=socialMedia.icon&populate[2]=socialMedia.icon.customImage`,
+      {
+        cache: "force-cache",
+        next: { revalidate: 3600 }, // Revalidar cada hora
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const data = await response.json();
+    return data.data.socialMedia;
+  } catch (error) {
+    console.error("Error fetching social media:", error);
+    return null;
+  }
+};
 
 export default async function Home() {
   const home = await getHome();
   const news = await getNews();
   const events = await getEvents();
   const testimonials = await getTestimonials();
+  const socialMedia = await getSocialMedia();
   const affiliates = home?.data?.affiliatesSection;
   const partners = home?.data?.partnersSection;
   const sponsors = home?.data?.sponsorsSection;
@@ -129,21 +152,26 @@ export default async function Home() {
   };
 
   return (
-    <HomeView 
-      slidesData={home?.data?.heroSlides || fallbackData.slidesData}
-      introData={home?.data?.introContent || fallbackData.introData}
-      contentWithVideoData={home?.data?.contentWithVideo || fallbackData.contentWithVideoData}
-      servicesData={home?.data?.servicesSection || fallbackData.servicesData}
-      statisticsData={home?.data?.statisticsSection || fallbackData.statisticsData}
-      newsData={news?.data || fallbackData.newsData}
-      newsSectionData={home?.data?.newsSection || fallbackData.newsSectionData}
-      eventsData={events?.data || fallbackData.eventsData}
-      eventSectionData={home?.data?.upcomingEventsSection || fallbackData.upcomingEventsSection}
-      testimonialsData={testimonials?.data || fallbackData.testimonialsData}
-      testimonialsSectionData={home?.data?.testimonialsSection || fallbackData.testimonialsSectionData}
-      affiliatesSectionData={affiliates || fallbackData.affiliatesSectionData}
-      partnersSectionData={partners || fallbackData.partnersSectionData}
-      sponsorsSectionData={sponsors || fallbackData.sponsorsSectionData}
-    />
+    <>
+      <div className="hidden lg:block fixed top-[50%] -translate-y-[50%] right-0 z-50">
+        <FloatMenu socialMedia={socialMedia || []} />
+      </div>
+      <HomeView 
+        slidesData={home?.data?.heroSlides || fallbackData.slidesData}
+        introData={home?.data?.introContent || fallbackData.introData}
+        contentWithVideoData={home?.data?.contentWithVideo || fallbackData.contentWithVideoData}
+        servicesData={home?.data?.servicesSection || fallbackData.servicesData}
+        statisticsData={home?.data?.statisticsSection || fallbackData.statisticsData}
+        newsData={news?.data || fallbackData.newsData}
+        newsSectionData={home?.data?.newsSection || fallbackData.newsSectionData}
+        eventsData={events?.data || fallbackData.eventsData}
+        eventSectionData={home?.data?.upcomingEventsSection || fallbackData.upcomingEventsSection}
+        testimonialsData={testimonials?.data || fallbackData.testimonialsData}
+        testimonialsSectionData={home?.data?.testimonialsSection || fallbackData.testimonialsSectionData}
+        affiliatesSectionData={affiliates || fallbackData.affiliatesSectionData}
+        partnersSectionData={partners || fallbackData.partnersSectionData}
+        sponsorsSectionData={sponsors || fallbackData.sponsorsSectionData}
+      />
+    </>
   );
 }
