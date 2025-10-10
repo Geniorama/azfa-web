@@ -854,30 +854,39 @@ export default function Home({
             data-aos="fade-up" 
             data-aos-delay="200"
             modules={[Autoplay, Navigation]}
-            spaceBetween={50}
-            slidesPerView={5}
-            slidesPerGroup={1}
+            spaceBetween={30}
+            slidesPerView={affiliatesSectionData?.logos?.length || 1}
+            slidesPerGroup={affiliatesSectionData?.logos && affiliatesSectionData.logos.length > 5 ? 3 : 1}
             className="mt-10 swiper-custom"
             autoplay={{ delay: 2500, disableOnInteraction: false }}
-            navigation={true}
-            loop={
-              affiliatesSectionData?.logos &&
-              affiliatesSectionData.logos.length > 5
-            }
+            navigation={affiliatesSectionData?.logos && affiliatesSectionData.logos.length > 1}
+            loop={affiliatesSectionData?.logos && affiliatesSectionData.logos.length > 1}
             speed={2000}
+            centeredSlides={true}
             breakpoints={{
               0: {
-                slidesPerView: 1.8,
+                slidesPerView: Math.min(affiliatesSectionData?.logos?.length || 1, 1),
                 centeredSlides: true,
+                spaceBetween: 20,
                 slidesPerGroup: 1,
+              },
+              480: {
+                slidesPerView: Math.min(affiliatesSectionData?.logos?.length || 2, 2),
+                centeredSlides: (affiliatesSectionData?.logos?.length || 0) === 1,
+                spaceBetween: 30,
+                slidesPerGroup: affiliatesSectionData?.logos && affiliatesSectionData.logos.length > 3 ? 2 : 1,
               },
               768: {
-                slidesPerView: 3,
-                slidesPerGroup: 1,
+                slidesPerView: Math.min(affiliatesSectionData?.logos?.length || 3, 3),
+                centeredSlides: (affiliatesSectionData?.logos?.length || 0) <= 2,
+                spaceBetween: 40,
+                slidesPerGroup: affiliatesSectionData?.logos && affiliatesSectionData.logos.length > 4 ? 2 : 1,
               },
               1024: {
-                slidesPerView: 5,
-                slidesPerGroup: 4,
+                slidesPerView: Math.min(affiliatesSectionData?.logos?.length || 5, 5),
+                centeredSlides: (affiliatesSectionData?.logos?.length || 0) <= 3,
+                spaceBetween: 50,
+                slidesPerGroup: affiliatesSectionData?.logos && affiliatesSectionData.logos.length > 6 ? 3 : 1,
               },
             }}
           >
@@ -917,27 +926,39 @@ export default function Home({
             data-aos="fade-up" 
             data-aos-delay="200"
             modules={[Autoplay, Navigation]}
-            spaceBetween={50}
-            slidesPerView={5}
-            slidesPerGroup={1}
+            spaceBetween={30}
+            slidesPerView={partnersSectionData?.logos?.length || 1}
+            slidesPerGroup={partnersSectionData?.logos && partnersSectionData.logos.length > 5 ? 3 : 1}
             className="mt-10 swiper-custom"
             autoplay={{ delay: 2500, disableOnInteraction: false }}
-            navigation={true}
-            loop={true}
+            navigation={partnersSectionData?.logos && partnersSectionData.logos.length > 1}
+            loop={partnersSectionData?.logos && partnersSectionData.logos.length > 1}
             speed={2000}
+            centeredSlides={true}
             breakpoints={{
               0: {
-                slidesPerView: 1.8,
+                slidesPerView: Math.min(partnersSectionData?.logos?.length || 1, 1),
                 centeredSlides: true,
+                spaceBetween: 20,
                 slidesPerGroup: 1,
+              },
+              480: {
+                slidesPerView: Math.min(partnersSectionData?.logos?.length || 2, 2),
+                centeredSlides: (partnersSectionData?.logos?.length || 0) === 1,
+                spaceBetween: 30,
+                slidesPerGroup: partnersSectionData?.logos && partnersSectionData.logos.length > 3 ? 2 : 1,
               },
               768: {
-                slidesPerView: 3,
-                slidesPerGroup: 1,
+                slidesPerView: Math.min(partnersSectionData?.logos?.length || 3, 3),
+                centeredSlides: (partnersSectionData?.logos?.length || 0) <= 2,
+                spaceBetween: 40,
+                slidesPerGroup: partnersSectionData?.logos && partnersSectionData.logos.length > 4 ? 2 : 1,
               },
               1024: {
-                slidesPerView: 5,
-                slidesPerGroup: 4,
+                slidesPerView: Math.min(partnersSectionData?.logos?.length || 5, 5),
+                centeredSlides: (partnersSectionData?.logos?.length || 0) <= 3,
+                spaceBetween: 50,
+                slidesPerGroup: partnersSectionData?.logos && partnersSectionData.logos.length > 6 ? 3 : 1,
               },
             }}
           >
@@ -975,10 +996,41 @@ export default function Home({
             data-aos="fade-up" 
             data-aos-delay="200"
             modules={[Autoplay, Navigation]}
-            spaceBetween={50}
-            slidesPerView={5}
-            slidesPerGroup={1}
+            spaceBetween={30}
+            slidesPerView={sponsorsSectionData?.logos?.length || 1}
+            slidesPerGroup={sponsorsSectionData?.logos && sponsorsSectionData.logos.length > 5 ? 3 : 1}
             className="mt-10 swiper-custom"
+            autoplay={{ delay: 2500, disableOnInteraction: false }}
+            navigation={sponsorsSectionData?.logos && sponsorsSectionData.logos.length > 1}
+            loop={sponsorsSectionData?.logos && sponsorsSectionData.logos.length > 1}
+            speed={2000}
+            centeredSlides={true}
+            breakpoints={{
+              0: {
+                slidesPerView: Math.min(sponsorsSectionData?.logos?.length || 1, 1),
+                centeredSlides: true,
+                spaceBetween: 20,
+                slidesPerGroup: 1,
+              },
+              480: {
+                slidesPerView: Math.min(sponsorsSectionData?.logos?.length || 2, 2),
+                centeredSlides: sponsorsSectionData?.logos?.length === 1,
+                spaceBetween: 30,
+                slidesPerGroup: sponsorsSectionData?.logos && sponsorsSectionData.logos.length > 3 ? 2 : 1,
+              },
+              768: {
+                slidesPerView: Math.min(sponsorsSectionData?.logos?.length || 3, 3),
+                centeredSlides: sponsorsSectionData?.logos?.length <= 2,
+                spaceBetween: 40,
+                slidesPerGroup: sponsorsSectionData?.logos && sponsorsSectionData.logos.length > 4 ? 2 : 1,
+              },
+              1024: {
+                slidesPerView: Math.min(sponsorsSectionData?.logos?.length || 5, 5),
+                centeredSlides: sponsorsSectionData?.logos?.length <= 3,
+                spaceBetween: 50,
+                slidesPerGroup: sponsorsSectionData?.logos && sponsorsSectionData.logos.length > 6 ? 3 : 1,
+              },
+            }}
           >
             {sponsorsSectionData.logos.map((sponsor) => (
               <SwiperSlide key={sponsor.id}>
