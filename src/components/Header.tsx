@@ -97,7 +97,7 @@ export default function Header({ header }: { header: HeaderTypeData }) {
           </div>
 
           <div
-            className={`w-full lg:w-[70%] flex flex-col-reverse justify-end lg:justify-start lg:flex-col items-center lg:items-end gap-4 p-0 lg:px-0 z-10 fixed top-0 left-0 bg-white h-screen lg:h-auto lg:relative lg:translate-x-0 transition-all duration-300 ${
+            className={`w-full lg:w-[70%] flex flex-col-reverse justify-end lg:justify-start lg:flex-col items-center lg:items-end gap-0 p-0 lg:px-0 z-10 fixed top-0 left-0 bg-white h-screen lg:h-auto lg:relative lg:translate-x-0 transition-all duration-300 ${
               isMobileMenuOpen ? "translate-x-0" : "translate-x-[-100%]"
             }`}
           >

@@ -19,8 +19,8 @@ export default function SlideSingleHome({ caption, title, description, button }:
       {/* overlay */}
       <div className="space-y-4 w-full lg:w-1/2 text-center lg:text-left text-white">
         <h5 className="text-caption text-details">{caption}</h5>
-        <h1 className="text-h2 md:text-h1 font-medium">{title}</h1>
-        <p className="text-h5">{description}</p>
+        <h1 className="text-h2 md:text-[50px] md:leading-[55px] lg:text-[55px] font-medium lg:leading-[65px]">{title}</h1>
+        <p className="text-[20px] lg:text-[25px]">{description}</p>
         <Button className="mx-auto lg:mx-0 mt-4 lg:mt-0" icon onClick={button.onClick || (() => {})}>
           {button.label || "Ver más"}
         </Button>
