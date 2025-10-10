@@ -19,7 +19,7 @@ import MapLegend from "@/components/MapLegend";
 import type { MapGoogleRef } from "@/components/MapGoogle";
 import type { Incentive, IncentiveMarker } from "@/types/incentiveType";
 import type { ContentType } from "@/types/contentType";
-import { getCountryName } from "@/utils/countryMapping";
+import { getCountryName, getCountryCode } from "@/utils/countryMapping";
 
   // Función para transformar incentivos de Strapi al formato del mapa
 const transformIncentivesToMarkers = (incentives: Incentive[]): IncentiveMarker[] => {
@@ -39,8 +39,19 @@ const transformIncentivesToMarkers = (incentives: Incentive[]): IncentiveMarker[
   };
 
   return incentives.map(incentive => {
-    const fallbackCoords = fallbackCoordinates[incentive.country];
-    const countryName = getCountryName(incentive.country);
+    // Primero obtener el código ISO del país (maneja nombres mal escritos como "Ahiti")
+    const countryCode = getCountryCode(incentive.country);
+    const fallbackCoords = fallbackCoordinates[countryCode];
+    // Luego obtener el nombre correcto del país
+    const countryName = getCountryName(countryCode);
+    
+    // Debug temporal
+    if (incentive.country.toLowerCase().includes('hait') || incentive.country.toLowerCase().includes('ahit')) {
+      console.log('=== DEBUG HAITÍ ===');
+      console.log('País desde Strapi:', incentive.country);
+      console.log('Código ISO:', countryCode);
+      console.log('Nombre final:', countryName);
+    }
     
     // Usar las coordenadas de Google Maps desde Strapi si están disponibles, sino usar las de fallback
     const lat = incentive.googleMapsLocation?.latitude || fallbackCoords?.lat || 0;
@@ -50,7 +61,7 @@ const transformIncentivesToMarkers = (incentives: Incentive[]): IncentiveMarker[
     const flagImage = incentive.flag?.url || fallbackCoords?.flag;
     
     return {
-      id: incentive.country,
+      id: countryCode,
       lat: lat,
       lng: lng,
       title: countryName,

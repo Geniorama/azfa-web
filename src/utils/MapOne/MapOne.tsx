@@ -9,6 +9,9 @@ interface MapOneProps extends SVGProps<SVGSVGElement> {
   onCountrySelect?: (country: string) => void;
 }
 
+// Países deshabilitados (sin información)
+const DISABLED_COUNTRIES = ['puertorico'];
+
 export default function MapOne({
   onCountrySelect,
 }: MapOneProps) {
@@ -39,7 +42,8 @@ export default function MapOne({
         }
       }
       
-      if(countryId){
+      // Verificar si el país está deshabilitado
+      if(countryId && !DISABLED_COUNTRIES.includes(countryId)){
         setSelectedCountry(countryId)
         if(onCountrySelect){
           onCountrySelect(countryId)
@@ -56,6 +60,7 @@ export default function MapOne({
       'panama': 'Panamá',
       'peru': 'Perú',
       'haiti': 'Haití',
+      'ahiti': 'Haití', // El ID en el SVG está sin la "h" inicial
       'canada': 'Canadá',
       'argentina': 'Argentina',
       'brasil': 'Brasil',
@@ -94,7 +99,8 @@ export default function MapOne({
         }
       }
       
-      if(countryId){
+      // Solo mostrar tooltip si el país no está deshabilitado
+      if(countryId && !DISABLED_COUNTRIES.includes(countryId)){
         const countryName = getCountryNameFromId(countryId);
         setTooltip({
           visible: true,
@@ -102,6 +108,8 @@ export default function MapOne({
           y: e.clientY,
           text: countryName
         });
+      } else {
+        setTooltip(prev => ({ ...prev, visible: false }));
       }
     } else {
       setTooltip(prev => ({ ...prev, visible: false }));
@@ -129,6 +137,22 @@ export default function MapOne({
       }
     }
   }, [selectedCountry]);
+
+  // Aplicar clase disabled a países sin información
+  useEffect(() => {
+    DISABLED_COUNTRIES.forEach(countryId => {
+      const element = document.getElementById(countryId);
+      if (element) {
+        if (element.tagName === 'g') {
+          element.querySelectorAll('path.st3, polygon.st3').forEach(child => {
+            child.classList.add('disabled');
+          });
+        } else if (element.classList.contains('st3')) {
+          element.classList.add('disabled');
+        }
+      }
+    });
+  }, []);
 
   return (
     <>
@@ -184,6 +208,15 @@ export default function MapOne({
 
         .st3.selected {
           fill: #10356B !important;
+        }
+
+        .st3.disabled {
+          fill: #e0e0e0 !important;
+          cursor: not-allowed !important;
+          opacity: 0.5;
+          &:hover{
+            fill: #e0e0e0 !important;
+          }
         }
 
         .st4 {
