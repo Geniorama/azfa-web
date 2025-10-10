@@ -148,6 +148,13 @@ export default function AdvancedSearchBar({ onSearch, options, currentFilters }:
   // Manejar clic fuera del contenedor
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
+      const target = event.target as Element;
+      
+      // No cerrar los filtros si el clic es en el mapa
+      if (target.closest('svg') || target.closest('[data-map-container]')) {
+        return;
+      }
+      
       if (containerRef.current && !containerRef.current.contains(event.target as Node)) {
         closeAllFilters()
       }
