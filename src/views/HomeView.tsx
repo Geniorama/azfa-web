@@ -3,6 +3,7 @@
 import { useRouter } from "next/navigation";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Pagination, Autoplay } from "swiper/modules";
+import type { Swiper as SwiperType } from "swiper";
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
@@ -23,7 +24,7 @@ import { truncateText } from "@/utils/truncateText";
 import SlideSingleHome from "@/components/SlideSingleHome";
 import SlideSingleTestimonial from "@/components/SlideSingleTestimonial";
 import Modal from "@/components/Modal";
-import { useState } from "react";
+import { useState, useRef } from "react";
 import {
   HeroSlideData,
   IntroData,
@@ -111,9 +112,16 @@ export default function Home({
 }: HomeViewProps) {
   const router = useRouter();
   const [openModalVideo, setOpenModalVideo] = useState(false);
+  const swiperRef = useRef<SwiperType | null>(null);
 
   const handleOpenNews = (url: string) => {
     window.open(url, "_blank");
+  };
+
+  const goToSlide = (index: number) => {
+    if (swiperRef.current) {
+      swiperRef.current.slideTo(index);
+    }
   };
 
   return (
@@ -174,6 +182,9 @@ export default function Home({
               delay: 5000,
               disableOnInteraction: false,
             }}
+            onSwiper={(swiper) => {
+              swiperRef.current = swiper;
+            }}
           >
             {slidesData && slidesData.length > 0 ? (
               slidesData.map((slide) => (
@@ -225,11 +236,12 @@ export default function Home({
                 <SliderArrowRight className="custom-swiper-button-next" />
               </div>
               <hr className="my-8 border-background-3" />
-              <div className="flex items-start justify-center gap-4 max-w-screen-md mx-auto text-white">
-                {slidesData?.slice(0, 3).map((slide) => (
+              <div className="flex items-start justify-center gap-4 max-w-screen-lg mx-auto text-white">
+                {slidesData?.slice(0, 3).map((slide, index) => (
                   <div
                     key={slide.id}
-                    className="flex flex-col lg:flex-row items-center lg:items-start gap-2 w-full lg:w-1/3 justify-center"
+                    className="flex flex-col lg:flex-row items-center lg:items-start gap-2 w-full lg:w-1/3 justify-center cursor-pointer hover:opacity-80 transition-opacity duration-300"
+                    onClick={() => goToSlide(index)}
                   >
                     <img
                       className="w-12"
@@ -239,7 +251,7 @@ export default function Home({
                       }
                       alt={slide.label || ""}
                     />
-                    <p className="text-body2 text-center lg:text-left">
+                    <p className="text-body2 text-center lg:text-left hover:underline decoration-details underline-offset-4 transition-all duration-300">
                       {slide.title}
                     </p>
                   </div>
