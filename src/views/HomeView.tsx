@@ -308,13 +308,16 @@ export default function Home({
 
       <section className="bg-white lg:pt-16">
         <div className="container mx-auto px-4">
-          <TitleDecorative>
+          <TitleDecorative data-aos="fade-up">
             {servicesData?.title || "Nuestros Servicios"}
           </TitleDecorative>
         </div>
 
         {/* Services cards */}
-        <div className="hidden lg:grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-[1px] mt-16">
+        <div 
+          data-aos="fade-up" 
+          data-aos-delay="200"
+          className="hidden lg:grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-[1px] mt-16">
           {servicesData?.services && servicesData.services.length > 0 ? (
             servicesData.services.map((service) => (
               <ServiceCard
@@ -385,7 +388,10 @@ export default function Home({
         </div>
 
         {/* Services cards mobile swiper */}
-        <div className="lg:hidden mt-14">
+        <div 
+          data-aos="fade-up" 
+          data-aos-delay="200"
+          className="lg:hidden mt-14">
           <Swiper
             modules={[Pagination]}
             spaceBetween={50}
@@ -418,7 +424,7 @@ export default function Home({
 
       <section className="bg-[#D5E3EA] py-16">
         <div className="container mx-auto px-4 flex flex-col lg:flex-row items-start justify-center text-text-primary">
-          <div className="w-full lg:w-1/3">
+          <div className="w-full lg:w-1/3" data-aos="fade-right">
             <TitleDecorative
               dividerColor="bg-[#94D133]"
               className="text-left items-start"
@@ -426,7 +432,10 @@ export default function Home({
               {statisticsData?.title || "Las Zonas Francas de Iberoamérica"}
             </TitleDecorative>
           </div>
-          <div className="w-full lg:w-1/3 space-y-10 mt-14 lg:mt-0">
+          <div 
+            data-aos="fade-up" 
+            data-aos-delay="100"
+            className="w-full lg:w-1/3 space-y-10 mt-14 lg:mt-0">
             {statisticsData?.statistics?.slice(0, 2).map((statistic, index) => (
               <div
                 key={statistic.id || index}
@@ -479,7 +488,10 @@ export default function Home({
               </>
             )}
           </div>
-          <div className="w-full lg:w-1/3 space-y-10">
+          <div 
+            data-aos="fade-up" 
+            data-aos-delay="200"
+            className="w-full lg:w-1/3 space-y-10">
             {statisticsData?.statistics?.slice(2).map((statistic, index) => (
               <div
                 key={statistic.id || index}
@@ -554,7 +566,9 @@ export default function Home({
       <section className="bg-white py-16">
         <div className="container mx-auto px-4 flex flex-col lg:flex-row items-start justify-center text-text-primary gap-20">
           <div className="w-full lg:w-1/2">
-            <div className="flex items-center justify-between mb-12 lg:mb-0">
+            <div 
+              data-aos="fade-right"
+              className="flex items-center justify-between mb-12 lg:mb-0">
               <TitleDecorative className="text-left items-start">
                 {newsSectionData?.title || "Noticias"}
               </TitleDecorative>
@@ -566,7 +580,10 @@ export default function Home({
               </Link>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mt-8">
+            <div 
+              data-aos="fade-up" 
+              data-aos-delay="100"
+              className="grid grid-cols-1 md:grid-cols-2 gap-8 mt-8">
               {newsData && newsData.length > 0 ? (
                 newsData.slice(0, 2).map((newsItem) => (
                   <CardNews
@@ -627,7 +644,9 @@ export default function Home({
             </div>
           </div>
           <div className="w-full lg:w-1/2">
-            <div className="flex items-center justify-between">
+            <div 
+              data-aos="fade-left"
+              className="flex items-center justify-between">
               <TitleDecorative
                 dividerColor="bg-[#94D133]"
                 className="text-left items-start"
@@ -642,7 +661,10 @@ export default function Home({
               </Link>
             </div>
 
-            <div className="space-y-8 mt-8">
+            <div 
+              data-aos="fade-up" 
+              data-aos-delay="100"
+              className="space-y-8 mt-8">
               {eventsData && eventsData.length > 0 ? (
                 eventsData.slice(0, 2).map((event) => (
                   <CardEvent
@@ -708,16 +730,21 @@ export default function Home({
 
       <section className="bg-white lg:py-16 py-0">
         <div className="container mx-auto px-4 text-center lg:text-left">
-          <h6 className="text-body2 text-text-primary text-center">
+          <h6 
+            data-aos="fade-up"
+            className="text-body2 text-text-primary text-center">
             {testimonialsSectionData?.label || "Testimonios"}
           </h6>
-          <TitleDecorative>
+          <TitleDecorative data-aos="fade-up" data-aos-delay="100">
             {testimonialsSectionData?.title || "Lo que dicen nuestros clientes"}
           </TitleDecorative>
         </div>
         {/* Not container content */}
         {/* Swiper testimonials */}
-        <div className="relative">
+        <div 
+          data-aos="fade-up" 
+          data-aos-delay="200"
+          className="relative">
           <Swiper
             modules={[Pagination, Autoplay]}
             spaceBetween={50}
@@ -819,11 +846,13 @@ export default function Home({
       {/* Afiliados */}
       <section className="bg-white pt-16">
         <div className="container mx-auto pb-8 lg:pb-16 px-0 md:px-16 max-w-6xl">
-          <TitleDecorative dividerColor="bg-[#94D133]">
+          <TitleDecorative data-aos="fade-up" dividerColor="bg-[#94D133]">
             {affiliatesSectionData?.title}
           </TitleDecorative>
 
           <Swiper
+            data-aos="fade-up" 
+            data-aos-delay="200"
             modules={[Autoplay, Navigation]}
             spaceBetween={50}
             slidesPerView={5}
@@ -879,12 +908,14 @@ export default function Home({
       {/* Aliados */}
       <section className="bg-white pt-16">
         <div className="container mx-auto pb-8 lg:pb-16 px-0 md:px-16 max-w-6xl">
-          <TitleDecorative className="text-center">
+          <TitleDecorative data-aos="fade-up" className="text-center">
             {partnersSectionData?.title || "Nuestros aliados"}
           </TitleDecorative>
 
           {/* Swiper sponsors */}
           <Swiper
+            data-aos="fade-up" 
+            data-aos-delay="200"
             modules={[Autoplay, Navigation]}
             spaceBetween={50}
             slidesPerView={5}
@@ -936,11 +967,13 @@ export default function Home({
       {sponsorsSectionData?.logos && sponsorsSectionData.logos.length > 0 && (
         <section className="bg-white pt-16">
           <div className="container mx-auto pb-8 lg:pb-16 px-0 md:px-16 max-w-6xl">
-            <TitleDecorative className="text-center">
+            <TitleDecorative data-aos="fade-up" className="text-center">
               {sponsorsSectionData?.title || "Nuestros sponsors"}
             </TitleDecorative>
           
           <Swiper
+            data-aos="fade-up" 
+            data-aos-delay="200"
             modules={[Autoplay, Navigation]}
             spaceBetween={50}
             slidesPerView={5}
