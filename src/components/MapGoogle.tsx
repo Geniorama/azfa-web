@@ -16,23 +16,73 @@ export interface MapGoogleRef {
   selectMarkerByCoords: (lat: number, lng: number) => void;
 }
 
-// Función para crear el contenido HTML del marcador
+// Función para crear el contenido HTML del marcador con tooltip personalizado
 const createMarkerContent = (iconUrl: string, title: string): HTMLElement => {
   const content = document.createElement('div');
+  content.className = 'relative inline-block';
   content.innerHTML = `
-    <div style="
+    <div class="marker-container" style="
       width: 32px; 
       height: 32px; 
       cursor: pointer;
       transition: transform 0.2s ease;
-    " 
-    onmouseover="this.style.transform='scale(1.1)'" 
-    onmouseout="this.style.transform='scale(1)'">
+      position: relative;
+    ">
       <img src="${iconUrl}" 
            alt="${title}" 
            style="width: 100%; height: 100%; object-fit: contain;" />
+      <div class="marker-tooltip" style="
+        position: absolute;
+        opacity: 0;
+        top: -32px;
+        left: 50%;
+        transform: translateX(-50%);
+        white-space: nowrap;
+        width: auto;
+        height: 20px;
+        background-color: black;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 12px;
+        padding: 0 8px;
+        border-radius: 2px;
+        z-index: 10;
+        color: white;
+        transition: opacity 0.3s ease;
+        pointer-events: none;
+      ">
+        <span style="
+          width: 8px;
+          height: 8px;
+          background-color: black;
+          transform: rotate(45deg);
+          position: absolute;
+          bottom: -4px;
+          left: 50%;
+          transform: translateX(-50%) rotate(45deg);
+        "></span>
+        <p style="margin: 0; padding: 0;">${title}</p>
+      </div>
     </div>
   `;
+  
+  // Agregar event listeners para mostrar/ocultar tooltip
+  const markerContainer = content.querySelector('.marker-container') as HTMLElement;
+  const tooltip = content.querySelector('.marker-tooltip') as HTMLElement;
+  
+  if (markerContainer && tooltip) {
+    markerContainer.addEventListener('mouseenter', () => {
+      markerContainer.style.transform = 'scale(1.1)';
+      tooltip.style.opacity = '1';
+    });
+    
+    markerContainer.addEventListener('mouseleave', () => {
+      markerContainer.style.transform = 'scale(1)';
+      tooltip.style.opacity = '0';
+    });
+  }
+  
   return content;
 };
 
@@ -257,7 +307,6 @@ const MapGoogle = forwardRef<MapGoogleRef, GoogleMapsProps>(({ markers, onMarker
           const marker = new AdvancedMarkerElement({
             position: { lat: markerData.lat, lng: markerData.lng },
             map: map,
-            title: markerData.title,
             content: createMarkerContent(iconUrl, markerData.title),
           });
 
