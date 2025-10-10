@@ -275,8 +275,7 @@ export default function Home({
             />
             <div className="lg:text-h3 text-h4 font-light text-center lg:text-left">
               <ReactMarkdown rehypePlugins={[rehypeRaw]}>
-                {introData?.content ||
-                  "Con más de <span class='text-details'>27 años</span> de trayectoria, la AZFA es la organización que lidera y representa al ecosistema de zonas francas en Iberoamérica."}
+                {introData?.content}
               </ReactMarkdown>
             </div>
           </div>
