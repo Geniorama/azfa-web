@@ -10,7 +10,7 @@ import CardInfoPortal from '@/components/CardInfoPortal'
 import Pagination from '@/components/Pagination'
 import CoverImage from '@/assets/img/cover.jpg'
 import { useState, useMemo } from 'react'
-import type { PublicationPageType, PublicationsResponseType } from '@/types/componentsType'
+import type { PublicationPageType, PublicationsResponseType, PublicationType } from '@/types/componentsType'
 import LoadingSpinner from '@/components/LoadingSpinner'
 
 interface PublicacionesViewProps {
@@ -32,13 +32,28 @@ export default function PublicacionesView({ pageData, publications }: Publicacio
   const filteredPublications = useMemo(() => {
     if (!publications?.data) return [];
     
-    return publications.data.filter((publication) => {
+    const filtered = publications.data.filter((publication) => {
       const yearMatch = filters.anioPublicacion === "" || publication.publishDate.startsWith(filters.anioPublicacion);
       const typeMatch = filters.tipoPublicacion === "" || 
         publication.tags.some(tag => tag.name.toLowerCase().includes(filters.tipoPublicacion.toLowerCase()));
       
       return yearMatch && typeMatch;
     });
+
+    // Ordenar de más reciente a más antigua
+    const sorted = filtered.sort((a, b) => {
+      const dateA = new Date(a.publishDate);
+      const dateB = new Date(b.publishDate);
+      
+      // Debug: mostrar fechas para verificar el ordenamiento
+      console.log(`Comparando: ${a.title} (${a.publishDate}) vs ${b.title} (${b.publishDate})`);
+      
+      return dateB.getTime() - dateA.getTime();
+    });
+
+    console.log('Publicaciones ordenadas:', sorted.map((p: PublicationType) => ({ title: p.title, date: p.publishDate })));
+    
+    return sorted;
   }, [publications, filters]);
 
   // Obtener años únicos para el filtro

@@ -1,15 +1,15 @@
 import ManagementView from "@/views/ManagementView";
-import { ManagementResponse } from "@/types/contentType";
+import { ManagementResponse, ManagementType } from "@/types/contentType";
 
 const getManagement = async (): Promise<ManagementResponse | null> => {
   try {
     // Intentar primero con el endpoint de managements
-    let response = await fetch(`${process.env.STRAPI_URL}/api/managements?populate[0]=featuredImage&populate[1]=downloadableFile&populate[2]=tags`)
+    let response = await fetch(`${process.env.STRAPI_URL}/api/managements?populate[0]=featuredImage&populate[1]=downloadableFile&populate[2]=tags&sort=publishDate:desc`)
     
     // Si falla con 404, usar studies como fallback
     if (!response.ok && response.status === 404) {
       console.log("Managements API not found, using studies as fallback")
-      response = await fetch(`${process.env.STRAPI_URL}/api/studies?populate[0]=featuredImage&populate[1]=downloadableFile&populate[2]=tags`)
+      response = await fetch(`${process.env.STRAPI_URL}/api/studies?populate[0]=featuredImage&populate[1]=downloadableFile&populate[2]=tags&sort=publishDate:desc`)
     }
     
     if (!response.ok) {
@@ -17,6 +17,7 @@ const getManagement = async (): Promise<ManagementResponse | null> => {
     }
     
     const data = await response.json()
+    console.log('Gestión desde API:', data.data?.map((m: ManagementType) => ({ title: m.title, date: m.publishDate })))
     
     // Convertir la respuesta de studies a management si es necesario
     const managementData: ManagementResponse = {

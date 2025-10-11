@@ -34,7 +34,7 @@ export default function ManagementView({
   const filteredManagement = useMemo(() => {
     if (!management) return [];
     
-    return management.filter(item => {
+    const filtered = management.filter(item => {
       const matchesType = !filters.tipoPublicacion || 
         item.tags.some(tag => tag.name.toLowerCase().includes(filters.tipoPublicacion.toLowerCase()));
       
@@ -43,6 +43,17 @@ export default function ManagementView({
       
       return matchesType && matchesYear;
     });
+
+    // Ordenar de más reciente a más antigua
+    const sorted = filtered.sort((a, b) => {
+      const dateA = new Date(a.publishDate);
+      const dateB = new Date(b.publishDate);
+      return dateB.getTime() - dateA.getTime();
+    });
+
+    console.log('Gestión ordenada:', sorted.map((m: ManagementType) => ({ title: m.title, date: m.publishDate })));
+    
+    return sorted;
   }, [management, filters]);
 
   // Obtener años únicos para el filtro

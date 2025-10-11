@@ -29,9 +29,9 @@ const renderIcon = (iconData: EventIconType | undefined, fallbackIcon: React.Rea
 
 export default function CardEvent({ image, title, category, date, location, hotel, calendarIcon, locationIcon, addressIcon, button, direction = 'horizontal'  }: CardEventProps) {
   return (
-    <div className={`flex flex-col ${direction === 'horizontal' && 'lg:flex-row'} border border-background-2 rounded-tr-2xl rounded-bl-2xl rounded-br-2xl overflow-hidden`}>
-        <div className={`w-full ${direction === 'horizontal' ? 'lg:w-2/5' : 'aspect-video'}`}>
-            <img src={image} alt={title} className='w-full aspect-video object-cover' />
+    <div className={`flex flex-col ${direction === 'horizontal' ? 'lg:flex-row' : 'hover:shadow-xl hover:border-transparent transition-all duration-300'} border border-background-2 rounded-tr-2xl rounded-bl-2xl rounded-br-2xl overflow-hidden`}>
+        <div className={`w-full overflow-hidden ${direction === 'horizontal' ? 'lg:w-2/5 min-h-full aspect-[9/10]' : 'aspect-video '}`}>
+            <img src={image} alt={title} className='w-full h-full object-cover' />
         </div>
 
         {/* Content */}

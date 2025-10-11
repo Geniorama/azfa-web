@@ -4,12 +4,12 @@ import { FaAngleDown } from 'react-icons/fa6';
 import Cookies from 'js-cookie';
 
 const languages = [
-  { code: "es", name: "Español", flag: "🇪🇸" },
-  { code: "en", name: "English", flag: "🇺🇸" },
-//   { code: "fr", name: "Français", flag: "🇫🇷" },
-//   { code: "de", name: "Deutsch", flag: "🇩🇪" },
-//   { code: "pt", name: "Português", flag: "🇵🇹" },
-//   { code: "it", name: "Italiano", flag: "🇮🇹" },
+  { code: "es", name: "Español", initials: "ES" },
+  { code: "en", name: "English", initials: "EN" },
+//   { code: "fr", name: "Français", initials: "FR" },
+//   { code: "de", name: "Deutsch", initials: "DE" },
+//   { code: "pt", name: "Português", initials: "PT" },
+//   { code: "it", name: "Italiano", initials: "IT" },
 ];
 
 export default function LanguageSelector() {
@@ -76,13 +76,13 @@ export default function LanguageSelector() {
   const currentLangData = languages.find(lang => lang.code === currentLanguage) || languages[0];
 
   return (
-    <div className="relative group w-full md:w-auto" ref={dropdownRef}>
+    <div className="relative group w-full md:w-auto notranslate" ref={dropdownRef}>
       <button
         className="flex items-center gap-2 text-black border-[#DDDDDD] border-b lg:border-transparent lg:border-b-2 py-4 lg:pb-1 mb-0 lg:-mb-1 hover:border-details transition justify-between w-full lg:w-auto"
         onClick={() => setIsOpen(!isOpen)}
       >
         <div className="flex items-center gap-2">
-          <span className="text-xl">{currentLangData.flag}</span>
+          <span className="text-button notranslate">{currentLangData.initials}</span>
         </div>
         <FaAngleDown
           className={`text-details transition-transform duration-300 ${
@@ -102,13 +102,13 @@ export default function LanguageSelector() {
         <ul className="flex flex-col text-black">
           {languages.map((lang) => (
             <li
-              className="p-4 hover:bg-background-2 transition-all duration-300 cursor-pointer"
+              className="p-4 hover:bg-background-2 transition-all duration-300 cursor-pointer notranslate"
               key={lang.code}
               onClick={() => handleLanguageChange(lang.code)}
             >
               <div className="flex items-center gap-3">
-                <span className="text-xl">{lang.flag}</span>
-                <span className="font-medium">{lang.name}</span>
+                <span className="text-button notranslate">{lang.initials}</span>
+                <span className="font-medium notranslate">{lang.name}</span>
               </div>
             </li>
           ))}
@@ -126,13 +126,13 @@ export default function LanguageSelector() {
         <ul className="flex flex-col text-black">
           {languages.map((lang) => (
             <li
-              className="p-4 hover:bg-background-2 transition-all duration-300 border-b border-gray-200 cursor-pointer"
+              className="p-4 hover:bg-background-2 transition-all duration-300 border-b border-gray-200 cursor-pointer notranslate"
               key={lang.code}
               onClick={() => handleLanguageChange(lang.code)}
             >
               <div className="flex items-center gap-3">
-                <span className="text-xl">{lang.flag}</span>
-                <span className="font-medium">{lang.name}</span>
+                <span className="text-button notranslate">{lang.initials}</span>
+                <span className="font-medium notranslate">{lang.name}</span>
               </div>
             </li>
           ))}
