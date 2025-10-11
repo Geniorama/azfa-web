@@ -444,8 +444,14 @@ export default function NormativaLegal() {
   };
 
   const handlePaisExpand = (paisId: string) => {
-    // Solo ejecutar en pantallas medianas y grandes
+    // En móvil, solo actualizar la imagen del país sin expandir
     if (window.innerWidth < 768) {
+      setCountryImageSelected(
+        countriesInfo.find((p) => p.id === paisId)?.countryImage || null
+      );
+      // Actualizar el país seleccionado para sincronizar con el buscador
+      const pais = countriesOptions.find((p) => p.id === paisId);
+      if (pais) setSelectedPais(pais);
       return;
     }
 
@@ -571,12 +577,33 @@ export default function NormativaLegal() {
             <MapOne onCountrySelect={handleMapCountrySelect} />
           )}
         </div>
-        <div className="flex md:hidden w-full h-full">
-          <img
-            src={MapResponsive.src}
-            alt="Mapa Responsive"
-            className="w-full h-full object-cover"
-          />
+        <div className="flex md:hidden w-full h-full bg-[#73DAEB] justify-center items-start overflow-hidden relative">
+          {countryImageSelected ? (
+            <div className="relative w-full h-full">
+              <img
+                src={countryImageSelected}
+                alt="Imagen del país seleccionado"
+                className="w-full h-full object-contain"
+              />
+              {/* Botón para limpiar la selección en móvil */}
+              <button
+                onClick={() => {
+                  setCountryImageSelected(null);
+                  setSelectedPais(null);
+                }}
+                className="absolute top-4 right-4 p-2 bg-white rounded-full shadow-lg hover:bg-gray-100 transition-colors"
+                aria-label="Volver al mapa"
+              >
+                <IoClose className="text-2xl text-primary" />
+              </button>
+            </div>
+          ) : (
+            <img
+              src={MapResponsive.src}
+              alt="Mapa Responsive"
+              className="w-full h-full object-cover"
+            />
+          )}
         </div>
         <div className="w-full md:w-3/8 h-full">
           <div className="relative">
@@ -691,13 +718,9 @@ export default function NormativaLegal() {
                     return (
                       <div
                         id={`pais-${pais.id}`}
-                        className="lg:grid lg:grid-cols-3 transition hover:bg-primary border-b-2 md:border-b border-gray-300"
+                        className="lg:grid lg:grid-cols-3 transition hover:bg-primary border-b-2 md:border-b border-gray-300 cursor-pointer"
                         key={index}
                         onClick={() => handlePaisExpand(pais.id)}
-                        style={{
-                          cursor:
-                            window.innerWidth >= 768 ? "pointer" : "default",
-                        }}
                       >
                         {/* Left column */}
                         <div

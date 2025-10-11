@@ -61,7 +61,6 @@ function OfertaInmobiliariaContent({ pageContent }: OfertaInmobiliariaViewProps)
   // Capturar parámetros de la URL y aplicarlos como filtros solo una vez
   useEffect(() => {
     if (!filtersInitialized && searchParams) {
-      console.log('=== INICIALIZANDO FILTROS DESDE URL ===');
       const urlFilters: FilterValuesProps = {
         offerType: searchParams.get('offerType') || '',
         propertyType: searchParams.get('propertyType') || '',
@@ -71,13 +70,10 @@ function OfertaInmobiliariaContent({ pageContent }: OfertaInmobiliariaViewProps)
         propertyStatus: searchParams.get('propertyStatus') || ''
       };
 
-      console.log('Filtros de URL:', urlFilters);
-
       // Solo actualizar si hay parámetros en la URL y no se han inicializado
       const hasUrlParams = Object.values(urlFilters).some(value => value !== '');
       
       if (hasUrlParams) {
-        console.log('Aplicando filtros de URL por única vez');
         setSearchFilters(urlFilters);
         setCurrentPage(1);
       }
@@ -88,16 +84,12 @@ function OfertaInmobiliariaContent({ pageContent }: OfertaInmobiliariaViewProps)
 
   // Cargar opciones de filtro desde la API (independientemente de los resultados filtrados)
   useEffect(() => {
-    console.log('=== INICIANDO CARGA DE OPCIONES ===');
     const fetchFilterOptions = async () => {
       try {
-        console.log('Haciendo petición a la API para opciones...');
         const response = await fetch('/api/getRealStateOffer?pagination[pageSize]=1000');
         const data = await response.json();
         
-        console.log('Respuesta completa de la API:', data);
         if (data.data && Array.isArray(data.data)) {
-          console.log('Datos recibidos de la API:', data.data.length, 'elementos');
           const offers = data.data.map((item: InmuebleType) => ({
             id: item.id,
             title: item.title,
@@ -119,16 +111,9 @@ function OfertaInmobiliariaContent({ pageContent }: OfertaInmobiliariaViewProps)
           }));
           
           const options = extractFilterOptions(offers);
-          console.log('Opciones de filtro cargadas:', options);
-          console.log('Países disponibles:', options.country);
           setFilterOptions(options);
           setOptionsLoading(false);
         } else {
-          console.log('No se cumplió la condición para cargar opciones:', {
-            hasData: !!data.data,
-            isArray: Array.isArray(data.data),
-            dataType: typeof data.data
-          });
           setOptionsLoading(false);
         }
       } catch (error) {
@@ -141,29 +126,12 @@ function OfertaInmobiliariaContent({ pageContent }: OfertaInmobiliariaViewProps)
     
     // Timeout de seguridad para evitar carga infinita
     const timeoutId = setTimeout(() => {
-      console.log('Timeout alcanzado, estableciendo loading a false');
       setOptionsLoading(false);
     }, 10000); // 10 segundos
     
     return () => clearTimeout(timeoutId);
   }, []);
 
-  useEffect(() => {
-    console.log("=== SEARCH FILTERS CHANGED ===");
-    console.log("Nuevos filtros de búsqueda:", searchFilters);
-  }, [searchFilters]);
-
-  useEffect(() => {
-    console.log("=== OFFERS LOADED ===");
-    console.log("Cantidad de ofertas:", offers.length);
-    console.log("Ofertas:", offers);
-  }, [offers]);
-
-  useEffect(() => {
-    console.log("pageContent en vista:", pageContent);
-    console.log("suppliersLogos:", pageContent?.suppliersLogos);
-    console.log("consultantsLogos:", pageContent?.consultantsLogos);
-  }, [pageContent]);
 
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
@@ -172,9 +140,6 @@ function OfertaInmobiliariaContent({ pageContent }: OfertaInmobiliariaViewProps)
   };
 
   const handleSearch = (filters: FilterValuesProps) => {
-    console.log("=== HANDLE SEARCH ===");
-    console.log("Filtros recibidos en página:", filters);
-
     // Solo actualizar filtros que no sean "todos" o vacíos
     const activeFilters: FilterValuesProps = {
       offerType:
@@ -200,10 +165,8 @@ function OfertaInmobiliariaContent({ pageContent }: OfertaInmobiliariaViewProps)
           : "",
     };
 
-    console.log("Filtros activos después de limpiar:", activeFilters);
     setSearchFilters(activeFilters);
     setCurrentPage(1); // Reset to first page when searching
-    console.log("Estado de filtros actualizado");
     // Scroll to results
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
