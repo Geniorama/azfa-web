@@ -1,3 +1,6 @@
+"use client";
+
+import { useEffect, useState } from "react";
 import FooterImgTop from "@/assets/img/footer-img.svg";
 // import { FaLinkedinIn, FaInstagram, FaXTwitter } from "react-icons/fa6";
 import LogoAzfaBlanco from "@/assets/img/logo-azfa-blanco.svg";
@@ -11,6 +14,26 @@ interface FooterProps {
 }
 
 export default function Footer({ showBanner = true, footer }: FooterProps) {
+  const [showBackToTop, setShowBackToTop] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      // Mostrar el botón cuando el usuario ha scrolleado más de 300px
+      if (window.scrollY > 300) {
+        setShowBackToTop(true);
+      } else {
+        setShowBackToTop(false);
+      }
+    };
+
+    // Agregar el listener del scroll
+    window.addEventListener("scroll", handleScroll);
+
+    // Limpiar el listener cuando el componente se desmonte
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
   
   const handleScrollToTop = () => {
     window.scrollTo({
@@ -29,7 +52,13 @@ export default function Footer({ showBanner = true, footer }: FooterProps) {
     <footer className="bg-text-primary text-white">
 
       {/* Up Button */}
-      <div className="fixed bottom-5 right-5 z-50 inline-block">
+      <div 
+        className={`fixed bottom-5 right-5 z-50 inline-block transition-all duration-300 ${
+          showBackToTop 
+            ? "opacity-100 translate-y-0" 
+            : "opacity-0 translate-y-10 pointer-events-none"
+        }`}
+      >
         <button className="bg-details-hover rounded-full p-2 w-16 h-16 flex items-center justify-center cursor-pointer hover:bg-details-hover/80 transition-all duration-300 outline-none" onClick={handleScrollToTop} aria-label="Scroll to top">
           <HiOutlineArrowUp className="w-6 h-6 text-white" />
         </button>
