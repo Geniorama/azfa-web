@@ -31,7 +31,7 @@ export default function CardNextEvent({ tag, title, date, location, address, ima
   return (
     <div className='w-full flex flex-col lg:flex-row lg:shadow-2xl shadow-lg overflow-hidden rounded-2xl'>
         <div className='w-full lg:w-1/2'>
-            <img className='w-full lg:h-120 object-cover' src={image} alt={title} />
+            <img className='w-full lg:h-full lg:min-h-[100px] object-cover aspect-video lg:aspect-auto' src={image} alt={title} />
         </div>
 
         <div className='w-full lg:w-1/2 lg:p-10 p-6 text-text-primary bg-white relative'>

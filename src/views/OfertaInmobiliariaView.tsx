@@ -268,7 +268,7 @@ function OfertaInmobiliariaContent({ pageContent }: OfertaInmobiliariaViewProps)
             {pageContent?.description}
           </p>
 
-          <div className="hidden md:flex justify-center bg-white mt-16 pb-16 pt-8 px-5">
+          <div className="hidden md:flex justify-center bg-white mt-4 pb-16 pt-8 px-5">
             <img
               className="w-full"
               src={CiudadOfertaImg.src}
@@ -417,7 +417,7 @@ function OfertaInmobiliariaContent({ pageContent }: OfertaInmobiliariaViewProps)
 
       {/* Sección de Proveedores */}
       {pageContent?.suppliersLogos && pageContent.suppliersLogos.images && pageContent.suppliersLogos.images.length > 0 && (
-        <section className="bg-white py-16">
+        <section className="bg-white pt-16">
           <div className="container mx-auto pb-8 lg:pb-16 px-0 md:px-16 max-w-6xl">
             <TitleDecorative dividerColor="bg-[#94D133]">
               {pageContent.suppliersLogos.title}
@@ -466,7 +466,7 @@ function OfertaInmobiliariaContent({ pageContent }: OfertaInmobiliariaViewProps)
       {/* Sección de Consultores */}
       {pageContent?.consultantsLogos && pageContent.consultantsLogos.length > 0 && (
         pageContent.consultantsLogos.map((consultantSection, index) => (
-          <section className="bg-white py-16" key={consultantSection.id || index}>
+          <section className="bg-white pb-16 pt-8" key={consultantSection.id || index}>
             <div className="container mx-auto pb-8 lg:pb-16 px-0 md:px-16 max-w-6xl">
               <TitleDecorative dividerColor="bg-[#94D133]">
                 {consultantSection.title}

@@ -70,7 +70,7 @@ export default function AdSection({ position, className = "" }: AdSectionProps) 
       <div className="relative">
         <Swiper
           modules={[Autoplay, Navigation]}
-          spaceBetween={30}
+          spaceBetween={100}
           slidesPerView={1}
           slidesPerGroup={1}
           className="swiper-custom"
@@ -84,7 +84,7 @@ export default function AdSection({ position, className = "" }: AdSectionProps) 
         >
           {allImages.map((image, index) => (
             <SwiperSlide key={`${image.id}-${index}`}>
-              <div className="flex flex-col items-center space-y-2 px-4">
+              <div className="flex flex-col items-center space-y-2 px-4 md:px-12">
                 {/* Imagen del anuncio */}
                 <div className="w-full flex justify-center">
                   <img

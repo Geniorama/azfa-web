@@ -70,9 +70,9 @@ export default function IncentivosCardCountry({ index, country, numberZones, num
                             rehypePlugins={[rehypeRaw]}
                             components={{
                                 p: ({children}) => <span>{children}</span>,
-                                ul: ({children}) => <ul className="[&>li]:before:content-['-'] [&>li]:before:mr-2 pl-4">{children}</ul>,
+                                ul: ({children}) => <ul className="list-none pl-0">{children}</ul>,
                                 ol: ({children}) => <ol className="list-decimal pl-4">{children}</ol>,
-                                li: ({children}) => <li className="mb-1">{children}</li>,
+                                li: ({children}) => <li className="mb-1 flex items-start before:content-['-'] before:mr-2 before:shrink-0">{children}</li>,
                                 strong: ({children}) => <strong className="font-medium">{children}</strong>,
                                 em: ({children}) => <em className="italic">{children}</em>
                             }}

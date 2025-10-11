@@ -85,7 +85,7 @@ export default function CardInmueble({
         )}
       </div>
       <div className="p-8 pb-2 text-text-primary">
-        <h3 className="text-h5">{title}</h3>
+        <h3 className="text-[22px] leading-[30px] 2xl:text-h5 2xl:leading-8">{title}</h3>
         {country && (
           <>
             <p className="text-caption">

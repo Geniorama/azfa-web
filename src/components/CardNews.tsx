@@ -19,7 +19,7 @@ export default function CardNews({ image, title, category, description, button }
         {/* Content */}
         <div className="py-6 px-8">
             <span className="text-body2 mb-1 inline-block">{category}</span>
-            <h3 className="text-h6">{title}</h3>
+            <h3 className="2xl:text-h6 text-[20px] leading-[28px] 2xl:leading-8">{title}</h3>
             <hr className="my-4 border-slate-300" />
             <p className="text-body2 font-light">{description}</p>
             <hr className="my-4 border-slate-300" />

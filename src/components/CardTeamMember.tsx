@@ -25,13 +25,13 @@ export default function CardTeamMember({
         <img
           src={image}
           alt="image"
-          className="w-full h-100 object-cover grayscale transition-all duration-300"
+          className="w-full 2xl:h-100 aspect-square 2xl:aspect-auto object-cover grayscale transition-all duration-300"
         />
       </div>
 
       {/* Content */}
       <div className="p-8 text-text-primary">
-        <h3 className="text-h5 font-medium">{name}</h3>
+        <h3 className="2xl:text-h5 text-[20px] leading-[28px] 2xl:leading-8 font-medium">{name}</h3>
         <p className="text-button font-medium mt-1">{position}</p>
         <hr className="my-2 border-slate-300" />
         <div className="flex flex-row items-center gap-2">
