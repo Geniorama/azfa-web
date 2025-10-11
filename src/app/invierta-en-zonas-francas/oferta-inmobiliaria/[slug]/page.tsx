@@ -14,13 +14,14 @@ import IconCertificado from "@/assets/img/icon-certificacion.svg";
 import Button from "@/utils/Button";
 import { useRouter } from "next/navigation";
 
-import { useState, useEffect } from "react";
-import { useParams } from "next/navigation";
+import { useState, useEffect, Suspense } from "react";
+import { useParams, useSearchParams } from "next/navigation";
 import { StrapiButtonType } from "@/types/componentsType";
 import { getCountryCode, getCountryName } from "@/utils/countryMapping";
 import ReactMarkdown from 'react-markdown';
 import type { FilterValuesProps } from "@/components/AdvancedSearchBar";
 import { extractFilterOptions, FilterOptions } from "@/utils/extractFilterOptions";
+import LoadingSpinner from "@/components/LoadingSpinner";
 
 // Función para convertir bloques de Strapi a HTML
 interface StrapiBlock {
@@ -110,19 +111,22 @@ const hasCertificationContent = (certifications: StrapiBlock[]): boolean => {
   });
 };
 
-export default function OfertaInmobiliariaSingle() {
+function OfertaInmobiliariaSingleContent() {
   const [inmueble, setInmueble] = useState<InmuebleType | null>(null);
   const [filterOptions, setFilterOptions] = useState<FilterOptions | null>(null);
-  const [searchFilters, setSearchFilters] = useState<FilterValuesProps>({
-    offerType: "",
-    propertyType: "",
-    propertyUse: "",
-    city: "",
-    country: "",
-    propertyStatus: "",
-  });
   const { slug } = useParams();
   const router = useRouter();
+  const searchParams = useSearchParams();
+  
+  // Inicializar filtros desde la URL si existen
+  const [searchFilters, setSearchFilters] = useState<FilterValuesProps>({
+    offerType: searchParams?.get('offerType') || "",
+    propertyType: searchParams?.get('propertyType') || "",
+    propertyUse: searchParams?.get('propertyUse') || "",
+    city: searchParams?.get('city') || "",
+    country: searchParams?.get('country') || "",
+    propertyStatus: searchParams?.get('propertyStatus') || "",
+  });
 
   const handleGetCountry = (country?: string) => {
     if (!country) return;
@@ -188,6 +192,20 @@ export default function OfertaInmobiliariaSingle() {
     
     router.push(url);
   };
+
+  // Actualizar filtros desde la URL cuando cambien los parámetros
+  useEffect(() => {
+    if (searchParams) {
+      setSearchFilters({
+        offerType: searchParams.get('offerType') || "",
+        propertyType: searchParams.get('propertyType') || "",
+        propertyUse: searchParams.get('propertyUse') || "",
+        city: searchParams.get('city') || "",
+        country: searchParams.get('country') || "",
+        propertyStatus: searchParams.get('propertyStatus') || "",
+      });
+    }
+  }, [searchParams]);
 
   useEffect(() => {
     const fetchInmueble = async () => {
@@ -430,5 +448,13 @@ export default function OfertaInmobiliariaSingle() {
         </article>
       </div>
     </div>
+  );
+}
+
+export default function OfertaInmobiliariaSingle() {
+  return (
+    <Suspense fallback={<LoadingSpinner message="Cargando inmueble..." />}>
+      <OfertaInmobiliariaSingleContent />
+    </Suspense>
   );
 }

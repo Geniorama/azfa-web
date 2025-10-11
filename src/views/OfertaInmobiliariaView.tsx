@@ -269,8 +269,8 @@ function OfertaInmobiliariaContent({ pageContent }: OfertaInmobiliariaViewProps)
         <div className="container mx-auto px-4 ">
           <div className="flex flex-col items-center justify-center mb-10">
             <p className="text-5 text-text-primary text-center mt-10">
-              Se encontraron <span className="font-bold">{pagination.total}</span>{" "}
-              inmuebles que coinciden con su búsqueda
+              {pagination.total > 1 ? `Se encontraron` : `Se encontró`} <span className="font-bold">{pagination.total}</span>{" "}
+              {pagination.total > 1 ? `inmuebles que coinciden con su búsqueda` : `inmueble que coincide con su búsqueda`}
             </p>
 
             {/* Clear filters */}
@@ -314,7 +314,20 @@ function OfertaInmobiliariaContent({ pageContent }: OfertaInmobiliariaViewProps)
                   button={{
                     label: "Ver más",
                     onClick: () => {
-                      router.push(`/invierta-en-zonas-francas/oferta-inmobiliaria/${offer.slug}`);
+                      // Crear query params con los filtros actuales
+                      const queryParams = new URLSearchParams();
+                      Object.entries(searchFilters).forEach(([key, value]) => {
+                        if (value && value.trim() !== '') {
+                          queryParams.append(key, value);
+                        }
+                      });
+                      
+                      const queryString = queryParams.toString();
+                      const url = queryString 
+                        ? `/invierta-en-zonas-francas/oferta-inmobiliaria/${offer.slug}?${queryString}`
+                        : `/invierta-en-zonas-francas/oferta-inmobiliaria/${offer.slug}`;
+                      
+                      router.push(url);
                     },
                   }}
                 />
