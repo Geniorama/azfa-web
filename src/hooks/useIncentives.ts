@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { Incentive, IncentiveResponse } from '@/types/incentiveType'
 
 interface UseIncentivesOptions {
@@ -21,7 +21,7 @@ export function useIncentives(options: UseIncentivesOptions = {}): UseIncentives
 
   const { country, page = 1, pageSize = 100 } = options
 
-  const fetchIncentives = async () => {
+  const fetchIncentives = useCallback(async () => {
     try {
       setLoading(true)
       setError(null)
@@ -51,20 +51,16 @@ export function useIncentives(options: UseIncentivesOptions = {}): UseIncentives
     } finally {
       setLoading(false)
     }
-  }
+  }, [country, page, pageSize])
 
   useEffect(() => {
     fetchIncentives()
-  }, [country, page, pageSize, fetchIncentives])
-
-  const refetch = () => {
-    fetchIncentives()
-  }
+  }, [fetchIncentives])
 
   return {
     incentives,
     loading,
     error,
-    refetch,
+    refetch: fetchIncentives,
   }
 }
