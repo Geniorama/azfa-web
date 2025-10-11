@@ -423,7 +423,7 @@ export default function Home({
       </section>
 
       <section className="bg-[#D5E3EA] py-16 lg:py-24">
-        <div className="container mx-auto px-4 gap-6 flex flex-col lg:flex-row items-start justify-center text-text-primary">
+        <div className="container mx-auto px-4 gap-6 2xl:gap-1 flex flex-col lg:flex-row items-start justify-center text-text-primary">
           <div className="w-full lg:w-1/3" data-aos="fade-right">
             <TitleDecorative
               dividerColor="bg-[#94D133]"

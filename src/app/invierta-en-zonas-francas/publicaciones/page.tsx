@@ -1,5 +1,5 @@
 import PublicacionesView from '@/views/PublicacionesView'
-import type { PublicationPageType, PublicationsResponseType } from '@/types/componentsType'
+import type { PublicationPageType, PublicationsResponseType, PublicationType } from '@/types/componentsType'
 
 const getPageData = async (): Promise<PublicationPageType | null> => {
   try {
@@ -19,11 +19,12 @@ const getPageData = async (): Promise<PublicationPageType | null> => {
 
 const getPublications = async (): Promise<PublicationsResponseType | null> => {
   try {
-    const response = await fetch(`${process.env.STRAPI_URL}/api/publications?populate[0]=featuredImage&populate[1]=downloadableFile&populate[2]=tags`)
+    const response = await fetch(`${process.env.STRAPI_URL}/api/publications?populate[0]=featuredImage&populate[1]=downloadableFile&populate[2]=tags&sort=publishDate:desc`)
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`)
     }
     const data = await response.json()
+    console.log('Publicaciones desde API:', data.data?.map((p: PublicationType) => ({ title: p.title, date: p.publishDate })))
     return data
   }
   catch (error) {

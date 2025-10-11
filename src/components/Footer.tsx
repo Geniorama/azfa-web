@@ -200,7 +200,7 @@ export default function Footer({ showBanner = true, footer }: FooterProps) {
                   ))}
                 </p>
 
-                <p className="text-caption text-[#F2F1FA] opacity-30">
+                <p className="text-caption text-[#F2F1FA] opacity-30 pr-14 2xl:pr-0">
                   {footer.copyright.developedByText || "Realizado por"}{" "}
                   <Link
                     href={footer.copyright.developedByLink.url}

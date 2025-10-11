@@ -24,7 +24,7 @@ export default function StudiesView({ studies }: StudiesViewProps) {
   const filteredStudies = useMemo(() => {
     if (!studies) return [];
     
-    return studies.filter(study => {
+    const filtered = studies.filter(study => {
       const matchesType = !filters.tipoPublicacion || 
         study.tags.some(tag => tag.name.toLowerCase().includes(filters.tipoPublicacion.toLowerCase()));
       
@@ -33,6 +33,17 @@ export default function StudiesView({ studies }: StudiesViewProps) {
       
       return matchesType && matchesYear;
     });
+
+    // Ordenar de más reciente a más antigua
+    const sorted = filtered.sort((a, b) => {
+      const dateA = new Date(a.publishDate);
+      const dateB = new Date(b.publishDate);
+      return dateB.getTime() - dateA.getTime();
+    });
+
+    console.log('Estudios ordenados:', sorted.map((s: StudyType) => ({ title: s.title, date: s.publishDate })));
+    
+    return sorted;
   }, [studies, filters]);
 
   // Obtener años únicos para el filtro

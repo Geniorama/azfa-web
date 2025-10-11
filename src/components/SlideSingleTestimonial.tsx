@@ -18,7 +18,7 @@ export default function SlideSingleTestimonial({ caption, title, description, im
         <img
           src={image}
           alt={title}
-          className="w-full aspect-square max-h-[calc(100vh-50px)] 2xl:max-h-screen object-cover"
+          className="w-full aspect-square max-h-[calc(100vh-50px)] 2xl:max-h-[600px] object-cover object-top"
         />
         <div className="absolute top-0 left-0 w-full h-full items-center justify-center hidden">
           <button onClick={button.onClick} className="bg-white/20 rounded-full cursor-pointer flex items-center justify-center w-20 h-20 hover:scale-110 transition-all duration-300">
