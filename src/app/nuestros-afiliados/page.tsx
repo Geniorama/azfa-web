@@ -2,7 +2,7 @@
 
 import HeadingPage from "@/components/HeadingPage";
 import MapGoogle from "@/components/MapGoogle";
-import { useEffect, useState, useRef, useCallback } from "react";
+import { useEffect, useState, useRef, useCallback, useMemo } from "react";
 import SearchInput from "@/utils/SearchInput";
 import IncentivosCardCountry from "@/components/IncentivosCardCountry";
 import colombiaFlag from "@/assets/img/flags/colombia.svg";
@@ -46,12 +46,12 @@ const transformIncentivesToMarkers = (incentives: Incentive[]): IncentiveMarker[
     const countryName = getCountryName(countryCode);
     
     // Debug temporal
-    if (incentive.country.toLowerCase().includes('hait') || incentive.country.toLowerCase().includes('ahit')) {
-      console.log('=== DEBUG HAITÍ ===');
-      console.log('País desde Strapi:', incentive.country);
-      console.log('Código ISO:', countryCode);
-      console.log('Nombre final:', countryName);
-    }
+    // if (incentive.country.toLowerCase().includes('hait') || incentive.country.toLowerCase().includes('ahit')) {
+    //   console.log('=== DEBUG HAITÍ ===');
+    //   console.log('País desde Strapi:', incentive.country);
+    //   console.log('Código ISO:', countryCode);
+    //   console.log('Nombre final:', countryName);
+    // }
     
     // Usar las coordenadas de Google Maps desde Strapi si están disponibles, sino usar las de fallback
     const lat = incentive.googleMapsLocation?.latitude || fallbackCoords?.lat || 0;
@@ -99,13 +99,13 @@ const transformAffiliatesToMarkers = (affiliates: Afiliado[]): Marker[] => {
 
   affiliates.forEach(affiliate => {
     const fallbackCoords = fallbackCoordinates[affiliate.country.code];
-    console.log(`Procesando afiliado ${affiliate.title}, mapLocation:`, affiliate.mapLocation);
-    console.log(`País del afiliado: ${affiliate.country.code}, fallbackCoords:`, fallbackCoords);
+    // console.log(`Procesando afiliado ${affiliate.title}, mapLocation:`, affiliate.mapLocation);
+    // console.log(`País del afiliado: ${affiliate.country.code}, fallbackCoords:`, fallbackCoords);
     
     if (affiliate.mapLocation && affiliate.mapLocation.length > 0) {
       // Si hay múltiples ubicaciones, crear un marcador para cada una
       affiliate.mapLocation.forEach((location, index) => {
-        console.log(`Creando marcador para ubicación ${index}: lat=${location.latitude}, lng=${location.longitude}`);
+        // console.log(`Creando marcador para ubicación ${index}: lat=${location.latitude}, lng=${location.longitude}`);
         
         // Validar que las coordenadas sean números válidos (no null, undefined, o NaN)
         if (location.latitude !== null && location.longitude !== null && 
@@ -131,15 +131,15 @@ const transformAffiliatesToMarkers = (affiliates: Afiliado[]): Marker[] => {
               ...(affiliate.contactInfo?.website ? [{ label: 'Sitio web', content: affiliate.contactInfo.website }] : [])
             ]
           });
-          console.log(`Marcador creado exitosamente para ${affiliate.title} ubicación ${index}`);
+          // console.log(`Marcador creado exitosamente para ${affiliate.title} ubicación ${index}`);
         } else {
-          console.warn(`Coordenadas inválidas para afiliado ${affiliate.title} ubicación ${index}: lat=${location.latitude}, lng=${location.longitude}`);
+          // console.warn(`Coordenadas inválidas para afiliado ${affiliate.title} ubicación ${index}: lat=${location.latitude}, lng=${location.longitude}`);
         }
       });
     } else {
       // Si no hay ubicaciones específicas y hay coordenadas de fallback, crear marcador
       if (fallbackCoords) {
-        console.log(`Usando coordenadas de fallback para ${affiliate.title}: lat=${fallbackCoords.lat}, lng=${fallbackCoords.lng}`);
+        // console.log(`Usando coordenadas de fallback para ${affiliate.title}: lat=${fallbackCoords.lat}, lng=${fallbackCoords.lng}`);
         markers.push({
           id: `affiliate-${affiliate.id}`,
           lat: fallbackCoords.lat,
@@ -159,9 +159,9 @@ const transformAffiliatesToMarkers = (affiliates: Afiliado[]): Marker[] => {
             ...(affiliate.contactInfo?.website ? [{ label: 'Sitio web', content: affiliate.contactInfo.website }] : [])
           ]
         });
-        console.log(`Marcador de fallback creado exitosamente para ${affiliate.title}`);
+        // console.log(`Marcador de fallback creado exitosamente para ${affiliate.title}`);
       } else {
-        console.warn(`No hay coordenadas válidas para afiliado ${affiliate.title} (país: ${affiliate.country.code})`);
+        // console.warn(`No hay coordenadas válidas para afiliado ${affiliate.title} (país: ${affiliate.country.code})`);
       }
     }
   });
@@ -246,21 +246,22 @@ function NuestrosAfiliadosContent() {
   const tabParam = params.get("tab");
 
   // Crear opciones de países para el campo de búsqueda usando los incentivos (ordenadas alfabéticamente)
-  const countryOptions = allIncentives
-    .map(marker => ({
-      id: marker.id,
-      label: marker.title,
-      value: marker.id
-    }))
-    .sort((a, b) => a.label.localeCompare(b.label, 'es'));
+  const countryOptions = useMemo(() => 
+    allIncentives
+      .map(marker => ({
+        id: marker.id,
+        label: marker.title,
+        value: marker.id
+      }))
+      .sort((a, b) => a.label.localeCompare(b.label, 'es')),
+    [allIncentives]
+  );
 
   const getContentBySlug = async (slug: string) => {
     try {
       const response = await fetch(`/api/getContentBySlug?slug=${slug}&populate[0]=heading.backgroundImg`);
       const data = await response.json();
-      console.log("data", data);
       if (data.success && data.data?.data?.[0]) {
-        console.log("data", data);
         const content = data.data.data[0];
         const transformedData: ContentType = {
           ...content,
@@ -270,7 +271,6 @@ function NuestrosAfiliadosContent() {
           }
         }
 
-        console.log("transformedData", transformedData);
         setPageContent(transformedData);
       } else {
         console.error("Error al obtener el contenido:", data.error || "No se encontró contenido");
@@ -286,22 +286,13 @@ function NuestrosAfiliadosContent() {
     getContentBySlug("nuestros-afiliados");
   }, []);
 
-  useEffect(() => {
-    if (pageContent) {
-      console.log("pageContent", pageContent);
-    }
-  }, [pageContent]);
-
   // Función para manejar la selección de país desde el campo de búsqueda
   const handleCountrySelect = useCallback((option: { id: string; label: string; value: string } | null) => {
-    console.log("handleCountrySelect llamado con:", option);
     if (option) {
       const selectedMarker = allIncentives.find(marker => marker.id === option.id);
       if (selectedMarker) {
-        console.log("Marcador encontrado:", selectedMarker);
         setSelectedCountry(selectedMarker);
         // Hacer zoom al país seleccionado
-        console.log("Llamando a zoomToCountry...");
         mapRef.current?.zoomToCountry(selectedMarker.lat, selectedMarker.lng);
       }
     } else {
@@ -312,18 +303,17 @@ function NuestrosAfiliadosContent() {
   }, [allIncentives]);
 
   // Función para obtener la opción seleccionada actualmente
-  const getSelectedCountryOption = useCallback(() => {
+  const selectedCountryOption = useMemo(() => {
     if (selectedCountry) {
       return countryOptions.find(option => option.id === selectedCountry.id) || null;
     }
     return null;
   }, [selectedCountry, countryOptions]);
 
-  // Sincronizar datos de la API con el estado local
-  useEffect(() => {
+  // Memoizar la transformación de afiliados
+  const transformedAffiliates = useMemo(() => {
     if (apiAffiliates && apiAffiliates.length > 0) {
-      // Transformar los datos de la API al formato esperado
-      const transformedAffiliates: Afiliado[] = apiAffiliates.map(affiliate => {
+      return apiAffiliates.map(affiliate => {
         // Extraer la URL del logo - la estructura real es logo.url directamente
         let logoUrl = LogoCodevi.src; // Logo por defecto
         if (affiliate.logo && affiliate.logo.url) {
@@ -354,40 +344,41 @@ function NuestrosAfiliadosContent() {
           updatedAt: affiliate.updatedAt
         };
       });
-      
-      setAllAffiliates(transformedAffiliates); // Guardar todos los datos
-      setAfiliados(transformedAffiliates); // Mostrar todos los datos inicialmente
-      
-      // Generar marcadores de afiliados para el mapa
-      const affiliateMarkers = transformAffiliatesToMarkers(transformedAffiliates);
-      console.log("Marcadores de afiliados generados:", affiliateMarkers);
-      setAllAffiliateMarkers(affiliateMarkers);
-    } else {
-      // Si no hay datos de la API, usar los datos de ejemplo
-      setAllAffiliates(afiliadosExample);
-      setAfiliados(afiliadosExample);
     }
+    return afiliadosExample;
   }, [apiAffiliates]);
+
+  // Memoizar los marcadores de afiliados
+  const affiliateMarkers = useMemo(() => {
+    return transformAffiliatesToMarkers(transformedAffiliates);
+  }, [transformedAffiliates]);
+
+  // Sincronizar datos de la API con el estado local
+  useEffect(() => {
+    setAllAffiliates(transformedAffiliates);
+    setAfiliados(transformedAffiliates);
+    setAllAffiliateMarkers(affiliateMarkers);
+  }, [transformedAffiliates, affiliateMarkers]);
+
+  // Memoizar la transformación de incentivos
+  const transformedIncentives = useMemo(() => {
+    if (apiIncentives && apiIncentives.length > 0) {
+      // Transformar los datos de incentivos de la API al formato esperado
+      const transformed = transformIncentivesToMarkers(apiIncentives);
+      // Ordenar alfabéticamente por nombre del país
+      return transformed.sort((a, b) => 
+        a.title.localeCompare(b.title, 'es')
+      );
+    }
+    return markers;
+  }, [apiIncentives]);
 
   // Sincronizar datos de incentivos de la API con el estado local
   useEffect(() => {
-    if (apiIncentives && apiIncentives.length > 0) {
-      // Transformar los datos de incentivos de la API al formato esperado
-      const transformedIncentives = transformIncentivesToMarkers(apiIncentives);
-      // Ordenar alfabéticamente por nombre del país
-      const sortedIncentives = transformedIncentives.sort((a, b) => 
-        a.title.localeCompare(b.title, 'es')
-      );
-      setAllIncentives(sortedIncentives); // Guardar todos los datos
-      setIncentivos(sortedIncentives); // Mostrar todos los datos inicialmente
-      setCurrentMarkers(sortedIncentives); // Establecer incentivos como marcadores por defecto
-    } else {
-      // Si no hay datos de la API, usar los datos de ejemplo
-      setAllIncentives(markers);
-      setIncentivos(markers);
-      setCurrentMarkers(markers);
-    }
-  }, [apiIncentives]);
+    setAllIncentives(transformedIncentives);
+    setIncentivos(transformedIncentives);
+    setCurrentMarkers(transformedIncentives);
+  }, [transformedIncentives]);
 
   useEffect(() => {
     if (selectedCountry) {
@@ -396,7 +387,6 @@ function NuestrosAfiliadosContent() {
         // Si el id empieza con "affiliate-", filtrar para mostrar solo ese afiliado
         if (countryId.startsWith('affiliate-')) {
           // Es un afiliado individual, filtrar para mostrar solo este
-          console.log("Marcador de afiliado seleccionado, filtrando para mostrar solo este afiliado:", countryId);
           
           // Buscar el afiliado por sus coordenadas
           const selectedAffiliate = allAffiliates.find(afiliado => {
@@ -420,7 +410,6 @@ function NuestrosAfiliadosContent() {
           }
         } else {
           // Es un código de país (incentivo), filtrar normalmente
-          console.log("Marcador de incentivo seleccionado, filtrando por país:", countryId);
           const filteredAffiliates = allAffiliates.filter((afiliado) => afiliado.country.code === countryId);
           setAfiliados(filteredAffiliates);
           
@@ -459,24 +448,19 @@ function NuestrosAfiliadosContent() {
 
   const handleGetCountry = useCallback((dataCountry: Marker): void => {
     if (!dataCountry) return;
-    console.log("handleGetCountry llamado con:", dataCountry);
     setSelectedCountry(dataCountry);
     // Hacer zoom al país seleccionado desde el mapa
-    console.log("Llamando a zoomToCountry desde handleGetCountry...");
     mapRef.current?.zoomToCountry(dataCountry.lat, dataCountry.lng);
   }, []);
 
   const handleGetTab = useCallback((dataTab: string): void => {
-    console.log("handleGetTab llamado con:", dataTab);
     setSelectedTab(dataTab);
     
     // Cambiar los marcadores del mapa según la pestaña seleccionada
     if (dataTab === "afiliados") {
-      console.log("Cambiando a marcadores de afiliados:", allAffiliateMarkers);
       setCurrentMarkers(allAffiliateMarkers);
       setIncentivos(allAffiliateMarkers); // Actualizar también el estado de incentivos para el mapa
     } else {
-      console.log("Cambiando a marcadores de incentivos:", allIncentives);
       setCurrentMarkers(allIncentives);
       setIncentivos(allIncentives);
     }
@@ -490,8 +474,6 @@ function NuestrosAfiliadosContent() {
 
   // Función para manejar el clic en el logo de un afiliado
   const handleAffiliateLogoClick = useCallback((lat: number, lng: number, title: string) => {
-    console.log("Logo de afiliado clickeado:", title, "Coordenadas:", lat, lng);
-    
     // Cambiar a la pestaña de afiliados si no está ya activa
     if (selectedTab !== "afiliados") {
       setSelectedTab("afiliados");
@@ -507,8 +489,6 @@ function NuestrosAfiliadosContent() {
     });
     
     if (selectedMarker) {
-      console.log("Marcador de afiliado encontrado:", selectedMarker);
-      
       // Actualizar selectedCountry INMEDIATAMENTE para que la info no desaparezca
       setSelectedCountry(selectedMarker);
       
@@ -519,8 +499,6 @@ function NuestrosAfiliadosContent() {
       setTimeout(() => {
         mapRef.current?.selectMarkerByCoords(lat, lng);
       }, 150);
-    } else {
-      console.warn("No se encontró marcador de afiliado con coordenadas:", lat, lng);
     }
   }, [selectedTab, allAffiliateMarkers]);
 
@@ -589,7 +567,7 @@ function NuestrosAfiliadosContent() {
                   className="border border-r-gray-600 border-l-gray-600"
                   options={countryOptions}
                   onSelect={handleCountrySelect}
-                  selected={getSelectedCountryOption()}
+                  selected={selectedCountryOption}
                   placeholder="Seleccione un país..."
                   label="País"
                 />
