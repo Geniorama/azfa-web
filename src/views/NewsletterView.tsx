@@ -128,8 +128,8 @@ export default function NewsletterView({ newsletterData, categoriesData, paginat
                         <img src={ImageBanner.src} alt="Banner" className="w-full h-full object-cover -mt-22 lg:mt-0" />
                     </div>
                     <div className="w-full lg:w-1/2 lg:pr-12">
-                        <h4 className="lg:text-[40px] text-h3 leading-12">Sea el primero en recibir nuestro Boletín AZFA</h4>
-                        <p className="lg:text-h5 text-h6 mt-3">Manténgase informado con las últimas noticias, eventos y publicaciones del ecosistema de Zonas Francas.</p>
+                        <h4 className="2xl:text-[40px] text-h3 leading-12">Sea el primero en recibir nuestro Boletín AZFA</h4>
+                        <p className="2xl:text-h5 text-h6 mt-3">Manténgase informado con las últimas noticias, eventos y publicaciones del ecosistema de Zonas Francas.</p>
 
                         <div className="flex lg:flex-row flex-col lg:gap-0 gap-2 mt-5">
                             <input placeholder="Ingrese su correo electrónico" className="bg-white flex-grow text-text-primary px-5 outline-none focus:outline-none h-12 lg:h-auto rounded-sm" type="text" />

@@ -34,7 +34,7 @@ export default function CardInfoPortal({ image, title, description, tags, author
                     <span className="text-text-primary text-caption tracking-[1px] rounded-full px-2 py-1 bg-white border border-background-3">{date}</span>
                 )}
             </div>
-            <h3 className="text-h4 mt-5">{title}</h3>
+            <h3 className="text-[20px] leading-[28px] 2xl:text-h4 2xl:leading-8 mt-5">{title}</h3>
             {author && (
                 <span className="text-button mt-1 inline-block">{author}</span>
             )}

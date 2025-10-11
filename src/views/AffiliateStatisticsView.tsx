@@ -112,7 +112,7 @@ export default function AffiliateStatisticsView({ pageContent }: AffiliateStatis
             </div>
 
             {/* Renderizar iframes */}
-            <div className="my-12 space-y-8">
+            <div className="mt-12 space-y-8">
               {iframeData.map((iframeItem, index) => {
                 const iframeId = index;
                 const isLoaded = loadedIframes.has(iframeId);
@@ -187,7 +187,7 @@ export default function AffiliateStatisticsView({ pageContent }: AffiliateStatis
       {data.ctaSection && (
         <section className="py-8 bg-white">
           <div className="container mx-auto px-4">
-            <div className="flex flex-col md:flex-row gap-6 max-w-screen-lg mx-auto items-center border border-[#94D133] p-12 mt-18">
+            <div className="flex flex-col md:flex-row gap-6 max-w-screen-lg mx-auto items-center border border-[#94D133] p-12 mt-0">
               <div className="w-full md:w-3/5 text-text-primary space-y-2">
                 <p className="text-h6">
                   {data.ctaSection.title}

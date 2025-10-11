@@ -30,7 +30,7 @@ export default function HeadingPageSalaPrensa({
   return (
     <div
       style={{ backgroundImage: `url(${image || ""})` }}
-      className={`bg-primary bg-cover bg-right lg:bg-center bg-no-repeat py-16 px-6 lg:px-12 relative flex flex-col items-center justify-center min-h-[400px] ${
+      className={`bg-primary bg-cover bg-right lg:bg-center bg-no-repeat py-16 px-6 lg:px-12 relative flex flex-col items-center justify-center ${
         textAlign === "left"
           ? "text-left"
           : textAlign === "center"
