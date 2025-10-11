@@ -36,23 +36,17 @@ const createUniqueOptionsFromArrays = (arrays: string[][], includeTodos: boolean
   return createUniqueOptions(flatItems, includeTodos);
 };
 
-// Función para validar valores conocidos
+// Función para validar valores conocidos (ahora más flexible, solo valida que no esté vacío)
 const validateOfferType = (value: string | undefined): boolean => {
-  if (!value) return false;
-  const validOfferTypes = ['venta', 'alquiler', 'venta-y-alquiler', 'arriendo'];
-  return validOfferTypes.includes(value.toLowerCase());
+  return !!(value && value.trim() !== '');
 };
 
 const validatePropertyType = (value: string | undefined): boolean => {
-  if (!value) return false;
-  const validPropertyTypes = ['casa', 'terreno', 'local', 'oficina', 'apartamento'];
-  return validPropertyTypes.includes(value.toLowerCase());
+  return !!(value && value.trim() !== '');
 };
 
 const validatePropertyUse = (value: string | undefined): boolean => {
-  if (!value) return false;
-  const validPropertyUses = ['industria', 'oficinas', 'comercial', 'residencial', 'hotel', 'terreno'];
-  return validPropertyUses.includes(value.toLowerCase());
+  return !!(value && value.trim() !== '');
 };
 
 export const extractFilterOptions = (offers: InmuebleType[]): FilterOptions => {
@@ -64,10 +58,24 @@ export const extractFilterOptions = (offers: InmuebleType[]): FilterOptions => {
   const countries = offers.map(offer => offer.country).filter(Boolean) as string[];
   const propertyStatuses = offers.map(offer => offer.propertyStatus).filter(Boolean) as string[];
 
+  // Debug: Ver todos los valores antes de filtrar
+  console.log('=== VALORES EXTRAÍDOS DE OFERTAS ===');
+  console.log('offerTypes sin filtrar:', offerTypes);
+  console.log('propertyTypes sin filtrar:', propertyTypes);
+  console.log('propertyUses sin filtrar:', propertyUses);
+  console.log('cities sin filtrar:', cities);
+  console.log('countries sin filtrar:', countries);
+  console.log('propertyStatuses sin filtrar:', propertyStatuses);
+
   // Filtrar solo valores válidos para evitar errores en Strapi
   const validOfferTypes = offerTypes.filter(validateOfferType) as string[];
   const validPropertyTypes = propertyTypes.filter(validatePropertyType) as string[];
   const validPropertyUses = propertyUses.filter(validatePropertyUse) as string[];
+
+  console.log('=== VALORES DESPUÉS DE VALIDAR ===');
+  console.log('validOfferTypes:', validOfferTypes);
+  console.log('validPropertyTypes:', validPropertyTypes);
+  console.log('validPropertyUses:', validPropertyUses);
 
   return {
     offerType: createUniqueOptionsFromArrays([validOfferTypes]),

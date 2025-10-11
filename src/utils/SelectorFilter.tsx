@@ -71,7 +71,9 @@ export default function SelectorFilter({ options, selected, onChange, label, ico
                 </div>
             )}
         </div>
-        <p className=' text-text-primary md:pl-7.5 text-body md:text-lg mt-1 font-medium'>{selectedOption}</p>
+        <p className={`text-text-primary md:pl-7.5 text-body md:text-lg mt-1 font-medium transition-opacity ${selectedOption === 'Todos' ? 'opacity-50' : 'opacity-100'}`}>
+          {selectedOption}
+        </p>
     </div>
   )
 }
