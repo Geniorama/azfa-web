@@ -58,24 +58,10 @@ export const extractFilterOptions = (offers: InmuebleType[]): FilterOptions => {
   const countries = offers.map(offer => offer.country).filter(Boolean) as string[];
   const propertyStatuses = offers.map(offer => offer.propertyStatus).filter(Boolean) as string[];
 
-  // Debug: Ver todos los valores antes de filtrar
-  console.log('=== VALORES EXTRAÍDOS DE OFERTAS ===');
-  console.log('offerTypes sin filtrar:', offerTypes);
-  console.log('propertyTypes sin filtrar:', propertyTypes);
-  console.log('propertyUses sin filtrar:', propertyUses);
-  console.log('cities sin filtrar:', cities);
-  console.log('countries sin filtrar:', countries);
-  console.log('propertyStatuses sin filtrar:', propertyStatuses);
-
   // Filtrar solo valores válidos para evitar errores en Strapi
   const validOfferTypes = offerTypes.filter(validateOfferType) as string[];
   const validPropertyTypes = propertyTypes.filter(validatePropertyType) as string[];
   const validPropertyUses = propertyUses.filter(validatePropertyUse) as string[];
-
-  console.log('=== VALORES DESPUÉS DE VALIDAR ===');
-  console.log('validOfferTypes:', validOfferTypes);
-  console.log('validPropertyTypes:', validPropertyTypes);
-  console.log('validPropertyUses:', validPropertyUses);
 
   return {
     offerType: createUniqueOptionsFromArrays([validOfferTypes]),

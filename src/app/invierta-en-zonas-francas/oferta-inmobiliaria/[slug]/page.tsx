@@ -141,7 +141,7 @@ function OfertaInmobiliariaSingleContent() {
   const handleGetCtaButton = (ctaButton?: StrapiButtonType) => {
     if (!ctaButton) return;
     if (ctaButton.link) {
-      window.open(ctaButton.link, ctaButton.target || "_self");
+      window.open(ctaButton.link, ctaButton.target || "_blank");
     }
   };
 
@@ -211,7 +211,7 @@ function OfertaInmobiliariaSingleContent() {
     const fetchInmueble = async () => {
       try {
         const response = await fetch(
-          `${process.env.NEXT_PUBLIC_STRAPI_URL}/real-state-offers?filters[slug][$eq]=${slug}&populate[imgGallery]=true`
+          `${process.env.NEXT_PUBLIC_STRAPI_URL}/real-state-offers?filters[slug][$eq]=${slug}&populate[imgGallery]=true&populate[ctaButton]=true`
         );
         const data = await response.json();
 
@@ -224,10 +224,9 @@ function OfertaInmobiliariaSingleContent() {
                 alternativeText: img.alternativeText,
               };
             }) || [],
+            ctaButton: data.data[0].ctaButton || null,
           };
 
-
-          console.log("dataWithGallery", dataWithGallery);
           setInmueble(dataWithGallery);
         } else {
           console.error("Error al obtener el inmueble:", "No se encontró el inmueble");
@@ -245,15 +244,10 @@ function OfertaInmobiliariaSingleContent() {
   useEffect(() => {
     const fetchFilterOptions = async () => {
       try {
-        console.log('Cargando opciones de filtro en single...');
         const response = await fetch('/api/getRealStateOffer?pagination[pageSize]=1000');
         const data = await response.json();
         
-        console.log('Respuesta de la API para opciones:', data);
-        
         if (data.data && Array.isArray(data.data)) {
-          console.log('Datos recibidos:', data.data.length, 'elementos');
-          
           const offers = data.data.map((item: InmuebleType) => ({
             id: item.id,
             title: item.title,
@@ -275,14 +269,7 @@ function OfertaInmobiliariaSingleContent() {
           }));
           
           const options = extractFilterOptions(offers);
-          console.log('Opciones de filtro extraídas:', options);
           setFilterOptions(options);
-        } else {
-          console.log('No se cumplió la condición para cargar opciones:', {
-            hasData: !!data.data,
-            isArray: Array.isArray(data.data),
-            dataType: typeof data.data
-          });
         }
       } catch (error) {
         console.error("Error al obtener opciones de filtro:", error);
