@@ -11,6 +11,7 @@ import Pagination from "@/components/Pagination";
 import { useState } from "react";
 import { truncateText } from "@/utils/truncateText";
 import { NewsType, NewsCategoryType, BlogPageType } from "@/types/componentsType";
+import { useRouter } from "next/navigation";
 
 // Interfaz extendida para blogs con downloadDocument
 interface BlogType extends NewsType {
@@ -33,6 +34,7 @@ export default function BlogView({ blogData, categoriesData, blogPageData, pagin
     anioPublicacion: "",
   });
 
+  const router = useRouter();
   console.log("blogPageData from BlogView", blogPageData);
   // Función para formatear la fecha como "JUN 25"
   const formatDate = (dateString: string): string => {
@@ -88,12 +90,14 @@ export default function BlogView({ blogData, categoriesData, blogPageData, pagin
       tags: [item.category?.name || "Blog"],
       url: item.downloadDocument?.url || item.externalLink || "#",
       date: formatDate(item.publishedAt),
+      slug: item.slug,
     }));
   };
 
-  const handleOpenBlog = (url: string) => {
-    if (url && url !== "#") {
-      window.open(url, "_blank");
+  const handleOpenBlog = (slug: string) => {
+    
+    if (slug) {
+      router.push(`/sala-de-prensa/blog/${slug}`);
     }
   };
 
@@ -183,7 +187,7 @@ export default function BlogView({ blogData, categoriesData, blogPageData, pagin
                   date={item.date}
                   button={{
                     label: "Leer artículo",
-                    onClick: () => handleOpenBlog(item.url),
+                    onClick: () => handleOpenBlog(item.slug),
                   }}
                   noSpaceImage={true}
                   isReadMore={true}
