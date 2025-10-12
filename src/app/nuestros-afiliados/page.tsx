@@ -473,7 +473,7 @@ function NuestrosAfiliadosContent() {
   }, [allIncentives, allAffiliateMarkers]);
 
   // Función para manejar el clic en el logo de un afiliado
-  const handleAffiliateLogoClick = useCallback((lat: number, lng: number, title: string) => {
+  const handleAffiliateLogoClick = useCallback((lat: number, lng: number) => {
     // Cambiar a la pestaña de afiliados si no está ya activa
     if (selectedTab !== "afiliados") {
       setSelectedTab("afiliados");
