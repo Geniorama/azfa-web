@@ -24,7 +24,7 @@ import SlideSingleHome from "@/components/SlideSingleHome";
 import SlideSingleTestimonial from "@/components/SlideSingleTestimonial";
 import Modal from "@/components/Modal";
 import IntroPage from "@/components/IntroPage";
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import {
   HeroSlideData,
   IntroData,
@@ -123,6 +123,10 @@ export default function Home({
       swiperRef.current.slideTo(index);
     }
   };
+  
+  useEffect(() => {
+    console.log('servicesData', servicesData);
+  }, [servicesData]);
 
   return (
     <>

@@ -322,10 +322,17 @@ export interface LogoImage {
   publishedAt: string;
 }
 
-export interface LogosSection {
+export interface LogoItem {
+  id: number;
+  logo: LogoImage;
+  name: string;
+  url: string;
+}
+
+export interface GalleryComponent {
   id: number;
   title: string;
-  images: LogoImage[];
+  logo: LogoItem[];
 }
 
 export interface OfertaInmobiliariaType {
@@ -335,8 +342,8 @@ export interface OfertaInmobiliariaType {
   smallTitle: string;
   description: string;
   coverImage: CoverImage;
-  suppliersLogos: LogosSection;
-  consultantsLogos: LogosSection[];
+  suppliersLogos: GalleryComponent;
+  consultantsLogos: GalleryComponent[];
   createdAt: string;
   updatedAt: string;
   publishedAt: string;

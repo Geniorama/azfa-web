@@ -392,7 +392,7 @@ function OfertaInmobiliariaContent({ pageContent }: OfertaInmobiliariaViewProps)
       )}
 
       {/* Sección de Proveedores */}
-      {pageContent?.suppliersLogos && pageContent.suppliersLogos.images && pageContent.suppliersLogos.images.length > 0 && (
+      {pageContent?.suppliersLogos && pageContent.suppliersLogos.logo && pageContent.suppliersLogos.logo.length > 0 && (
         <section className="bg-white pt-16">
           <div className="container mx-auto pb-8 lg:pb-16 px-0 md:px-16 max-w-6xl">
             <TitleDecorative dividerColor="bg-[#94D133]">
@@ -406,31 +406,37 @@ function OfertaInmobiliariaContent({ pageContent }: OfertaInmobiliariaViewProps)
               slidesPerGroup={1}
               className="mt-10 swiper-custom"
               autoplay={{ delay: 2500, disableOnInteraction: false }}
-              navigation={true}
-              loop={pageContent.suppliersLogos.images.length > 5}
+              navigation={pageContent.suppliersLogos.logo.length > 1}
+              loop={pageContent.suppliersLogos.logo.length > 1}
               speed={2000}
               breakpoints={{
                 0: {
-                  slidesPerView: 1.8,
+                  slidesPerView: Math.min(pageContent.suppliersLogos.logo.length, 1.8),
                   centeredSlides: true,
                   slidesPerGroup: 1,
                 },
                 768: {
-                  slidesPerView: 3,
+                  slidesPerView: Math.min(pageContent.suppliersLogos.logo.length, 3),
                   slidesPerGroup: 1,
                 },
                 1024: {
-                  slidesPerView: 5,
+                  slidesPerView: Math.min(pageContent.suppliersLogos.logo.length, 5),
                   slidesPerGroup: 1,
                 },
               }}
             >
-              {pageContent.suppliersLogos.images.map((image) => (
-                <SwiperSlide key={image.id}>
+              {pageContent.suppliersLogos.logo.map((supplier) => (
+                <SwiperSlide key={supplier.id}>
                   <img
                     className="w-full h-24 object-contain max-w-fit mx-auto grayscale md:grayscale hover:grayscale-0 transition-all duration-300 swiper-slide-mobile"
-                    src={image.url}
-                    alt={image.alternativeText || "Logo"}
+                    src={supplier.logo?.url}
+                    alt={supplier.name || "Logo"}
+                    onClick={() => {
+                      if (supplier.url) {
+                        window.open(supplier.url, "_blank");
+                      }
+                    }}
+                    style={{ cursor: supplier.url ? "pointer" : "default" }}
                   />
                 </SwiperSlide>
               ))}
@@ -451,36 +457,42 @@ function OfertaInmobiliariaContent({ pageContent }: OfertaInmobiliariaViewProps)
               <Swiper
                 modules={[Autoplay, Navigation]}
                 spaceBetween={50}
-                slidesPerView={5}
-                slidesPerGroup={1}
+                slidesPerView={consultantSection.logo?.length || 1}
+                slidesPerGroup={consultantSection.logo && consultantSection.logo.length > 5 ? 3 : 1}
                 className="mt-10 swiper-custom"
                 autoplay={{ delay: 2500, disableOnInteraction: false }}
-                navigation={true}
-                loop={consultantSection.images && consultantSection.images.length > 5}
+                navigation={consultantSection.logo && consultantSection.logo.length > 1}
+                loop={consultantSection.logo && consultantSection.logo.length > 1}
                 speed={2000}
                 breakpoints={{
                   0: {
-                    slidesPerView: 1.8,
+                    slidesPerView: Math.min(consultantSection.logo?.length || 1, 1.8),
                     centeredSlides: true,
                     slidesPerGroup: 1,
                   },
                   768: {
-                    slidesPerView: 3,
+                    slidesPerView: Math.min(consultantSection.logo?.length || 3, 3),
                     slidesPerGroup: 1,
                   },
                   1024: {
-                    slidesPerView: 5,
+                    slidesPerView: Math.min(consultantSection.logo?.length || 5, 5),
                     slidesPerGroup: 1,
                   },
                 }}
               >
-                {consultantSection.images && consultantSection.images.length > 0 ? (
-                  consultantSection.images.map((image) => (
-                    <SwiperSlide key={image.id}>
+                {consultantSection.logo && consultantSection.logo.length > 0 ? (
+                  consultantSection.logo.map((consultant) => (
+                    <SwiperSlide key={consultant.id}>
                       <img
                         className="w-full h-24 object-contain max-w-fit mx-auto grayscale md:grayscale hover:grayscale-0 transition-all duration-300 swiper-slide-mobile"
-                        src={image.url}
-                        alt={image.alternativeText || "Logo"}
+                        src={consultant.logo?.url}
+                        alt={consultant.name || "Logo"}
+                        onClick={() => {
+                          if (consultant.url) {
+                            window.open(consultant.url, "_blank");
+                          }
+                        }}
+                        style={{ cursor: consultant.url ? "pointer" : "default" }}
                       />
                     </SwiperSlide>
                   ))

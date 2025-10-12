@@ -695,6 +695,7 @@ export interface ServicesPageType {
     orderReverse: boolean;
     coverImage: StrapiImageType;
     button: StrapiButtonType;
+    anchor?: string;
   }[];
 }
 

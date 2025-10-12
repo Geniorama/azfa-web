@@ -44,7 +44,7 @@ export default function ServiciosView({ serviciosData }: ServiciosViewProps) {
       </section>
 
       {serviciosData?.contentSection?.filter(section => section.title && section.description).map((section, index) => (
-        <section key={index} className={`${section.style === "style-2" ? (section.orderReverse ? SecondarySectionReverse : SecondarySection) : "bg-white py-10 lg:pt-16"}`}>
+        <section id={section.anchor} key={index} className={`${section.style === "style-2" ? (section.orderReverse ? SecondarySectionReverse : SecondarySection) : "bg-white py-10 lg:pt-16"}`}>
           <div className="container mx-auto px-4">
             <div className= {`flex flex-col lg:${!section.orderReverse ? "flex-row" : "flex-row-reverse"} gap-4 text-text-primary items-center py-10 px-4 lg:px-0`}>
               <div className={`w-full lg:w-1/2 ${!section.orderReverse ? "lg:pr-24" : "lg:pl-24"}`}>
