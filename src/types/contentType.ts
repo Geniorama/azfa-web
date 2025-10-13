@@ -378,6 +378,7 @@ export interface PressRoomCategory {
 export interface PressRoomContentComponent {
   id: number;
   __component: string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   [key: string]: any;
 }
 
