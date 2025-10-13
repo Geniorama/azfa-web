@@ -10,10 +10,60 @@ import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
 
+interface LogoItem {
+  id: number;
+  logo?: {
+    url?: string;
+  };
+  name?: string;
+}
+
+interface SliderSettings {
+  slidesPerView?: number;
+  spaceBetween?: number;
+  loop?: boolean;
+  autoplay?: boolean;
+  autoplayDelay?: number;
+  speed?: number;
+  pagination?: boolean;
+  navigation?: boolean;
+  centeredSlides?: boolean;
+  grabCursor?: boolean;
+}
+
+interface GridSettings {
+  columns?: number;
+  columnsMobile?: number;
+  gap?: number;
+}
+
+interface ComponentContent {
+  id: number;
+  __component: string;
+  richText?: string;
+  content?: string;
+  title?: string;
+  videoType?: string;
+  youtubeUrl?: string;
+  vimeoUrl?: string;
+  uploadedVideo?: { url?: string };
+  text?: string;
+  label?: string;
+  link?: string;
+  url?: string;
+  target?: string;
+  variant?: string;
+  type?: string;
+  item?: LogoItem[];
+  gridSettings?: GridSettings;
+  sliderSettings?: SliderSettings;
+  name?: string;
+  logo?: { url?: string };
+}
+
 interface RenderPressRoomContentProps {
   componentName: string;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  content: any;
+  content: ComponentContent;
 }
 
 // Función para convertir URLs de video a formato embebido
@@ -114,7 +164,7 @@ export default function RenderPressRoomContent({ componentName, content }: Rende
                 }
               `}</style>
               <div className="images-gallery-grid">
-                {content.item && Array.isArray(content.item) && content.item.map((item: any, index: number) => ( // eslint-disable-line @typescript-eslint/no-explicit-any
+                {content.item && Array.isArray(content.item) && content.item.map((item: LogoItem, index: number) => (
                   <div key={index} className="flex items-center justify-center">
                     <img 
                       src={item.logo?.url || ''} 
@@ -162,7 +212,7 @@ export default function RenderPressRoomContent({ componentName, content }: Rende
                 }}
                 className={content.item && content.item.length > (content.sliderSettings?.slidesPerView || 1) ? "swiper-custom" : "swiper-custom !p-0"}
               >
-                {content.item && Array.isArray(content.item) && content.item.map((item: any, index: number) => ( // eslint-disable-line @typescript-eslint/no-explicit-any
+                {content.item && Array.isArray(content.item) && content.item.map((item: LogoItem, index: number) => (
                   <SwiperSlide key={index}>
                     <div className="flex items-center justify-center">
                       <img 
