@@ -361,3 +361,70 @@ export interface OfertaInmobiliariaResponse {
     };
   };
 }
+
+// Tipos para Press Room (Blog, News, Podcast, Newsletter)
+export interface PressRoomCategory {
+  id: number;
+  documentId: string;
+  name: string;
+  slug: string;
+  description: string | null;
+  color: string;
+  createdAt: string;
+  updatedAt: string;
+  publishedAt: string;
+}
+
+export interface PressRoomContentComponent {
+  id: number;
+  __component: string;
+  [key: string]: any;
+}
+
+export interface PressRoomType {
+  id: number;
+  documentId: string;
+  title: string;
+  slug: string;
+  publishDate: string | null;
+  isPublished: boolean;
+  scheduledPublishDate: string | null;
+  extract: string;
+  type: "news" | "podcast" | "newsletter" | "blog";
+  thumbnail: LogoImage;
+  category: PressRoomCategory;
+  externalLink: string | null;
+  downloadDocument: LogoImage | null;
+  content: PressRoomContentComponent[];
+  SEO: unknown[];
+  createdAt: string;
+  updatedAt: string;
+  publishedAt: string;
+  locale: string;
+}
+
+// Tipo para la respuesta de Strapi para Press Room
+export interface PressRoomResponse {
+  data: PressRoomType[];
+  meta: {
+    pagination?: {
+      page: number;
+      pageSize: number;
+      pageCount: number;
+      total: number;
+    };
+  };
+}
+
+// Tipo para la respuesta de un solo Press Room
+export interface SinglePressRoomResponse {
+  data: PressRoomType[];
+  meta: {
+    pagination?: {
+      page: number;
+      pageSize: number;
+      pageCount: number;
+      total: number;
+    };
+  };
+}
