@@ -4,7 +4,7 @@ import { SinglePressRoomResponse } from '@/types/contentType'
 const getBlogBySlug = async (slug: string): Promise<SinglePressRoomResponse | null> => {
   try {
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_STRAPI_URL}/press-rooms?filters[slug][$eq]=${slug}&filters[type][$eq]=blog&populate[0]=thumbnail&populate[1]=category&populate[2]=downloadDocument&populate[3]=content&populate[4]=content.logo&populate[5]=content.logo.logo&populate[6]=content.button&populate[7]=SEO`,
+      `${process.env.NEXT_PUBLIC_STRAPI_URL}/press-rooms?filters[slug][$eq]=${slug}&filters[type][$eq]=blog&populate[0]=thumbnail&populate[1]=category&populate[2]=downloadDocument&populate[3]=content&populate[4]=content.logo&populate[5]=content.logo.logo&populate[6]=content.button&populate[7]=SEO&populate[8]=content.item&populate[9]=content.item.logo&populate[10]=content.gridSettings&populate[11]=content.sliderSettings`,
       {
         cache: "no-store",
       }

@@ -8,9 +8,8 @@ import "swiper/css/navigation";
 import CardInfoPortal from "@/components/CardInfoPortal";
 import { PressRoomType } from "@/types/contentType";
 import { useEffect, useState } from "react";
-import ReactMarkdown from "react-markdown";
-import rehypeRaw from "rehype-raw";
 import { truncateText } from "@/utils/truncateText";
+import RenderPressRoomContent from "@/components/RenderPressRoomContent";
 
 interface SingleBlogViewProps {
   blog: PressRoomType;
@@ -68,18 +67,18 @@ export default function SingleBlogView({ blog }: SingleBlogViewProps) {
   };
   return (
     <div>
-      <section className='py-12 2xl:py-16' style={{ background: 'linear-gradient(to bottom, var(--color-primary) 50%, white 50%)' }}>
-        <div className="flex gap-0">
-          <div className="w-1/2 p-12 pr-0">
+      <section className='py-4 2xl:py-16' style={{ background: 'linear-gradient(to bottom, var(--color-primary) 50%, white 50%)' }}>
+        <div className="flex flex-col lg:flex-row gap-0">
+          <div className="lg:w-1/2 w-full p-4 lg:p-12 lg:pr-0">
             {/* Image */}
             <img
-              className="w-full h-full object-cover aspect-[10/7] rounded-tr-4xl overflow-hidden translate-x-16"
+              className="w-full h-full lg:max-h-[50vh] object-cover rounded-tr-4xl overflow-hidden -mb-16 z-10 relative lg:mb-0 lg:translate-x-16"
               src={blog.thumbnail?.url || "/placeholder-image.jpg"} 
               alt={blog.thumbnail?.alternativeText || blog.title} 
             />
           </div>
-          <div className="w-1/2 bg-background-2">
-            <div className="p-8 h-full flex flex-col gap-8 justify-center text-text-primary pl-28">
+          <div className="lg:w-1/2 w-full bg-background-2 pt-14 lg:pt-0">
+            <div className="p-8 h-full flex flex-col gap-8 justify-center text-text-primary lg:pl-28">
               <h1 className="text-h3">{blog.title}</h1>
               {/* Tags */}
               <div className="flex gap-2 flex-wrap">
@@ -114,56 +113,16 @@ export default function SingleBlogView({ blog }: SingleBlogViewProps) {
       </section>
 
       {/* Dynamic content */}
-      <article className="py-16 2xl:py-24 bg-white">
-        <div className="container mx-auto px-4 max-w-4xl">
-          {/* Extract/Introduction */}
-          {blog.extract && (
-            <div className="mb-12">
-              <ReactMarkdown 
-                rehypePlugins={[rehypeRaw]}
-              >
-                {blog.extract}
-              </ReactMarkdown>
-            </div>
-          )}
-
+      <article className="py-8 2xl:py-24 bg-white text-text-primary">
+        <div className="container mx-auto px-4 max-w-[1290px]">
           {/* Dynamic zone content */}
-          {blog.content && blog.content.length > 0 && (
-            <div className="space-y-8">
-              {blog.content.map((component, index) => {
-                switch (component.__component) {
-                  case 'components.rich-text':
-                    return (
-                      <div key={index}>
-                        <ReactMarkdown 
-                          rehypePlugins={[rehypeRaw]}
-                        >
-                          {component.content || ''}
-                        </ReactMarkdown>
-                      </div>
-                    );
-                  
-                  case 'components.video':
-                    return (
-                      <div key={index} className="my-8">
-                        {component.videoType === 'youtube' && component.youtubeUrl && (
-                          <div className="aspect-video">
-                            <iframe
-                              className="w-full h-full rounded-lg"
-                              src={component.youtubeUrl}
-                              title={component.title || 'Video'}
-                              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                              allowFullScreen
-                            />
-                          </div>
-                        )}
-                      </div>
-                    );
-                  
-                  default:
-                    return null;
-                }
-              })}
+          {blog.content && blog.content.length > 0 ? (
+            blog.content.map((component, index) => (
+              <RenderPressRoomContent key={index} componentName={component.__component} content={component} />
+            ))
+          ) : (
+            <div className="text-center py-16">
+              <p className="text-gray-500 text-lg">No se encontró contenido</p>
             </div>
           )}
         </div>
@@ -171,7 +130,7 @@ export default function SingleBlogView({ blog }: SingleBlogViewProps) {
 
       {/* Related blogs */}
       {relatedBlogs.length > 0 && (
-        <section className="py-16 bg-background-1">
+        <section className="py-8 lg:py-16 bg-background-1">
           <div className="container mx-auto px-4">
             {/* Swiper */}
             <div className="relative">

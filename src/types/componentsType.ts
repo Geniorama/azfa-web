@@ -768,3 +768,8 @@ export interface PodcastType {
   category: NewsCategoryType;
   downloadDocument: StrapiImageType;
 }
+
+export interface RichTextType {
+  id: number;
+  content: string;
+}
