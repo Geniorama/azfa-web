@@ -22,7 +22,7 @@ interface BlogType extends NewsType {
 const getBlogs = async (page: number = 1, pageSize: number = 9): Promise<{ data: BlogType[], meta: { pagination: { page: number, pageCount: number, pageSize: number, total: number } } } | null> => {
   try {
     const response = await fetch(
-      `${process.env.STRAPI_URL}/api/press-rooms?filters[type][$eq]=blog&populate[0]=thumbnail&populate[1]=category&populate[2]=downloadDocument&fields[0]=title&fields[1]=slug&fields[2]=extract&fields[3]=type&fields[4]=externalLink&fields[5]=createdAt&fields[6]=updatedAt&fields[7]=publishedAt&pagination[page]=${page}&pagination[pageSize]=${pageSize}&sort=publishedAt:desc`,
+      `${process.env.NEXT_PUBLIC_STRAPI_URL}/press-rooms?filters[type][$eq]=blog&populate[0]=thumbnail&populate[1]=category&populate[2]=downloadDocument&fields[0]=title&fields[1]=slug&fields[2]=extract&fields[3]=type&fields[4]=externalLink&fields[5]=createdAt&fields[6]=updatedAt&fields[7]=publishedAt&pagination[page]=${page}&pagination[pageSize]=${pageSize}&sort=publishedAt:desc`,
       {
         cache: "force-cache",
         next: { revalidate: 3600 }, // Revalidar cada hora
@@ -47,7 +47,7 @@ const getBlogCategories = async (): Promise<{ data: NewsCategoryType[] } | null>
   try {
     // Obtener todos los blogs para extraer las categorías únicas
     const response = await fetch(
-      `${process.env.STRAPI_URL}/api/press-rooms?filters[type][$eq]=blog&populate[0]=category&populate[1]=downloadDocument&fields[0]=externalLink&pagination[pageSize]=100`,
+      `${process.env.NEXT_PUBLIC_STRAPI_URL}/press-rooms?filters[type][$eq]=blog&populate[0]=category&populate[1]=downloadDocument&fields[0]=externalLink&pagination[pageSize]=100`,
       {
         cache: "force-cache",
         next: { revalidate: 3600 }, // Revalidar cada hora
@@ -78,7 +78,7 @@ const getBlogCategories = async (): Promise<{ data: NewsCategoryType[] } | null>
 // Función común para obtener datos de la página de sala de prensa
 const getPressRoomPage = async (): Promise<{ data: PressRoomPageType } | null> => {
   try {
-    const response = await fetch(`${process.env.STRAPI_URL}/api/press-room-page?populate[0]=blogSection&populate[1]=blogSection.backgroundImg&populate[2]=newsletterSection&populate[3]=newsletterSection.backgroundImg&populate[4]=podcastSection&populate[5]=podcastSection.backgroundImg&populate[6]=newsSection&populate[7]=newsSection.backgroundImg`, {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_STRAPI_URL}/press-room-page?populate[0]=blogSection&populate[1]=blogSection.backgroundImg&populate[2]=newsletterSection&populate[3]=newsletterSection.backgroundImg&populate[4]=podcastSection&populate[5]=podcastSection.backgroundImg&populate[6]=newsSection&populate[7]=newsSection.backgroundImg`, {
       cache: "force-cache",
       next: { revalidate: 3600 }, // Revalidar cada hora
     });
@@ -94,8 +94,13 @@ const getPressRoomPage = async (): Promise<{ data: PressRoomPageType } | null> =
   }
 }
 
-export default async function Blog() {
-  const blogData = await getBlogs();
+interface BlogPageProps {
+  searchParams: { page?: string };
+}
+
+export default async function Blog({ searchParams }: BlogPageProps) {
+  const currentPage = parseInt(searchParams.page || '1', 10);
+  const blogData = await getBlogs(currentPage);
   const categoriesData = await getBlogCategories();
   const pressRoomPageData = await getPressRoomPage();
 
