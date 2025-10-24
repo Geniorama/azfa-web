@@ -114,7 +114,7 @@ export default function SingleBlogView({ blog }: SingleBlogViewProps) {
 
       {/* Dynamic content */}
       <article className="py-8 2xl:py-24 bg-white text-text-primary">
-        <div className="container mx-auto px-4 max-w-[1290px]">
+        <div className="container mx-auto px-4 max-w-screen-md">
           {/* Dynamic zone content */}
           {blog.content && blog.content.length > 0 ? (
             blog.content.map((component, index) => (
