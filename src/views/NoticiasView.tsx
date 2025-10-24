@@ -12,6 +12,7 @@ import Pagination from "@/components/Pagination";
 import { NewsType, NewsCategoryType, NewsSectionType } from "@/types/componentsType";
 import { truncateText } from "@/utils/truncateText";
 import AdSection from "@/components/AdSection";
+import { useRouter, useSearchParams } from "next/navigation";
 
 interface NoticiasViewProps {
   newsData: NewsType[];
@@ -26,6 +27,9 @@ export default function NoticiasView({ newsData, categoriesData, paginationMeta,
     anioPublicacion: "",
   });
 
+  const router = useRouter();
+  const searchParams = useSearchParams();
+
   const handleOpenNews = (url: string) => {
     console.log("handleOpenNews called with URL:", url);
     if (url && url !== "#") {
@@ -34,6 +38,12 @@ export default function NoticiasView({ newsData, categoriesData, paginationMeta,
     } else {
       console.log("URL is empty or #, not opening");
     }
+  };
+
+  const handlePageChange = (page: number) => {
+    const params = new URLSearchParams(searchParams.toString());
+    params.set('page', page.toString());
+    router.push(`/sala-de-prensa/noticias?${params.toString()}`);
   };
 
   // Función para formatear la fecha como "JUN 25"
@@ -214,7 +224,7 @@ export default function NoticiasView({ newsData, categoriesData, paginationMeta,
               <Pagination 
                 currentPage={paginationMeta.pagination.page} 
                 totalPages={paginationMeta.pagination.pageCount} 
-                onPageChange={() => {}} 
+                onPageChange={handlePageChange} 
               />
             )}
           </div>

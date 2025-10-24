@@ -11,7 +11,7 @@ import Pagination from "@/components/Pagination";
 import { useState } from "react";
 import { truncateText } from "@/utils/truncateText";
 import { NewsType, NewsCategoryType, BlogPageType } from "@/types/componentsType";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 
 // Interfaz extendida para blogs con downloadDocument
 interface BlogType extends NewsType {
@@ -35,6 +35,7 @@ export default function BlogView({ blogData, categoriesData, blogPageData, pagin
   });
 
   const router = useRouter();
+  const searchParams = useSearchParams();
   console.log("blogPageData from BlogView", blogPageData);
   // Función para formatear la fecha como "JUN 25"
   const formatDate = (dateString: string): string => {
@@ -99,6 +100,12 @@ export default function BlogView({ blogData, categoriesData, blogPageData, pagin
     if (slug) {
       router.push(`/sala-de-prensa/blog/${slug}`);
     }
+  };
+
+  const handlePageChange = (page: number) => {
+    const params = new URLSearchParams(searchParams.toString());
+    params.set('page', page.toString());
+    router.push(`/sala-de-prensa/blog?${params.toString()}`);
   };
 
   const filteredBlogData = filterBlogData(blogData);
@@ -218,7 +225,7 @@ export default function BlogView({ blogData, categoriesData, blogPageData, pagin
               <Pagination
                 currentPage={paginationMeta.pagination.page}
                 totalPages={paginationMeta.pagination.pageCount}
-                onPageChange={() => {}}
+                onPageChange={handlePageChange}
               />
             )}
           </div>
