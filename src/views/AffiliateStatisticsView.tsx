@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
 import HeadingPagePortal from "@/components/HeadingPagePortal";
 import { AffiliateInvestmentStatisticsType } from "@/types/contentType";
 import LoadingSpinner from "@/components/LoadingSpinner";
@@ -20,20 +19,12 @@ const extractIframeSrc = (htmlContent: string): string => {
 };
 
 export default function AffiliateStatisticsView({ pageContent }: AffiliateStatisticsViewProps) {
-  const router = useRouter();
   const [loadedIframes, setLoadedIframes] = useState<Set<number>>(new Set());
   const { isAuthenticated, isEditor, isAdmin } = useAuth();
 
   // Verificar si el usuario tiene permisos para ver la sección CTA
   const canShowCTA = isAdmin || (isAuthenticated && isEditor);
 
-  // Debug: Verificar permisos
-  console.log("AffiliateStatisticsView - Auth Debug:", {
-    isAuthenticated,
-    isEditor,
-    isAdmin,
-    canShowCTA
-  });
 
   const handleIframeLoad = (iframeId: number) => {
     setLoadedIframes(prev => new Set(prev).add(iframeId));
@@ -94,10 +85,6 @@ export default function AffiliateStatisticsView({ pageContent }: AffiliateStatis
       {iframeData && iframeData.length > 0 ? (
         <section className="py-8 bg-white">
           <div className="container mx-auto px-4">
-            <span className="text-button text-text-primary">
-              Dashboard interactivo embebido (Power BI)
-            </span>
-            
             {/* Aviso para móviles */}
             <div className="md:hidden flex items-start gap-2 mt-3">
               {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -121,48 +108,58 @@ export default function AffiliateStatisticsView({ pageContent }: AffiliateStatis
                 // La estructura real usa bottomText en lugar de iframe
                 const iframeContent = iframeItem.desktopIframe?.bottomText || iframeItem.mobileIframe?.bottomText || '';
                 const iframeSrc = extractIframeSrc(iframeContent);
+                const iframeTitle = iframeItem.desktopIframe?.title || iframeItem.mobileIframe?.title || '';
+                const iframeLabel = iframeItem.label || '';
                 
                 return (
-                  <div key={index} className="relative">
-                    {/* Contenedor responsivo para el iframe */}
-                    <div 
-                      className="relative w-full bg-gray-100 rounded-lg overflow-hidden"
-                      style={{ paddingBottom: '56.25%' }} // Aspect ratio 16:9
-                    >
-                      {/* Loading spinner */}
-                      {!isLoaded && (
-                        <div className="absolute inset-0 flex items-center justify-center bg-gray-100">
-                          <LoadingSpinner />
-                        </div>
-                      )}
-                      
-                      {/* Iframe */}
-                      {iframeSrc && (
-                        <iframe
-                          src={iframeSrc}
-                          className="absolute inset-0 w-full h-full border-0"
-                          loading="lazy"
-                          onLoad={() => handleIframeLoad(iframeId)}
-                          title={`Dashboard ${index + 1}`}
-                        />
-                      )}
-                      
-                      {/* Fallback si no hay src */}
-                      {!iframeSrc && iframeContent && (
-                        <div
-                          className="absolute inset-0"
-                          dangerouslySetInnerHTML={{ __html: iframeContent }}
-                        />
-                      )}
+                  <>
+                    <div>
+                      <span className="text-button text-text-primary inline-block">{iframeTitle}</span> <br />
+                      <span className="text-sm text-text-secondary bg-gray-100 px-3 py-1 rounded-full inline-block mt-2">
+                        {iframeLabel}
+                      </span>
                     </div>
+                    <div key={index} className="relative">
+                      {/* Contenedor responsivo para el iframe */}
+                      <div 
+                        className="relative w-full bg-gray-100 rounded-lg overflow-hidden"
+                        style={{ paddingBottom: '56.25%' }} // Aspect ratio 16:9
+                      >
+                        {/* Loading spinner */}
+                        {!isLoaded && (
+                          <div className="absolute inset-0 flex items-center justify-center bg-gray-100">
+                            <LoadingSpinner />
+                          </div>
+                        )}
+                        
+                        {/* Iframe */}
+                        {iframeSrc && (
+                          <iframe
+                            src={iframeSrc}
+                            className="absolute inset-0 w-full h-full border-0"
+                            loading="lazy"
+                            onLoad={() => handleIframeLoad(iframeId)}
+                            title={`Dashboard ${index + 1}`}
+                          />
+                        )}
+                        
+                        {/* Fallback si no hay src */}
+                        {!iframeSrc && iframeContent && (
+                          <div
+                            className="absolute inset-0"
+                            dangerouslySetInnerHTML={{ __html: iframeContent }}
+                          />
+                        )}
+                      </div>
 
-                      {/* Disclaimer */}
-                      {pageContent?.disclaimerText && (
-                        <div className="p-4 text-center">
-                          <p className="text-sm text-gray-500">{pageContent?.disclaimerText}</p>
-                        </div>
-                      )}
-                  </div>
+                        {/* Disclaimer */}
+                        {pageContent?.disclaimerText && (
+                          <div className="p-4 text-center">
+                            <p className="text-sm text-gray-500">{pageContent?.disclaimerText}</p>
+                          </div>
+                        )}
+                    </div>
+                  </>
                 );
               })}
             </div>
@@ -183,8 +180,8 @@ export default function AffiliateStatisticsView({ pageContent }: AffiliateStatis
         </section>
       )}
 
-      {/* Sección CTA - Solo visible para administradores y editores */}
-      {data.ctaSection && (
+      {/* Sección CTA - Solo visible para editores */}
+      {canShowCTA && (
         <section className="py-8 bg-white">
           <div className="container mx-auto px-4">
             <div className="flex flex-col md:flex-row gap-6 max-w-screen-lg mx-auto items-center border border-[#94D133] p-12 mt-0">
@@ -208,10 +205,10 @@ export default function AffiliateStatisticsView({ pageContent }: AffiliateStatis
                 <button
                   onClick={() => {
                     if (data.ctaSection?.button?.url) {
-                      router.push(data.ctaSection.button.url);
+                      window.open(data.ctaSection.button.url, '_blank');
                     }
                   }}
-                  className="w-full bg-[#94D133] text-white px-6 py-3 rounded-lg font-medium hover:bg-[#7fb32a] transition-colors duration-200 inline-flex justify-center items-center gap-2"
+                  className="w-full cursor-pointer bg-[#94D133] text-white px-6 py-3 rounded-lg font-medium hover:bg-[#7fb32a] transition-colors duration-200 inline-flex justify-center items-center gap-2"
                 >
                   {data.ctaSection.button?.label || "Acceder"}
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

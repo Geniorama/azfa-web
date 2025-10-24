@@ -30,6 +30,7 @@ export async function POST(request: NextRequest) {
         email: string; 
         confirmed: boolean; 
         blocked: boolean;
+        isEditor?: boolean;
         affiliateCompany?: {
           id: number;
           documentId?: string;
@@ -93,13 +94,27 @@ export async function POST(request: NextRequest) {
 
     const { user, jwt } = data
 
-    // Obtener información completa del usuario incluyendo affiliateCompany
+    // Obtener información completa del usuario incluyendo affiliateCompany e isEditor
     try {
       // Normalizar STRAPI_URL (remover /api si ya está incluido)
       const baseUrl = STRAPI_URL?.endsWith('/api') ? STRAPI_URL.slice(0, -4) : STRAPI_URL
       
-      // Intentar con la API directa de users usando el ID del usuario
-      // Especificar los campos de affiliateCompany incluyendo documentId
+      // Primero obtener solo el campo isEditor
+      const isEditorUrl = `${baseUrl}/api/users/${user.id}?fields[0]=isEditor`
+      
+      const isEditorResponse = await fetch(isEditorUrl, {
+        headers: {
+          'Authorization': `Bearer ${jwt}`,
+        },
+      })
+      
+      let isEditorValue = false
+      if (isEditorResponse.ok) {
+        const isEditorData = await isEditorResponse.json()
+        isEditorValue = isEditorData.isEditor || false
+      }
+      
+      // Luego obtener los otros campos
       const userDetailsUrl = `${baseUrl}/api/users/${user.id}?populate[affiliateCompany][fields][0]=id&populate[affiliateCompany][fields][1]=documentId&populate[affiliateCompany][fields][2]=title&populate[affiliateCompany][fields][3]=propertiesLimit&populate=role`
       
       const userDetailsResponse = await fetch(userDetailsUrl, {
@@ -115,9 +130,12 @@ export async function POST(request: NextRequest) {
         Object.assign(user, {
           affiliateCompany: userDetails.affiliateCompany,
           role: userDetails.role,
+          isEditor: isEditorValue,
         })
       } else {
         console.error('Error al obtener detalles del usuario:', userDetailsResponse.status)
+        // Aún así, asignar el valor de isEditor que ya obtuvimos
+        user.isEditor = isEditorValue
       }
     } catch (userDetailsError) {
       console.error('Error al obtener detalles del usuario:', userDetailsError instanceof Error ? userDetailsError.message : userDetailsError)
@@ -140,6 +158,17 @@ export async function POST(request: NextRequest) {
       )
     }
 
+    console.log('🔍 Final user object being returned:', {
+      id: user.id,
+      username: user.username,
+      email: user.email,
+      confirmed: user.confirmed,
+      blocked: user.blocked,
+      isEditor: user.isEditor,
+      affiliateCompany: user.affiliateCompany,
+      role: user.role,
+    })
+
     return NextResponse.json({
       token: jwt,
       user: {
@@ -148,6 +177,7 @@ export async function POST(request: NextRequest) {
         email: user.email,
         confirmed: user.confirmed,
         blocked: user.blocked,
+        isEditor: user.isEditor,
         affiliateCompany: user.affiliateCompany,
         role: user.role,
       },

@@ -32,6 +32,8 @@ export default async function EstadisticasAfiliados() {
   const response = await getAffiliateStatistics();
   const pageContent = response?.data || null;
 
+  console.log("Page content:", pageContent);
+
   return (
     <AffiliateStatisticsView pageContent={pageContent} />
   );
