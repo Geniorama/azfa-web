@@ -40,9 +40,6 @@ useEffect(() => {
               clearInterval(interval);
             }
           }, stepDuration);
-          
-          // Cleanup del intervalo cuando el componente se desmonte
-          return () => clearInterval(interval);
         }
       });
     },
@@ -52,12 +49,12 @@ useEffect(() => {
     }
   );
 
-  if (counterRef.current) {
-    observer.observe(counterRef.current);
+  const currentRef = counterRef.current;
+  if (currentRef) {
+    observer.observe(currentRef);
   }
 
   return () => {
-    const currentRef = counterRef.current;
     if (currentRef) {
       observer.unobserve(currentRef);
     }

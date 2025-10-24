@@ -15,10 +15,10 @@ export function useGoogleTranslateBar() {
       
       // Verificar si alguno de estos elementos está presente y visible
       const isVisible = 
-        (translateElement && translateElement.offsetHeight > 0) ||
-        (translateFrame && translateFrame.offsetHeight > 0) ||
-        (translateBar && translateBar.offsetHeight > 0) ||
-        (googTeBanner && googTeBanner.offsetHeight > 0);
+        (translateElement && (translateElement as HTMLElement).offsetHeight > 0) ||
+        (translateFrame && (translateFrame as HTMLElement).offsetHeight > 0) ||
+        (translateBar && (translateBar as HTMLElement).offsetHeight > 0) ||
+        (googTeBanner && (googTeBanner as HTMLElement).offsetHeight > 0);
       
       setIsTranslateBarVisible(!!isVisible);
     };

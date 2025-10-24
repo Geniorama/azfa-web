@@ -38,7 +38,7 @@ export default function CustomSelect({ label, labelIcon, options, onChange, name
       label: options.find(option => option.value === selected)?.label || placeholder || defaultOption.label,
       value: selected,
     });
-  }, [selected, options, placeholder, defaultOption.label]);
+  }, [selected, options, placeholder]);
 
   const handleToggleDropdown = () => {
     setIsOpen(!isOpen);
