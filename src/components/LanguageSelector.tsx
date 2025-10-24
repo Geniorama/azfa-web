@@ -1,5 +1,5 @@
 'use client';
-import { useState, useEffect, useRef, useLayoutEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { FaAngleDown } from 'react-icons/fa6';
 import Cookies from 'js-cookie';
 
@@ -15,7 +15,6 @@ const languages = [
 export default function LanguageSelector() {
   const [currentLanguage, setCurrentLanguage] = useState<string>("es");
   const [isOpen, setIsOpen] = useState(false);
-  const [dropdownPosition, setDropdownPosition] = useState<'left' | 'right'>('right');
   const dropdownRef = useRef<HTMLDivElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
 
@@ -42,33 +41,6 @@ export default function LanguageSelector() {
 
     return () => clearInterval(interval);
   }, [currentLanguage]);
-
-  // Calcular posición del dropdown usando useLayoutEffect para mejor precisión
-  useLayoutEffect(() => {
-    const calculateDropdownPosition = () => {
-      if (buttonRef.current && isOpen) {
-        const buttonRect = buttonRef.current.getBoundingClientRect();
-        const viewportWidth = window.innerWidth;
-        const dropdownWidth = 200; // w-[200px]
-        
-        // Calcular espacio disponible a la derecha e izquierda
-        const spaceRight = viewportWidth - buttonRect.right;
-        const spaceLeft = buttonRect.left;
-        
-        // Si hay más espacio a la derecha, usar right-0
-        // Si hay más espacio a la izquierda, usar left-0
-        if (spaceRight >= dropdownWidth || spaceRight >= spaceLeft) {
-          setDropdownPosition('right');
-        } else {
-          setDropdownPosition('left');
-        }
-      }
-    };
-
-    if (isOpen) {
-      calculateDropdownPosition();
-    }
-  }, [isOpen]);
 
   // Cerrar dropdown al hacer clic fuera
   useEffect(() => {
@@ -123,9 +95,7 @@ export default function LanguageSelector() {
 
       {/* Desktop dropdown */}
       <div
-        className={`absolute w-[200px] shadow-lg mt-2 bg-background-1 transition-all duration-300 ease-in-out hidden lg:block ${
-          dropdownPosition === 'right' ? 'right-0' : 'left-0'
-        } ${
+        className={`absolute w-[200px] shadow-lg mt-2 bg-background-1 transition-all duration-300 ease-in-out hidden lg:block right-auto lg:right-0 left-auto 2xl:left-0 ${
           isOpen
             ? "opacity-100 visible translate-y-0"
             : "opacity-0 invisible translate-y-[-10px]"
