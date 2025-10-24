@@ -571,7 +571,7 @@ export default function Home({
         <div className="container mx-auto px-4 flex flex-col lg:flex-row items-start justify-center text-text-primary gap-20">
           <div className="w-full lg:w-1/2">
             <div 
-              data-aos="fade-right"
+              data-aos="fade-up"
               className="flex items-center justify-between mb-12 lg:mb-0">
               <TitleDecorative className="text-left items-start">
                 {newsSectionData?.title || "Noticias"}
@@ -586,7 +586,7 @@ export default function Home({
 
             <div 
               data-aos="fade-up" 
-              data-aos-delay="100"
+              data-aos-delay="200"
               className="grid grid-cols-1 md:grid-cols-2 gap-8 mt-8">
               {newsData && newsData.length > 0 ? (
                 newsData.slice(0, 2).map((newsItem) => (
@@ -649,7 +649,8 @@ export default function Home({
           </div>
           <div className="w-full lg:w-1/2">
             <div 
-              data-aos="fade-left"
+              data-aos="fade-up"
+              data-aos-delay="100"
               className="flex items-center justify-between">
               <TitleDecorative
                 dividerColor="bg-[#94D133]"
@@ -667,7 +668,7 @@ export default function Home({
 
             <div 
               data-aos="fade-up" 
-              data-aos-delay="100"
+              data-aos-delay="300"
               className="space-y-8 mt-8">
               {eventsData && eventsData.length > 0 ? (
                 eventsData.slice(0, 2).map((event) => (
@@ -733,13 +734,14 @@ export default function Home({
       </section>
 
       <section className="bg-white lg:py-16 py-0">
-        <div className="container mx-auto px-4 text-center lg:text-left">
+        <div 
+          data-aos="fade-up"
+          className="container mx-auto px-4 text-center lg:text-left">
           <h6 
-            data-aos="fade-up"
             className="text-body2 text-text-primary text-center">
             {testimonialsSectionData?.label || "Testimonios"}
           </h6>
-          <TitleDecorative data-aos="fade-up" data-aos-delay="100">
+          <TitleDecorative data-aos-delay="100">
             {testimonialsSectionData?.title || "Lo que dicen nuestros clientes"}
           </TitleDecorative>
         </div>

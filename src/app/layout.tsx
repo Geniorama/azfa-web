@@ -73,7 +73,8 @@ export default async function RootLayout({
     function googleTranslateElementInit() {
       new google.translate.TranslateElement({
         pageLanguage: 'es', // El idioma original de tu sitio
-        autoDisplay: false
+        autoDisplay: false,
+        layout: google.translate.TranslateElement.InlineLayout.SIMPLE
       }, 'google_translate_element');
     }
   `}

@@ -1,16 +1,13 @@
 'use client'
 
-import { useGoogleTranslateBar } from '@/hooks/useGoogleTranslateBar';
-
 interface GoogleTranslateSpacerProps {
   children: React.ReactNode;
 }
 
 export default function GoogleTranslateSpacer({ children }: GoogleTranslateSpacerProps) {
-  const isTranslateBarVisible = useGoogleTranslateBar();
-
+  // Ya no necesitamos detectar la barra de Google Translate porque está oculta
   return (
-    <div className={`transition-all duration-300 ${isTranslateBarVisible ? 'pt-16' : ''}`}>
+    <div>
       {children}
     </div>
   );

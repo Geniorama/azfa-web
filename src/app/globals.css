@@ -310,3 +310,24 @@ body {
     padding-bottom: 100%; /* Cuadrado en pantallas muy pequeñas */
   }
 }
+
+/* Estilos para ocultar la barra de Google Translate */
+.goog-te-banner-frame {
+  display: none !important;
+}
+
+.goog-te-gadget {
+  display: none !important;
+}
+
+.goog-te-gadget-simple {
+  display: none !important;
+}
+
+body {
+  top: 0 !important;
+}
+
+.skiptranslate {
+  display: none !important;
+}
