@@ -200,13 +200,13 @@ export default function Footer({ showBanner = true, footer }: FooterProps) {
                   ))}
                 </p>
 
-                <p className="text-caption text-[#F2F1FA] opacity-30 pr-14 2xl:pr-0">
+                <p className="text-caption text-white pr-14 2xl:pr-0">
                   {footer.copyright.developedByText || "Realizado por"}{" "}
                   <Link
                     href={footer.copyright.developedByLink.url}
                     target={footer.copyright.developedByLink.openInNewTab ? "_blank" : "_self"}
                     rel={footer.copyright.developedByLink.openInNewTab ? "noopener noreferrer" : undefined}
-                    className="text-caption hover:underline hover:text-white transition"
+                    className="text-caption text-details hover:underline hover:text-white transition"
                   >
                     {footer.copyright.developedByLink.label || "Ekon7.com"}
                   </Link>

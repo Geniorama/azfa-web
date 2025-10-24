@@ -44,6 +44,7 @@ export async function POST(request: NextRequest) {
       case 'study':
         // Revalidar sala de prensa
         revalidatePath('/sala-de-prensa');
+        revalidatePath('/sala-de-prensa/blog');
         revalidatePath('/sala-de-prensa/noticias');
         revalidatePath('/sala-de-prensa/publicaciones');
         revalidatePath('/sala-de-prensa/podcast');
