@@ -95,18 +95,15 @@ const getPressRoomPage = async (): Promise<{ data: PressRoomPageType } | null> =
 }
 
 interface BlogPageProps {
-  searchParams: { page?: string };
+  searchParams: Promise<{ page?: string }>;
 }
 
 export default async function Blog({ searchParams }: BlogPageProps) {
-  const currentPage = parseInt(searchParams.page || '1', 10);
+  const resolvedSearchParams = await searchParams;
+  const currentPage = parseInt(resolvedSearchParams.page || '1', 10);
   const blogData = await getBlogs(currentPage);
   const categoriesData = await getBlogCategories();
   const pressRoomPageData = await getPressRoomPage();
-
-  console.log("blogData", blogData);
-  console.log("categoriesData", categoriesData);
-  console.log("pressRoomPageData", pressRoomPageData);
 
   return (
     <BlogView 
