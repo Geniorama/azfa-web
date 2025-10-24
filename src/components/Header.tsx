@@ -11,6 +11,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { useRouter } from "next/navigation";
 import { HeaderTypeData } from "@/types/componentsType";
 import LanguageSelector from "./LanguageSelector";
+import { useGoogleTranslateBar } from "@/hooks/useGoogleTranslateBar";
 
 
 export default function Header({ header }: { header: HeaderTypeData }) {
@@ -25,6 +26,7 @@ export default function Header({ header }: { header: HeaderTypeData }) {
   const { isAuthenticated, logout } = useAuth();
   const router = useRouter();
   const userMenuRef = useRef<HTMLDivElement>(null);
+  const isTranslateBarVisible = useGoogleTranslateBar();
 
   console.log(showUserMenu);
 
@@ -79,7 +81,7 @@ export default function Header({ header }: { header: HeaderTypeData }) {
 
 
   return (
-    <header className="bg-white py-4 relative z-50">
+    <header className={`bg-white py-4 relative z-50 transition-all duration-300 ${isTranslateBarVisible ? 'pt-16' : ''}`}>
       <div className="container mx-auto px-4">
         <div className="flex flex-col lg:flex-row justify-between items-center">
           <div className="w-full lg:w-[30%] flex justify-between items-center gap-4 px-4 lg:px-0">
@@ -106,7 +108,7 @@ export default function Header({ header }: { header: HeaderTypeData }) {
           <div
             className={`w-full lg:w-[70%] flex flex-col-reverse justify-end lg:justify-start lg:flex-col items-center lg:items-end gap-0 p-0 lg:px-0 z-10 fixed top-0 left-0 bg-white h-screen lg:h-auto lg:relative lg:translate-x-0 transition-all duration-300 ${
               isMobileMenuOpen ? "translate-x-0" : "translate-x-[-100%]"
-            }`}
+            } ${isTranslateBarVisible ? 'pt-16' : ''}`}
           >
             {/* Top bar */}
             <div className="flex items-center gap-4 mt-5 lg:mt-0 px-4 lg:px-0">
