@@ -14,7 +14,7 @@ export async function generateMetadata(): Promise<Metadata> {
 const getNews = async (page: number = 1, pageSize: number = 9): Promise<{ data: NewsType[], meta: { pagination: { page: number, pageCount: number, pageSize: number, total: number } } } | null> => {
   try {
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_STRAPI_URL}/press-rooms?filters[type][$eq]=news&populate[0]=thumbnail&populate[1]=category&fields[0]=title&fields[1]=slug&fields[2]=extract&fields[3]=type&fields[4]=externalLink&fields[5]=createdAt&fields[6]=updatedAt&fields[7]=publishedAt&pagination[page]=${page}&pagination[pageSize]=${pageSize}&sort=publishedAt:desc`,
+      `${process.env.NEXT_PUBLIC_STRAPI_URL}/press-rooms?filters[type][$eq]=news&populate[0]=thumbnail&populate[1]=category&fields[0]=title&fields[1]=slug&fields[2]=extract&fields[3]=type&fields[4]=externalLink&fields[5]=createdAt&fields[6]=updatedAt&fields[7]=publishedAt&fields[8]=publishDate&pagination[page]=${page}&pagination[pageSize]=${pageSize}&sort=publishDate:desc`,
       {
         cache: "force-cache",
         next: { revalidate: 3600 }, // Revalidar cada hora
@@ -87,18 +87,15 @@ const getPressRoomPage = async (): Promise<{ data: PressRoomPageType } | null> =
 }
 
 interface NoticiasPageProps {
-  searchParams: { page?: string };
+  searchParams: Promise<{ page?: string }>;
 }
 
 export default async function Noticias({ searchParams }: NoticiasPageProps) {
-  const currentPage = parseInt(searchParams.page || '1', 10);
+  const resolvedSearchParams = await searchParams;
+  const currentPage = parseInt(resolvedSearchParams.page || '1', 10);
   const newsData = await getNews(currentPage);
   const categoriesData = await getNewsCategories();
   const pressRoomPageData = await getPressRoomPage();
-
-  console.log("newsData", newsData);
-  console.log("categoriesData", categoriesData);
-  console.log("pressRoomPageData", pressRoomPageData);
 
   return (
     <NoticiasView 

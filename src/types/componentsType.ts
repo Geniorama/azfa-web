@@ -313,6 +313,7 @@ export interface NewsType {
   createdAt: string;
   updatedAt: string;
   publishedAt: string;
+  publishDate: string | null;
   externalLink: string | null;
   thumbnail: StrapiImageType;
   category: NewsCategoryType;

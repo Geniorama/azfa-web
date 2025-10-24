@@ -47,8 +47,24 @@ export default function NoticiasView({ newsData, categoriesData, paginationMeta,
   };
 
   // Función para formatear la fecha como "JUN 25"
-  const formatDate = (dateString: string): string => {
-    const date = new Date(dateString);
+  const formatDate = (dateString: string | null): string => {
+    if (!dateString) {
+      return "SIN FECHA";
+    }
+    
+    let date: Date;
+    
+    // Si la fecha está en formato YYYY-MM-DD, agregar tiempo para evitar problemas de zona horaria
+    if (dateString.match(/^\d{4}-\d{2}-\d{2}$/)) {
+      date = new Date(dateString + 'T12:00:00');
+    } else {
+      date = new Date(dateString);
+    }
+    
+    if (isNaN(date.getTime())) {
+      return "FECHA INVÁLIDA";
+    }
+    
     const monthNames = [
       "ENE", "FEB", "MAR", "ABR", "MAY", "JUN",
       "JUL", "AGO", "SEP", "OCT", "NOV", "DIC"
@@ -67,9 +83,8 @@ export default function NoticiasView({ newsData, categoriesData, paginationMeta,
         description: truncateText(item.extract, 160),
         tags: [item.category?.name || "Noticias"],
         url: item.externalLink || "#",
-        date: formatDate(item.publishedAt),
+        date: formatDate(item.publishDate || item.publishedAt),
       };
-      console.log("Formatted news item:", formattedItem);
       return formattedItem;
     });
   };
@@ -92,7 +107,7 @@ export default function NoticiasView({ newsData, categoriesData, paginationMeta,
       
       // Filtro por mes de publicación
       if (filters.anioPublicacion) {
-        const publishedDate = new Date(item.publishedAt);
+        const publishedDate = new Date(item.publishDate || item.publishedAt);
         const monthNames = [
           "enero", "febrero", "marzo", "abril", "mayo", "junio",
           "julio", "agosto", "septiembre", "octubre", "noviembre", "diciembre"
