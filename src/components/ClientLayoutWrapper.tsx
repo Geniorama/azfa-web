@@ -5,6 +5,7 @@ import Header from "./Header";
 import Footer from "./Footer";
 import { AuthProvider } from "../context/AuthContext";
 import { HeaderTypeData, FooterType } from "@/types/componentsType";
+import GoogleTranslateSpacer from "./GoogleTranslateSpacer";
 interface ClientLayoutWrapperProps {
   children: React.ReactNode;
   header: HeaderTypeData;
@@ -18,9 +19,11 @@ export default function ClientLayoutWrapper({ children, header, footer }: Client
 
   return (
     <AuthProvider>
-      <Header header={header} />
-      {children}
-      <Footer showBanner={showBanner} footer={footer} />
+      <GoogleTranslateSpacer>
+        <Header header={header} />
+        {children}
+        <Footer showBanner={showBanner} footer={footer} />
+      </GoogleTranslateSpacer>
     </AuthProvider>
   );
 }
