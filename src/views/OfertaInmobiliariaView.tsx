@@ -24,6 +24,7 @@ import {
 import IconNoResults from "@/assets/img/search-icon-offer.svg";
 import Button from "@/utils/Button";
 import IconError from "@/assets/img/icon-no-load.svg";
+import ButtonEditProperties from "@/components/ButtonEditProperties";
 
 interface OfertaInmobiliariaViewProps {
   pageContent: OfertaInmobiliariaType | null;
@@ -217,6 +218,7 @@ function OfertaInmobiliariaContent({ pageContent }: OfertaInmobiliariaViewProps)
 
   return (
     <div>
+      <ButtonEditProperties />
       <section className="py-16">
         <div className="container mx-auto px-4 text-center flex flex-col gap-2 md:gap-6">
           <div>

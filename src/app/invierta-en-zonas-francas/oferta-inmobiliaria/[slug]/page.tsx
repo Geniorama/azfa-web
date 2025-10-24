@@ -213,9 +213,14 @@ function OfertaInmobiliariaSingleContent() {
         const response = await fetch(
           `${process.env.NEXT_PUBLIC_STRAPI_URL}/real-state-offers?filters[slug][$eq]=${slug}&populate[imgGallery]=true&populate[ctaButton]=true`
         );
+        
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
         const data = await response.json();
 
-        if (data.data && data.data[0]) {
+        if (data.data && Array.isArray(data.data) && data.data.length > 0) {
           const dataWithGallery = {
             ...data.data[0],
             imgGallery: data.data[0].imgGallery?.map((img: { url: string; alternativeText?: string }) => {
@@ -229,7 +234,7 @@ function OfertaInmobiliariaSingleContent() {
 
           setInmueble(dataWithGallery);
         } else {
-          console.error("Error al obtener el inmueble:", "No se encontró el inmueble");
+          console.warn(`No se encontró el inmueble con slug: ${slug}`);
           setInmueble(null);
         }
       } catch (error) {

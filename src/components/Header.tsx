@@ -11,7 +11,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { useRouter } from "next/navigation";
 import { HeaderTypeData } from "@/types/componentsType";
 import LanguageSelector from "./LanguageSelector";
-
+import { LuUserRound } from "react-icons/lu";
 
 export default function Header({ header }: { header: HeaderTypeData }) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -22,7 +22,7 @@ export default function Header({ header }: { header: HeaderTypeData }) {
   const [showUserMenu, setShowUserMenu] = useState(false);
   const [logoUrl, setLogoUrl] = useState("");
 
-  const { isAuthenticated, logout } = useAuth();
+  const { isAuthenticated, logout, user } = useAuth();
   const router = useRouter();
   const userMenuRef = useRef<HTMLDivElement>(null);
 
@@ -34,17 +34,16 @@ export default function Header({ header }: { header: HeaderTypeData }) {
     setLogoUrl(header.logo.url);
   }, [header]);
 
-
   // Cerrar menú de usuario al hacer clic fuera
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       const target = event.target as Element;
-      
+
       // No cerrar el menú si el clic es en el mapa
-      if (target.closest('svg') || target.closest('[data-map-container]')) {
+      if (target.closest("svg") || target.closest("[data-map-container]")) {
         return;
       }
-      
+
       if (
         userMenuRef.current &&
         !userMenuRef.current.contains(event.target as Node)
@@ -76,7 +75,6 @@ export default function Header({ header }: { header: HeaderTypeData }) {
     setShowUserMenu(false);
     router.push("/");
   };
-
 
   return (
     <header className="bg-white py-4 relative z-50">
@@ -113,15 +111,22 @@ export default function Header({ header }: { header: HeaderTypeData }) {
               <div className="flex flex-row items-start lg:items-center space-x-1 space-y-3 lg:space-y-0 lg:space-x-4 flex-wrap justify-between">
                 {/* Logout button */}
                 {isAuthenticated && (
-                  <button
-                    className="py-2 w-full lg:w-auto text-text-primary hover:text-details cursor-pointer underline hidden lg:block"
-                    onClick={() => {
-                      setIsMobileMenuOpen(false);
-                      handleLogout();
-                    }}
-                  >
-                    Cerrar sesión
-                  </button>
+                  <div className="items-center gap-4 hidden lg:flex">
+                    <p className="text-text-primary font-medium flex items-center gap-2">
+                      <LuUserRound className="w-5 h-5" />
+                      <span>{user?.username || user?.email}</span>
+                    </p>
+                    <span className="text-text-primary"> | </span>
+                    <button
+                      className="py-2 w-full lg:w-auto text-text-primary hover:text-details cursor-pointer underline"
+                      onClick={() => {
+                        setIsMobileMenuOpen(false);
+                        handleLogout();
+                      }}
+                    >
+                      Cerrar sesión
+                    </button>
+                  </div>
                 )}
 
                 {header.topButtons?.map((button, index) => (
@@ -148,6 +153,12 @@ export default function Header({ header }: { header: HeaderTypeData }) {
                   </Button>
                 ))}
 
+                {/* User name - Mobile */}
+                {isAuthenticated && (
+                  <span className="text-text-primary font-medium lg:hidden">
+                    {user?.username || user?.email}
+                  </span>
+                )}
                 {/* Logout button */}
                 {isAuthenticated && (
                   <button
