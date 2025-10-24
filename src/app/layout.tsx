@@ -10,12 +10,26 @@ import {
   ContactInfoType,
 } from "@/types/componentsType";
 import Script from "next/script";
+import { Metadata } from "next";
 
 const interTight = Inter_Tight({
   variable: "--font-inter-tight",
   subsets: ["latin"],
   weight: ["300", "400", "500"],
 });
+
+export const metadata: Metadata = {
+  title: "AZFA | Asociación de Zonas Francas de Iberoamérica",
+  description: "Asociación de Zonas Francas de Iberoamérica - Promoviendo el desarrollo económico y comercial",
+  icons: {
+    icon: [
+      { url: "/azfa-favicon.ico", sizes: "any" },
+      { url: "/azfa-favicon.png", type: "image/png" },
+    ],
+    shortcut: "/azfa-favicon.ico",
+    apple: "/azfa-favicon.png",
+  },
+};
 
 export default async function RootLayout({
   children,
