@@ -16,7 +16,6 @@ interface NewsletterType extends NewsType {
     url: string;
     alternativeText?: string;
   };
-  publishDate?: string;
 }
 
 // Función para obtener newsletters desde Strapi

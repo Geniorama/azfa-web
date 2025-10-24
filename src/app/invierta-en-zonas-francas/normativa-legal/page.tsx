@@ -32,7 +32,6 @@ const renderContentBlocksJSX = (contentBlocks: any[]) => {
       
       console.log(`Procesando block tipo: ${block.type}`, block);
       
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       switch (block.type) {
         case 'paragraph':
           // eslint-disable-next-line @typescript-eslint/no-explicit-any

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { buildStrapiUrl, StrapiQueryOptions } from '@/utils/strapiQuery';
 
 interface UseStrapiOptions extends StrapiQueryOptions {
@@ -27,7 +27,7 @@ export function useStrapi<T>(options: UseStrapiOptions): StrapiResponse<T> {
 
   const strapiUrl = process.env.NEXT_PUBLIC_STRAPI_URL || "http://localhost:1337";
 
-  const fetchData = async () => {
+  const fetchData = useCallback(async () => {
     if (!options.autoFetch && !data) return;
     
     setLoading(true);
@@ -50,7 +50,7 @@ export function useStrapi<T>(options: UseStrapiOptions): StrapiResponse<T> {
     } finally {
       setLoading(false);
     }
-  };
+  }, [options, data, strapiUrl]);
 
   useEffect(() => {
     if (options.autoFetch !== false) {

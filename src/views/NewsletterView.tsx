@@ -17,7 +17,6 @@ interface NewsletterType extends NewsType {
     url: string;
     alternativeText?: string;
   };
-  publishDate?: string;
 }
 
 interface NewsletterViewProps {
