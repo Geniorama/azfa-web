@@ -52,25 +52,9 @@ export default function AffiliateStatisticsView({ pageContent }: AffiliateStatis
   };
 
   const data = pageContent || defaultData;
-
-  // Debug: Verificar que los datos estén llegando
-  console.log("AffiliateStatisticsView - pageContent:", pageContent);
-  console.log("AffiliateStatisticsView - iframeCollection:", data.iframeCollection);
   
   // La estructura real es un array directo, no un objeto con .data
   const iframeData = Array.isArray(data.iframeCollection) ? data.iframeCollection : data.iframeCollection?.data || [];
-  console.log("AffiliateStatisticsView - iframeData length:", iframeData.length);
-  
-  // Debug detallado de cada iframe
-  iframeData.forEach((iframeItem, index) => {
-    console.log(`Iframe ${index}:`, iframeItem);
-    console.log(`Iframe ${index} - desktopIframe:`, iframeItem.desktopIframe);
-    console.log(`Iframe ${index} - mobileIframe:`, iframeItem.mobileIframe);
-    if (iframeItem.desktopIframe?.bottomText) {
-      console.log(`Iframe ${index} - desktopIframe content:`, iframeItem.desktopIframe.bottomText);
-      console.log(`Iframe ${index} - extracted src:`, extractIframeSrc(iframeItem.desktopIframe.bottomText));
-    }
-  });
 
   return (
     <div>
@@ -112,8 +96,8 @@ export default function AffiliateStatisticsView({ pageContent }: AffiliateStatis
                 const iframeLabel = iframeItem.label || '';
                 
                 return (
-                  <>
-                    <div>
+                  <div key={index} className="my-12">
+                    <div className="mb-4">
                       <span className="text-button text-text-primary inline-block">{iframeTitle}</span> <br />
                       <span className="text-sm text-text-secondary bg-gray-100 px-3 py-1 rounded-full inline-block mt-2">
                         {iframeLabel}
@@ -159,7 +143,7 @@ export default function AffiliateStatisticsView({ pageContent }: AffiliateStatis
                           </div>
                         )}
                     </div>
-                  </>
+                  </div>
                 );
               })}
             </div>

@@ -60,7 +60,7 @@ export default function MisInmueblesView() {
     <div className="bg-background-1">
       <HeadingPage
         title="Inmuebles disponibles"
-        smallTitle={`Bienvenidos al módulo de edición de inmuebles de ${user.affiliateCompany.title}. Aquí usted podrá ver, agregar o editar los inmuebles de su empresa.`}
+        smallTitle={`Bienvenidos al módulo de edición de inmuebles. Aquí usted podrá ver, agregar o editar los inmuebles de su empresa.`}
         image={bgInmuebles.src}
       />
 

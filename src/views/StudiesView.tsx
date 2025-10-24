@@ -9,7 +9,7 @@ import { RxReload } from "react-icons/rx";
 import CardInfoPortal from "@/components/CardInfoPortal";
 import Pagination from "@/components/Pagination";
 import { StudyType } from "@/types/contentType";
-
+import ButtonEditProperties from "@/components/ButtonEditProperties";
 interface StudiesViewProps {
   studies: StudyType[] | null;
 }
@@ -62,6 +62,7 @@ export default function StudiesView({ studies }: StudiesViewProps) {
 
   return (
     <div>
+      <ButtonEditProperties />
       <HeadingPagePortal
         title="Portal afiliados"
         smallTitle="Consulte y descargue informes, estudios técnicos y documentos exclusivos disponibles para los miembros de AZFA"
