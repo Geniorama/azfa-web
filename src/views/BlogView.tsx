@@ -125,7 +125,7 @@ export default function BlogView({ blogData, categoriesData, blogPageData, pagin
       {/* Filters */}
       <section className="bg-white">
         <div className="container mx-auto px-4">
-          <div className="flex flex-col md:flex-row gap-4 md:gap-8 py-6 text-text-primary justify-center">
+          <div className="flex flex-col lg:flex-row gap-4 lg:gap-8 py-6 text-text-primary justify-center items-end">
             <CustomSelect
               options={categoryOptions}
               onChange={(value) =>
