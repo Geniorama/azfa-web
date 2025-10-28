@@ -114,6 +114,20 @@ export async function POST(request: NextRequest) {
         isEditorValue = isEditorData.isEditor || false
       }
       
+      // Obtener el campo isPropertiesEditor
+      const isPropertiesEditorUrl = `${baseUrl}/api/users/${user.id}?fields[0]=isPropertiesEditor`
+      const isPropertiesEditorResponse = await fetch(isPropertiesEditorUrl, {
+        headers: {
+          'Authorization': `Bearer ${jwt}`,
+        },
+      })
+      
+      let isPropertiesEditorValue = false
+      if (isPropertiesEditorResponse.ok) {
+        const isPropertiesEditorData = await isPropertiesEditorResponse.json()
+        isPropertiesEditorValue = isPropertiesEditorData.isPropertiesEditor || false
+      }
+
       // Luego obtener los otros campos
       const userDetailsUrl = `${baseUrl}/api/users/${user.id}?populate[affiliateCompany][fields][0]=id&populate[affiliateCompany][fields][1]=documentId&populate[affiliateCompany][fields][2]=title&populate[affiliateCompany][fields][3]=propertiesLimit&populate=role`
       
@@ -131,11 +145,13 @@ export async function POST(request: NextRequest) {
           affiliateCompany: userDetails.affiliateCompany,
           role: userDetails.role,
           isEditor: isEditorValue,
+          isPropertiesEditor: isPropertiesEditorValue,
         })
       } else {
         console.error('Error al obtener detalles del usuario:', userDetailsResponse.status)
-        // Aún así, asignar el valor de isEditor que ya obtuvimos
+        // Aún así, asignar los valores que ya obtuvimos
         user.isEditor = isEditorValue
+        ;(user as any).isPropertiesEditor = isPropertiesEditorValue
       }
     } catch (userDetailsError) {
       console.error('Error al obtener detalles del usuario:', userDetailsError instanceof Error ? userDetailsError.message : userDetailsError)
@@ -165,6 +181,7 @@ export async function POST(request: NextRequest) {
       confirmed: user.confirmed,
       blocked: user.blocked,
       isEditor: user.isEditor,
+      isPropertiesEditor: (user as any).isPropertiesEditor,
       affiliateCompany: user.affiliateCompany,
       role: user.role,
     })
@@ -178,6 +195,7 @@ export async function POST(request: NextRequest) {
         confirmed: user.confirmed,
         blocked: user.blocked,
         isEditor: user.isEditor,
+        isPropertiesEditor: (user as any).isPropertiesEditor,
         affiliateCompany: user.affiliateCompany,
         role: user.role,
       },

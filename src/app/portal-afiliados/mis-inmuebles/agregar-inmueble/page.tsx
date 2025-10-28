@@ -1,7 +1,12 @@
+"use client";
+
 import AgregarInmuebleView from '@/views/AgregarInmuebleView'
+import ProtectedPropertiesEditor from '@/components/ProtectedPropertiesEditor'
 
 export default function AgregarInmueble() {
   return (
-    <AgregarInmuebleView />
+    <ProtectedPropertiesEditor>
+      <AgregarInmuebleView />
+    </ProtectedPropertiesEditor>
   )
 }

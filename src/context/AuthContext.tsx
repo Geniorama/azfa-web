@@ -9,6 +9,7 @@ interface User {
   confirmed: boolean
   blocked: boolean
   isEditor?: boolean
+  isPropertiesEditor?: boolean
   role?: {
     id: number
     name: string
@@ -30,6 +31,7 @@ interface AuthContextType {
   isLoading: boolean
   isAuthenticated: boolean
   isEditor: boolean
+  isPropertiesEditor: boolean
   isAdmin: boolean
 }
 
@@ -98,6 +100,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   // Verificar si el usuario es editor
   const isEditor = user?.isEditor === true
 
+  // Verificar si el usuario es editor de propiedades
+  const isPropertiesEditor = user?.isPropertiesEditor === true
+
   // Verificar si el usuario es administrador (role.name === 'Administrator' o 'Super Admin')
   const isAdmin = user?.role?.name === 'Administrator' || user?.role?.name === 'Super Admin'
 
@@ -109,6 +114,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     isLoading,
     isAuthenticated: !!user && !!token,
     isEditor,
+    isPropertiesEditor,
     isAdmin,
   }
 
