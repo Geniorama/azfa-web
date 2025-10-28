@@ -5,12 +5,13 @@ import { useAuth } from '@/hooks/useAuth'
 
 export default function ButtonEditProperties() {
   const router = useRouter()
-  const { user } = useAuth()
+  const { isPropertiesEditor } = useAuth()
   const handleEditProperties = () => {
     router.push('/portal-afiliados/mis-inmuebles')
   }
 
-  if (!user) {
+  // Solo mostrar el botón si el usuario tiene el permiso isPropertiesEditor
+  if (!isPropertiesEditor) {
     return null
   }
 
