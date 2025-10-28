@@ -233,10 +233,10 @@ function OfertaInmobiliariaContent({ pageContent }: OfertaInmobiliariaViewProps)
             {pageContent?.description}
           </p>
 
-          <div className="hidden md:flex justify-center bg-white mt-4 pb-16 pt-8 px-5">
+          <div className="hidden md:flex justify-center bg-white mt-4 pb-14 pt-8 px-5">
             <img
               className="w-full"
-              src={CiudadOfertaImg.src}
+              src={pageContent.coverImage?.url || CiudadOfertaImg.src}
               alt="Ciudad Oferta"
             />
           </div>
