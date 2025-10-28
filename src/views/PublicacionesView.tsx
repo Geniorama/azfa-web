@@ -126,16 +126,23 @@ export default function PublicacionesView({ pageData, publications }: Publicacio
       </div>
       <section className="py-4 bg-white">
         <div className="container mx-auto px-4">
-          <span className="text-button text-text-primary">
+          <span 
+            data-aos="fade-up"
+            className="text-button text-text-primary"
+          >
             <b className="font-medium">{filteredPublications.length} resultados</b> encontrados
           </span>
 
           {/* Grid cards */}
           {filteredPublications.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mt-8">
-              {filteredPublications.map((publication) => (
-                <CardInfoPortal
+              {filteredPublications.map((publication, index) => (
+                <div
                   key={publication.id}
+                  data-aos="fade-up"
+                  data-aos-delay={`${(index % 3) * 100}`}
+                >
+                <CardInfoPortal
                   image={publication.featuredImage?.url || CoverImage.src}
                   title={publication.title}
                   description={publication.description}
@@ -154,6 +161,7 @@ export default function PublicacionesView({ pageData, publications }: Publicacio
                     }
                   }}
                 />
+                </div>
               ))}
             </div>
           ) : (

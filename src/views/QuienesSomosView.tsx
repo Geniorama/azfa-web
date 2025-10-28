@@ -448,7 +448,9 @@ export default function JuntaDirectivaView({
       {intro && (
         <section className="bg-white py-10 lg:pt-16">
           <div className="container mx-auto px-4">
-            <IntroPage introData={intro} />
+            <div data-aos="fade-up">
+              <IntroPage introData={intro} />
+            </div>
           </div>
         </section>
       )}
@@ -542,11 +544,16 @@ export default function JuntaDirectivaView({
               {/* Grid Team Members */}
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mt-16">
                 {boardMembers.length > 0 &&
-                  boardMembers.map((member) => (
-                    <CardTeamMember
+                  boardMembers.map((member, index) => (
+                    <div
                       key={member.id}
+                      data-aos="fade-up"
+                      data-aos-delay={`${(index % 4) * 100}`}
+                    >
+                    <CardTeamMember
                       {...formatMemberData(member)}
                     />
+                    </div>
                   ))}
               </div>
 
@@ -562,11 +569,16 @@ export default function JuntaDirectivaView({
 
                   {/* Grid Team Members */}
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mt-16">
-                    {vocalMembers.map((member) => (
-                      <CardTeamMember
+                    {vocalMembers.map((member, index) => (
+                      <div
                         key={member.id}
+                        data-aos="fade-up"
+                        data-aos-delay={`${(index % 4) * 100}`}
+                      >
+                      <CardTeamMember
                         {...formatMemberData(member)}
                       />
+                      </div>
                     ))}
                   </div>
                 </>
@@ -582,11 +594,16 @@ export default function JuntaDirectivaView({
               {/* Grid Team Members */}
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mt-16">
                 {honoraryPresidents.length > 0 &&
-                  honoraryPresidents.map((member) => (
-                    <CardTeamMember
+                  honoraryPresidents.map((member, index) => (
+                    <div
                       key={member.id}
+                      data-aos="fade-up"
+                      data-aos-delay={`${(index % 4) * 100}`}
+                    >
+                    <CardTeamMember
                       {...formatMemberData(member)}
                     />
+                    </div>
                   ))}
               </div>
             </div>
@@ -609,6 +626,7 @@ export default function JuntaDirectivaView({
                         className={`w-full lg:w-1/2 ${
                           index % 2 === 0 ? "lg:pr-32" : "lg:pl-32"
                         } pt-6 text-text-primary`}
+                        data-aos={index % 2 === 0 ? "fade-right" : "fade-left"}
                       >
                         <h2 className="text-h2 font-normal text-text-primary mb-8">
                           {comission.title}
@@ -676,7 +694,10 @@ export default function JuntaDirectivaView({
                           </div>
                         )}
                       </div>
-                      <div className="w-full lg:w-1/2">
+                      <div 
+                        className="w-full lg:w-1/2"
+                        data-aos={index % 2 === 0 ? "fade-left" : "fade-right"}
+                      >
                         <img
                           className="w-full h-full object-cover"
                           src={
@@ -704,11 +725,16 @@ export default function JuntaDirectivaView({
               {/* Grid Team Members */}
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-16">
                 {azfaTeamMembers.length > 0 &&
-                  azfaTeamMembers.map((member) => (
-                    <CardTeamMember
+                  azfaTeamMembers.map((member, index) => (
+                    <div
                       key={member.id}
+                      data-aos="fade-up"
+                      data-aos-delay={`${(index % 3) * 100}`}
+                    >
+                    <CardTeamMember
                       {...formatMemberData(member)}
                     />
+                    </div>
                   ))}
               </div>
             </div>

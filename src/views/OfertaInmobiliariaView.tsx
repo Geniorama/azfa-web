@@ -221,7 +221,7 @@ function OfertaInmobiliariaContent({ pageContent }: OfertaInmobiliariaViewProps)
       <ButtonEditProperties />
       <section className="py-16">
         <div className="container mx-auto px-4 text-center flex flex-col gap-2 md:gap-6">
-          <div>
+          <div data-aos="fade-up">
             <h5 className="text-h6 md:text-h4 text-text-secondary">
               {pageContent?.smallTitle}
             </h5>
@@ -229,11 +229,18 @@ function OfertaInmobiliariaContent({ pageContent }: OfertaInmobiliariaViewProps)
               {pageContent?.title}
             </h1>
           </div>
-          <p className="text-body md:text-h6 text-text-primary">
+          <p 
+            className="text-body md:text-h6 text-text-primary"
+            data-aos="fade-up"
+            data-aos-delay="100"
+          >
             {pageContent?.description}
           </p>
-
-          <div className="hidden md:flex justify-center bg-white mt-4 pb-14 pt-8 px-5">
+          <div 
+            className="hidden md:flex justify-center bg-white mt-4 pb-14 pt-8 px-5"
+            data-aos="fade-up"
+            data-aos-delay="200"
+          >
             <img
               className="w-full"
               src={pageContent.coverImage?.url || CiudadOfertaImg.src}
@@ -269,7 +276,10 @@ function OfertaInmobiliariaContent({ pageContent }: OfertaInmobiliariaViewProps)
 
       <section>
         <div className="container mx-auto px-4 ">
-          <div className="flex flex-col items-center justify-center mb-10">
+          <div 
+            className="flex flex-col items-center justify-center mb-10"
+            data-aos="fade-up"
+          >
             <p className="text-5 text-text-primary text-center mt-10">
               {pagination.total > 1 ? `Se encontraron` : `Se encontró`} <span className="font-bold">{pagination.total}</span>{" "}
               {pagination.total > 1 ? `inmuebles que coinciden con su búsqueda` : `inmueble que coincide con su búsqueda`}
@@ -298,9 +308,13 @@ function OfertaInmobiliariaContent({ pageContent }: OfertaInmobiliariaViewProps)
           {/* Grid Cards */}
           {offers.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 md:gap-12 pb-12">
-              {offers.map((offer) => (
-                <CardInmueble
+              {offers.map((offer, index) => (
+                <div
                   key={offer.id}
+                  data-aos="fade-up"
+                  data-aos-delay={`${(index % 3) * 100}`}
+                >
+                <CardInmueble
                   id={offer.id}
                   title={offer.title}
                   offerType={offer.offerType}
@@ -333,6 +347,7 @@ function OfertaInmobiliariaContent({ pageContent }: OfertaInmobiliariaViewProps)
                     },
                   }}
                 />
+                </div>
               ))}
             </div>
           ) : (
@@ -397,7 +412,10 @@ function OfertaInmobiliariaContent({ pageContent }: OfertaInmobiliariaViewProps)
       {pageContent?.suppliersLogos && pageContent.suppliersLogos.logo && pageContent.suppliersLogos.logo.length > 0 && (
         <section className="bg-white pt-16">
           <div className="container mx-auto pb-8 lg:pb-16 px-0 md:px-16 max-w-6xl">
-            <TitleDecorative dividerColor="bg-[#94D133]">
+            <TitleDecorative 
+              dividerColor="bg-[#94D133]"
+              data-aos="fade-up"
+            >
               {pageContent.suppliersLogos.title}
             </TitleDecorative>
 
@@ -452,7 +470,11 @@ function OfertaInmobiliariaContent({ pageContent }: OfertaInmobiliariaViewProps)
         pageContent.consultantsLogos.map((consultantSection, index) => (
           <section className="bg-white pb-16 pt-8" key={consultantSection.id || index}>
             <div className="container mx-auto pb-8 lg:pb-16 px-0 md:px-16 max-w-6xl">
-              <TitleDecorative dividerColor="bg-[#94D133]">
+              <TitleDecorative 
+                dividerColor="bg-[#94D133]"
+                data-aos="fade-up"
+                data-aos-delay={`${index * 100}`}
+              >
                 {consultantSection.title}
               </TitleDecorative>
 

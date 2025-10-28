@@ -118,7 +118,10 @@ export default function StudiesView({ studies }: StudiesViewProps) {
       </div>
       <section className="py-4 bg-white">
         <div className="container mx-auto px-4">
-          <span className="text-button text-text-primary">
+          <span 
+            data-aos="fade-up"
+            className="text-button text-text-primary"
+          >
             {" "}
             <b className="font-medium">{filteredStudies.length} resultados</b> encontrados
           </span>
@@ -126,9 +129,13 @@ export default function StudiesView({ studies }: StudiesViewProps) {
           {/* Grid cards */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mt-8">
             {filteredStudies.length > 0 ? (
-              filteredStudies.map((study) => (
-                <CardInfoPortal
+              filteredStudies.map((study, index) => (
+                <div
                   key={study.id}
+                  data-aos="fade-up"
+                  data-aos-delay={`${(index % 3) * 100}`}
+                >
+                <CardInfoPortal
                   image={study.featuredImage?.url || "/images/placeholder.jpg"}
                   title={study.title}
                   description={study.description}
@@ -146,6 +153,7 @@ export default function StudiesView({ studies }: StudiesViewProps) {
                     },
                   }}
                 />
+                </div>
               ))
             ) : (
               <div className="col-span-full text-center py-12">

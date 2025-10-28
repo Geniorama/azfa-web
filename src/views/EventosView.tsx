@@ -340,6 +340,7 @@ export default function EventosView({ eventsData, eventsPageData, isLoading = fa
           <>
             <section className='bg-white lg:py-16 py-10'>
               <div className="container mx-auto px-4 lg:-mt-40 z-10">
+                <div data-aos="fade-up">
                 <CardNextEvent 
                   tag={nextEvent.tag}
                   title={nextEvent.title}
@@ -362,6 +363,7 @@ export default function EventosView({ eventsData, eventsPageData, isLoading = fa
                     }
                   }}
                 />
+                </div>
               </div>
             </section>
 
@@ -383,40 +385,40 @@ export default function EventosView({ eventsData, eventsPageData, isLoading = fa
                 {activeTab === "todos" ? (
                     // Mostrar calendario anual cuando tab "todos" está activo
                     <div className='flex flex-col md:flex-row flex-wrap'>
-                        <div className='w-full md:w-1/2 lg:w-1/4 p-3'>
+                        <div className='w-full md:w-1/2 lg:w-1/4 p-3' data-aos="fade-up" data-aos-delay="0">
                             <CardEventsMonth month="Enero" events={filteredEvents[0].events} />
                         </div>
-                        <div className='w-full md:w-1/2 lg:w-1/4 p-3'>
+                        <div className='w-full md:w-1/2 lg:w-1/4 p-3' data-aos="fade-up" data-aos-delay="50">
                             <CardEventsMonth month="Febrero" events={filteredEvents[1].events} />
                         </div>
-                        <div className='w-full md:w-1/2 lg:w-1/4 p-3'>
+                        <div className='w-full md:w-1/2 lg:w-1/4 p-3' data-aos="fade-up" data-aos-delay="100">
                             <CardEventsMonth month="Marzo" events={filteredEvents[2].events} />
                         </div>
-                        <div className='w-full md:w-1/2 lg:w-1/4 p-3'>
+                        <div className='w-full md:w-1/2 lg:w-1/4 p-3' data-aos="fade-up" data-aos-delay="150">
                             <CardEventsMonth month="Abril" events={filteredEvents[3].events} />
                         </div>
-                        <div className='w-full md:w-1/2 lg:w-1/4 p-3'>
+                        <div className='w-full md:w-1/2 lg:w-1/4 p-3' data-aos="fade-up" data-aos-delay="200">
                             <CardEventsMonth month="Mayo" events={filteredEvents[4].events} />
                         </div>
-                        <div className='w-full md:w-1/2 lg:w-1/4 p-3'>
+                        <div className='w-full md:w-1/2 lg:w-1/4 p-3' data-aos="fade-up" data-aos-delay="250">
                             <CardEventsMonth month="Junio" events={filteredEvents[5].events} />
                         </div>
-                        <div className='w-full md:w-1/2 lg:w-1/4 p-3'>
+                        <div className='w-full md:w-1/2 lg:w-1/4 p-3' data-aos="fade-up" data-aos-delay="300">
                             <CardEventsMonth month="Julio" events={filteredEvents[6].events} />
                         </div>
-                        <div className='w-full md:w-1/2 lg:w-1/4 p-3'>
+                        <div className='w-full md:w-1/2 lg:w-1/4 p-3' data-aos="fade-up" data-aos-delay="350">
                             <CardEventsMonth month="Agosto" events={filteredEvents[7].events} />
                         </div>
-                        <div className='w-full md:w-1/2 lg:w-1/4 p-3'>
+                        <div className='w-full md:w-1/2 lg:w-1/4 p-3' data-aos="fade-up" data-aos-delay="400">
                             <CardEventsMonth month="Septiembre" events={filteredEvents[8].events} />
                         </div>
-                        <div className='w-full md:w-1/2 lg:w-1/4 p-3'>
+                        <div className='w-full md:w-1/2 lg:w-1/4 p-3' data-aos="fade-up" data-aos-delay="450">
                             <CardEventsMonth month="Octubre" events={filteredEvents[9].events} />
                         </div>
-                        <div className='w-full md:w-1/2 lg:w-1/4 p-3'>
+                        <div className='w-full md:w-1/2 lg:w-1/4 p-3' data-aos="fade-up" data-aos-delay="500">
                             <CardEventsMonth month="Noviembre" events={filteredEvents[10].events} />
                         </div>
-                        <div className='w-full md:w-1/2 lg:w-1/4 p-3'>
+                        <div className='w-full md:w-1/2 lg:w-1/4 p-3' data-aos="fade-up" data-aos-delay="550">
                             <CardEventsMonth month="Diciembre" events={filteredEvents[11].events} />
                         </div>
                     </div>
@@ -424,9 +426,13 @@ export default function EventosView({ eventsData, eventsPageData, isLoading = fa
                     // Mostrar grid con CardEvent vertical para pestañas "próximos" y "pasados"
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                         {eventsForGrid.length > 0 ? (
-                            eventsForGrid.map((event) => (
+                            eventsForGrid.map((event, index) => (
+                                <div
+                                  key={event.id}
+                                  data-aos="fade-up"
+                                  data-aos-delay={`${(index % 3) * 100}`}
+                                >
                                 <CardEvent
-                                    key={event.id}
                                     image={event.featuredImage?.url || "https://testazfabucket.s3.us-east-2.amazonaws.com/img_evento_1a_World_FZO_af2dc47ee4.webp"}
                                     title={event.title}
                                     category={event.tag || "Evento"}
@@ -448,6 +454,7 @@ export default function EventosView({ eventsData, eventsPageData, isLoading = fa
                                         },
                                     }}
                                 />
+                                </div>
                             ))
                         ) : (
                             // Mensaje cuando no hay eventos en esa categoría

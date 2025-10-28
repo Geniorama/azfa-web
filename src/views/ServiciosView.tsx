@@ -39,7 +39,9 @@ export default function ServiciosView({ serviciosData }: ServiciosViewProps) {
 
       <section className="bg-white py-10 lg:pt-16">
         <div className="container mx-auto px-4">
-          <IntroPage introData={transformedIntro} />
+          <div data-aos="fade-up">
+            <IntroPage introData={transformedIntro} />
+          </div>
         </div>
       </section>
 
@@ -47,7 +49,11 @@ export default function ServiciosView({ serviciosData }: ServiciosViewProps) {
         <section id={section.anchor} key={index} className={`${section.style === "style-2" ? (section.orderReverse ? SecondarySectionReverse : SecondarySection) : "bg-white py-10 lg:pt-16"}`}>
           <div className="container mx-auto px-4">
             <div className= {`flex flex-col lg:${!section.orderReverse ? "flex-row" : "flex-row-reverse"} gap-4 text-text-primary items-center py-10 px-4 lg:px-0`}>
-              <div className={`w-full lg:w-1/2 ${!section.orderReverse ? "lg:pr-24" : "lg:pl-24"}`}>
+              <div 
+                className={`w-full lg:w-1/2 ${!section.orderReverse ? "lg:pr-24" : "lg:pl-24"}`}
+                data-aos={section.orderReverse ? "fade-right" : "fade-left"}
+                data-aos-delay={`${index * 100}`}
+              >
                 <h2 className={`text-h2 mb-10 ${section.style === "style-2" ? "text-white" : "text-text-primary"}`}>{section.title}</h2>
                 <div className={`text-[18px] leading-[31px] ${section.style === "style-2" ? "text-white" : "text-text-primary"}`}>
                   <ReactMarkdown rehypePlugins={[rehypeRaw]}>{section.description}</ReactMarkdown>
@@ -64,7 +70,11 @@ export default function ServiciosView({ serviciosData }: ServiciosViewProps) {
                   </Button>
                 )}
               </div>
-              <div className="w-full lg:w-1/2">
+              <div 
+                className="w-full lg:w-1/2"
+                data-aos={section.orderReverse ? "fade-left" : "fade-right"}
+                data-aos-delay={`${(index * 100) + 100}`}
+              >
                 {section.coverImage && (
                   <img
                     className="w-full"
