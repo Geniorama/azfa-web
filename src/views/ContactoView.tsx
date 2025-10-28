@@ -107,7 +107,8 @@ export default function ContactoView({ contactPageData, contactInfoGlobal, socia
           title={contactPageData?.hero?.title || "Contacto"} 
           smallTitle={contactPageData?.hero?.smallTitle || "Su mensaje puede iniciar algo grande."}
           image={contactPageData?.hero?.backgroundImg?.url || BgContacto.src}
-          className="lg:pb-64"
+          className="lg:h-82 lg:text-left"
+          textAlign="center"
         />
 
         <section className=" py-12 lg:py-16">
