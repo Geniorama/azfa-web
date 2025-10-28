@@ -22,14 +22,19 @@ export default function LanguageSelector() {
   useEffect(() => {
     const updateLanguageFromCookie = () => {
       const langCookie = Cookies.get("googtrans");
-      if (langCookie) {
-        const lang = langCookie.split("/")[2];
-        if (lang && lang !== currentLanguage) {
-          setCurrentLanguage(lang);
+      if (langCookie && langCookie !== "/es/es") {
+        // Extraer el idioma de destino de la cookie de Google Translate
+        // Formato: /es/en (de español a inglés)
+        const parts = langCookie.split("/");
+        const targetLang = parts[2]; // Tomar el idioma de destino
+        if (targetLang && targetLang !== currentLanguage) {
+          setCurrentLanguage(targetLang);
         }
-      } else if (currentLanguage !== "es") {
-        // Si no hay cookie, volver al español por defecto
-        setCurrentLanguage("es");
+      } else {
+        // Si no hay cookie o es "/es/es" (idioma original), mostrar español
+        if (currentLanguage !== "es") {
+          setCurrentLanguage("es");
+        }
       }
     };
 
@@ -68,7 +73,8 @@ export default function LanguageSelector() {
     setIsOpen(false);
 
     // Actualizamos la cookie de Google Translate
-    Cookies.set("googtrans", `/${lang}`);
+    // Formato: /es/en (de español a inglés) o /es/es (volver a español)
+    Cookies.set("googtrans", `/es/${lang}`);
 
     // Recargamos la página para que el script de Google aplique la traducción
     window.location.reload();
