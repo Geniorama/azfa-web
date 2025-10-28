@@ -22,16 +22,18 @@ export default function LanguageSelector() {
   useEffect(() => {
     const updateLanguageFromCookie = () => {
       const langCookie = Cookies.get("googtrans");
-      if (langCookie && langCookie !== "/es/es") {
+      if (langCookie) {
         // Extraer el idioma de destino de la cookie de Google Translate
         // Formato: /es/en (de español a inglés)
         const parts = langCookie.split("/");
         const targetLang = parts[2]; // Tomar el idioma de destino
-        if (targetLang && targetLang !== currentLanguage) {
+        
+        // Si la cookie existe y no es "/es/es", usar el idioma de destino
+        if (targetLang && targetLang !== "es" && targetLang !== currentLanguage) {
           setCurrentLanguage(targetLang);
         }
       } else {
-        // Si no hay cookie o es "/es/es" (idioma original), mostrar español
+        // Si no hay cookie, mostrar español (idioma original)
         if (currentLanguage !== "es") {
           setCurrentLanguage("es");
         }
@@ -72,9 +74,17 @@ export default function LanguageSelector() {
     setCurrentLanguage(lang);
     setIsOpen(false);
 
-    // Actualizamos la cookie de Google Translate
-    // Formato: /es/en (de español a inglés) o /es/es (volver a español)
-    Cookies.set("googtrans", `/es/${lang}`);
+    if (lang === "es") {
+      // Si selecciona español, eliminar la cookie de Google Translate para volver al idioma original
+      Cookies.remove("googtrans", { path: "/" });
+      
+      // También intentar eliminar todas las variantes posibles de la cookie
+      Cookies.remove("googtrans", { path: "/", domain: ".asociacionzonasfrancas.org" });
+      Cookies.remove("googtrans", { path: "/", domain: "asociacionzonasfrancas.org" });
+    } else {
+      // Si selecciona otro idioma, establecer la cookie con formato /es/{lang}
+      Cookies.set("googtrans", `/es/${lang}`, { path: "/" });
+    }
 
     // Recargamos la página para que el script de Google aplique la traducción
     window.location.reload();
