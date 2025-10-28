@@ -185,8 +185,12 @@ export default function BlogView({ blogData, categoriesData, blogPageData, pagin
           {formattedBlogData.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 md:gap-12">
               {formattedBlogData.map((item, index) => (
-                <CardInfoPortal
+                <div
                   key={index}
+                  data-aos="fade-up"
+                  data-aos-delay={`${(index % 3) * 100}`}
+                >
+                <CardInfoPortal
                   image={item.image}
                   title={item.title}
                   description={item.description}
@@ -200,6 +204,7 @@ export default function BlogView({ blogData, categoriesData, blogPageData, pagin
                   isReadMore={true}
                   arrowColor="text-details"
                 />
+                </div>
               ))}
             </div>
           ) : (

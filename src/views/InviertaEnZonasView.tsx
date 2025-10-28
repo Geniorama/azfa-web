@@ -30,13 +30,19 @@ export default function InviertaEnZonasView({ pageContent }: InviertaEnZonasView
       <section className="bg-white py-10 lg:pt-16">
         <div className="container mx-auto px-4">
           <div className="flex flex-col lg:flex-row gap-4 text-text-primary items-center py-10 px-4 lg:px-0">
-            <div className="w-full lg:w-1/2 lg:pr-24">
+            <div 
+              className="w-full lg:w-1/2 lg:pr-24"
+              data-aos="fade-right"
+            >
               <h2 className="text-h2 mb-10">{pageContent.about.title}</h2>
               <div className="text-[18px] leading-[31px] [&_ul]:list-none [&_ul]:pl-0 [&_ul]:space-y-2 [&_ul>li]:flex [&_ul>li]:items-start [&_ul>li]:before:content-['•'] [&_ul>li]:before:mr-2 [&_ul>li]:before:shrink-0 [&_p]:mb-4">
                 <ReactMarkdown rehypePlugins={[rehypeRaw]}>{pageContent.about.description}</ReactMarkdown>
               </div>
             </div>
-            <div className="w-full lg:w-1/2">
+            <div 
+              className="w-full lg:w-1/2"
+              data-aos="fade-left"
+            >
               <img className="w-full" src={pageContent.about.coverImage.url} alt="Servicios" />
             </div>
           </div>
@@ -45,7 +51,10 @@ export default function InviertaEnZonasView({ pageContent }: InviertaEnZonasView
 
       <section className="bg-[#D5E3EA] py-16">
         <div className="container mx-auto px-4 flex flex-col lg:flex-row items-start justify-center text-text-primary">
-          <div className="w-full lg:w-1/3">
+          <div 
+            className="w-full lg:w-1/3"
+            data-aos="fade-up"
+          >
             <TitleDecorative
               dividerColor="bg-[#94D133]"
               className="text-left items-start"
@@ -53,7 +62,11 @@ export default function InviertaEnZonasView({ pageContent }: InviertaEnZonasView
               {pageContent.statistics.title}
             </TitleDecorative>
           </div>
-          <div className="w-full lg:w-1/3 space-y-10 mt-14 lg:mt-0">
+          <div 
+            className="w-full lg:w-1/3 space-y-10 mt-14 lg:mt-0"
+            data-aos="fade-up"
+            data-aos-delay="100"
+          >
             {pageContent.statistics.statistics?.slice(0, 2).map((statistic, index) => (
               <div key={statistic.id || index} className="flex items-center gap-6">
                 {statistic.icon?.customImage?.url && (
@@ -72,7 +85,11 @@ export default function InviertaEnZonasView({ pageContent }: InviertaEnZonasView
               </div>
             ))}
           </div>
-          <div className="w-full lg:w-1/3 space-y-10">
+          <div 
+            className="w-full lg:w-1/3 space-y-10"
+            data-aos="fade-up"
+            data-aos-delay="200"
+          >
             {pageContent.statistics.statistics?.slice(2).map((statistic, index) => (
               <div key={statistic.id || index} className={`flex items-center gap-6 ${index === 0 ? 'mt-8 lg:mt-0' : ''}`}>
                 {statistic.icon?.customImage?.url && (
@@ -97,14 +114,20 @@ export default function InviertaEnZonasView({ pageContent }: InviertaEnZonasView
       <section className="bg-white py-10 lg:pt-16">
         <div className="container mx-auto px-4">
           <div className="flex flex-col lg:flex-row-reverse gap-4 text-text-primary items-center py-10 px-4 lg:px-0">
-            <div className="w-full lg:w-1/2 lg:pl-24">
+            <div 
+              className="w-full lg:w-1/2 lg:pl-24"
+              data-aos="fade-left"
+            >
                <h2 className="text-h2 mb-10">{pageContent.about2.title}</h2>
                <div className="text-[18px] leading-[31px] [&_ul]:list-none [&_ul]:pl-0 [&_ul]:space-y-2 [&_ul>li]:flex [&_ul>li]:items-start [&_ul>li]:before:content-['•'] [&_ul>li]:before:mr-2 [&_ul>li]:before:shrink-0 [&_p]:mb-4">
                  <ReactMarkdown rehypePlugins={[rehypeRaw]}>{pageContent.about2.description}</ReactMarkdown>
                </div>
             </div>
             {pageContent.about2.coverImage?.url && (
-              <div className="w-full lg:w-1/2">
+              <div 
+                className="w-full lg:w-1/2"
+                data-aos="fade-right"
+              >
                 <img className="w-full" src={pageContent.about2.coverImage.url} alt="Inversión en Zonas Francas" />
               </div>
             )}
@@ -115,13 +138,19 @@ export default function InviertaEnZonasView({ pageContent }: InviertaEnZonasView
       <section className="bg-secondary lg:bg-linear-to-r from-secondary to-white from-70% to-20% py-10">
         <div className="container mx-auto px-4">
           <div className="flex flex-col lg:flex-row gap-4 text-white items-center py-5 lg:py-10 px-4 lg:px-0">
-            <div className="w-full lg:w-1/2 lg:pr-24">
+            <div 
+              className="w-full lg:w-1/2 lg:pr-24"
+              data-aos="fade-right"
+            >
                <h2 className="text-h2 mb-10">{pageContent.benefits.title}</h2>
                <div className="text-[18px] leading-[31px] [&_ul]:list-none [&_ul]:pl-0 [&_ul]:space-y-2 [&_ul>li]:flex [&_ul>li]:items-start [&_ul>li]:before:content-['•'] [&_ul>li]:before:mr-2 [&_ul>li]:before:shrink-0 [&_p]:mb-4">
                  <ReactMarkdown rehypePlugins={[rehypeRaw]}>{pageContent.benefits.description}</ReactMarkdown>
                </div>
             </div>
-            <div className="w-full lg:w-1/2">
+            <div 
+              className="w-full lg:w-1/2"
+              data-aos="fade-left"
+            >
               <img className="w-full" src={pageContent.benefits.coverImage.url} alt="Servicios" />
             </div>
           </div>
@@ -131,7 +160,9 @@ export default function InviertaEnZonasView({ pageContent }: InviertaEnZonasView
       {pageContent.bannerImage?.url && (
         <section className="bg-white py-10 lg:pt-16">
           <div className="container mx-auto px-4">
-            <img className="w-full" src={pageContent.bannerImage.url} alt={pageContent.bannerImage.alternativeText || "Inversión en Zonas Francas"} />
+            <div data-aos="fade-up">
+              <img className="w-full" src={pageContent.bannerImage.url} alt={pageContent.bannerImage.alternativeText || "Inversión en Zonas Francas"} />
+            </div>
           </div>
         </section>
       )}

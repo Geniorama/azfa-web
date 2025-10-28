@@ -86,8 +86,12 @@ export default function NewsletterView({ newsletterData, categoriesData, paginat
                   <>
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                         {formattedNewsletterData.map((item, index) => (
-                            <CardNewsletter 
+                            <div
                               key={index}
+                              data-aos="fade-up"
+                              data-aos-delay={`${(index % 3) * 100}`}
+                            >
+                            <CardNewsletter
                               title={item.title} 
                               date={item.date}
                               thumbnail={item.thumbnail}
@@ -97,6 +101,7 @@ export default function NewsletterView({ newsletterData, categoriesData, paginat
                               }} 
                               background={backgroundColors[index % backgroundColors.length]} 
                             />
+                            </div>
                         ))}
                     </div>
                     {paginationMeta && paginationMeta.pagination && paginationMeta.pagination.pageCount > 1 && (

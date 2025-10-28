@@ -132,7 +132,10 @@ export default function ManagementView({
       </div>
       <section className="py-4 bg-white">
         <div className="container mx-auto px-4">
-          <span className="text-button text-text-primary">
+          <span 
+            data-aos="fade-up"
+            className="text-button text-text-primary"
+          >
             {" "}
             <b className="font-medium">{filteredManagement.length} resultados</b> encontrados
           </span>
@@ -140,29 +143,34 @@ export default function ManagementView({
           {/* Grid cards */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mt-8">
             {filteredManagement.length > 0 ? (
-              filteredManagement.map((item) => (
-                <CardInfoPortal
+              filteredManagement.map((item, index) => (
+                <div
                   key={item.id}
-                  image={item.featuredImage?.url || "/images/placeholder.jpg"}
-                  title={item.title}
-                  description={item.description}
-                  tags={[
-                    ...item.tags.map(tag => tag.name),
-                    ...(item.publishDate ? [item.publishDate.split('-')[0]] : []) // Agregar el año como tag solo si existe
-                  ]}
-                  noSpaceImage={true}
-                  button={{
-                    label: "Descargar",
-                    onClick: () => {
-                      // Si hay externalLink, usar ese enlace; si no, usar el downloadableFile
-                      if (item.externalLink) {
-                        window.open(item.externalLink, '_blank');
-                      } else if (item.downloadableFile?.url) {
-                        window.open(item.downloadableFile.url, '_blank');
-                      }
-                    },
-                  }}
-                />
+                  data-aos="fade-up"
+                  data-aos-delay={`${(index % 3) * 100}`}
+                >
+                  <CardInfoPortal
+                    image={item.featuredImage?.url || "/images/placeholder.jpg"}
+                    title={item.title}
+                    description={item.description}
+                    tags={[
+                      ...item.tags.map(tag => tag.name),
+                      ...(item.publishDate ? [item.publishDate.split('-')[0]] : []) // Agregar el año como tag solo si existe
+                    ]}
+                    noSpaceImage={true}
+                    button={{
+                      label: "Descargar",
+                      onClick: () => {
+                        // Si hay externalLink, usar ese enlace; si no, usar el downloadableFile
+                        if (item.externalLink) {
+                          window.open(item.externalLink, '_blank');
+                        } else if (item.downloadableFile?.url) {
+                          window.open(item.downloadableFile.url, '_blank');
+                        }
+                      },
+                    }}
+                  />
+                </div>
               ))
             ) : (
               <div className="col-span-full text-center py-12">

@@ -114,7 +114,10 @@ export default function ContactoView({ contactPageData, contactInfoGlobal, socia
         <section className=" py-12 lg:py-16">
           <div className="container mx-auto px-4">
             <div className="flex flex-col md:flex-row gap-6 text-text-primary">
-              <div className="w-full md:w-1/2 mb-10 lg:mb-0">
+              <div 
+                className="w-full md:w-1/2 mb-10 lg:mb-0"
+                data-aos="fade-right"
+              >
                 <h2 className="text-h2">{contactPageData?.contactSectionTitle || "¿Necesita asesoría? contáctenos"}</h2>
 
                 {/* Phone */}
@@ -177,7 +180,10 @@ export default function ContactoView({ contactPageData, contactInfoGlobal, socia
                   </ul>
                 </div>
               </div>
-              <div className="w-full md:w-1/2 relative z-10">
+              <div 
+                className="w-full md:w-1/2 relative z-10"
+                data-aos="fade-left"
+              >
                 <div className="bg-white lg:p-10 p-4 rounded-lg lg:-mt-64">
                   <div className="text-center space-y-4">
                     <h5 className="text-h2">¿Desea que le contactemos?</h5>
