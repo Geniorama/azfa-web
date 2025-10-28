@@ -39,13 +39,16 @@ export default function ManagementView({
         item.tags.some(tag => tag.name.toLowerCase().includes(filters.tipoPublicacion.toLowerCase()));
       
       const matchesYear = !filters.anioPublicacion || 
-        item.publishDate.startsWith(filters.anioPublicacion);
+        (item.publishDate && item.publishDate.startsWith(filters.anioPublicacion));
       
       return matchesType && matchesYear;
     });
 
     // Ordenar de más reciente a más antigua
     const sorted = filtered.sort((a, b) => {
+      // Si alguno no tiene publishDate, ponerlo al final
+      if (!a.publishDate) return 1;
+      if (!b.publishDate) return -1;
       const dateA = new Date(a.publishDate);
       const dateB = new Date(b.publishDate);
       return dateB.getTime() - dateA.getTime();
@@ -59,7 +62,9 @@ export default function ManagementView({
   // Obtener años únicos para el filtro
   const availableYears = useMemo(() => {
     if (!management) return [];
-    const years = management.map(item => item.publishDate.split('-')[0]);
+    const years = management
+      .filter(item => item.publishDate) // Filtrar items sin publishDate
+      .map(item => item.publishDate!.split('-')[0]);
     return [...new Set(years)].sort((a, b) => b.localeCompare(a));
   }, [management]);
 
@@ -143,13 +148,16 @@ export default function ManagementView({
                   description={item.description}
                   tags={[
                     ...item.tags.map(tag => tag.name),
-                    item.publishDate.split('-')[0] // Agregar el año como tag
+                    ...(item.publishDate ? [item.publishDate.split('-')[0]] : []) // Agregar el año como tag solo si existe
                   ]}
                   noSpaceImage={true}
                   button={{
                     label: "Descargar",
                     onClick: () => {
-                      if (item.downloadableFile?.url) {
+                      // Si hay externalLink, usar ese enlace; si no, usar el downloadableFile
+                      if (item.externalLink) {
+                        window.open(item.externalLink, '_blank');
+                      } else if (item.downloadableFile?.url) {
                         window.open(item.downloadableFile.url, '_blank');
                       }
                     },

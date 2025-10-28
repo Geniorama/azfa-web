@@ -232,13 +232,14 @@ export interface ManagementType {
     title: string;
     slug: string;
     description: string;
-    publishDate: string;
+    publishDate: string | null;
     featured: boolean;
     createdAt: string;
     updatedAt: string;
     publishedAt: string;
     locale: string;
     author: unknown | null;
+    externalLink: string | null;
     featuredImage: StudyImage;
     downloadableFile: StudyDownloadableFile;
     tags: StudyTag[];
