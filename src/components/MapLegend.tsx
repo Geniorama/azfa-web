@@ -40,9 +40,11 @@ const MapLegend: React.FC<MapLegendProps> = ({ showAffiliates = false }) => {
         </div>
         
         <div className="mt-2 text-xs text-gray-500 space-y-1">
-          <div>• Organizaciones</div>
-          <div>• Empresas</div>
-          <div>• Zonas francas</div>
+          <div>• Zonas Francas</div>
+          <div>• Entidades Gubernamentales</div>
+          <div>• Asociaciones</div>
+          <div>• Consultores</div>
+          <div>• Proveedores</div>
         </div>
       </div>
       
