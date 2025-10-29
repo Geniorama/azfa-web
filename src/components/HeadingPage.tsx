@@ -32,7 +32,7 @@ export default function HeadingPage({
         </h1>
         <p className="text-details text-h6 lg:text-lg mt-4">{smallTitle}</p>
         {description && (
-          <p>{description}</p>
+          <p className="text-background-1 text-body lg:text-h6 mt-2 font-medium">{description}</p>
         )}
       </div>
     </div>

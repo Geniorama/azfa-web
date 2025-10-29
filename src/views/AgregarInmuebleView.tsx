@@ -700,12 +700,12 @@ export default function AgregarInmuebleView() {
                                 Puede ser un enlace a WhatsApp, un formulario de contacto, o cualquier otra página.
                             </p>
                             <input 
-                                type="url" 
+                                type="text" 
                                 id="ctaButton" 
                                 {...register("ctaButton", {
                                     pattern: {
-                                        value: /^https?:\/\/.+/,
-                                        message: "Por favor ingrese una URL válida que comience con http:// o https://"
+                                        value: /^(https?:\/\/.+|mailto:.+)/,
+                                        message: "Por favor ingrese una URL válida que comience con http://, https:// o mailto:"
                                     }
                                 })}
                                 placeholder="Ej: https://wa.me/573001234567?text=Me interesa este inmueble" 
