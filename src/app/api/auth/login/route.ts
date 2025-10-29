@@ -31,6 +31,7 @@ export async function POST(request: NextRequest) {
         confirmed: boolean; 
         blocked: boolean;
         isEditor?: boolean;
+        isPropertiesEditor?: boolean;
         affiliateCompany?: {
           id: number;
           documentId?: string;
@@ -151,7 +152,7 @@ export async function POST(request: NextRequest) {
         console.error('Error al obtener detalles del usuario:', userDetailsResponse.status)
         // Aún así, asignar los valores que ya obtuvimos
         user.isEditor = isEditorValue
-        ;(user as any).isPropertiesEditor = isPropertiesEditorValue
+        user.isPropertiesEditor = isPropertiesEditorValue
       }
     } catch (userDetailsError) {
       console.error('Error al obtener detalles del usuario:', userDetailsError instanceof Error ? userDetailsError.message : userDetailsError)
@@ -181,7 +182,7 @@ export async function POST(request: NextRequest) {
       confirmed: user.confirmed,
       blocked: user.blocked,
       isEditor: user.isEditor,
-      isPropertiesEditor: (user as any).isPropertiesEditor,
+      isPropertiesEditor: user.isPropertiesEditor,
       affiliateCompany: user.affiliateCompany,
       role: user.role,
     })
@@ -195,7 +196,7 @@ export async function POST(request: NextRequest) {
         confirmed: user.confirmed,
         blocked: user.blocked,
         isEditor: user.isEditor,
-        isPropertiesEditor: (user as any).isPropertiesEditor,
+        isPropertiesEditor: user.isPropertiesEditor,
         affiliateCompany: user.affiliateCompany,
         role: user.role,
       },
