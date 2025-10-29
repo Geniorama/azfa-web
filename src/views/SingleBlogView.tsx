@@ -1,6 +1,7 @@
 "use client";
 
-import { FiShare2 } from "react-icons/fi";
+import { FiShare2, FiFacebook, FiTwitter, FiLinkedin, FiMail } from "react-icons/fi";
+import { FaWhatsapp } from "react-icons/fa";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation } from "swiper/modules";
 import "swiper/css";
@@ -17,6 +18,7 @@ interface SingleBlogViewProps {
 
 export default function SingleBlogView({ blog }: SingleBlogViewProps) {
   const [relatedBlogs, setRelatedBlogs] = useState<PressRoomType[]>([]);
+  const [showShareMenu, setShowShareMenu] = useState(false);
 
   useEffect(() => {
     // Fetch related blogs
@@ -41,17 +43,37 @@ export default function SingleBlogView({ blog }: SingleBlogViewProps) {
     fetchRelatedBlogs();
   }, [blog.slug, blog.category?.id]);
 
-  const handleShare = () => {
-    if (navigator.share) {
-      navigator.share({
-        title: blog.title,
-        text: blog.extract,
-        url: window.location.href,
-      });
-    } else {
-      // Fallback: copy to clipboard
-      navigator.clipboard.writeText(window.location.href);
-      alert("Enlace copiado al portapapeles");
+  const handleShare = (platform?: string) => {
+    const url = window.location.href;
+    const title = blog.title;
+
+    let shareUrl = '';
+
+    switch (platform) {
+      case 'twitter':
+        shareUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(title)}&url=${encodeURIComponent(url)}`;
+        break;
+      case 'facebook':
+        shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`;
+        break;
+      case 'linkedin':
+        shareUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(url)}`;
+        break;
+      case 'whatsapp':
+        shareUrl = `https://wa.me/?text=${encodeURIComponent(title + ' ' + url)}`;
+        break;
+      case 'email':
+        shareUrl = `mailto:?subject=${encodeURIComponent(title)}&body=${encodeURIComponent(url)}`;
+        break;
+      default:
+        // Si no hay plataforma, mostrar/ocultar el menú
+        setShowShareMenu(!showShareMenu);
+        return;
+    }
+
+    if (shareUrl) {
+      window.open(shareUrl, '_blank', 'width=600,height=400');
+      setShowShareMenu(false);
     }
   };
 
@@ -98,14 +120,64 @@ export default function SingleBlogView({ blog }: SingleBlogViewProps) {
               </div>
               <hr className="border-details w-32" />
               {/* Icon share */}
-              <div className="flex gap-2">
+              <div className="flex gap-2 relative">
                 <button 
-                  onClick={handleShare}
+                  onClick={() => handleShare()}
                   className="hover:opacity-70 transition-opacity cursor-pointer"
                   aria-label="Compartir artículo"
                 >
                   <FiShare2 className="text-2xl" />
                 </button>
+                
+                {/* Menú de compartir */}
+                {showShareMenu && (
+                  <>
+                    {/* Overlay para cerrar el menú al hacer clic fuera */}
+                    <div 
+                      className="fixed inset-0 z-40" 
+                      onClick={() => setShowShareMenu(false)}
+                    />
+                    
+                    {/* Menú de opciones */}
+                    <div className="absolute left-0 top-10 mt-2 bg-white rounded-lg shadow-xl border border-gray-200 p-2 z-50 min-w-[180px]">
+                      <button
+                        onClick={() => handleShare('facebook')}
+                        className="w-full text-left px-3 py-2.5 hover:bg-blue-50 rounded flex items-center gap-3 text-sm text-gray-700 hover:text-blue-600 transition-colors"
+                      >
+                        <FiFacebook className="text-lg text-blue-600" />
+                        <span>Facebook</span>
+                      </button>
+                      <button
+                        onClick={() => handleShare('twitter')}
+                        className="w-full text-left px-3 py-2.5 hover:bg-sky-50 rounded flex items-center gap-3 text-sm text-gray-700 hover:text-sky-500 transition-colors"
+                      >
+                        <FiTwitter className="text-lg text-sky-500" />
+                        <span>Twitter</span>
+                      </button>
+                      <button
+                        onClick={() => handleShare('linkedin')}
+                        className="w-full text-left px-3 py-2.5 hover:bg-blue-50 rounded flex items-center gap-3 text-sm text-gray-700 hover:text-blue-700 transition-colors"
+                      >
+                        <FiLinkedin className="text-lg text-blue-700" />
+                        <span>LinkedIn</span>
+                      </button>
+                      <button
+                        onClick={() => handleShare('whatsapp')}
+                        className="w-full text-left px-3 py-2.5 hover:bg-green-50 rounded flex items-center gap-3 text-sm text-gray-700 hover:text-green-600 transition-colors"
+                      >
+                        <FaWhatsapp className="text-lg text-green-600" />
+                        <span>WhatsApp</span>
+                      </button>
+                      <button
+                        onClick={() => handleShare('email')}
+                        className="w-full text-left px-3 py-2.5 hover:bg-gray-50 rounded flex items-center gap-3 text-sm text-gray-700 hover:text-gray-900 transition-colors"
+                      >
+                        <FiMail className="text-lg text-gray-600" />
+                        <span>Email</span>
+                      </button>
+                    </div>
+                  </>
+                )}
               </div>
             </div>
           </div>
@@ -113,7 +185,7 @@ export default function SingleBlogView({ blog }: SingleBlogViewProps) {
       </section>
 
       {/* Dynamic content */}
-      <article className="py-8 2xl:py-24 bg-white text-text-primary">
+      <article className="py-8 2xl:pt-0 bg-white text-text-primary">
         <div className="container mx-auto px-4 max-w-screen-md">
           {/* Dynamic zone content */}
           {blog.content && blog.content.length > 0 ? (
