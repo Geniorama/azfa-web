@@ -21,6 +21,10 @@ export default function MisInmueblesView() {
     router.push(`/portal-afiliados/mis-inmuebles/agregar-inmueble`);
   };
 
+  const handleContactWithAZFA = () => {
+    window.open("mailto:info@asociacionzonasfrancas.org", "_blank");
+  };
+
   // Mostrar spinner mientras carga
   if (loading) {
     return (
@@ -29,6 +33,7 @@ export default function MisInmueblesView() {
           title="Inmuebles disponibles"
           smallTitle="Bienvenidos al módulo de edición de inmuebles de la sección de oferta inmobiliaria, aquí usted podrá ver, agregar o editar sus inmuebles"
           image={bgInmuebles.src}
+          description={user?.affiliateCompany?.title || ""}
         />
         <div className="flex justify-center items-center py-20">
           <LoadingSpinner />
@@ -62,6 +67,7 @@ export default function MisInmueblesView() {
         title="Inmuebles disponibles"
         smallTitle={`Bienvenidos al módulo de edición de inmuebles. Aquí usted podrá ver, agregar o editar los inmuebles de su empresa.`}
         image={bgInmuebles.src}
+        description={user?.affiliateCompany?.title || ""}
       />
 
       <section className="bg-background-1 py-12 lg:py-16">
@@ -141,7 +147,7 @@ export default function MisInmueblesView() {
                 variant="secondary"
                 className="inline-flex justify-between h-auto"
                 icon
-                onClick={() => console.log("Contactar con el equipo AZFA")}
+                onClick={handleContactWithAZFA}
               >
                 Solicitar más inmuebles
               </Button>
