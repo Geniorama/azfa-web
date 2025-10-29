@@ -20,9 +20,9 @@ export default function ClientLayoutWrapper({ children, header, footer }: Client
   return (
     <AuthProvider>
       <GoogleTranslateSpacer>
-        <Header header={header} />
+        {pathname !== "/maintenance" && <Header header={header} />}
         {children}
-        <Footer showBanner={showBanner} footer={footer} />
+        {pathname !== "/maintenance" && <Footer showBanner={showBanner} footer={footer} />}
       </GoogleTranslateSpacer>
     </AuthProvider>
   );
