@@ -6,7 +6,7 @@ import CustomSelect from "@/utils/CustomSelect";
 import IconCalendario from "@/assets/img/icon-calendario.svg";
 import IconOferta from "@/assets/img/icon-oferta.svg";
 import { RxReload } from "react-icons/rx";
-import { useState } from "react";
+import { useState, useEffect, useMemo } from "react";
 import CardInfoPortal from "@/components/CardInfoPortal";
 import Pagination from "@/components/Pagination";
 import { NewsType, NewsCategoryType, NewsSectionType } from "@/types/componentsType";
@@ -16,19 +16,28 @@ import { useRouter, useSearchParams } from "next/navigation";
 
 interface NoticiasViewProps {
   newsData: NewsType[];
+  allNewsData?: NewsType[];
   categoriesData: NewsCategoryType[];
   paginationMeta: { pagination: { page: number, pageCount: number, pageSize: number, total: number } } | null;
   newsSectionData: NewsSectionType | null;
 }
 
-export default function NoticiasView({ newsData, categoriesData, paginationMeta, newsSectionData }: NoticiasViewProps) {
+export default function NoticiasView({ newsData, allNewsData = [], categoriesData, paginationMeta, newsSectionData }: NoticiasViewProps) {
   const [filters, setFilters] = useState({
     tipoPublicacion: "",
     anioPublicacion: "",
   });
+  const [currentPage, setCurrentPage] = useState(1);
 
   const router = useRouter();
   const searchParams = useSearchParams();
+  
+  // Usar la página de la URL si existe
+  const pageFromUrl = parseInt(searchParams.get('page') || '1', 10);
+  
+  // Determinar qué datos usar según si hay filtros activos
+  const hasActiveFilters = filters.tipoPublicacion !== "" || filters.anioPublicacion !== "";
+  const dataSource = hasActiveFilters ? allNewsData : newsData;
 
   const handleOpenNews = (url: string) => {
     console.log("handleOpenNews called with URL:", url);
@@ -41,10 +50,26 @@ export default function NoticiasView({ newsData, categoriesData, paginationMeta,
   };
 
   const handlePageChange = (page: number) => {
-    const params = new URLSearchParams(searchParams.toString());
-    params.set('page', page.toString());
-    router.push(`/sala-de-prensa/noticias?${params.toString()}`);
+    if (hasActiveFilters) {
+      // Cuando hay filtros, cambiar la página localmente
+      setCurrentPage(page);
+    } else {
+      // Cuando no hay filtros, usar la paginación del servidor
+      const params = new URLSearchParams(searchParams.toString());
+      params.set('page', page.toString());
+      router.push(`/sala-de-prensa/noticias?${params.toString()}`);
+    }
   };
+  
+  // Sincronizar currentPage con la URL cuando no hay filtros
+  useEffect(() => {
+    if (!hasActiveFilters) {
+      setCurrentPage(pageFromUrl);
+    } else {
+      // Resetear a página 1 cuando se activan filtros
+      setCurrentPage(1);
+    }
+  }, [hasActiveFilters, pageFromUrl]);
 
   // Función para formatear la fecha como "JUN 25"
   const formatDate = (dateString: string | null): string => {
@@ -122,9 +147,36 @@ export default function NoticiasView({ newsData, categoriesData, paginationMeta,
     });
   };
 
-  const filteredNewsData = filterNewsData(newsData);
-  const formattedNewsData = formatNewsData(filteredNewsData);
+  // Filtrar las noticias según los filtros activos
+  const filteredNewsData = useMemo(() => {
+    return filterNewsData(dataSource);
+  }, [dataSource, filters]);
+
+  // Paginación en cliente cuando hay filtros
+  const pageSize = 9;
+  const totalPagesFiltered = Math.ceil(filteredNewsData.length / pageSize);
+  const startIndex = (currentPage - 1) * pageSize;
+  const endIndex = startIndex + pageSize;
+  
+  // Noticias a mostrar: paginadas del servidor (sin filtros) o paginadas del cliente (con filtros)
+  const newsToShow = hasActiveFilters 
+    ? filteredNewsData.slice(startIndex, endIndex)
+    : filteredNewsData;
+
+  const formattedNewsData = formatNewsData(newsToShow);
   const categoryOptions = formatCategoriesForSelect(categoriesData);
+  
+  // Paginación a mostrar: del servidor (sin filtros) o calculada (con filtros)
+  const paginationToShow = hasActiveFilters
+    ? {
+        pagination: {
+          page: currentPage,
+          pageCount: totalPagesFiltered,
+          pageSize: pageSize,
+          total: filteredNewsData.length
+        }
+      }
+    : paginationMeta;
 
   return (
     <div>
@@ -240,10 +292,10 @@ export default function NoticiasView({ newsData, categoriesData, paginationMeta,
       <section className="bg-white lg:py-10">
         <div className="container mx-auto px-4">
           <div className="flex justify-center">
-            {paginationMeta && paginationMeta.pagination && paginationMeta.pagination.pageCount > 1 && (
+            {paginationToShow && paginationToShow.pagination && paginationToShow.pagination.pageCount > 1 && (
               <Pagination 
-                currentPage={paginationMeta.pagination.page} 
-                totalPages={paginationMeta.pagination.pageCount} 
+                currentPage={paginationToShow.pagination.page} 
+                totalPages={paginationToShow.pagination.pageCount} 
                 onPageChange={handlePageChange} 
               />
             )}

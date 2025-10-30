@@ -34,12 +34,12 @@ const getNews = async (page: number = 1, pageSize: number = 9): Promise<{ data: 
   }
 };
 
-// Función para obtener categorías de noticias desde las noticias existentes
-const getNewsCategories = async (): Promise<{ data: NewsCategoryType[] } | null> => {
+// Función para obtener TODAS las noticias sin paginación (para filtros y categorías)
+const getAllNews = async (): Promise<{ data: NewsType[] } | null> => {
   try {
-    // Obtener todas las noticias para extraer las categorías únicas
+    // Obtener todas las noticias con un límite alto
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_STRAPI_URL}/press-rooms?filters[type][$eq]=news&populate[0]=category&fields[0]=externalLink&pagination[pageSize]=100`,
+      `${process.env.NEXT_PUBLIC_STRAPI_URL}/press-rooms?filters[type][$eq]=news&populate[0]=thumbnail&populate[1]=category&fields[0]=title&fields[1]=slug&fields[2]=extract&fields[3]=type&fields[4]=externalLink&fields[5]=createdAt&fields[6]=updatedAt&fields[7]=publishedAt&fields[8]=publishDate&pagination[pageSize]=1000&sort=publishDate:desc`,
       {
         cache: "force-cache",
         next: { revalidate: 3600 }, // Revalidar cada hora
@@ -52,19 +52,47 @@ const getNewsCategories = async (): Promise<{ data: NewsCategoryType[] } | null>
 
     const data = await response.json();
     
-    // Extraer categorías únicas de las noticias
-    const categories = data.data
-      ?.map((news: NewsType) => news.category)
-      .filter((category: NewsCategoryType | null, index: number, self: NewsCategoryType[]) => 
-        category && self.findIndex(c => c?.id === category.id) === index
-      ) || [];
-
-    return { data: categories };
+    // Si hay más resultados, hacer paginación para obtenerlos todos
+    if (data.meta?.pagination?.pageCount > 1) {
+      const allData = [...data.data];
+      const totalPages = data.meta.pagination.pageCount;
+      
+      // Obtener las páginas restantes
+      for (let page = 2; page <= totalPages; page++) {
+        const pageResponse = await fetch(
+          `${process.env.NEXT_PUBLIC_STRAPI_URL}/press-rooms?filters[type][$eq]=news&populate[0]=thumbnail&populate[1]=category&fields[0]=title&fields[1]=slug&fields[2]=extract&fields[3]=type&fields[4]=externalLink&fields[5]=createdAt&fields[6]=updatedAt&fields[7]=publishedAt&fields[8]=publishDate&pagination[page]=${page}&pagination[pageSize]=1000&sort=publishDate:desc`,
+          {
+            cache: "force-cache",
+            next: { revalidate: 3600 },
+          }
+        );
+        
+        if (pageResponse.ok) {
+          const pageData = await pageResponse.json();
+          allData.push(...pageData.data);
+        }
+      }
+      
+      return { data: allData };
+    }
+    
+    return data;
   } catch (error) {
-    console.error("Error fetching news categories:", error);
-    // Retornar null en caso de error para que el componente maneje el fallback
+    console.error("Error fetching all news:", error);
     return null;
   }
+};
+
+// Función para obtener categorías de noticias desde las noticias existentes
+const getNewsCategories = async (allNews: NewsType[]): Promise<{ data: NewsCategoryType[] }> => {
+  // Extraer categorías únicas de todas las noticias
+  const categories = allNews
+    .map((news: NewsType) => news.category)
+    .filter((category: NewsCategoryType | null, index: number, self: (NewsCategoryType | null)[]) => 
+      category && self.findIndex(c => c?.id === category.id) === index
+    ) || [];
+
+  return { data: categories };
 };
 
 // Función común para obtener datos de la página de sala de prensa
@@ -93,13 +121,22 @@ interface NoticiasPageProps {
 export default async function Noticias({ searchParams }: NoticiasPageProps) {
   const resolvedSearchParams = await searchParams;
   const currentPage = parseInt(resolvedSearchParams.page || '1', 10);
+  
+  // Obtener todas las noticias para filtros y categorías
+  const allNewsData = await getAllNews();
+  const allNews = allNewsData?.data || [];
+  
+  // Obtener noticias paginadas para mostrar (cuando no hay filtros)
   const newsData = await getNews(currentPage);
-  const categoriesData = await getNewsCategories();
+  
+  // Obtener categorías desde todas las noticias
+  const categoriesData = await getNewsCategories(allNews);
   const pressRoomPageData = await getPressRoomPage();
 
   return (
     <NoticiasView 
-      newsData={newsData?.data || []}
+      newsData={newsData?.data || []} // Noticias paginadas del servidor (sin filtros)
+      allNewsData={allNews} // Todas las noticias (para cuando hay filtros)
       categoriesData={categoriesData?.data || []}
       paginationMeta={newsData?.meta || null}
       newsSectionData={pressRoomPageData?.data?.newsSection || null}
