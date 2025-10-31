@@ -849,6 +849,14 @@ export default function Home({
         </div>
       </section>
 
+      {/* embed widgets social media */}
+
+<section className="bg-white py-16">
+  <div className="container mx-auto px-4">
+    <iframe src="https://b80a5da9dc03409482ed473ddf14f9a9.elf.site" className="w-full h-180 lg:h-180" height="500" style={{ border: 'none', overflow: 'hidden' }} allowFullScreen={true} allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"></iframe>
+  </div>
+</section>
+
       {/* Afiliados */}
       <section className="bg-white pt-16">
         <div className="container mx-auto pb-8 lg:pb-16 px-0 md:px-16 max-w-6xl">
