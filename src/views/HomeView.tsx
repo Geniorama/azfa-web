@@ -123,7 +123,7 @@ export default function Home({
       swiperRef.current.slideTo(index);
     }
   };
-  
+
   useEffect(() => {
     console.log('servicesData', servicesData);
   }, [servicesData]);
@@ -194,9 +194,8 @@ export default function Home({
               slidesData.map((slide) => (
                 <SwiperSlide
                   style={{
-                    backgroundImage: `url(${
-                      slide.backgroundImage?.url || "/inicio-slide (1).jpg"
-                    })`,
+                    backgroundImage: `url(${slide.backgroundImage?.url || "/inicio-slide (1).jpg"
+                      })`,
                   }}
                   key={slide.id}
                   className="bg-text-primary lg:py-24 py-16 bg-cover bg-right"
@@ -318,8 +317,8 @@ export default function Home({
         </div>
 
         {/* Services cards */}
-        <div 
-          data-aos="fade-up" 
+        <div
+          data-aos="fade-up"
           data-aos-delay="200"
           className="hidden lg:grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-[1px] mt-16">
           {servicesData?.services && servicesData.services.length > 0 ? (
@@ -392,8 +391,8 @@ export default function Home({
         </div>
 
         {/* Services cards mobile swiper */}
-        <div 
-          data-aos="fade-up" 
+        <div
+          data-aos="fade-up"
           data-aos-delay="200"
           className="lg:hidden mt-14">
           <Swiper
@@ -436,8 +435,8 @@ export default function Home({
               {statisticsData?.title || "Las Zonas Francas de Iberoamérica"}
             </TitleDecorative>
           </div>
-          <div 
-            data-aos="fade-up" 
+          <div
+            data-aos="fade-up"
             data-aos-delay="100"
             className="w-full lg:w-1/3 space-y-10 mt-14 lg:mt-0">
             {statisticsData?.statistics?.slice(0, 2).map((statistic, index) => (
@@ -461,47 +460,46 @@ export default function Home({
             {/* Fallback si no hay datos */}
             {(!statisticsData?.statistics ||
               statisticsData.statistics.length === 0) && (
-              <>
-                <div className="flex items-center gap-6">
-                  <img
-                    src={IconIberoamerica.src}
-                    alt="Icon Iberoamérica"
-                    className="w-16 h-16"
-                  />
-                  <Counter
-                    value={800}
-                    prefix="+"
-                    leyend="Zonas Francas"
-                    thousandSeparator="."
-                  />
-                </div>
+                <>
+                  <div className="flex items-center gap-6">
+                    <img
+                      src={IconIberoamerica.src}
+                      alt="Icon Iberoamérica"
+                      className="w-16 h-16"
+                    />
+                    <Counter
+                      value={800}
+                      prefix="+"
+                      leyend="Zonas Francas"
+                      thousandSeparator="."
+                    />
+                  </div>
 
-                <div className="flex items-center gap-6">
-                  <img
-                    src={IconIberoamerica.src}
-                    alt="Icon Iberoamérica"
-                    className="w-16 h-16"
-                  />
-                  <Counter
-                    value={8000}
-                    prefix="+"
-                    leyend="Empresas"
-                    thousandSeparator="."
-                  />
-                </div>
-              </>
-            )}
+                  <div className="flex items-center gap-6">
+                    <img
+                      src={IconIberoamerica.src}
+                      alt="Icon Iberoamérica"
+                      className="w-16 h-16"
+                    />
+                    <Counter
+                      value={8000}
+                      prefix="+"
+                      leyend="Empresas"
+                      thousandSeparator="."
+                    />
+                  </div>
+                </>
+              )}
           </div>
-          <div 
-            data-aos="fade-up" 
+          <div
+            data-aos="fade-up"
             data-aos-delay="200"
             className="w-full lg:w-1/3 space-y-10">
             {statisticsData?.statistics?.slice(2).map((statistic, index) => (
               <div
                 key={statistic.id || index}
-                className={`flex items-center gap-6 ${
-                  index === 0 ? "mt-8 lg:mt-0" : ""
-                }`}
+                className={`flex items-center gap-6 ${index === 0 ? "mt-8 lg:mt-0" : ""
+                  }`}
               >
                 <img
                   src={statistic.icon?.customImage?.url || IconIberoamerica.src}
@@ -519,50 +517,50 @@ export default function Home({
             {/* Fallback si no hay datos */}
             {(!statisticsData?.statistics ||
               statisticsData.statistics.length === 0) && (
-              <>
-                <div className="flex items-center gap-6 mt-8 lg:mt-0">
-                  <img
-                    src={IconIberoamerica.src}
-                    alt="Icon Iberoamérica"
-                    className="w-16 h-16"
-                  />
-                  <Counter
-                    value={1090000}
-                    prefix="+"
-                    leyend="Empleos"
-                    thousandSeparator="."
-                  />
-                </div>
+                <>
+                  <div className="flex items-center gap-6 mt-8 lg:mt-0">
+                    <img
+                      src={IconIberoamerica.src}
+                      alt="Icon Iberoamérica"
+                      className="w-16 h-16"
+                    />
+                    <Counter
+                      value={1090000}
+                      prefix="+"
+                      leyend="Empleos"
+                      thousandSeparator="."
+                    />
+                  </div>
 
-                <div className="flex items-center gap-6">
-                  <img
-                    src={IconIberoamerica.src}
-                    alt="Icon Iberoamérica"
-                    className="w-16 h-16"
-                  />
-                  <Counter
-                    value={65800}
-                    prefix="USD $"
-                    leyend="millones EXPORTACIÓN"
-                    thousandSeparator="."
-                  />
-                </div>
+                  <div className="flex items-center gap-6">
+                    <img
+                      src={IconIberoamerica.src}
+                      alt="Icon Iberoamérica"
+                      className="w-16 h-16"
+                    />
+                    <Counter
+                      value={65800}
+                      prefix="USD $"
+                      leyend="millones EXPORTACIÓN"
+                      thousandSeparator="."
+                    />
+                  </div>
 
-                <div className="flex items-center gap-6">
-                  <img
-                    src={IconIberoamerica.src}
-                    alt="Icon Iberoamérica"
-                    className="w-16 h-16"
-                  />
-                  <Counter
-                    value={48000}
-                    prefix="USD $"
-                    leyend="millones INVERSIONES"
-                    thousandSeparator="."
-                  />
-                </div>
-              </>
-            )}
+                  <div className="flex items-center gap-6">
+                    <img
+                      src={IconIberoamerica.src}
+                      alt="Icon Iberoamérica"
+                      className="w-16 h-16"
+                    />
+                    <Counter
+                      value={48000}
+                      prefix="USD $"
+                      leyend="millones INVERSIONES"
+                      thousandSeparator="."
+                    />
+                  </div>
+                </>
+              )}
           </div>
         </div>
       </section>
@@ -570,7 +568,7 @@ export default function Home({
       <section className="bg-white py-16">
         <div className="container mx-auto px-4 flex flex-col lg:flex-row items-start justify-center text-text-primary gap-20">
           <div className="w-full lg:w-1/2">
-            <div 
+            <div
               data-aos="fade-up"
               className="flex items-center justify-between mb-12 lg:mb-0">
               <TitleDecorative className="text-left items-start">
@@ -584,8 +582,8 @@ export default function Home({
               </Link>
             </div>
 
-            <div 
-              data-aos="fade-up" 
+            <div
+              data-aos="fade-up"
               data-aos-delay="200"
               className="grid grid-cols-1 md:grid-cols-2 gap-8 mt-8">
               {newsData && newsData.length > 0 ? (
@@ -648,7 +646,7 @@ export default function Home({
             </div>
           </div>
           <div className="w-full lg:w-1/2">
-            <div 
+            <div
               data-aos="fade-up"
               data-aos-delay="100"
               className="flex items-center justify-between">
@@ -666,8 +664,8 @@ export default function Home({
               </Link>
             </div>
 
-            <div 
-              data-aos="fade-up" 
+            <div
+              data-aos="fade-up"
               data-aos-delay="300"
               className="space-y-8 mt-8">
               {eventsData && eventsData.length > 0 ? (
@@ -734,10 +732,10 @@ export default function Home({
       </section>
 
       <section className="bg-white lg:py-16 py-0">
-        <div 
+        <div
           data-aos="fade-up"
           className="container mx-auto px-4 text-center lg:text-left">
-          <h6 
+          <h6
             className="text-body2 text-text-primary text-center">
             {testimonialsSectionData?.label || "Testimonios"}
           </h6>
@@ -747,8 +745,8 @@ export default function Home({
         </div>
         {/* Not container content */}
         {/* Swiper testimonials */}
-        <div 
-          data-aos="fade-up" 
+        <div
+          data-aos="fade-up"
           data-aos-delay="200"
           className="relative">
           <Swiper
@@ -851,11 +849,20 @@ export default function Home({
 
       {/* embed widgets social media */}
 
-<section className="bg-white py-16">
-  <div className="container mx-auto px-4">
-    <iframe src="https://b80a5da9dc03409482ed473ddf14f9a9.elf.site" className="w-full h-180 lg:h-180" height="500" style={{ border: 'none', overflow: 'hidden' }} allowFullScreen={true} allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"></iframe>
-  </div>
-</section>
+      <section className="bg-white py-16">
+        <div className="container mx-auto px-4">
+          <iframe src="https://b80a5da9dc03409482ed473ddf14f9a9.elf.site" className="w-full h-180 lg:h-190 overflow-hidden" style={{ border: 'none', overflow: 'hidden' }} allowFullScreen={true} allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"></iframe>
+        </div>
+      </section>
+
+      <section className="bg-white py-16">
+        <div className="container mx-auto px-4 relative text-center">
+          <a href="https://www.linkedin.com/company/asociacionzfa" target="_blank" rel="noopener noreferrer" className="bg-secondary text-white px-4 py-2 rounded-sm my-4 inline-block hover:bg-details transition-all duration-300">
+            Siganos en LinkedIn
+          </a>
+          <iframe src="https://60a83efca0864b8a8b50e4c99a33e1f4.elf.site" className="w-full h-120 overflow-hidden" style={{ border: 'none', overflow: 'hidden' }} allowFullScreen={true} allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"></iframe>
+        </div>
+      </section>
 
       {/* Afiliados */}
       <section className="bg-white pt-16">
@@ -865,7 +872,7 @@ export default function Home({
           </TitleDecorative>
 
           <Swiper
-            data-aos="fade-up" 
+            data-aos="fade-up"
             data-aos-delay="200"
             modules={[Autoplay, Navigation]}
             spaceBetween={30}
@@ -904,26 +911,26 @@ export default function Home({
               },
             }}
           >
-          {affiliatesSectionData?.logos &&
-            affiliatesSectionData.logos.length > 0 && (
-              affiliatesSectionData.logos.map((affiliate) => (
-                <SwiperSlide key={affiliate.id}>
-                  <img
-                    className="w-full h-24 object-contain max-w-fit mx-auto grayscale md:grayscale hover:grayscale-0 transition-all duration-300 swiper-slide-mobile"
-                    src={
-                      affiliate.logo?.url
-                    }
-                    alt={affiliate.name || "Logo"}
-                    onClick={() => {
-                      if (affiliate.url) {
-                        window.open(affiliate.url, "_blank");
+            {affiliatesSectionData?.logos &&
+              affiliatesSectionData.logos.length > 0 && (
+                affiliatesSectionData.logos.map((affiliate) => (
+                  <SwiperSlide key={affiliate.id}>
+                    <img
+                      className="w-full h-24 object-contain max-w-fit mx-auto grayscale md:grayscale hover:grayscale-0 transition-all duration-300 swiper-slide-mobile"
+                      src={
+                        affiliate.logo?.url
                       }
-                    }}
-                    style={{ cursor: affiliate.url ? "pointer" : "default" }}
-                  />
-                </SwiperSlide>
-              ))
-            )}
+                      alt={affiliate.name || "Logo"}
+                      onClick={() => {
+                        if (affiliate.url) {
+                          window.open(affiliate.url, "_blank");
+                        }
+                      }}
+                      style={{ cursor: affiliate.url ? "pointer" : "default" }}
+                    />
+                  </SwiperSlide>
+                ))
+              )}
           </Swiper>
         </div>
       </section>
@@ -937,7 +944,7 @@ export default function Home({
 
           {/* Swiper sponsors */}
           <Swiper
-            data-aos="fade-up" 
+            data-aos="fade-up"
             data-aos-delay="200"
             modules={[Autoplay, Navigation]}
             spaceBetween={30}
@@ -1005,64 +1012,64 @@ export default function Home({
             <TitleDecorative data-aos="fade-up" className="text-center">
               {sponsorsSectionData?.title || "Nuestros sponsors"}
             </TitleDecorative>
-          
-          <Swiper
-            data-aos="fade-up" 
-            data-aos-delay="200"
-            modules={[Autoplay, Navigation]}
-            spaceBetween={30}
-            slidesPerView={sponsorsSectionData?.logos?.length || 1}
-            slidesPerGroup={sponsorsSectionData?.logos && sponsorsSectionData.logos.length > 5 ? 3 : 1}
-            className="mt-10 swiper-custom"
-            autoplay={{ delay: 2500, disableOnInteraction: false }}
-            navigation={sponsorsSectionData?.logos && sponsorsSectionData.logos.length > 1}
-            loop={sponsorsSectionData?.logos && sponsorsSectionData.logos.length > 1}
-            speed={2000}
-            centeredSlides={true}
-            breakpoints={{
-              0: {
-                slidesPerView: Math.min(sponsorsSectionData?.logos?.length || 1, 1),
-                centeredSlides: true,
-                spaceBetween: 20,
-                slidesPerGroup: 1,
-              },
-              480: {
-                slidesPerView: Math.min(sponsorsSectionData?.logos?.length || 2, 2),
-                centeredSlides: sponsorsSectionData?.logos?.length === 1,
-                spaceBetween: 30,
-                slidesPerGroup: sponsorsSectionData?.logos && sponsorsSectionData.logos.length > 3 ? 2 : 1,
-              },
-              768: {
-                slidesPerView: Math.min(sponsorsSectionData?.logos?.length || 3, 3),
-                centeredSlides: sponsorsSectionData?.logos?.length <= 2,
-                spaceBetween: 40,
-                slidesPerGroup: sponsorsSectionData?.logos && sponsorsSectionData.logos.length > 4 ? 2 : 1,
-              },
-              1024: {
-                slidesPerView: Math.min(sponsorsSectionData?.logos?.length || 5, 5),
-                centeredSlides: sponsorsSectionData?.logos?.length <= 3,
-                spaceBetween: 50,
-                slidesPerGroup: sponsorsSectionData?.logos && sponsorsSectionData.logos.length > 6 ? 3 : 1,
-              },
-            }}
-          >
-            {sponsorsSectionData.logos.map((sponsor) => (
-              <SwiperSlide key={sponsor.id}>
-                <img
-                  key={sponsor.id}
-                  className="w-full max-w-fit max-h-16 object-contain"
-                  src={sponsor.logo?.url}
-                  alt={sponsor.name || "Logo"}
-                  onClick={() => {
-                    if (sponsor.url) {
-                      window.open(sponsor.url, "_blank");
-                    }
-                  }}
-                  style={{ cursor: sponsor.url ? "pointer" : "default" }}
-                />
-              </SwiperSlide>
-            ))}
-          </Swiper>
+
+            <Swiper
+              data-aos="fade-up"
+              data-aos-delay="200"
+              modules={[Autoplay, Navigation]}
+              spaceBetween={30}
+              slidesPerView={sponsorsSectionData?.logos?.length || 1}
+              slidesPerGroup={sponsorsSectionData?.logos && sponsorsSectionData.logos.length > 5 ? 3 : 1}
+              className="mt-10 swiper-custom"
+              autoplay={{ delay: 2500, disableOnInteraction: false }}
+              navigation={sponsorsSectionData?.logos && sponsorsSectionData.logos.length > 1}
+              loop={sponsorsSectionData?.logos && sponsorsSectionData.logos.length > 1}
+              speed={2000}
+              centeredSlides={true}
+              breakpoints={{
+                0: {
+                  slidesPerView: Math.min(sponsorsSectionData?.logos?.length || 1, 1),
+                  centeredSlides: true,
+                  spaceBetween: 20,
+                  slidesPerGroup: 1,
+                },
+                480: {
+                  slidesPerView: Math.min(sponsorsSectionData?.logos?.length || 2, 2),
+                  centeredSlides: sponsorsSectionData?.logos?.length === 1,
+                  spaceBetween: 30,
+                  slidesPerGroup: sponsorsSectionData?.logos && sponsorsSectionData.logos.length > 3 ? 2 : 1,
+                },
+                768: {
+                  slidesPerView: Math.min(sponsorsSectionData?.logos?.length || 3, 3),
+                  centeredSlides: sponsorsSectionData?.logos?.length <= 2,
+                  spaceBetween: 40,
+                  slidesPerGroup: sponsorsSectionData?.logos && sponsorsSectionData.logos.length > 4 ? 2 : 1,
+                },
+                1024: {
+                  slidesPerView: Math.min(sponsorsSectionData?.logos?.length || 5, 5),
+                  centeredSlides: sponsorsSectionData?.logos?.length <= 3,
+                  spaceBetween: 50,
+                  slidesPerGroup: sponsorsSectionData?.logos && sponsorsSectionData.logos.length > 6 ? 3 : 1,
+                },
+              }}
+            >
+              {sponsorsSectionData.logos.map((sponsor) => (
+                <SwiperSlide key={sponsor.id}>
+                  <img
+                    key={sponsor.id}
+                    className="w-full max-w-fit max-h-16 object-contain"
+                    src={sponsor.logo?.url}
+                    alt={sponsor.name || "Logo"}
+                    onClick={() => {
+                      if (sponsor.url) {
+                        window.open(sponsor.url, "_blank");
+                      }
+                    }}
+                    style={{ cursor: sponsor.url ? "pointer" : "default" }}
+                  />
+                </SwiperSlide>
+              ))}
+            </Swiper>
           </div>
         </section>
       )}
