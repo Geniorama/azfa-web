@@ -1,7 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
 
-console.log('🔍 STRAPI_URL:', process.env.STRAPI_URL)
-
 const STRAPI_URL = process.env.STRAPI_URL
 
 export async function POST(request: NextRequest) {
