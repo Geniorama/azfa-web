@@ -2,22 +2,34 @@
 
 import Link from '@/utils/Link'
 import { IoEyeOutline, IoEyeOffOutline } from "react-icons/io5";
-import { useState } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import Button from '@/utils/Button';
 import BgImage from '@/assets/img/Frame 115.jpg'
 import { useAuth } from '@/hooks/useAuth'
-import { useRouter } from 'next/navigation'
-import { useEffect } from 'react'
+import { useRouter, useSearchParams } from 'next/navigation'
 
-export default function Login() {
+function LoginContent() {
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [blockedMessage, setBlockedMessage] = useState('');
   
   const { login, isAuthenticated } = useAuth();
   const router = useRouter();
+  const searchParams = useSearchParams();
+
+  // Verificar si fue redirigido por bloqueo
+  useEffect(() => {
+    const blocked = searchParams.get('blocked');
+    const logoutReason = localStorage.getItem('logout_reason');
+    
+    if (blocked === 'true' || logoutReason === 'blocked') {
+      setBlockedMessage('Su cuenta ha sido bloqueada. Por favor, contacte al administrador.');
+      localStorage.removeItem('logout_reason');
+    }
+  }, [searchParams]);
 
   // Redirigir si ya está autenticado
   useEffect(() => {
@@ -78,6 +90,13 @@ export default function Login() {
                                 Los campos marcados con asterisco (*) son obligatorios.
                             </p>
                             <form onSubmit={handleSubmit} className='space-y-4 text-text-primary'>
+                                {blockedMessage && (
+                                    <div className='bg-red-100 border-l-4 border-red-500 text-red-800 px-4 py-3 rounded-md'>
+                                        <p className='font-bold'>Cuenta bloqueada</p>
+                                        <p>{blockedMessage}</p>
+                                    </div>
+                                )}
+                                
                                 {error && (
                                     <div className='bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-md'>
                                         {error}
@@ -150,5 +169,17 @@ export default function Login() {
             </div>
         </section>
     </div>
+  )
+}
+
+export default function Login() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">Cargando...</div>
+      </div>
+    }>
+      <LoginContent />
+    </Suspense>
   )
 }

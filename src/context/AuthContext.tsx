@@ -55,6 +55,55 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setIsLoading(false)
   }, [])
 
+  // Función para verificar el estado del usuario en Strapi
+  const verifyUserStatus = async () => {
+    if (!user || !token) return
+
+    try {
+      const response = await fetch('/api/auth/verify-user', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ 
+          userId: user.id, 
+          token 
+        }),
+      })
+
+      const data = await response.json()
+
+      // Si el usuario fue bloqueado o el token es inválido, hacer logout
+      if (!data.valid || data.blocked) {
+        console.log('🚫 Usuario bloqueado o sesión inválida, cerrando sesión...')
+        logout()
+        
+        // Redirigir a login con mensaje
+        if (typeof window !== 'undefined') {
+          localStorage.setItem('logout_reason', 'blocked')
+          window.location.href = '/auth/login?blocked=true'
+        }
+      }
+    } catch (error) {
+      console.error('Error verificando estado del usuario:', error)
+    }
+  }
+
+  // Verificar el estado del usuario periódicamente (cada 30 segundos)
+  useEffect(() => {
+    if (!user || !token) return
+
+    // Verificar inmediatamente
+    verifyUserStatus()
+
+    // Configurar verificación periódica
+    const interval = setInterval(() => {
+      verifyUserStatus()
+    }, 30000) // 30 segundos
+
+    return () => clearInterval(interval)
+  }, [user, token])
+
   const login = async (email: string, password: string) => {
     try {
       setIsLoading(true)
