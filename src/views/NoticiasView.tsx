@@ -150,6 +150,7 @@ export default function NoticiasView({ newsData, allNewsData = [], categoriesDat
   // Filtrar las noticias según los filtros activos
   const filteredNewsData = useMemo(() => {
     return filterNewsData(dataSource);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dataSource, filters]);
 
   // Paginación en cliente cuando hay filtros

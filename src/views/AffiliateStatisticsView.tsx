@@ -26,27 +26,12 @@ export default function AffiliateStatisticsView({
   const [renderIframes, setRenderIframes] = useState(false);
 
   useEffect(() => {
-
     if (pageContent?.iframeCollection) {
-      console.log("Page content iframeCollection", pageContent?.iframeCollection);
       setRenderIframes(true);
     } else {
       setRenderIframes(false);
     }
-    console.log("Page content iframeCollection", pageContent?.iframeCollection);
   }, [pageContent]);
-
-  // useEffect(() => {
-  //   if (
-  //     pageContent?.iframeCollection &&
-  //     pageContent?.iframeCollection.data.length > 0
-  //   ) {
-  //     console.log("Render iframes", pageContent?.iframeCollection.data);
-  //     setRenderIframes(true);
-  //   } else {
-  //     setRenderIframes(false);
-  //   }
-  // }, [pageContent?.iframeCollection.data]);
 
   // Verificar si el usuario tiene permisos para ver la sección CTA
   const canShowCTA = isAdmin || (isAuthenticated && isEditor);

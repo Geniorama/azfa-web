@@ -184,7 +184,6 @@ export default function AgregarInmuebleView() {
 
       // Generar slug único basado en el título
       const uniqueSlug = await generateUniqueSlug(data.title);
-      console.log('Slug único generado:', uniqueSlug);
 
       // Agregar el resto de los datos como JSON
       const jsonData = {

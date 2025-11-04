@@ -175,18 +175,6 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    console.log('🔍 Final user object being returned:', {
-      id: user.id,
-      username: user.username,
-      email: user.email,
-      confirmed: user.confirmed,
-      blocked: user.blocked,
-      isEditor: user.isEditor,
-      isPropertiesEditor: user.isPropertiesEditor,
-      affiliateCompany: user.affiliateCompany,
-      role: user.role,
-    })
-
     return NextResponse.json({
       token: jwt,
       user: {

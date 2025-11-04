@@ -216,12 +216,6 @@ export default function JuntaDirectivaView({
   const router = useRouter();
   const tabsContentRef = useRef<HTMLDivElement>(null);
 
-  console.log("hero from QuienesSomosView", hero);
-  console.log("intro from QuienesSomosView", intro);
-  console.log("teamMembersData from QuienesSomosView", teamMembersData);
-  console.log("tabsSection from QuienesSomosView", tabsSection);
-  console.log("commissionSections from QuienesSomosView", commissionSections);
-
   // Función para filtrar miembros por tipo y ordenarlos según displayOrder o alfabéticamente
   const getMembersByType = (memberType: string, subCategory?: string) => {
     if (!teamMembersData) return [];
@@ -235,19 +229,7 @@ export default function JuntaDirectivaView({
       return member.memberType === memberType;
     });
 
-    console.log(
-      `Filtrados para ${memberType}${subCategory ? `/${subCategory}` : ""}:`,
-      filtered.length
-    );
-    console.log(
-      `Miembros antes del sort:`,
-      filtered.map((m) => ({ name: m.fullName, displayOrder: m.displayOrder }))
-    );
-
     const sorted = filtered.sort((a, b) => {
-      console.log(
-        `Comparando ${a.fullName} (displayOrder: ${a.displayOrder}) vs ${b.fullName} (displayOrder: ${b.displayOrder})`
-      );
 
       // Convertir null y undefined a valores verificables
       const aOrder =
@@ -261,21 +243,14 @@ export default function JuntaDirectivaView({
 
       // Si ambos tienen displayOrder válido, ordenar por displayOrder (menor número primero)
       if (aOrder !== null && bOrder !== null) {
-        console.log(
-          `Ambos tienen displayOrder: ${aOrder} - ${bOrder} = ${
-            aOrder - bOrder
-          }`
-        );
         return aOrder - bOrder;
       }
 
       // Si solo uno tiene displayOrder, el que lo tiene va primero
       if (aOrder !== null && bOrder === null) {
-        console.log(`${a.fullName} tiene displayOrder, va primero`);
         return -1;
       }
       if (aOrder === null && bOrder !== null) {
-        console.log(`${b.fullName} tiene displayOrder, va primero`);
         return 1;
       }
 
@@ -284,16 +259,8 @@ export default function JuntaDirectivaView({
         sensitivity: "base",
         numeric: true,
       });
-      console.log(
-        `Orden alfabético: ${a.fullName} vs ${b.fullName} = ${comparison}`
-      );
       return comparison;
     });
-
-    console.log(
-      `Miembros después del sort:`,
-      sorted.map((m) => ({ name: m.fullName, displayOrder: m.displayOrder }))
-    );
 
     return sorted;
   };
@@ -310,21 +277,6 @@ export default function JuntaDirectivaView({
     email: member.email || undefined,
   });
 
-  // Debug: Ver qué datos están llegando
-  console.log("teamMembersData recibidos:", teamMembersData);
-  console.log("Cantidad total de miembros:", teamMembersData?.length || 0);
-
-  // Debug: Ver estructura de los miembros
-  if (teamMembersData && teamMembersData.length > 0) {
-    console.log("Estructura del primer miembro:", teamMembersData[0]);
-    console.log("Tipos de memberType encontrados:", [
-      ...new Set(teamMembersData.map((m) => m.memberType)),
-    ]);
-    console.log("Tipos de subCategory encontrados:", [
-      ...new Set(teamMembersData.map((m) => m.subCategory)),
-    ]);
-  }
-
   // Obtener miembros dinámicamente
   const boardMembers = getMembersByType("board-of-directors", "board-members");
   const honoraryPresidents = getMembersByType(
@@ -333,54 +285,6 @@ export default function JuntaDirectivaView({
   );
   const vocalMembers = getMembersByType("committees", "vocal-members");
   const azfaTeamMembers = getMembersByType("azfa-team");
-
-  // Debug: Ver cuántos miembros se están filtrando
-  console.log("boardMembers:", boardMembers.length);
-  console.log("honoraryPresidents:", honoraryPresidents.length);
-  console.log("vocalMembers:", vocalMembers.length);
-  console.log("azfaTeamMembers:", azfaTeamMembers.length);
-
-  // Debug: Ver algunos ejemplos de cada categoría
-  if (boardMembers.length > 0) {
-    console.log("Ejemplo board member:", boardMembers[0]);
-    console.log(
-      "Todos los board members con displayOrder:",
-      boardMembers.map((m) => ({
-        name: m.fullName,
-        displayOrder: m.displayOrder,
-      }))
-    );
-  }
-  if (honoraryPresidents.length > 0) {
-    console.log("Ejemplo honorary president:", honoraryPresidents[0]);
-    console.log(
-      "Todos los honorary presidents con displayOrder:",
-      honoraryPresidents.map((m) => ({
-        name: m.fullName,
-        displayOrder: m.displayOrder,
-      }))
-    );
-  }
-  if (vocalMembers.length > 0) {
-    console.log("Ejemplo vocal member:", vocalMembers[0]);
-    console.log(
-      "Todos los vocal members con displayOrder:",
-      vocalMembers.map((m) => ({
-        name: m.fullName,
-        displayOrder: m.displayOrder,
-      }))
-    );
-  }
-  if (azfaTeamMembers.length > 0) {
-    console.log("Ejemplo azfa team member:", azfaTeamMembers[0]);
-    console.log(
-      "Todos los azfa team members con displayOrder:",
-      azfaTeamMembers.map((m) => ({
-        name: m.fullName,
-        displayOrder: m.displayOrder,
-      }))
-    );
-  }
 
   // Detectar el tab activo basado en la URL y hacer scroll automático
   useEffect(() => {
