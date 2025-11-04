@@ -63,11 +63,6 @@ export default function ContactoView({ contactPageData, contactInfoGlobal, socia
     setIsSubmitting(true)
     
     try {
-      // Aquí puedes enviar los datos a tu API
-      console.log('Datos del formulario:', formData)
-      console.log('reCAPTCHA token:', recaptchaValue)
-      console.log('Email destino:', contactFormSettings?.toEmail)
-      
       // Aquí se enviaría el email usando contactFormSettings?.toEmail
       // const emailData = {
       //   to: contactFormSettings?.toEmail || 'equipocreativo@ekon7.com',

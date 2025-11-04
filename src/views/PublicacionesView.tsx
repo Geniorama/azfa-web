@@ -10,7 +10,7 @@ import CardInfoPortal from '@/components/CardInfoPortal'
 import Pagination from '@/components/Pagination'
 import CoverImage from '@/assets/img/cover.jpg'
 import { useState, useMemo } from 'react'
-import type { PublicationPageType, PublicationsResponseType, PublicationType } from '@/types/componentsType'
+import type { PublicationPageType, PublicationsResponseType } from '@/types/componentsType'
 import LoadingSpinner from '@/components/LoadingSpinner'
 
 interface PublicacionesViewProps {
@@ -24,9 +24,6 @@ export default function PublicacionesView({ pageData, publications }: Publicacio
     tipoPublicacion: "",
     anioPublicacion: "",
   });
-
-  console.log("pageData from PublicacionesView", pageData);
-  console.log("publications from PublicacionesView", publications);
 
   // Filtrar publicaciones basado en los filtros
   const filteredPublications = useMemo(() => {
@@ -44,14 +41,8 @@ export default function PublicacionesView({ pageData, publications }: Publicacio
     const sorted = filtered.sort((a, b) => {
       const dateA = new Date(a.publishDate);
       const dateB = new Date(b.publishDate);
-      
-      // Debug: mostrar fechas para verificar el ordenamiento
-      console.log(`Comparando: ${a.title} (${a.publishDate}) vs ${b.title} (${b.publishDate})`);
-      
       return dateB.getTime() - dateA.getTime();
     });
-
-    console.log('Publicaciones ordenadas:', sorted.map((p: PublicationType) => ({ title: p.title, date: p.publishDate })));
     
     return sorted;
   }, [publications, filters]);
@@ -182,9 +173,8 @@ export default function PublicacionesView({ pageData, publications }: Publicacio
               <Pagination 
                 currentPage={publications.meta.pagination.page} 
                 totalPages={publications.meta.pagination.pageCount} 
-                onPageChange={(page) => {
+                onPageChange={() => {
                   // Aquí podrías implementar la navegación a la siguiente página
-                  console.log('Navegar a página:', page);
                 }} 
               />
             </div>

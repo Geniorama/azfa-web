@@ -75,7 +75,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
       // Si el usuario fue bloqueado o el token es inválido, hacer logout
       if (!data.valid || data.blocked) {
-        console.log('🚫 Usuario bloqueado o sesión inválida, cerrando sesión...')
         logout()
         
         // Redirigir a login con mensaje
@@ -102,6 +101,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }, 30000) // 30 segundos
 
     return () => clearInterval(interval)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user, token])
 
   const login = async (email: string, password: string) => {
