@@ -40,6 +40,8 @@ import {
 import ReactMarkdown from "react-markdown";
 import rehypeRaw from "rehype-raw";
 import { formatYouTubeUrl } from "@/utils/formatYouTubeUrl";
+import WidgetInstagram from "@/components/WidgetInstagram";
+import WidgetLinkedIn from "@/components/WidgetLinkedIn";
 
 interface HomeViewProps {
   slidesData: HeroSlideData[];
@@ -851,16 +853,21 @@ export default function Home({
 
       <section className="bg-white py-16">
         <div className="container mx-auto px-4">
-          <iframe src="https://b80a5da9dc03409482ed473ddf14f9a9.elf.site" className="w-full h-180 lg:h-190 overflow-hidden" style={{ border: 'none', overflow: 'hidden' }} allowFullScreen={true} allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"></iframe>
-        </div>
-      </section>
-
-      <section className="bg-white py-16">
-        <div className="container mx-auto px-4 relative text-center">
-          <a href="https://www.linkedin.com/company/asociacionzfa" target="_blank" rel="noopener noreferrer" className="bg-secondary text-white px-4 py-2 rounded-sm my-4 inline-block hover:bg-details transition-all duration-300">
-            Siganos en LinkedIn
-          </a>
-          <iframe src="https://60a83efca0864b8a8b50e4c99a33e1f4.elf.site" className="w-full h-120 overflow-hidden" style={{ border: 'none', overflow: 'hidden' }} allowFullScreen={true} allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"></iframe>
+          <div className="flex flex-col lg:flex-row gap-4">
+            <div className="w-full lg:w-1/2">
+              <a href="https://www.instagram.com/zonasfrancaslatam/" target="_blank" rel="noopener noreferrer" className="bg-secondary text-white px-4 py-2 rounded-sm my-4 inline-block hover:bg-details transition-all duration-300">
+                Siganos en Instagram
+              </a>
+              <WidgetInstagram className="w-full h-180 lg:h-120 overflow-hidden" />
+            </div>
+            <div className="w-full lg:w-1/2">
+              <a href="https://www.linkedin.com/company/asociacionzfa" target="_blank" rel="noopener noreferrer" className="bg-secondary text-white px-4 py-2 rounded-sm my-4 inline-block hover:bg-details transition-all duration-300">
+                Siganos en LinkedIn
+              </a>
+              <WidgetLinkedIn className="w-full h-120 lg:h-120 overflow-hidden" />
+            </div>
+            
+          </div>
         </div>
       </section>
 
