@@ -25,12 +25,18 @@ export default function InvestmentStatisticsView({ pageContent }: InvestmentStat
   const [isContentReady, setIsContentReady] = useState(false);
 
   useEffect(() => {
+    console.log('🔍 InvestmentStatisticsView - pageContent:', pageContent);
+    console.log('🔍 iframeCollection:', pageContent?.iframeCollection);
+    console.log('🔍 iframeCollection length:', pageContent?.iframeCollection?.length);
+    
     // Simular verificación de carga de contenido
     const timer = setTimeout(() => {
       setIsContentReady(true);
-      if (pageContent?.iframeCollection) {
+      if (pageContent?.iframeCollection && pageContent.iframeCollection.length > 0) {
+        console.log('✅ Renderizando iframes');
         setRenderIframes(true);
       } else {
+        console.log('❌ No hay iframes para renderizar');
         setRenderIframes(false);
       }
     }, 100); // Pequeño delay para evitar flickering
