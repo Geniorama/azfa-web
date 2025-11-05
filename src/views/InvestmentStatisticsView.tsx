@@ -36,32 +36,14 @@ export default function InvestmentStatisticsView({ pageContent }: InvestmentStat
   };
 
   // Datos por defecto en caso de que no haya contenido
-  const defaultData = {
-    title: "Estadísticas",
-    subtitle: "Conozca las estadísticas del sector de las Zonas Francas",
-    disclaimerText: "",
-    heroBackground: {
-      url: "/images/estadisticas.jpg"
-    },
-    ctaSection: {
-      title: "Usted está viendo una versión limitada del tablero.",
-      description: "Para acceder al contenido completo, inicie sesión como afiliado. ¿Aún no es afiliado? Escríbanos y le guiaremos en el proceso de afiliación",
-      button: {
-        label: "Iniciar sesión",
-        url: "/auth/login"
-      }
-    },
-    iframeCollection: []
-  };
-
-  const data = pageContent || defaultData;
+  const data = pageContent;
 
   return (
     <div>
       <HeadingPage
-        title={data.subtitle || data.title}
-        smallTitle={data.title !== data.subtitle ? data.title : "Conozca las estadísticas del sector de las Zonas Francas"}
-        image={data.heroBackground?.url}
+        title={data?.subtitle || data?.title}
+        smallTitle={data?.title !== data?.subtitle ? data?.title : "Conozca las estadísticas del sector de las Zonas Francas"}
+        image={data?.heroBackground?.url}
       />
 
       <section className="bg-white py-12 lg:py-16">
@@ -69,7 +51,7 @@ export default function InvestmentStatisticsView({ pageContent }: InvestmentStat
           <div className="flex flex-col md:flex-row gap-6 max-w-screen-lg mx-auto items-center border border-details p-6">
             <div className="w-full md:w-3/5 text-text-primary space-y-2">
               <p className="text-h6">
-                {data.ctaSection?.title}
+                {data?.ctaSection?.title}
               </p>
               <div className="text-body font-light [&_a]:underline [&_a]:underline-offset-2 [&_a]:decoration-1 [&_a]:text-text-primary [&_a:hover]:text-details [&_a]:transition-colors">
                 <ReactMarkdown 
@@ -79,7 +61,7 @@ export default function InvestmentStatisticsView({ pageContent }: InvestmentStat
                     b: ({children}) => <span className="font-bold">{children}</span>,
                   }}
                 >
-                  {data.ctaSection?.description}
+                  {data?.ctaSection?.description}
                 </ReactMarkdown>
               </div>
             </div>
@@ -88,15 +70,15 @@ export default function InvestmentStatisticsView({ pageContent }: InvestmentStat
                 variant="primary"
                 className="inline-flex justify-between h-auto"
                 icon
-                onClick={() => router.push(data.ctaSection?.button?.url || "/auth/login")}
+                onClick={() => router.push(data?.ctaSection?.button?.url || "/auth/login")}
               >
-                {data.ctaSection?.button?.label || "Iniciar sesión"}
+                {data?.ctaSection?.button?.label || "Iniciar sesión"}
               </Button>
             </div>
           </div>
 
           {/* Tableros POWER BI */}
-          {renderIframes && data.iframeCollection && data.iframeCollection.length > 0 ? (
+          {renderIframes && data ? (
             data.iframeCollection.map((iframeItem) => (
               <div key={iframeItem.id} className="my-12">
                 <div className="flex items-center gap-3 mb-4">
