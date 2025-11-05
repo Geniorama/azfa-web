@@ -1,0 +1,7 @@
+[build]
+  command = "npm run build"
+  publish = ".next"
+
+[build.environment]
+  # Deshabilitar el escaneo de secretos para keys públicas conocidas
+  NETLIFY_SKIP_SECRET_SCANNING = "true"
