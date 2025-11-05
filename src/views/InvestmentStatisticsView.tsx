@@ -4,7 +4,7 @@ import Button from "@/utils/Button";
 import { useRouter } from "next/navigation";
 import IconDeviceMonitor from "@/assets/img/device-monitor.svg";
 import { InvestmentStatisticsType } from "@/types/contentType";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import ReactMarkdown from "react-markdown";
 import rehypeRaw from "rehype-raw";
 
@@ -21,6 +21,15 @@ const extractIframeSrc = (htmlString: string): string => {
 export default function InvestmentStatisticsView({ pageContent }: InvestmentStatisticsViewProps) {
   const router = useRouter();
   const [loadedIframes, setLoadedIframes] = useState<Set<number>>(new Set());
+  const [renderIframes, setRenderIframes] = useState(false);
+
+  useEffect(() => {
+    if (pageContent?.iframeCollection) {
+      setRenderIframes(true);
+    } else {
+      setRenderIframes(false);
+    }
+  }, [pageContent]);
 
   const handleIframeLoad = (iframeId: number) => {
     setLoadedIframes(prev => new Set(prev).add(iframeId));
@@ -87,7 +96,7 @@ export default function InvestmentStatisticsView({ pageContent }: InvestmentStat
           </div>
 
           {/* Tableros POWER BI */}
-          {data.iframeCollection && data.iframeCollection.length > 0 ? (
+          {renderIframes && data.iframeCollection && data.iframeCollection.length > 0 ? (
             data.iframeCollection.map((iframeItem) => (
               <div key={iframeItem.id} className="my-12">
                 <div className="flex items-center gap-3 mb-4">
@@ -112,8 +121,7 @@ export default function InvestmentStatisticsView({ pageContent }: InvestmentStat
                         className="responsive-iframe-container relative w-full bg-gray-50 rounded-lg overflow-hidden shadow-sm"
                         style={{ paddingBottom: '56.25%', height: 0, overflow: 'hidden' }}
                       >
-                        <iframe title="AZFA - Panel de control asociados PUBLICO" width="600" height="373.5" src="https://app.powerbi.com/view?r=eyJrIjoiYWRiOTEwMzctZDg3MS00YTA2LThmNzgtZmVjODY1YWQwMDBjIiwidCI6ImM5YzY5OWViLTU4Y2EtNGYyYi05MjFiLWZmYzVkYWJlYjczMCJ9" frameBorder="0" allowFullScreen={true}></iframe>
-                        {/* <iframe
+                        <iframe
                           className="absolute top-0 left-0 w-full h-full border-0 transition-opacity duration-300"
                           src={iframeItem.desktopIframe.src || extractIframeSrc(iframeItem.desktopIframe.bottomText)}
                           title={iframeItem.desktopIframe.title}
@@ -121,7 +129,7 @@ export default function InvestmentStatisticsView({ pageContent }: InvestmentStat
                           loading="lazy"
                           style={{ minHeight: '400px' }}
                           onLoad={() => handleIframeLoad(iframeItem.id)}
-                        /> */}
+                        />
                         {!loadedIframes.has(iframeItem.id) && (
                           <div className="absolute inset-0 flex items-center justify-center bg-gray-50">
                             <div className="flex flex-col items-center gap-2">
