@@ -37,12 +37,24 @@ export default function InvestmentStatisticsView({ pageContent }: InvestmentStat
 
   // Datos por defecto en caso de que no haya contenido
   const data = pageContent;
+  const defaultIframeCollection = [
+    {
+      id: 0,
+      label: "Estadísticas 2025",
+      slug: "estadisticas-2025",
+      desktopIframe: {
+        title: "Dashboard interactivo embebido (Power BI)",
+        src: "https://app.powerbi.com/view?r=eyJrIjoiYWRiOTEwMzctZDg3MS00YTA2LThmNzgtZmVjODY1YWQwMDBjIiwidCI6ImM5YzY5OWViLTU4Y2EtNGYyYi05MjFiLWZmYzVkYWJlYjczMCJ9",
+        bottomText: "",
+      }
+    }
+  ]
 
   return (
     <div>
       <HeadingPage
-        title={data?.subtitle || data?.title}
-        smallTitle={data?.title !== data?.subtitle ? data?.title : "Conozca las estadísticas del sector de las Zonas Francas"}
+        title={data?.subtitle || data?.title || "Invierta en Zonas Francas"}
+        smallTitle={data?.title !== data?.subtitle ? data?.title : "Estadísticas"}
         image={data?.heroBackground?.url}
       />
 
@@ -130,8 +142,24 @@ export default function InvestmentStatisticsView({ pageContent }: InvestmentStat
                       )}
                     </div>
                   ) : (
-                    <div className="w-full h-[300px] sm:h-[400px] lg:h-[500px] bg-gray-100 flex items-center justify-center rounded-lg">
-                      <p className="text-text-secondary">Dashboard no disponible</p>
+                    <div className="w-full">
+                      {defaultIframeCollection.map((iframeItem) => (
+                        <div key={iframeItem.id} className="w-full my-6">
+                          <span className="text-button text-text-primary">{iframeItem.desktopIframe.title}</span>
+                          <span className="text-sm text-text-secondary bg-gray-100 px-3 py-1 rounded-full">
+                            {iframeItem.label}
+                          </span>
+                          <div className="responsive-iframe-container relative w-full bg-gray-50 rounded-lg overflow-hidden shadow-sm" style={{ paddingBottom: '56.25%', height: 0, overflow: 'hidden' }}>
+                            <iframe className="absolute top-0 left-0 w-full h-full border-0 transition-opacity duration-300" src={iframeItem.desktopIframe.src || extractIframeSrc(iframeItem.desktopIframe.bottomText)} title={iframeItem.desktopIframe.title} allowFullScreen loading="lazy" style={{ minHeight: '400px' }} onLoad={() => handleIframeLoad(iframeItem.id)} />
+                          </div>
+                          {/* Disclaimer */}
+                          {pageContent?.disclaimerText && (
+                            <div className="p-4 text-center">
+                              <p className="text-sm text-gray-500">{pageContent?.disclaimerText}</p>
+                            </div>
+                          )}
+                        </div>
+                      ))}
                     </div>
                   )}
                 </div>
