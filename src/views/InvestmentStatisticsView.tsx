@@ -61,7 +61,7 @@ export default function InvestmentStatisticsView({ pageContent }: InvestmentStat
       <HeadingPage
         title={data.subtitle || data.title}
         smallTitle={data.title !== data.subtitle ? data.title : "Conozca las estadísticas del sector de las Zonas Francas"}
-        image={data.heroBackground?.url || "/images/estadisticas.jpg"}
+        image={data.heroBackground?.url}
       />
 
       <section className="bg-white py-12 lg:py-16">
