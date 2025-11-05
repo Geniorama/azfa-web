@@ -22,13 +22,20 @@ export default function InvestmentStatisticsView({ pageContent }: InvestmentStat
   const router = useRouter();
   const [loadedIframes, setLoadedIframes] = useState<Set<number>>(new Set());
   const [renderIframes, setRenderIframes] = useState(false);
+  const [isContentReady, setIsContentReady] = useState(false);
 
   useEffect(() => {
-    if (pageContent?.iframeCollection) {
-      setRenderIframes(true);
-    } else {
-      setRenderIframes(false);
-    }
+    // Simular verificación de carga de contenido
+    const timer = setTimeout(() => {
+      setIsContentReady(true);
+      if (pageContent?.iframeCollection) {
+        setRenderIframes(true);
+      } else {
+        setRenderIframes(false);
+      }
+    }, 100); // Pequeño delay para evitar flickering
+
+    return () => clearTimeout(timer);
   }, [pageContent]);
 
   const handleIframeLoad = (iframeId: number) => {
@@ -37,24 +44,24 @@ export default function InvestmentStatisticsView({ pageContent }: InvestmentStat
 
   // Datos por defecto en caso de que no haya contenido
   const data = pageContent;
-  const defaultIframeCollection = [
-    {
-      id: 0,
-      label: "Estadísticas 2025",
-      slug: "estadisticas-2025",
-      desktopIframe: {
-        title: "Dashboard interactivo embebido (Power BI)",
-        src: "https://app.powerbi.com/view?r=eyJrIjoiYWRiOTEwMzctZDg3MS00YTA2LThmNzgtZmVjODY1YWQwMDBjIiwidCI6ImM5YzY5OWViLTU4Y2EtNGYyYi05MjFiLWZmYzVkYWJlYjczMCJ9",
-        bottomText: "",
-      }
-    }
-  ]
+
+  // Mostrar loading mientras verifica que el contenido está listo
+  if (!isContentReady) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-white">
+        <div className="flex flex-col items-center gap-4">
+          <div className="w-12 h-12 border-4 border-gray-200 border-t-primary rounded-full animate-spin"></div>
+          <p className="text-text-secondary text-lg">Cargando estadísticas...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div>
       <HeadingPage
-        title={data?.subtitle || data?.title || "Invierta en Zonas Francas"}
-        smallTitle={data?.title !== data?.subtitle ? data?.title : "Estadísticas"}
+        title={data?.subtitle || data?.title}
+        smallTitle={data?.title !== data?.subtitle ? data?.title : "Conozca las estadísticas del sector de las Zonas Francas"}
         image={data?.heroBackground?.url}
       />
 
@@ -90,8 +97,8 @@ export default function InvestmentStatisticsView({ pageContent }: InvestmentStat
           </div>
 
           {/* Tableros POWER BI */}
-          {renderIframes && data ? (
-            data.iframeCollection.map((iframeItem) => (
+          {renderIframes ? (
+            data?.iframeCollection.map((iframeItem) => (
               <div key={iframeItem.id} className="my-12">
                 <div className="flex items-center gap-3 mb-4">
                   <span className="text-button text-text-primary">{iframeItem.desktopIframe.title}</span>
@@ -142,24 +149,8 @@ export default function InvestmentStatisticsView({ pageContent }: InvestmentStat
                       )}
                     </div>
                   ) : (
-                    <div className="w-full">
-                      {defaultIframeCollection.map((iframeItem) => (
-                        <div key={iframeItem.id} className="w-full my-6">
-                          <span className="text-button text-text-primary">{iframeItem.desktopIframe.title}</span>
-                          <span className="text-sm text-text-secondary bg-gray-100 px-3 py-1 rounded-full">
-                            {iframeItem.label}
-                          </span>
-                          <div className="responsive-iframe-container relative w-full bg-gray-50 rounded-lg overflow-hidden shadow-sm" style={{ paddingBottom: '56.25%', height: 0, overflow: 'hidden' }}>
-                            <iframe className="absolute top-0 left-0 w-full h-full border-0 transition-opacity duration-300" src={iframeItem.desktopIframe.src || extractIframeSrc(iframeItem.desktopIframe.bottomText)} title={iframeItem.desktopIframe.title} allowFullScreen loading="lazy" style={{ minHeight: '400px' }} onLoad={() => handleIframeLoad(iframeItem.id)} />
-                          </div>
-                          {/* Disclaimer */}
-                          {pageContent?.disclaimerText && (
-                            <div className="p-4 text-center">
-                              <p className="text-sm text-gray-500">{pageContent?.disclaimerText}</p>
-                            </div>
-                          )}
-                        </div>
-                      ))}
+                    <div className="w-full h-[300px] sm:h-[400px] lg:h-[500px] bg-gray-100 flex items-center justify-center rounded-lg">
+                      <p className="text-text-secondary">Dashboard no disponible</p>
                     </div>
                   )}
                 </div>
