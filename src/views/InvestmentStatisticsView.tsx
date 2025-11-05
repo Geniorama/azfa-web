@@ -112,7 +112,8 @@ export default function InvestmentStatisticsView({ pageContent }: InvestmentStat
                         className="responsive-iframe-container relative w-full bg-gray-50 rounded-lg overflow-hidden shadow-sm"
                         style={{ paddingBottom: '56.25%', height: 0, overflow: 'hidden' }}
                       >
-                        <iframe
+                        <iframe title="AZFA - Panel de control asociados PUBLICO" width="600" height="373.5" src="https://app.powerbi.com/view?r=eyJrIjoiYWRiOTEwMzctZDg3MS00YTA2LThmNzgtZmVjODY1YWQwMDBjIiwidCI6ImM5YzY5OWViLTU4Y2EtNGYyYi05MjFiLWZmYzVkYWJlYjczMCJ9" frameBorder="0" allowFullScreen={true}></iframe>
+                        {/* <iframe
                           className="absolute top-0 left-0 w-full h-full border-0 transition-opacity duration-300"
                           src={iframeItem.desktopIframe.src || extractIframeSrc(iframeItem.desktopIframe.bottomText)}
                           title={iframeItem.desktopIframe.title}
@@ -120,7 +121,7 @@ export default function InvestmentStatisticsView({ pageContent }: InvestmentStat
                           loading="lazy"
                           style={{ minHeight: '400px' }}
                           onLoad={() => handleIframeLoad(iframeItem.id)}
-                        />
+                        /> */}
                         {!loadedIframes.has(iframeItem.id) && (
                           <div className="absolute inset-0 flex items-center justify-center bg-gray-50">
                             <div className="flex flex-col items-center gap-2">
