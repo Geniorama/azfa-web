@@ -81,6 +81,32 @@ export async function POST(request: NextRequest) {
         console.log('✅ Cache revalidado: Invierta en Zonas Francas');
         break;
 
+      case 'investment-statistics-page':
+        // Revalidar página de estadísticas públicas
+        revalidatePath('/invierta-en-zonas-francas/estadisticas');
+        console.log('✅ Cache revalidado: Estadísticas de Inversión');
+        break;
+
+      case 'affiliate-portal-investment-statistics-page':
+        // Revalidar página de estadísticas para afiliados
+        revalidatePath('/portal-afiliados/estadisticas-afiliados');
+        console.log('✅ Cache revalidado: Estadísticas de Afiliados');
+        break;
+
+      case 'homepage':
+        // Revalidar home (incluye statisticsSection)
+        revalidatePath('/');
+        console.log('✅ Cache revalidado: Homepage');
+        break;
+
+      case 'iframe-collection':
+      case 'iframecollection':
+        // Si iframeCollection es un modelo independiente, revalidar ambas páginas de estadísticas
+        revalidatePath('/invierta-en-zonas-francas/estadisticas');
+        revalidatePath('/portal-afiliados/estadisticas-afiliados');
+        console.log('✅ Cache revalidado: Iframe Collection (ambas páginas de estadísticas)');
+        break;
+
       default:
         console.log(`⚠️ Modelo no configurado para revalidación: ${model}`);
     }
