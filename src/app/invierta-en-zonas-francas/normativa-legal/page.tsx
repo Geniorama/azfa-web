@@ -240,38 +240,52 @@ export default function NormativaLegal() {
   >(null);
   const [isLoading, setIsLoading] = useState(true);
 
-  const getContent = async (id: string) => {
+  const getContent = async () => {
     try {
       const response = await fetch(
-        `/api/getContent?id=${id}&populate[0]=heading.backgroundImg&populate[1]=sections.document&populate[2]=sections.cover`
+        `/api/getLegalRegulations?populate[0]=headingSection.backgroundImg&populate[1]=downloadDocument.document&populate[2]=downloadDocument.cover`
       );
       const data = await response.json();
 
       if (data.data) {
-        setPageContent(data.data as ContentType);
+        // Transformar los datos del singleType al formato esperado por ContentType
+        const transformedContent: ContentType = {
+          id: data.data.id || 0,
+          slug: "",
+          createdAt: data.data.createdAt || "",
+          updatedAt: data.data.updatedAt || "",
+          publishedAt: data.data.publishedAt || "",
+          locale: data.data.locale || "es",
+          documentId: data.data.documentId || "",
+          heading: data.data.headingSection
+            ? {
+                id: data.data.headingSection.id || 0,
+                title: data.data.headingSection.title || "",
+                smallTitle: data.data.headingSection.smallTitle || "",
+                imageUrl: data.data.headingSection.backgroundImg?.url || "",
+                alignment: data.data.headingSection.alignment || "center",
+              }
+            : undefined,
+          sections: [],
+        };
 
-        if (data.data.sections && data.data.sections.length > 0) {
-          const sectionDownload = data.data.sections.find(
-            (section: unknown) =>
-              (section as { __component?: string }).__component ===
-              "sections.download"
-          );
+        setPageContent(transformedContent);
 
-          if (sectionDownload) {
-            const downloadData: DownloadType = {
-              id: sectionDownload.id,
-              title: sectionDownload.title,
-              buttonText: sectionDownload.textButton,
-              documentUrl: sectionDownload.document?.url || "",
-              cover: {
-                url: sectionDownload.cover?.url || "",
-                alternativeText: sectionDownload.cover?.alternativeText || "",
-              },
-              target: sectionDownload.target,
-            };
+        // Procesar downloadDocument si existe
+        if (data.data.downloadDocument) {
+          const downloadData: DownloadType = {
+            id: data.data.downloadDocument.id || 0,
+            title: data.data.downloadDocument.title || "",
+            buttonText: data.data.downloadDocument.textButton || "",
+            documentUrl: data.data.downloadDocument.document?.url || "",
+            cover: {
+              url: data.data.downloadDocument.cover?.url || "",
+              alternativeText: data.data.downloadDocument.cover?.alternativeText || "",
+            },
+            target: data.data.downloadDocument.target || "_self",
+          };
 
-            setDownloadSection(downloadData);
-          }
+          setDownloadSection(downloadData);
         }
       } else {
         console.error(
@@ -371,7 +385,7 @@ export default function NormativaLegal() {
   };
 
   useEffect(() => {
-    getContent("ojn04v7g3reqt0jf06mkt0co");
+    getContent();
     getCountries();
   }, []);
 

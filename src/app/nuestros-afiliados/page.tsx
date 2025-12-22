@@ -257,23 +257,41 @@ function NuestrosAfiliadosContent() {
     [allIncentives]
   );
 
-  const getContentBySlug = async (slug: string) => {
+  const getContent = async () => {
     try {
-      const response = await fetch(`/api/getContentBySlug?slug=${slug}&populate[0]=heading.backgroundImg`);
+      const response = await fetch(
+        `/api/getOurAffiliatesPage?populate[0]=headingSection.backgroundImg`
+      );
       const data = await response.json();
-      if (data.success && data.data?.data?.[0]) {
-        const content = data.data.data[0];
-        const transformedData: ContentType = {
-          ...content,
-          heading: {
-            ...content.heading,
-            imageUrl: content.heading?.backgroundImg?.url || ''
-          }
-        }
 
-        setPageContent(transformedData);
+      if (data.data) {
+        // Transformar los datos del singleType al formato esperado por ContentType
+        const transformedContent: ContentType = {
+          id: data.data.id || 0,
+          slug: "",
+          createdAt: data.data.createdAt || "",
+          updatedAt: data.data.updatedAt || "",
+          publishedAt: data.data.publishedAt || "",
+          locale: data.data.locale || "es",
+          documentId: data.data.documentId || "",
+          heading: data.data.headingSection
+            ? {
+                id: data.data.headingSection.id || 0,
+                title: data.data.headingSection.title || "",
+                smallTitle: data.data.headingSection.smallTitle || "",
+                imageUrl: data.data.headingSection.backgroundImg?.url || "",
+                alignment: data.data.headingSection.alignment || "center",
+              }
+            : undefined,
+          sections: [],
+        };
+
+        setPageContent(transformedContent);
       } else {
-        console.error("Error al obtener el contenido:", data.error || "No se encontró contenido");
+        console.error(
+          "Error al obtener el contenido:",
+          data.error || "No se encontró contenido"
+        );
         setPageContent(null);
       }
     } catch (error) {
@@ -283,7 +301,7 @@ function NuestrosAfiliadosContent() {
   };
 
   useEffect(() => {
-    getContentBySlug("nuestros-afiliados");
+    getContent();
   }, []);
 
   // Función para manejar la selección de país desde el campo de búsqueda
