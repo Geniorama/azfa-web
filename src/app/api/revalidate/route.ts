@@ -107,6 +107,18 @@ export async function POST(request: NextRequest) {
         console.log('✅ Cache revalidado: Iframe Collection (ambas páginas de estadísticas)');
         break;
 
+      case 'legal-regulations':
+        // Revalidar página de normativa legal
+        revalidatePath('/invierta-en-zonas-francas/normativa-legal');
+        console.log('✅ Cache revalidado: Normativa Legal');
+        break;
+
+      case 'our-affiliates-page':
+        // Revalidar página de nuestros afiliados
+        revalidatePath('/nuestros-afiliados');
+        console.log('✅ Cache revalidado: Nuestros Afiliados');
+        break;
+
       default:
         console.log(`⚠️ Modelo no configurado para revalidación: ${model}`);
     }
