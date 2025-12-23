@@ -9,6 +9,7 @@ import Button from "@/utils/Button";
 import { InmuebleType } from "@/types/inmuebleType";
 import PlatinumBadge from "@/utils/PlatinumBadge";
 import { getCountryName } from "@/utils/countryMapping";
+import { getPropertyUseLabel } from "@/utils/extractFilterOptions";
 import { TfiPlus } from "react-icons/tfi";
 
 interface CardInmuebleProps extends InmuebleType {
@@ -56,7 +57,7 @@ export default function CardInmueble({
   const formatPropertyUse = (propertyUses?: string[]) => {
     if (!propertyUses || propertyUses.length === 0) return "";
     return propertyUses
-      .map((use) => use.charAt(0).toUpperCase() + use.slice(1))
+      .map((use) => getPropertyUseLabel(use))
       .join(", ");
   };
 

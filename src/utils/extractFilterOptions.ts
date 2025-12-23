@@ -30,10 +30,40 @@ const createUniqueOptions = (items: string[], includeTodos: boolean = true): { l
   return options;
 };
 
+// Mapeo de valores de propertyUse a sus labels correctos (con acentos)
+const propertyUseLabelMap: Record<string, string> = {
+  'logistica': 'Logística',
+  'Logistica': 'Logística',
+  'LOGISTICA': 'Logística'
+};
+
+// Función para obtener el label correcto de propertyUse
+// Exportada para uso en otros componentes (como CardInmueble)
+export const getPropertyUseLabel = (value: string): string => {
+  const normalizedValue = value.toLowerCase();
+  return propertyUseLabelMap[normalizedValue] || capitalize(value);
+};
+
 // Función para extraer opciones de arrays anidados
 const createUniqueOptionsFromArrays = (arrays: string[][], includeTodos: boolean = true): { label: string; value: string }[] => {
   const flatItems = arrays.flat().filter(item => item && item.trim() !== '');
   return createUniqueOptions(flatItems, includeTodos);
+};
+
+// Función especial para crear opciones de propertyUse con mapeo de labels
+const createPropertyUseOptions = (arrays: string[][], includeTodos: boolean = true): { label: string; value: string }[] => {
+  const flatItems = arrays.flat().filter(item => item && item.trim() !== '');
+  const uniqueItems = Array.from(new Set(flatItems));
+  const options = uniqueItems.map(item => ({
+    label: getPropertyUseLabel(item),
+    value: item
+  })).sort((a, b) => a.label.localeCompare(b.label));
+  
+  if (includeTodos) {
+    return [{ label: 'Todos', value: 'todos' }, ...options];
+  }
+  
+  return options;
 };
 
 // Función para validar valores conocidos (ahora más flexible, solo valida que no esté vacío)
@@ -66,7 +96,7 @@ export const extractFilterOptions = (offers: InmuebleType[]): FilterOptions => {
   return {
     offerType: createUniqueOptionsFromArrays([validOfferTypes]),
     propertyType: createUniqueOptionsFromArrays([validPropertyTypes]),
-    propertyUse: createUniqueOptionsFromArrays([validPropertyUses]),
+    propertyUse: createPropertyUseOptions([validPropertyUses]),
     city: createUniqueOptions(cities),
     country: (() => {
       const uniqueCountries = Array.from(new Set(countries.filter(country => country && country.trim() !== '')));
