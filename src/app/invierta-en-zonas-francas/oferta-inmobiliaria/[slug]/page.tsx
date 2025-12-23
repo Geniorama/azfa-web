@@ -20,7 +20,7 @@ import { StrapiButtonType } from "@/types/componentsType";
 import { getCountryCode, getCountryName } from "@/utils/countryMapping";
 import ReactMarkdown from 'react-markdown';
 import type { FilterValuesProps } from "@/components/AdvancedSearchBar";
-import { extractFilterOptions, FilterOptions } from "@/utils/extractFilterOptions";
+import { extractFilterOptions, FilterOptions, getPropertyUseLabel } from "@/utils/extractFilterOptions";
 import LoadingSpinner from "@/components/LoadingSpinner";
 
 // Función para convertir bloques de Strapi a HTML
@@ -363,7 +363,7 @@ function OfertaInmobiliariaSingleContent() {
                         alt="Uso de inmueble"
                         className="w-[20px] h-[20px]"
                       />
-                      <span className="text-body2">{inmueble.propertyUse.map(use => use.charAt(0).toUpperCase() + use.slice(1)).join(', ')}</span>
+                      <span className="text-body2">{inmueble.propertyUse.map(use => getPropertyUseLabel(use)).join(', ')}</span>
                     </div>
                   )}
                   {inmueble.area && (
