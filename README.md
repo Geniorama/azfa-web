@@ -166,6 +166,8 @@ El proyecto usa **Incremental Static Regeneration (ISR)** de Next.js con revalid
 
 ## 📚 Documentación Relacionada
 
+- `docs/ARQUITECTURA.md` — Arquitectura del sistema, Netlify, Strapi, ISR y diagramas.
+- `docs/DOCUMENTACION-SITIO.md` — Mapa del sitio, rutas y audiencias.
 - `docs/env.example` — Variables de entorno.
 - Código comentado en `src/context/AuthContext.tsx`, `src/app/api/auth/*`.
 - Archivos `README`/`CONFIG` adicionales en Strapi (fuera de este repo).
