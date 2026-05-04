@@ -5,3 +5,301 @@
 [build.environment]
   # Deshabilitar el escaneo de secretos para keys públicas conocidas
   NETLIFY_SKIP_SECRET_SCANNING = "true"
+
+# =============================================================================
+# Redirecciones 301 - URLs heredadas del sitio anterior (Grav CMS)
+# Fuente: GSC Coverage Drilldown 2026-05-04
+# =============================================================================
+# Estrategia:
+#   1) Mapear rutas antiguas (sin prefijo de idioma) a rutas del nuevo Next.js.
+#   2) Eliminar prefijos /es/, /en/, /pt/, /fr/, /zh-hans/ (el sitio nuevo
+#      usa Google Translate, no segmentos de idioma).
+# Las rutas existentes en el nuevo sitio (/quienes-somos, /contacto,
+# /servicios, /eventos, /sala-de-prensa/*, /invierta-en-zonas-francas/*, etc.)
+# NO se interceptan: las reglas sin `force` solo aplican si no existe la ruta.
+# =============================================================================
+
+# -----------------------------------------------------------------------------
+# Sala de prensa - Noticias
+# -----------------------------------------------------------------------------
+[[redirects]]
+  from = "/informacion/noticias/*"
+  to = "/sala-de-prensa/noticias"
+  status = 301
+
+[[redirects]]
+  from = "/informacion/noticias"
+  to = "/sala-de-prensa/noticias"
+  status = 301
+
+# Antiguas URLs de Joomla (ej. /es/11-noticias/343-...)
+[[redirects]]
+  from = "/11-noticias/*"
+  to = "/sala-de-prensa/noticias"
+  status = 301
+
+# -----------------------------------------------------------------------------
+# Sala de prensa - Newsletter / Boletines
+# -----------------------------------------------------------------------------
+[[redirects]]
+  from = "/informacion/boletines"
+  to = "/sala-de-prensa/newsletter"
+  status = 301
+
+[[redirects]]
+  from = "/informacion/boletines/*"
+  to = "/sala-de-prensa/newsletter"
+  status = 301
+
+# -----------------------------------------------------------------------------
+# Webinars y AZFA Talks → Eventos
+# -----------------------------------------------------------------------------
+[[redirects]]
+  from = "/informacion/webinars/*"
+  to = "/eventos"
+  status = 301
+
+[[redirects]]
+  from = "/informacion/webinars"
+  to = "/eventos"
+  status = 301
+
+# -----------------------------------------------------------------------------
+# Estadísticas
+# -----------------------------------------------------------------------------
+[[redirects]]
+  from = "/informacion/estadisticas"
+  to = "/invierta-en-zonas-francas/estadisticas"
+  status = 301
+
+[[redirects]]
+  from = "/informacion/estadisticas/*"
+  to = "/invierta-en-zonas-francas/estadisticas"
+  status = 301
+
+# -----------------------------------------------------------------------------
+# Publicaciones y estudios
+# -----------------------------------------------------------------------------
+[[redirects]]
+  from = "/informacion/publicaciones"
+  to = "/invierta-en-zonas-francas/publicaciones"
+  status = 301
+
+[[redirects]]
+  from = "/informacion/publicaciones/*"
+  to = "/invierta-en-zonas-francas/publicaciones"
+  status = 301
+
+# Cubre /informacion/estudios, /informacion/estudiosBanrep, /informacion/estudios.Banco, etc.
+[[redirects]]
+  from = "/informacion/estudios*"
+  to = "/invierta-en-zonas-francas/publicaciones"
+  status = 301
+
+# -----------------------------------------------------------------------------
+# Resto de /informacion → noticias por defecto
+# -----------------------------------------------------------------------------
+[[redirects]]
+  from = "/informacion/*"
+  to = "/sala-de-prensa/noticias"
+  status = 301
+
+[[redirects]]
+  from = "/informacion"
+  to = "/sala-de-prensa/noticias"
+  status = 301
+
+# -----------------------------------------------------------------------------
+# Eventos (eventos-proximos, eventos-pasados, eventos-2023, slugs específicos)
+# -----------------------------------------------------------------------------
+[[redirects]]
+  from = "/eventos/*"
+  to = "/eventos"
+  status = 301
+
+# -----------------------------------------------------------------------------
+# Invierta - subsecciones
+# -----------------------------------------------------------------------------
+[[redirects]]
+  from = "/invierta/directorio"
+  to = "/nuestros-afiliados"
+  status = 301
+
+[[redirects]]
+  from = "/invierta/directorio/*"
+  to = "/nuestros-afiliados"
+  status = 301
+
+[[redirects]]
+  from = "/invierta/normatividad"
+  to = "/invierta-en-zonas-francas/normativa-legal"
+  status = 301
+
+[[redirects]]
+  from = "/invierta/cifras"
+  to = "/invierta-en-zonas-francas/estadisticas"
+  status = 301
+
+[[redirects]]
+  from = "/invierta/acceda-a-las-zonas-francas"
+  to = "/invierta-en-zonas-francas"
+  status = 301
+
+[[redirects]]
+  from = "/invierta/*"
+  to = "/invierta-en-zonas-francas"
+  status = 301
+
+[[redirects]]
+  from = "/invierta"
+  to = "/invierta-en-zonas-francas"
+  status = 301
+
+# -----------------------------------------------------------------------------
+# Blog (categorías y posts antiguos) → hub del blog en sala de prensa
+# -----------------------------------------------------------------------------
+[[redirects]]
+  from = "/blog/*"
+  to = "/sala-de-prensa/blog"
+  status = 301
+
+[[redirects]]
+  from = "/blog"
+  to = "/sala-de-prensa/blog"
+  status = 301
+
+# -----------------------------------------------------------------------------
+# Afiliados / Login
+# -----------------------------------------------------------------------------
+[[redirects]]
+  from = "/afiliados/login"
+  to = "/auth/login"
+  status = 301
+
+[[redirects]]
+  from = "/afiliados/*"
+  to = "/portal-afiliados"
+  status = 301
+
+[[redirects]]
+  from = "/afiliados"
+  to = "/portal-afiliados"
+  status = 301
+
+# -----------------------------------------------------------------------------
+# Pagos → Portal de afiliados
+# -----------------------------------------------------------------------------
+[[redirects]]
+  from = "/pagos"
+  to = "/portal-afiliados"
+  status = 301
+
+# -----------------------------------------------------------------------------
+# Haga parte de AZFA → Nuestros afiliados
+# -----------------------------------------------------------------------------
+[[redirects]]
+  from = "/haga-parte-de-azfa"
+  to = "/nuestros-afiliados"
+  status = 301
+
+# -----------------------------------------------------------------------------
+# Index legacy (Joomla)
+# -----------------------------------------------------------------------------
+[[redirects]]
+  from = "/index.php/*"
+  to = "/"
+  status = 301
+
+[[redirects]]
+  from = "/index.php"
+  to = "/"
+  status = 301
+
+[[redirects]]
+  from = "/index"
+  to = "/"
+  status = 301
+
+# -----------------------------------------------------------------------------
+# Estructura antigua de Grav CMS (/user/pages/04.invierta/01.directorio/...)
+# -----------------------------------------------------------------------------
+[[redirects]]
+  from = "/user/pages/*"
+  to = "/nuestros-afiliados"
+  status = 301
+
+# -----------------------------------------------------------------------------
+# Archivos antiguos /media/* (PDFs, revistas, estadísticas-pais)
+# y /presentaciones/*
+# -----------------------------------------------------------------------------
+[[redirects]]
+  from = "/media/*"
+  to = "/invierta-en-zonas-francas/publicaciones"
+  status = 301
+
+[[redirects]]
+  from = "/presentaciones/*"
+  to = "/invierta-en-zonas-francas/publicaciones"
+  status = 301
+
+[[redirects]]
+  from = "/presentaciones"
+  to = "/invierta-en-zonas-francas/publicaciones"
+  status = 301
+
+# =============================================================================
+# Eliminación de prefijos de idioma
+# El sitio nuevo usa Google Translate (no rutas /es/, /en/, /pt/, /fr/, /zh-hans/).
+# Las rutas resultantes pasan por las reglas anteriores si existe coincidencia.
+# =============================================================================
+
+[[redirects]]
+  from = "/es/*"
+  to = "/:splat"
+  status = 301
+
+[[redirects]]
+  from = "/en/*"
+  to = "/:splat"
+  status = 301
+
+[[redirects]]
+  from = "/pt/*"
+  to = "/:splat"
+  status = 301
+
+[[redirects]]
+  from = "/fr/*"
+  to = "/:splat"
+  status = 301
+
+[[redirects]]
+  from = "/zh-hans/*"
+  to = "/:splat"
+  status = 301
+
+# Variantes sin slash final
+[[redirects]]
+  from = "/es"
+  to = "/"
+  status = 301
+
+[[redirects]]
+  from = "/en"
+  to = "/"
+  status = 301
+
+[[redirects]]
+  from = "/pt"
+  to = "/"
+  status = 301
+
+[[redirects]]
+  from = "/fr"
+  to = "/"
+  status = 301
+
+[[redirects]]
+  from = "/zh-hans"
+  to = "/"
+  status = 301
