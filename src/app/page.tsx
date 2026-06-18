@@ -38,10 +38,10 @@ const getHome = async () => {
 const getNews = async (): Promise<{ data: NewsType[] } | null> => {
   try {
     const response = await fetch(
-      `${process.env.STRAPI_URL}/api/press-rooms?filters[type][$eq]=news&populate[0]=thumbnail&populate[1]=category&pagination[pageSize]=2`,
+      `${process.env.STRAPI_URL}/api/press-rooms?filters[type][$eq]=news&populate[0]=thumbnail&populate[1]=category&pagination[pageSize]=2&sort=publishedAt:desc`,
       {
         cache: "force-cache",
-        next: { revalidate: 3600 }, // Revalidar cada hora
+        next: { revalidate: 300 }, // Revalidar cada 5 minutos
       }
     );
 
