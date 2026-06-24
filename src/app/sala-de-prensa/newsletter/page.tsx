@@ -22,7 +22,7 @@ interface NewsletterType extends NewsType {
 const getNewsletters = async (page: number = 1, pageSize: number = 9): Promise<{ data: NewsletterType[], meta: { pagination: { page: number, pageCount: number, pageSize: number, total: number } } } | null> => {
   try {
     const response = await fetch(
-      `${process.env.STRAPI_URL}/api/press-rooms?filters[type][$eq]=newsletter&populate[0]=thumbnail&populate[1]=category&populate[2]=downloadDocument&fields[0]=title&fields[1]=slug&fields[2]=extract&fields[3]=type&fields[4]=externalLink&fields[5]=createdAt&fields[6]=updatedAt&fields[7]=publishedAt&fields[8]=publishDate&pagination[page]=${page}&pagination[pageSize]=${pageSize}&sort=publishDate:desc`,
+      `${process.env.NEXT_PUBLIC_STRAPI_URL}/press-rooms?filters[type][$eq]=newsletter&populate[0]=thumbnail&populate[1]=category&populate[2]=downloadDocument&fields[0]=title&fields[1]=slug&fields[2]=extract&fields[3]=type&fields[4]=externalLink&fields[5]=createdAt&fields[6]=updatedAt&fields[7]=publishedAt&fields[8]=publishDate&pagination[page]=${page}&pagination[pageSize]=${pageSize}&sort=publishDate:desc`,
       {
         cache: "force-cache",
         next: { revalidate: 3600 }, // Revalidar cada hora
@@ -47,7 +47,7 @@ const getNewsletterCategories = async (): Promise<{ data: NewsCategoryType[] } |
   try {
     // Obtener todas las newsletters para extraer las categorías únicas
     const response = await fetch(
-      `${process.env.STRAPI_URL}/api/press-rooms?filters[type][$eq]=newsletter&populate[0]=category&populate[1]=downloadDocument&fields[0]=externalLink&pagination[pageSize]=100`,
+      `${process.env.NEXT_PUBLIC_STRAPI_URL}/press-rooms?filters[type][$eq]=newsletter&populate[0]=category&populate[1]=downloadDocument&fields[0]=externalLink&pagination[pageSize]=100`,
       {
         cache: "force-cache",
         next: { revalidate: 3600 }, // Revalidar cada hora
@@ -78,7 +78,7 @@ const getNewsletterCategories = async (): Promise<{ data: NewsCategoryType[] } |
 // Función común para obtener datos de la página de sala de prensa
 const getPressRoomPage = async (): Promise<{ data: PressRoomPageType } | null> => {
   try {
-    const response = await fetch(`${process.env.STRAPI_URL}/api/press-room-page?populate[0]=blogSection&populate[1]=blogSection.backgroundImg&populate[2]=newsletterSection&populate[3]=newsletterSection.backgroundImg&populate[4]=podcastSection&populate[5]=podcastSection.backgroundImg&populate[6]=newsSection&populate[7]=newsSection.backgroundImg`, {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_STRAPI_URL}/press-room-page?populate[0]=blogSection&populate[1]=blogSection.backgroundImg&populate[2]=newsletterSection&populate[3]=newsletterSection.backgroundImg&populate[4]=podcastSection&populate[5]=podcastSection.backgroundImg&populate[6]=newsSection&populate[7]=newsSection.backgroundImg`, {
       cache: "force-cache",
       next: { revalidate: 3600 }, // Revalidar cada hora
     });
@@ -94,14 +94,16 @@ const getPressRoomPage = async (): Promise<{ data: PressRoomPageType } | null> =
   }
 }
 
-export default async function Newsletter() {
-  const newsletterData = await getNewsletters();
+interface NewsletterPageProps {
+  searchParams: Promise<{ page?: string }>;
+}
+
+export default async function Newsletter({ searchParams }: NewsletterPageProps) {
+  const resolvedSearchParams = await searchParams;
+  const currentPage = parseInt(resolvedSearchParams.page || '1', 10);
+  const newsletterData = await getNewsletters(currentPage);
   const categoriesData = await getNewsletterCategories();
   const pressRoomPageData = await getPressRoomPage();
-
-  console.log("newsletterData", newsletterData);
-  console.log("categoriesData", categoriesData);
-  console.log("pressRoomPageData", pressRoomPageData);
 
   return (
     <NewsletterView 

@@ -4,7 +4,7 @@ import { PressRoomPageType } from "@/types/componentsType";
 // Función común para obtener datos de la página de sala de prensa
 const getPressRoomPage = async (): Promise<{ data: PressRoomPageType } | null> => {
   try {
-    const response = await fetch(`${process.env.STRAPI_URL}/api/press-room-page?populate[0]=blogSection&populate[1]=blogSection.backgroundImg&populate[2]=newsletterSection&populate[3]=newsletterSection.backgroundImg&populate[4]=podcastSection&populate[5]=podcastSection.backgroundImg&populate[6]=newsSection&populate[7]=newsSection.backgroundImg`, {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_STRAPI_URL}/press-room-page?populate[0]=blogSection&populate[1]=blogSection.backgroundImg&populate[2]=newsletterSection&populate[3]=newsletterSection.backgroundImg&populate[4]=podcastSection&populate[5]=podcastSection.backgroundImg&populate[6]=newsSection&populate[7]=newsSection.backgroundImg`, {
       cache: "force-cache",
       next: { revalidate: 3600 }, // Revalidar cada hora
     });
@@ -22,7 +22,7 @@ const getPressRoomPage = async (): Promise<{ data: PressRoomPageType } | null> =
 
 const getPodcast = async () => {
   try {
-    const response = await fetch(`${process.env.STRAPI_URL}/api/press-rooms?filters[type][$eq]=podcast&populate=*&sort=publishDate:desc`, {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_STRAPI_URL}/press-rooms?filters[type][$eq]=podcast&populate=*&sort=publishDate:desc`, {
       cache: "force-cache",
       next: { revalidate: 3600 }, // Revalidar cada hora
     });

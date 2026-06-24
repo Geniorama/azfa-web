@@ -9,6 +9,7 @@ import Button from "@/utils/Button";
 import { NewsType, NewsCategoryType, NewsletterSectionType } from "@/types/componentsType";
 import { truncateText } from "@/utils/truncateText";
 import AdSection from "@/components/AdSection";
+import { useRouter, useSearchParams } from "next/navigation";
 
 
 // Interfaz extendida para newsletters con downloadDocument
@@ -27,6 +28,15 @@ interface NewsletterViewProps {
 }
 
 export default function NewsletterView({ newsletterData, categoriesData, paginationMeta, newsletterSectionData }: NewsletterViewProps) {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+
+  const handlePageChange = (page: number) => {
+    const params = new URLSearchParams(searchParams.toString());
+    params.set('page', page.toString());
+    router.push(`/sala-de-prensa/newsletter?${params.toString()}`);
+  };
+
   // Función para formatear la fecha como "JUN 25, 2024"
   const formatDate = (dateString: string): string => {
     // Extraer año, mes y día directamente del string para evitar problemas de zona horaria
@@ -107,9 +117,9 @@ export default function NewsletterView({ newsletterData, categoriesData, paginat
                     {paginationMeta && paginationMeta.pagination && paginationMeta.pagination.pageCount > 1 && (
                       <div className="flex justify-center mt-16">
                         <Pagination 
-                          currentPage={paginationMeta.pagination.page} 
-                          totalPages={paginationMeta.pagination.pageCount} 
-                          onPageChange={() => {}} 
+                          currentPage={paginationMeta.pagination.page}
+                          totalPages={paginationMeta.pagination.pageCount}
+                          onPageChange={handlePageChange}
                         />
                       </div>
                     )}
