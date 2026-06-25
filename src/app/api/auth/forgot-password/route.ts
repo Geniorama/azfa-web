@@ -6,8 +6,6 @@ export async function POST(request: NextRequest) {
   try {
     const { email } = await request.json()
 
-    console.log('🔍 Received email:', email)
-
     if (!email) {
       return NextResponse.json(
         { error: 'El correo electrónico es requerido' },
@@ -25,8 +23,6 @@ export async function POST(request: NextRequest) {
 
     // Solicitar recuperación de contraseña con Strapi
     try {
-      console.log('🔍 Fetching URL:', `${STRAPI_URL}/api/auth/forgot-password`)
-      
       // Primero intentar con el endpoint estándar de forgot-password
       const response = await fetch(`${STRAPI_URL}/api/auth/forgot-password`, {
         method: 'POST',
@@ -38,8 +34,6 @@ export async function POST(request: NextRequest) {
         }),
       })
 
-      console.log('🔍 Response status:', response.status)
-      
       // Si falla con 500, intentar devolver un mensaje de error más amigable
       if (response.status === 500) {
         console.warn('⚠️ Strapi devolvió error 500, posiblemente no configurado')
@@ -53,7 +47,6 @@ export async function POST(request: NextRequest) {
       }
 
       const data = await response.json()
-      console.log('🔍 Response data:', data)
 
       if (!response.ok) {
         // Si Strapi devuelve un error, intentar devolverlo

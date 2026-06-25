@@ -33,6 +33,11 @@ yarn-error.log*
 # env files (can opt-in for committing if needed)
 .env*
 
+# database dumps / backups (nunca versionar: contienen datos sensibles)
+*.sql
+*.dump
+*.sqlite
+
 # vercel
 .vercel
 
@@ -47,3 +52,6 @@ next-env.d.ts
 
 DIAGNOSTICO_PLATAFORMA.md
 REDIRECCIONES_301_REPORT.md
+
+# Informe de seguridad (no versionar: revela vulnerabilidades)
+INFORME_SEGURIDAD.md

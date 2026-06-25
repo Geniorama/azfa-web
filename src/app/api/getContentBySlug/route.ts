@@ -10,6 +10,11 @@ export async function GET(request: NextRequest) {
         return NextResponse.json({ error: "Slug is required" }, { status: 400 });
     }
 
+    // Validar formato del slug (evita valores inesperados en el filtro)
+    if (!/^[a-zA-Z0-9_-]+$/.test(slug)) {
+        return NextResponse.json({ error: "Formato de slug inválido" }, { status: 400 });
+    }
+
     // Procesar todos los parámetros populate
     const populateParams: Record<string, string> = {};
     

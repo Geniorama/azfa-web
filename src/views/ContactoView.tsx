@@ -63,21 +63,29 @@ export default function ContactoView({ contactPageData, contactInfoGlobal, socia
     setIsSubmitting(true)
     
     try {
-      // Aquí se enviaría el email usando contactFormSettings?.toEmail
-      // const emailData = {
-      //   to: contactFormSettings?.toEmail || 'equipocreativo@ekon7.com',
-      //   subject: formData.asunto,
-      //   body: formData.mensaje,
-      //   from: formData.nombre,
-      //   empresa: formData.empresa,
-      //   telefono: formData.telefono
-      // }
-      
-      // Simular envío
-      await new Promise(resolve => setTimeout(resolve, 2000))
-      
+      // Enviar al endpoint que verifica el reCAPTCHA en el servidor
+      const response = await fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          recaptchaToken: recaptchaValue,
+          nombre: formData.nombre,
+          telefono: formData.telefono,
+          empresa: formData.empresa,
+          asunto: formData.asunto,
+          mensaje: formData.mensaje,
+        }),
+      })
+
+      const data = await response.json()
+
+      if (!response.ok || !data.success) {
+        alert(data.error || 'No se pudo enviar el mensaje. Intente nuevamente.')
+        return
+      }
+
       alert('Mensaje enviado correctamente')
-      
+
       // Resetear formulario
       setFormData({
         nombre: '',
@@ -88,7 +96,7 @@ export default function ContactoView({ contactPageData, contactInfoGlobal, socia
         aceptaTerminos: false
       })
       setRecaptchaValue(null)
-      
+
     } catch (error) {
       console.error('Error al enviar:', error)
       alert('Error al enviar el mensaje')

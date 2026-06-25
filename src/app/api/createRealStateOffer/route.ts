@@ -307,16 +307,13 @@ export async function POST(request: NextRequest) {
         });
 
     } catch (error) {
+        // El detalle se registra solo en el servidor; nunca se devuelve al cliente
         console.error('=== ERROR CREATING REAL STATE OFFER ===');
-        console.error('Error completo:', error);
         console.error('Error message:', error instanceof Error ? error.message : 'Error desconocido');
-        console.error('Error stack:', error instanceof Error ? error.stack : 'No stack trace');
-        
-        return NextResponse.json({ 
+
+        return NextResponse.json({
             error: 'Error al crear el inmueble',
-            success: false,
-            details: error instanceof Error ? error.message : 'Error desconocido',
-            fullError: error
+            success: false
         }, { status: 500 });
     }
 }

@@ -34,6 +34,65 @@ export async function PUT(
         // Corregir la URL de Strapi
         const strapiBaseUrl = process.env.NEXT_PUBLIC_STRAPI_URL?.replace('/api', '') || process.env.NEXT_PUBLIC_STRAPI_URL;
 
+        // ---------------------------------------------------------------------
+        // Validación de autorización a nivel de objeto (evita IDOR)
+        // El inmueble solo puede ser editado por un usuario de la misma empresa
+        // afiliada, o por un editor global de propiedades (isPropertiesEditor).
+        // ---------------------------------------------------------------------
+        // 1) Obtener el usuario autenticado con su affiliateCompany y rol de editor
+        const meResponse = await fetch(
+            `${strapiBaseUrl}/api/users/me?fields[0]=isPropertiesEditor&populate[affiliateCompany][fields][0]=documentId`,
+            { headers: { 'Authorization': `Bearer ${token}` } }
+        );
+
+        if (!meResponse.ok) {
+            return NextResponse.json({
+                error: 'No autorizado',
+                success: false
+            }, { status: 401 });
+        }
+
+        const me = await meResponse.json();
+        const isPropertiesEditor = me?.isPropertiesEditor === true;
+        const userAffiliateDocumentId = me?.affiliateCompany?.documentId;
+
+        // 2) Obtener el inmueble objetivo y su empresa afiliada
+        const offerResponse = await fetch(
+            `${strapiBaseUrl}/api/real-state-offers/${id}?populate[affiliateCompany][fields][0]=documentId`,
+            { headers: { 'Authorization': `Bearer ${token}` } }
+        );
+
+        if (offerResponse.status === 404) {
+            return NextResponse.json({
+                error: 'Inmueble no encontrado',
+                success: false
+            }, { status: 404 });
+        }
+
+        if (!offerResponse.ok) {
+            return NextResponse.json({
+                error: 'No se pudo verificar el inmueble',
+                success: false
+            }, { status: 403 });
+        }
+
+        const offerJson = await offerResponse.json();
+        const offerAffiliateDocumentId =
+            offerJson?.data?.affiliateCompany?.documentId ?? offerJson?.affiliateCompany?.documentId;
+
+        // 3) Autorizar: editor global, o mismo affiliateCompany (no nulo)
+        const isOwner =
+            !!userAffiliateDocumentId &&
+            userAffiliateDocumentId === offerAffiliateDocumentId;
+
+        if (!isPropertiesEditor && !isOwner) {
+            console.warn(`Intento de edición no autorizada del inmueble ${id}`);
+            return NextResponse.json({
+                error: 'No tiene permisos para editar este inmueble',
+                success: false
+            }, { status: 403 });
+        }
+
         // Crear FormData para manejar archivos
         const formData = await request.formData();
         
@@ -161,10 +220,9 @@ export async function PUT(
         console.error('=== ERROR UPDATING REAL STATE OFFER ===');
         console.error('Error:', error);
         
-        return NextResponse.json({ 
+        return NextResponse.json({
             error: 'Error al actualizar el inmueble',
-            success: false,
-            details: error instanceof Error ? error.message : 'Error desconocido'
+            success: false
         }, { status: 500 });
     }
 }
