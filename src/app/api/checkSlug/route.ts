@@ -1,13 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
+import { getAuthToken } from "@/lib/authCookie";
 
 export async function GET(request: NextRequest) {
     console.log('=== CHECK SLUG API ===');
-    
+
     try {
-        // Obtener el token de autenticación del header
-        const authHeader = request.headers.get('authorization');
-        const token = authHeader?.replace('Bearer ', '');
-        
+        // Obtener el token de autenticación desde la cookie httpOnly
+        const token = getAuthToken(request);
+
         if (!token) {
             console.log('Error: Token no proporcionado');
             return NextResponse.json({ 

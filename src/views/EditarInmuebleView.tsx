@@ -38,7 +38,7 @@ interface EditarInmuebleViewProps {
 
 export default function EditarInmuebleView({ id }: EditarInmuebleViewProps) {
   // Hooks para autenticación y navegación
-  const { token, isAuthenticated } = useAuth();
+  const { isAuthenticated } = useAuth();
   const router = useRouter();
   const { offers, propertiesLimit } = useAffiliateRealStateOffers();
   const { offer, loading: offerLoading, error: offerError } = useSingleRealStateOffer(id);
@@ -142,14 +142,14 @@ export default function EditarInmuebleView({ id }: EditarInmuebleViewProps) {
 
   // Verificar autenticación al cargar el componente
   useEffect(() => {
-    if (!isAuthenticated || !token) {
+    if (!isAuthenticated) {
       router.push('/auth/login');
     }
-  }, [isAuthenticated, token, router]);
+  }, [isAuthenticated, router]);
 
   // Función para manejar el envío del formulario
   const onSubmit = async (data: FormData) => {
-    if (!token) {
+    if (!isAuthenticated) {
       alert('No tienes permisos para editar inmuebles. Inicia sesión.');
       router.push('/auth/login');
       return;
@@ -192,9 +192,7 @@ export default function EditarInmuebleView({ id }: EditarInmuebleViewProps) {
       // Llamada a la API para actualizar el inmueble
       const response = await fetch(`/api/updateRealStateOffer/${id}`, {
         method: 'PUT',
-        headers: {
-          'Authorization': `Bearer ${token}`
-        },
+        credentials: 'same-origin',
         body: formData
       });
       
@@ -404,7 +402,7 @@ export default function EditarInmuebleView({ id }: EditarInmuebleViewProps) {
   }
 
   // Mostrar loading mientras se verifica la autenticación
-  if (!isAuthenticated || !token) {
+  if (!isAuthenticated) {
     return (
       <div className="flex items-center justify-center min-h-screen">
         <div className="text-center">

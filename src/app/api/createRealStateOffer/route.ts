@@ -1,15 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
+import { getAuthToken } from "@/lib/authCookie";
 
 export async function POST(request: NextRequest) {
     console.log('=== CREATE REAL STATE OFFER API ===');
-    
+
     try {
-        // Obtener el token de autenticación del header
-        const authHeader = request.headers.get('authorization');
-        const token = authHeader?.replace('Bearer ', '');
-        
-        console.log('Token recibido:', token ? 'Sí' : 'No');
-        
+        // Obtener el token de autenticación desde la cookie httpOnly
+        const token = getAuthToken(request);
+
         if (!token) {
             console.log('Error: Token no proporcionado');
             return NextResponse.json({ 

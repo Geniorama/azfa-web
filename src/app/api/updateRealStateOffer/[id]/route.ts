@@ -1,25 +1,25 @@
 import { NextRequest, NextResponse } from "next/server";
+import { getAuthToken } from "@/lib/authCookie";
 
 export async function PUT(
     request: NextRequest,
     { params }: { params: Promise<{ id: string }> }
 ) {
     console.log('=== UPDATE REAL STATE OFFER API ===');
-    
+
     try {
         const { id } = await params;
 
         if (!id) {
-            return NextResponse.json({ 
+            return NextResponse.json({
                 error: 'ID del inmueble requerido',
-                success: false 
+                success: false
             }, { status: 400 });
         }
 
-        // Obtener el token de autenticación del header
-        const authHeader = request.headers.get('authorization');
-        const token = authHeader?.replace('Bearer ', '');
-        
+        // Obtener el token de autenticación desde la cookie httpOnly
+        const token = getAuthToken(request);
+
         console.log('Token recibido:', token ? 'Sí' : 'No');
         console.log('ID del inmueble a actualizar:', id);
         

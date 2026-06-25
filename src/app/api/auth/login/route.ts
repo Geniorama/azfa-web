@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { setAuthCookie } from '@/lib/authCookie'
 
 const STRAPI_URL = process.env.NEXT_PUBLIC_STRAPI_URL
 
@@ -175,8 +176,9 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    return NextResponse.json({
-      token: jwt,
+    // El JWT se entrega en una cookie httpOnly (no en el body) para que el
+    // JavaScript del cliente no pueda leerlo.
+    const authResponse = NextResponse.json({
       user: {
         id: user.id,
         username: user.username,
@@ -189,6 +191,10 @@ export async function POST(request: NextRequest) {
         role: user.role,
       },
     })
+
+    setAuthCookie(authResponse, jwt)
+
+    return authResponse
   } catch (error) {
     console.error('Error en autenticación:', error)
     

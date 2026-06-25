@@ -32,7 +32,7 @@ interface FormData {
 
 export default function AgregarInmuebleView() {
   // Hooks para autenticación y navegación
-  const { token, isAuthenticated } = useAuth();
+  const { isAuthenticated } = useAuth();
   const router = useRouter();
   const { offers, propertiesLimit } = useAffiliateRealStateOffers();
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
@@ -52,9 +52,7 @@ export default function AgregarInmuebleView() {
   const checkSlugExists = async (slug: string): Promise<boolean> => {
     try {
       const response = await fetch(`/api/checkSlug?slug=${encodeURIComponent(slug)}`, {
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
+        credentials: 'same-origin'
       });
       
       if (response.ok) {
@@ -160,14 +158,14 @@ export default function AgregarInmuebleView() {
 
   // Verificar autenticación al cargar el componente
   useEffect(() => {
-    if (!isAuthenticated || !token) {
+    if (!isAuthenticated) {
       router.push('/auth/login');
     }
-  }, [isAuthenticated, token, router]);
+  }, [isAuthenticated, router]);
 
   // Función para manejar el envío del formulario
   const onSubmit = async (data: FormData) => {
-    if (!token) {
+    if (!isAuthenticated) {
       alert('No tienes permisos para crear inmuebles. Inicia sesión.');
       router.push('/auth/login');
       return;
@@ -209,9 +207,7 @@ export default function AgregarInmuebleView() {
       // Llamada a la API para crear el inmueble
       const response = await fetch('/api/createRealStateOffer', {
         method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${token}`
-        },
+        credentials: 'same-origin',
         body: formData // No incluir Content-Type header, el navegador lo establecerá automáticamente
       });
       
@@ -373,7 +369,7 @@ export default function AgregarInmuebleView() {
 
 
   // Mostrar loading mientras se verifica la autenticación
-  if (!isAuthenticated || !token) {
+  if (!isAuthenticated) {
     return (
       <div className="flex items-center justify-center min-h-screen">
         <div className="text-center">
