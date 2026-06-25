@@ -7,6 +7,8 @@ import { InvestmentStatisticsType } from "@/types/contentType";
 import { useState, useEffect } from "react";
 import ReactMarkdown from "react-markdown";
 import rehypeRaw from "rehype-raw";
+import rehypeSanitize from "rehype-sanitize";
+import { cmsSanitizeSchema } from "@/lib/sanitizeSchema";
 
 interface InvestmentStatisticsViewProps {
   pageContent: InvestmentStatisticsType | null;
@@ -80,7 +82,7 @@ export default function InvestmentStatisticsView({ pageContent }: InvestmentStat
               </p>
               <div className="text-body font-light [&_a]:underline [&_a]:underline-offset-2 [&_a]:decoration-1 [&_a]:text-text-primary [&_a:hover]:text-details [&_a]:transition-colors">
                 <ReactMarkdown 
-                  rehypePlugins={[rehypeRaw]}
+                  rehypePlugins={[rehypeRaw, [rehypeSanitize, cmsSanitizeSchema]]}
                   components={{
                     strong: ({children}) => <span className="font-bold">{children}</span>,
                     b: ({children}) => <span className="font-bold">{children}</span>,

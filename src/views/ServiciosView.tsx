@@ -6,6 +6,8 @@ import Button from "@/utils/Button";
 import ReactMarkdown from "react-markdown";
 import type { ServicesPageType } from "@/types/componentsType";
 import rehypeRaw from "rehype-raw";
+import rehypeSanitize from "rehype-sanitize";
+import { cmsSanitizeSchema } from "@/lib/sanitizeSchema";
 
 interface ServiciosViewProps {
   serviciosData: ServicesPageType | null;
@@ -56,7 +58,7 @@ export default function ServiciosView({ serviciosData }: ServiciosViewProps) {
               >
                 <h2 className={`text-h2 mb-10 ${section.style === "style-2" ? "text-white" : "text-text-primary"}`}>{section.title}</h2>
                 <div className={`text-[18px] leading-[31px] ${section.style === "style-2" ? "text-white" : "text-text-primary"}`}>
-                  <ReactMarkdown rehypePlugins={[rehypeRaw]}>{section.description}</ReactMarkdown>
+                  <ReactMarkdown rehypePlugins={[rehypeRaw, [rehypeSanitize, cmsSanitizeSchema]]}>{section.description}</ReactMarkdown>
                 </div>
                 {section.button && (
                   <Button

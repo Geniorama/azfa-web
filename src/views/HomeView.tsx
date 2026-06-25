@@ -39,6 +39,8 @@ import {
 } from "@/types/componentsType";
 import ReactMarkdown from "react-markdown";
 import rehypeRaw from "rehype-raw";
+import rehypeSanitize from "rehype-sanitize";
+import { cmsSanitizeSchema } from "@/lib/sanitizeSchema";
 import { formatYouTubeUrl } from "@/utils/formatYouTubeUrl";
 import WidgetInstagram from "@/components/WidgetInstagram";
 import WidgetLinkedIn from "@/components/WidgetLinkedIn";
@@ -299,7 +301,7 @@ export default function Home({
               className="w-full lg:w-1/2 lg:pl-30 text-body1 p-4 lg:p-0"
             >
               <div>
-                <ReactMarkdown rehypePlugins={[rehypeRaw]}>
+                <ReactMarkdown rehypePlugins={[rehypeRaw, [rehypeSanitize, cmsSanitizeSchema]]}>
                   {contentWithVideoData?.content}
                 </ReactMarkdown>
               </div>

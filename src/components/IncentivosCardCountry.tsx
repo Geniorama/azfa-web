@@ -1,5 +1,7 @@
 import ReactMarkdown from "react-markdown";
 import rehypeRaw from "rehype-raw";
+import rehypeSanitize from "rehype-sanitize";
+import { cmsSanitizeSchema } from "@/lib/sanitizeSchema";
 
 interface IncentivosCardCountryProps {
   index: number;
@@ -67,7 +69,7 @@ export default function IncentivosCardCountry({ index, country, numberZones, num
                     <span className="block w-1/2 font-medium">{item.label}</span>
                     <div className="block w-1/2 font-light prose prose-sm max-w-none">
                         <ReactMarkdown 
-                            rehypePlugins={[rehypeRaw]}
+                            rehypePlugins={[rehypeRaw, [rehypeSanitize, cmsSanitizeSchema]]}
                             components={{
                                 p: ({children}) => <span>{children}</span>,
                                 ul: ({children}) => <ul className="list-none pl-0">{children}</ul>,

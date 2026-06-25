@@ -6,6 +6,8 @@ import Counter from "@/utils/Counter";
 import type { TradeZonesPageType } from "@/types/componentsType";
 import ReactMarkdown from "react-markdown";
 import rehypeRaw from "rehype-raw";
+import rehypeSanitize from "rehype-sanitize";
+import { cmsSanitizeSchema } from "@/lib/sanitizeSchema";
 
 interface InviertaEnZonasViewProps {
   pageContent: TradeZonesPageType | null;
@@ -36,7 +38,7 @@ export default function InviertaEnZonasView({ pageContent }: InviertaEnZonasView
             >
               <h2 className="text-h2 mb-10">{pageContent.about.title}</h2>
               <div className="text-[18px] leading-[31px] [&_ul]:list-none [&_ul]:pl-0 [&_ul]:space-y-2 [&_ul>li]:flex [&_ul>li]:items-start [&_ul>li]:before:content-['•'] [&_ul>li]:before:mr-2 [&_ul>li]:before:shrink-0 [&_p]:mb-4">
-                <ReactMarkdown rehypePlugins={[rehypeRaw]}>{pageContent.about.description}</ReactMarkdown>
+                <ReactMarkdown rehypePlugins={[rehypeRaw, [rehypeSanitize, cmsSanitizeSchema]]}>{pageContent.about.description}</ReactMarkdown>
               </div>
             </div>
             <div 
@@ -120,7 +122,7 @@ export default function InviertaEnZonasView({ pageContent }: InviertaEnZonasView
             >
                <h2 className="text-h2 mb-10">{pageContent.about2.title}</h2>
                <div className="text-[18px] leading-[31px] [&_ul]:list-none [&_ul]:pl-0 [&_ul]:space-y-2 [&_ul>li]:flex [&_ul>li]:items-start [&_ul>li]:before:content-['•'] [&_ul>li]:before:mr-2 [&_ul>li]:before:shrink-0 [&_p]:mb-4">
-                 <ReactMarkdown rehypePlugins={[rehypeRaw]}>{pageContent.about2.description}</ReactMarkdown>
+                 <ReactMarkdown rehypePlugins={[rehypeRaw, [rehypeSanitize, cmsSanitizeSchema]]}>{pageContent.about2.description}</ReactMarkdown>
                </div>
             </div>
             {pageContent.about2.coverImage?.url && (
@@ -144,7 +146,7 @@ export default function InviertaEnZonasView({ pageContent }: InviertaEnZonasView
             >
                <h2 className="text-h2 mb-10">{pageContent.benefits.title}</h2>
                <div className="text-[18px] leading-[31px] [&_ul]:list-none [&_ul]:pl-0 [&_ul]:space-y-2 [&_ul>li]:flex [&_ul>li]:items-start [&_ul>li]:before:content-['•'] [&_ul>li]:before:mr-2 [&_ul>li]:before:shrink-0 [&_p]:mb-4">
-                 <ReactMarkdown rehypePlugins={[rehypeRaw]}>{pageContent.benefits.description}</ReactMarkdown>
+                 <ReactMarkdown rehypePlugins={[rehypeRaw, [rehypeSanitize, cmsSanitizeSchema]]}>{pageContent.benefits.description}</ReactMarkdown>
                </div>
             </div>
             <div 

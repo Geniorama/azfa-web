@@ -1,4 +1,6 @@
 import rehypeRaw from "rehype-raw";
+import rehypeSanitize from "rehype-sanitize";
+import { cmsSanitizeSchema } from "@/lib/sanitizeSchema";
 import type { IntroData } from "@/types/componentsType";
 import ReactMarkdown from "react-markdown";
 
@@ -17,7 +19,7 @@ export default function IntroPage({ introData }: IntroPageProps) {
         }
       />
       <div className="text-h4 leading-[38px] font-light text-center lg:text-left">
-        <ReactMarkdown rehypePlugins={[rehypeRaw]}>
+        <ReactMarkdown rehypePlugins={[rehypeRaw, [rehypeSanitize, cmsSanitizeSchema]]}>
           {introData.content}
         </ReactMarkdown>
       </div>

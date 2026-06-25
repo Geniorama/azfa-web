@@ -4,6 +4,8 @@ import { PodcastSectionType, PodcastType } from "@/types/componentsType";
 import AdSection from "@/components/AdSection";
 import ReactMarkdown from "react-markdown";
 import rehypeRaw from "rehype-raw";
+import rehypeSanitize from "rehype-sanitize";
+import { cmsSanitizeSchema } from "@/lib/sanitizeSchema";
 
 interface PodcastViewProps {
   podcastSectionData: PodcastSectionType | null;
@@ -34,7 +36,7 @@ export default function PodcastView({
           {featuredPodcast && (
             <div className="max-w-screen-lg mx-auto mb-16">
               <div className="[&>iframe]:w-full [&>iframe]:h-[200px] [&>iframe]:lg:h-[400px]">
-                <ReactMarkdown rehypePlugins={[rehypeRaw]}>
+                <ReactMarkdown rehypePlugins={[rehypeRaw, [rehypeSanitize, cmsSanitizeSchema]]}>
                   {featuredPodcast.extract}
                 </ReactMarkdown>
               </div>
@@ -52,7 +54,7 @@ export default function PodcastView({
               <div className="flex flex-wrap mt-10">
                 {remainingPodcasts.map((podcast) => (
                   <div key={podcast.id} className="lg:mb-2 w-full lg:w-1/2 p-2 [&>iframe]:w-full [&>iframe]:lg:h-[250px]">
-                    <ReactMarkdown rehypePlugins={[rehypeRaw]}>
+                    <ReactMarkdown rehypePlugins={[rehypeRaw, [rehypeSanitize, cmsSanitizeSchema]]}>
                       {podcast.extract}
                     </ReactMarkdown>
                   </div>

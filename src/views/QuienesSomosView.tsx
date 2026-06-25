@@ -15,6 +15,8 @@ import AvatarPerson from "@/components/AvatarPerson";
 import { getCountryName } from "@/utils/countryMapping";
 import ReactMarkdown from "react-markdown";
 import rehypeRaw from "rehype-raw";
+import rehypeSanitize from "rehype-sanitize";
+import { cmsSanitizeSchema } from "@/lib/sanitizeSchema";
 
 interface TeamMemberType {
   id: number;
@@ -342,10 +344,10 @@ export default function JuntaDirectivaView({
   return (
     <div>
       <HeadingPage
-        title={hero.title}
-        smallTitle={hero.smallTitle}
+        title={hero?.title || "Quiénes somos"}
+        smallTitle={hero?.smallTitle}
         textAlign="center"
-        image={hero.backgroundImg?.url || JuntaDirectivaImage.src}
+        image={hero?.backgroundImg?.url || JuntaDirectivaImage.src}
         className="min-h-[500px] lg:text-left"
       />
 
@@ -536,7 +538,7 @@ export default function JuntaDirectivaView({
                           {comission.title}
                         </h2>
                         <div className="text-[18px] leading-[31px] [&>p]:text[18px]">
-                          <ReactMarkdown rehypePlugins={[rehypeRaw]}>
+                          <ReactMarkdown rehypePlugins={[rehypeRaw, [rehypeSanitize, cmsSanitizeSchema]]}>
                             {comission.description}
                           </ReactMarkdown>
                         </div>

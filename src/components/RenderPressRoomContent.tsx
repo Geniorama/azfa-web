@@ -2,6 +2,8 @@
 
 import ReactMarkdown from "react-markdown";
 import rehypeRaw from "rehype-raw";
+import rehypeSanitize from "rehype-sanitize";
+import { cmsSanitizeSchema } from "@/lib/sanitizeSchema";
 import IntroPage from "@/components/IntroPage";
 import Button from "@/utils/Button";
 import { Swiper, SwiperSlide } from "swiper/react";
@@ -91,7 +93,7 @@ export default function RenderPressRoomContent({ componentName, content }: Rende
     case "components.rich-text":
       return (
         <div className="prose prose-lg max-w-none text-text-primary [&>p]:mb-4 [&>h2]:text-h4 [&>h2]:mt-8 [&>h2]:mb-4 [&>h3]:text-h5 [&>h3]:mt-6 [&>h3]:mb-3 [&>ul]:list-disc [&>ul]:ml-6 [&>ol]:list-decimal [&>ol]:ml-6 [&_a]:text-details [&_a]:underline [&_a]:transition-opacity [&_a]:duration-200 hover:[&_a]:opacity-70">
-          <ReactMarkdown rehypePlugins={[rehypeRaw]}>
+          <ReactMarkdown rehypePlugins={[rehypeRaw, [rehypeSanitize, cmsSanitizeSchema]]}>
             {content.richText || content.content || ''}
           </ReactMarkdown>
         </div>

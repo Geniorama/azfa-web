@@ -7,6 +7,8 @@ import LoadingSpinner from "@/components/LoadingSpinner";
 import { useAuth } from "@/context/AuthContext";
 import ReactMarkdown from "react-markdown";
 import rehypeRaw from "rehype-raw";
+import rehypeSanitize from "rehype-sanitize";
+import { cmsSanitizeSchema } from "@/lib/sanitizeSchema";
 
 interface AffiliateStatisticsViewProps {
   pageContent: AffiliateInvestmentStatisticsType | null;
@@ -204,7 +206,7 @@ export default function AffiliateStatisticsView({
                 <p className="text-h6">{data.ctaSection.title}</p>
                 <div className="text-body font-light [&_a]:underline [&_a]:underline-offset-2 [&_a]:decoration-1 [&_a]:text-text-primary [&_a:hover]:text-details [&_a]:transition-colors">
                   <ReactMarkdown
-                    rehypePlugins={[rehypeRaw]}
+                    rehypePlugins={[rehypeRaw, [rehypeSanitize, cmsSanitizeSchema]]}
                     components={{
                       strong: ({ children }) => (
                         <span className="font-bold">{children}</span>
