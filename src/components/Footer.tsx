@@ -34,7 +34,7 @@ export default function Footer({ showBanner = true, footer }: FooterProps) {
       window.removeEventListener("scroll", handleScroll);
     };
   }, []);
-  
+
   const handleScrollToTop = () => {
     window.scrollTo({
       top: 0,
@@ -48,14 +48,25 @@ export default function Footer({ showBanner = true, footer }: FooterProps) {
     // Remover todos los caracteres que no sean números
     return phone.replace(/[^\d]/g, "");
   };
+
+  // Normalización defensiva: si el CMS (global-setting) no responde, las
+  // propiedades anidadas llegan como undefined. Se evita que el render
+  // (incluido el prerender en build) rompa por accesos a objetos inexistentes.
+  const contactInfo = footer?.contactInfo;
+  const contactInfoGlobal = footer?.contactInfoGlobal;
+  const footerLinksColumns = footer?.footerLinksColumns ?? [];
+  const copyright = footer?.copyright;
+  const legalLinks = footer?.copyright?.legalLinks ?? [];
+  const socialMedia = footer?.socialMedia ?? [];
+
   return (
     <footer className="bg-text-primary text-white">
 
       {/* Up Button */}
-      <div 
+      <div
         className={`fixed bottom-5 right-5 z-50 inline-block transition-all duration-300 ${
-          showBackToTop 
-            ? "opacity-100 translate-y-0" 
+          showBackToTop
+            ? "opacity-100 translate-y-0"
             : "opacity-0 translate-y-10 pointer-events-none"
         }`}
       >
@@ -76,7 +87,7 @@ export default function Footer({ showBanner = true, footer }: FooterProps) {
         </div>
       )}
 
-      {footer.showSocialLinks && footer.socialMedia.length > 0 && (
+      {footer?.showSocialLinks && socialMedia.length > 0 && (
         <div className="bg-secondary">
           <div className="container mx-auto py-10 px-4">
             <div className="flex flex-col lg:flex-row justify-center lg:justify-between items-center">
@@ -89,7 +100,7 @@ export default function Footer({ showBanner = true, footer }: FooterProps) {
                 <div className="flex justify-center lg:justify-end items-center">
                   <nav>
                     <ul className="flex items-center gap-8 lg:gap-4 text-xl">
-                      {footer.socialMedia.map((socialMedia) => (
+                      {socialMedia.map((socialMedia) => (
                         <li key={socialMedia.id}>
                           <a href={socialMedia.url} target={socialMedia.openInNewTab ? "_blank" : "_self"} rel="noopener noreferrer" className="hover:text-details transition hover:opacity-70">
                             {socialMedia.icon.type === "react-icon" && socialMedia.icon.reactIconName && (
@@ -116,47 +127,47 @@ export default function Footer({ showBanner = true, footer }: FooterProps) {
             <div className="w-full lg:w-1/4">
               <img
                 className="mx-auto lg:mx-0"
-                src={footer.contactInfo.logo?.url || LogoAzfaBlanco.src}
-                alt={footer.contactInfo.logo?.alternativeText || "Logo Azfa"}
+                src={contactInfo?.logo?.url || LogoAzfaBlanco.src}
+                alt={contactInfo?.logo?.alternativeText || "Logo Azfa"}
               />
             </div>
 
             <div className="w-full lg:w-3/4 flex space-x-4 flex-wrap">
               <div className="w-full lg:w-1/2 mr-0 lg:-mr-2 text-center lg:text-left mb-8 lg:mb-0">
-                <p className="text-h5">{footer.contactInfo.ctaText || "Afíliese, haga parte de AZFA"}</p>
+                <p className="text-h5">{contactInfo?.ctaText || "Afíliese, haga parte de AZFA"}</p>
                 <a
-                  href={`mailto:${footer.contactInfoGlobal.email}` || "mailto:info@asociacionzonasfrancas.org"}
+                  href={`mailto:${contactInfoGlobal?.email || "info@asociacionzonasfrancas.org"}`}
                   target="_blank"
                   className="text-body2 hover:text-details inline-flex w-auto lg:w-full items-center gap-2 mt-2"
                 >
                   {/* Email Icon */}
-                  {footer.contactInfoGlobal.emailIcon?.type === "react-icon" && footer.contactInfoGlobal.emailIcon.reactIconName && (
-                    <span className="text-xl">{footer.contactInfoGlobal.emailIcon.reactIconName}</span>
+                  {contactInfoGlobal?.emailIcon?.type === "react-icon" && contactInfoGlobal?.emailIcon.reactIconName && (
+                    <span className="text-xl">{contactInfoGlobal?.emailIcon.reactIconName}</span>
                   )}
-                  {footer.contactInfoGlobal.emailIcon?.type === "custom-image" && footer.contactInfoGlobal.emailIcon.customImage && (
-                    <img src={footer.contactInfoGlobal.emailIcon.customImage.url} alt={footer.contactInfoGlobal.emailIcon.customImage.alternativeText || ""} className="w-5 h-5" />
+                  {contactInfoGlobal?.emailIcon?.type === "custom-image" && contactInfoGlobal?.emailIcon.customImage && (
+                    <img src={contactInfoGlobal?.emailIcon.customImage.url} alt={contactInfoGlobal?.emailIcon.customImage.alternativeText || ""} className="w-5 h-5" />
                   )}
-                  <span>{footer.contactInfoGlobal.email || "info@asociacionzonasfrancas.org"}</span>
+                  <span>{contactInfoGlobal?.email || "info@asociacionzonasfrancas.org"}</span>
                 </a>
                 <a
-                  href={`https://wa.me/${formatPhoneForWhatsApp(footer.contactInfoGlobal.phone || "573148724979")}`}
+                  href={`https://wa.me/${formatPhoneForWhatsApp(contactInfoGlobal?.phone || "573148724979")}`}
                   target="_blank"
                   className="text-body2 hover:text-details inline-flex items-center gap-2 mt-2 w-auto lg:w-full"
                 >
                   {/* Phone Icon */}
-                  {footer.contactInfoGlobal.phoneIcon?.type === "react-icon" && footer.contactInfoGlobal.phoneIcon.reactIconName && (
-                    <span className="text-xl">{footer.contactInfoGlobal.phoneIcon.reactIconName}</span>
+                  {contactInfoGlobal?.phoneIcon?.type === "react-icon" && contactInfoGlobal?.phoneIcon.reactIconName && (
+                    <span className="text-xl">{contactInfoGlobal?.phoneIcon.reactIconName}</span>
                   )}
-                  {footer.contactInfoGlobal.phoneIcon?.type === "custom-image" && footer.contactInfoGlobal.phoneIcon.customImage && (
-                    <img src={footer.contactInfoGlobal.phoneIcon.customImage.url} alt={footer.contactInfoGlobal.phoneIcon.customImage.alternativeText || ""} className="w-5 h-5" />
+                  {contactInfoGlobal?.phoneIcon?.type === "custom-image" && contactInfoGlobal?.phoneIcon.customImage && (
+                    <img src={contactInfoGlobal?.phoneIcon.customImage.url} alt={contactInfoGlobal?.phoneIcon.customImage.alternativeText || ""} className="w-5 h-5" />
                   )}
-                  <span>{footer.contactInfoGlobal.phone || "+57 314 8724979"}</span>
+                  <span>{contactInfoGlobal?.phone || "+57 314 8724979"}</span>
                 </a>
               </div>
               <div className="w-full lg:w-1/2 mr-0 lg:-mr-2">
                 <div className="flex flex-col lg:flex-row justify-center lg:justify-between gap-4 lg:gap-2 text-center lg:text-left">
-                  {footer.footerLinksColumns.map((column, index) => (
-                    <div className={`column-${index + 1} w-full lg:w-1/${footer.footerLinksColumns.length}`} key={column.id}>
+                  {footerLinksColumns.map((column, index) => (
+                    <div className={`column-${index + 1} w-full lg:w-1/${footerLinksColumns.length}`} key={column.id}>
                       <nav>
                         <ul className="flex flex-col gap-4 lg:gap-2">
                           {column.links.map((link) => (
@@ -183,9 +194,9 @@ export default function Footer({ showBanner = true, footer }: FooterProps) {
 
               <div className="w-full flex flex-col lg:flex-row justify-center lg:justify-between items-center lg:-mr-2 gap-4 lg:gap-0 text-center lg:text-left">
                 <p className="text-caption text-[#F2F1FA] opacity-30">
-                  {footer.copyright.text || "Copyright © 2025 AZFA | Todos los derechos reservados"}
-                  {footer.copyright.legalLinks.length > 0 && " | "}
-                  {footer.copyright.legalLinks.map((legalLink, index) => (
+                  {copyright?.text || "Copyright © 2025 AZFA | Todos los derechos reservados"}
+                  {legalLinks.length > 0 && " | "}
+                  {legalLinks.map((legalLink, index) => (
                     <span key={legalLink.id}>
                       <Link
                         href={legalLink.url}
@@ -195,20 +206,20 @@ export default function Footer({ showBanner = true, footer }: FooterProps) {
                       >
                         {legalLink.label}
                       </Link>
-                      {index < footer.copyright.legalLinks.length - 1 && " | "}
+                      {index < legalLinks.length - 1 && " | "}
                     </span>
                   ))}
                 </p>
 
                 <p className="text-caption text-white pr-14 2xl:pr-0">
-                  {footer.copyright.developedByText || "Realizado por"}{" "}
+                  {copyright?.developedByText || "Realizado por"}{" "}
                   <Link
-                    href={footer.copyright.developedByLink.url}
-                    target={footer.copyright.developedByLink.openInNewTab ? "_blank" : "_self"}
-                    rel={footer.copyright.developedByLink.openInNewTab ? "noopener noreferrer" : undefined}
+                    href={copyright?.developedByLink?.url || "https://ekon7.com"}
+                    target={copyright?.developedByLink?.openInNewTab ? "_blank" : "_self"}
+                    rel={copyright?.developedByLink?.openInNewTab ? "noopener noreferrer" : undefined}
                     className="text-caption text-details hover:underline hover:text-white transition"
                   >
-                    {footer.copyright.developedByLink.label || "Ekon7.com"}
+                    {copyright?.developedByLink?.label || "Ekon7.com"}
                   </Link>
                 </p>
               </div>

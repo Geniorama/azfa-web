@@ -26,12 +26,10 @@ export default function Header({ header }: { header: HeaderTypeData }) {
   const router = useRouter();
   const userMenuRef = useRef<HTMLDivElement>(null);
 
-  console.log(showUserMenu);
-
   useEffect(() => {
-    console.log(header);
-    if (!header.logo.url) return;
-    setLogoUrl(header.logo.url);
+    const logo = header?.logo?.url;
+    if (!logo) return;
+    setLogoUrl(logo);
   }, [header]);
 
   // Cerrar menú de usuario al hacer clic fuera
@@ -82,7 +80,7 @@ export default function Header({ header }: { header: HeaderTypeData }) {
         <div className="flex flex-col lg:flex-row justify-between items-center">
           <div className="w-full lg:w-[30%] flex justify-between items-center gap-4 px-4 lg:px-0">
             <div>
-              <Link href={header.logoUrl || "/"}>
+              <Link href={header?.logoUrl || "/"}>
                 <img
                   className="w-full max-w-[130px] lg:max-w-[180px]"
                   src={logoUrl || LogoAzfa.src}
