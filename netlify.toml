@@ -111,11 +111,16 @@
 
 # -----------------------------------------------------------------------------
 # Eventos (eventos-proximos, eventos-pasados, eventos-2023, slugs específicos)
+# `force = true` es obligatorio: /eventos es una ruta real de Next, por lo que
+# su handler "reclama" los sub-paths y devuelve 404 antes de aplicar una
+# redirección sin force. Con force, Netlify intercepta /eventos/<algo>.
+# (No afecta a /eventos exacto, que no termina en "/".)
 # -----------------------------------------------------------------------------
 [[redirects]]
   from = "/eventos/*"
   to = "/eventos"
   status = 301
+  force = true
 
 # -----------------------------------------------------------------------------
 # Invierta - subsecciones
@@ -228,12 +233,37 @@
   to = "/nuestros-afiliados"
   status = 301
 
+# /user/themes/azfa/documents/... → documentos/revistas → publicaciones
+[[redirects]]
+  from = "/user/themes/*"
+  to = "/invierta-en-zonas-francas/publicaciones"
+  status = 301
+
+# Catch-all para cualquier otro interno de Grav bajo /user/*
+[[redirects]]
+  from = "/user/*"
+  to = "/"
+  status = 301
+
 # -----------------------------------------------------------------------------
 # Archivos antiguos /media/* (PDFs, revistas, estadísticas-pais)
 # y /presentaciones/*
 # -----------------------------------------------------------------------------
 [[redirects]]
   from = "/media/*"
+  to = "/invierta-en-zonas-francas/publicaciones"
+  status = 301
+
+# -----------------------------------------------------------------------------
+# Biblioteca antigua de documentos/estudios → publicaciones
+# -----------------------------------------------------------------------------
+[[redirects]]
+  from = "/biblioteca"
+  to = "/invierta-en-zonas-francas/publicaciones"
+  status = 301
+
+[[redirects]]
+  from = "/biblioteca/*"
   to = "/invierta-en-zonas-francas/publicaciones"
   status = 301
 
