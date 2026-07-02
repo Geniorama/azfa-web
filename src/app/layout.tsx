@@ -9,9 +9,9 @@ import {
   FooterType,
   ContactInfoType,
 } from "@/types/componentsType";
-import Script from "next/script";
 import { Metadata } from "next";
 import GoogleTagManager from "@/components/GoogleTagManager";
+import GoogleTranslate from "@/components/GoogleTranslate";
 
 const interTight = Inter_Tight({
   variable: "--font-inter-tight",
@@ -68,32 +68,9 @@ export default async function RootLayout({
         <GoogleTagManager />
         <AOSProvider>
           <ClientLayoutWrapper header={header} footer={footerWithContactInfo}>
-            {/* --- SCRIPTS DE GOOGLE TRANSLATE --- */}
-            {/* Div oculto que usa Google Translate */}
-            <div
-              id="google_translate_element"
-              style={{ display: "none" }}
-            ></div>
-
-            {/* Script de inicialización */}
-            <Script id="google-translate-init" strategy="afterInteractive">
-              {`
-    function googleTranslateElementInit() {
-      new google.translate.TranslateElement({
-        pageLanguage: 'es', // El idioma original de tu sitio
-        autoDisplay: false,
-        layout: google.translate.TranslateElement.InlineLayout.SIMPLE
-      }, 'google_translate_element');
-    }
-  `}
-            </Script>
-
-            {/* Script principal de la API de Google Translate */}
-            <Script
-              strategy="afterInteractive"
-              src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"
-            />
-            {/* --- FIN DE SCRIPTS --- */}
+            {/* Google Translate: se carga bajo demanda (solo si la cookie
+                googtrans indica una traducción activa). Ver GoogleTranslate. */}
+            <GoogleTranslate />
             {children}
           </ClientLayoutWrapper>
         </AOSProvider>
