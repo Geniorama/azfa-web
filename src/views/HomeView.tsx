@@ -1,7 +1,6 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import Image from "next/image";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Pagination, Autoplay } from "swiper/modules";
 import type { Swiper as SwiperType } from "swiper";
@@ -45,6 +44,13 @@ import { cmsSanitizeSchema } from "@/lib/sanitizeSchema";
 import { formatYouTubeUrl } from "@/utils/formatYouTubeUrl";
 import WidgetInstagram from "@/components/WidgetInstagram";
 import WidgetLinkedIn from "@/components/WidgetLinkedIn";
+
+// Construye la URL del optimizador de imágenes de Next para servir una versión
+// liviana. Se usa SOLO en móvil (dentro de un <picture>): en desktop se sirve
+// la imagen cruda del CDN para no pagar la latencia de transcodificado, que en
+// redes rápidas domina el LCP. Los anchos deben estar en images.deviceSizes.
+const optimizedSrc = (url: string, w: number, q = 75) =>
+  `/_next/image?url=${encodeURIComponent(url)}&w=${w}&q=${q}`;
 
 interface HomeViewProps {
   slidesData: HeroSlideData[];
@@ -192,31 +198,40 @@ export default function Home({
             }}
           >
             {slidesData && slidesData.length > 0 ? (
-              slidesData.map((slide, index) => (
+              slidesData.map((slide, index) => {
+                const heroUrl =
+                  slide.backgroundImage?.url || "/inicio-slide (1).jpg";
+                return (
                 <SwiperSlide
-                  // El primer slide (LCP) se sirve con next/image priority; el
-                  // resto siguen como background-image (lazy). Así evitamos
-                  // descargar dos veces la imagen del primer slide.
+                  // El primer slide es el LCP: se sirve como <picture> para dar
+                  // a cada plataforma lo que rinde mejor —imagen cruda del CDN
+                  // en desktop (red rápida, sin latencia del optimizador) y
+                  // versión liviana optimizada en móvil (menos bytes en 4G)—.
+                  // El <picture> hace que solo se descargue la fuente que aplica.
+                  // El resto de slides siguen como background-image (lazy).
                   style={
                     index === 0
                       ? undefined
-                      : {
-                          backgroundImage: `url(${slide.backgroundImage?.url || "/inicio-slide (1).jpg"
-                            })`,
-                        }
+                      : { backgroundImage: `url(${heroUrl})` }
                   }
                   key={slide.id}
                   className="relative isolate bg-text-primary lg:py-24 py-16 bg-cover bg-right"
                 >
                   {index === 0 && (
-                    <Image
-                      src={slide.backgroundImage?.url || "/inicio-slide (1).jpg"}
-                      alt={slide.title || ""}
-                      fill
-                      priority
-                      sizes="100vw"
-                      className="object-cover object-right -z-10"
-                    />
+                    <picture>
+                      {/* Desktop: imagen cruda del CDN (rápida en red veloz). */}
+                      <source media="(min-width: 1024px)" srcSet={heroUrl} />
+                      {/* Móvil: versión liviana optimizada por Next. */}
+                      <img
+                        src={optimizedSrc(heroUrl, 828)}
+                        srcSet={`${optimizedSrc(heroUrl, 640)} 640w, ${optimizedSrc(heroUrl, 828)} 828w, ${optimizedSrc(heroUrl, 1080)} 1080w`}
+                        sizes="100vw"
+                        alt={slide.title || ""}
+                        fetchPriority="high"
+                        decoding="async"
+                        className="absolute inset-0 w-full h-full object-cover object-right -z-10"
+                      />
+                    </picture>
                   )}
                   <SlideSingleHome
                     caption={slide.label || ""}
@@ -229,7 +244,8 @@ export default function Home({
                   />
                   <div className="absolute lg:hidden top-0 left-0 w-full h-full bg-primary/80 z-1"></div>
                 </SwiperSlide>
-              ))
+                );
+              })
             ) : (
               // Fallback slide cuando no hay datos
               <SwiperSlide
