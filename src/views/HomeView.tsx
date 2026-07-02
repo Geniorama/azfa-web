@@ -1,6 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Pagination, Autoplay } from "swiper/modules";
 import type { Swiper as SwiperType } from "swiper";
@@ -128,24 +129,8 @@ export default function Home({
     }
   };
 
-  // URL de la imagen del primer slide (el elemento LCP). Se precarga para que
-  // el navegador la descubra de inmediato: al ser un background-image dentro
-  // de un Swiper "use client", sin preload solo se pide tras hidratar y montar
-  // el slider, disparando el LCP.
-  const firstSlideUrl =
-    slidesData?.[0]?.backgroundImage?.url || "/inicio-slide (1).jpg";
-
-
   return (
     <>
-      {firstSlideUrl && (
-        <link
-          rel="preload"
-          as="image"
-          href={firstSlideUrl}
-          fetchPriority="high"
-        />
-      )}
       <Modal open={openModalVideo} onClose={() => setOpenModalVideo(false)}>
         <div className="bg-black overflow-hidden">
           {contentWithVideoData?.video?.videoType === "uploaded" && (
@@ -207,15 +192,32 @@ export default function Home({
             }}
           >
             {slidesData && slidesData.length > 0 ? (
-              slidesData.map((slide) => (
+              slidesData.map((slide, index) => (
                 <SwiperSlide
-                  style={{
-                    backgroundImage: `url(${slide.backgroundImage?.url || "/inicio-slide (1).jpg"
-                      })`,
-                  }}
+                  // El primer slide (LCP) se sirve con next/image priority; el
+                  // resto siguen como background-image (lazy). Así evitamos
+                  // descargar dos veces la imagen del primer slide.
+                  style={
+                    index === 0
+                      ? undefined
+                      : {
+                          backgroundImage: `url(${slide.backgroundImage?.url || "/inicio-slide (1).jpg"
+                            })`,
+                        }
+                  }
                   key={slide.id}
-                  className="bg-text-primary lg:py-24 py-16 bg-cover bg-right"
+                  className="relative isolate bg-text-primary lg:py-24 py-16 bg-cover bg-right"
                 >
+                  {index === 0 && (
+                    <Image
+                      src={slide.backgroundImage?.url || "/inicio-slide (1).jpg"}
+                      alt={slide.title || ""}
+                      fill
+                      priority
+                      sizes="100vw"
+                      className="object-cover object-right -z-10"
+                    />
+                  )}
                   <SlideSingleHome
                     caption={slide.label || ""}
                     title={slide.title || ""}
