@@ -352,3 +352,44 @@
     Permissions-Policy = "camera=(), microphone=(), geolocation=(self), interest-cohort=()"
     Strict-Transport-Security = "max-age=31536000; includeSubDomains; preload"
     Content-Security-Policy = "default-src 'self'; base-uri 'self'; object-src 'none'; frame-ancestors 'self'; form-action 'self'; img-src 'self' data: blob: https:; font-src 'self' data: https://fonts.gstatic.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.googletagmanager.com https://www.google-analytics.com https://maps.googleapis.com https://maps.gstatic.com https://www.google.com https://www.gstatic.com https://translate.google.com https://translate.googleapis.com; connect-src 'self' https://azfacms.geniorama.co https://maps.googleapis.com https://www.google-analytics.com https://*.google-analytics.com https://translate.googleapis.com https://*.googleapis.com; frame-src 'self' https://www.youtube.com https://player.vimeo.com https://www.google.com https://td.doubleclick.net https://www.googletagmanager.com; media-src 'self' https: blob:; worker-src 'self' blob:;"
+
+# =============================================================================
+# Cache-Control para estáticos (Lighthouse: "Use efficient cache lifetimes")
+# =============================================================================
+# Estos assets llevan hash en el nombre (fingerprint de Next), por lo que su
+# contenido nunca cambia bajo la misma URL: es seguro cachearlos 1 año como
+# "immutable". No afecta a la primera visita, pero elimina la re-descarga en
+# visitas siguientes y navegación interna.
+[[headers]]
+  for = "/_next/static/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+# Fuentes autohospedadas por next/font (bajo /_next/static/media, ya cubierto)
+# y cualquier fuente estática adicional en /public.
+[[headers]]
+  for = "*.woff2"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+# Imágenes y SVG servidos desde /public (los del CMS pasan por next/image y
+# usan el TTL de next.config.ts). max-age largo con revalidación.
+[[headers]]
+  for = "*.svg"
+  [headers.values]
+    Cache-Control = "public, max-age=2592000, stale-while-revalidate=86400"
+
+[[headers]]
+  for = "*.jpg"
+  [headers.values]
+    Cache-Control = "public, max-age=2592000, stale-while-revalidate=86400"
+
+[[headers]]
+  for = "*.png"
+  [headers.values]
+    Cache-Control = "public, max-age=2592000, stale-while-revalidate=86400"
+
+[[headers]]
+  for = "*.webp"
+  [headers.values]
+    Cache-Control = "public, max-age=2592000, stale-while-revalidate=86400"

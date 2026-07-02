@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Scrollbar, A11y } from "swiper/modules";
 import "swiper/css";
@@ -33,7 +34,9 @@ export default function SliderGallery({ images, isPlatinum = false }: SliderGall
       >
         {images.map((image, index) => (
           <SwiperSlide key={index}>
-            <img className="w-full h-full object-cover aspect-video" src={image.url} alt={image.alternativeText || "Slider Gallery"} />
+            <div className="relative w-full aspect-video overflow-hidden">
+              <Image className="object-cover" src={image.url} alt={image.alternativeText || "Slider Gallery"} fill sizes="(max-width: 1024px) 100vw, 66vw" />
+            </div>
           </SwiperSlide>
         ))}
       </Swiper>

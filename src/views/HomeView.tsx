@@ -128,9 +128,24 @@ export default function Home({
     }
   };
 
+  // URL de la imagen del primer slide (el elemento LCP). Se precarga para que
+  // el navegador la descubra de inmediato: al ser un background-image dentro
+  // de un Swiper "use client", sin preload solo se pide tras hidratar y montar
+  // el slider, disparando el LCP.
+  const firstSlideUrl =
+    slidesData?.[0]?.backgroundImage?.url || "/inicio-slide (1).jpg";
+
 
   return (
     <>
+      {firstSlideUrl && (
+        <link
+          rel="preload"
+          as="image"
+          href={firstSlideUrl}
+          fetchPriority="high"
+        />
+      )}
       <Modal open={openModalVideo} onClose={() => setOpenModalVideo(false)}>
         <div className="bg-black overflow-hidden">
           {contentWithVideoData?.video?.videoType === "uploaded" && (

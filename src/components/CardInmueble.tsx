@@ -11,6 +11,7 @@ import PlatinumBadge from "@/utils/PlatinumBadge";
 import { getCountryName } from "@/utils/countryMapping";
 import { getPropertyUseLabel } from "@/utils/extractFilterOptions";
 import { TfiPlus } from "react-icons/tfi";
+import Image from "next/image";
 
 interface CardInmuebleProps extends InmuebleType {
   button: {
@@ -68,11 +69,15 @@ export default function CardInmueble({
       <div className="relative">
         {image ? (
           <>
-            <img
-              src={image}
-              alt="Inmueble"
-              className="w-full h-full object-cover aspect-video"
-            />
+            <div className="relative w-full aspect-video overflow-hidden">
+              <Image
+                src={image}
+                alt="Inmueble"
+                fill
+                className="object-cover"
+                sizes="(max-width: 768px) 100vw, 33vw"
+              />
+            </div>
             {platinum && (
               <div className="absolute top-5 left-0">
                 <PlatinumBadge />

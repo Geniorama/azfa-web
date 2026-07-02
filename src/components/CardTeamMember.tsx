@@ -1,3 +1,4 @@
+import Image from "next/image";
 import IconHouse from "@/assets/img/house.svg";
 import IconPin from "@/assets/img/pin.svg";
 import IconEmail from "@/assets/icons/email.svg";
@@ -21,11 +22,13 @@ export default function CardTeamMember({
 }: CardTeamMemberProps) {
   return (
     <div className="bg-white rounded-tr-2xl rounded-bl-2xl rounded-br-2xl overflow-hidden hover:shadow-xl hover:border-transparent transition-all duration-300 hover:[&_img]:grayscale-0">
-      <div>
-        <img
+      <div className="relative w-full aspect-square 2xl:aspect-auto 2xl:h-100 overflow-hidden">
+        <Image
           src={image}
-          alt="image"
-          className="w-full 2xl:h-100 aspect-square 2xl:aspect-auto object-cover grayscale transition-all duration-300"
+          alt={name}
+          fill
+          className="object-cover grayscale transition-all duration-300"
+          sizes="(max-width: 768px) 100vw, 25vw"
         />
       </div>
 

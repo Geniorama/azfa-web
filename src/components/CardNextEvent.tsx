@@ -1,4 +1,5 @@
 import React from 'react'
+import Image from 'next/image'
 import { GoCalendar, GoHome, GoZap } from 'react-icons/go'
 import Button from '@/utils/Button'
 import { EventIconType } from '@/types/componentsType'
@@ -30,8 +31,8 @@ const renderIcon = (iconData: EventIconType | undefined, fallbackIcon: React.Rea
 export default function CardNextEvent({ tag, title, date, location, address, image, calendarIcon, locationIcon, addressIcon, button }: CardNextEventProps) {
   return (
     <div className='w-full flex flex-col lg:flex-row lg:shadow-2xl shadow-lg overflow-hidden rounded-2xl'>
-        <div className='w-full lg:w-1/2'>
-            <img className='w-full lg:h-full lg:min-h-[100px] object-cover aspect-video lg:aspect-auto' src={image} alt={title} />
+        <div className='relative w-full lg:w-1/2 aspect-video lg:aspect-auto lg:min-h-[100px] overflow-hidden'>
+            <Image className='object-cover' src={image} alt={title} fill sizes="(max-width: 1024px) 100vw, 50vw" />
         </div>
 
         <div className='w-full lg:w-1/2 lg:p-10 p-6 text-text-primary bg-white relative'>

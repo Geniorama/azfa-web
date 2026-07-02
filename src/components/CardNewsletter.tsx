@@ -1,3 +1,4 @@
+import Image from "next/image";
 import IconNewsletter from "@/assets/img/icon-newsletter.svg";
 import IconArrowRight from "@/assets/img/btn-arrow-blue.svg";
 import { StrapiImageType } from "@/types/componentsType";
@@ -18,10 +19,12 @@ export default function CardNewsletter({ title, date, thumbnail, button, backgro
     <div className="bg-white border border-background-2 rounded-tr-2xl rounded-bl-2xl rounded-br-2xl overflow-hidden text-text-primary hover:shadow-xl hover:border-transparent transition-all duration-300">
         <div className={`w-full h-60 relative ${background || "bg-background-1"} overflow-hidden`}>
             {thumbnail ? (
-              <img 
-                src={thumbnail.url} 
+              <Image
+                src={thumbnail.url}
                 alt={thumbnail.alternativeText || title}
-                className="w-full h-full object-cover"
+                fill
+                className="object-cover"
+                sizes="(max-width: 768px) 100vw, 33vw"
               />
             ) : (
               <div className="w-full h-full flex items-center justify-center">

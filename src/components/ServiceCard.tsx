@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Button from '@/utils/Button'
 
 interface ServiceCardProps {
@@ -13,7 +14,7 @@ interface ServiceCardProps {
 export default function ServiceCard({ title, subtitle, image, button }: ServiceCardProps) {
   return (
     <div className='relative bg-primary h-132'>
-        <img src={image} alt={title} className='w-full h-full object-cover' />
+        <Image src={image} alt={title} fill className='object-cover' sizes="(max-width: 1024px) 100vw, 20vw" />
         <div className='absolute top-0 left-0 w-full h-full flex flex-col justify-end p-4 bg-gradient-to-b from-transparent to-primary to-80%'>
             <div className='mb-4 min-h-28'>
                 <p className='text-white text-button'>{subtitle}</p>

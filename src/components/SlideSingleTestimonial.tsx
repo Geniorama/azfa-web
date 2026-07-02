@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { IoMdPlay } from "react-icons/io";
 
 interface SlideSingleTestimonialProps {
@@ -15,11 +16,15 @@ export default function SlideSingleTestimonial({ caption, title, description, im
   return (
     <div className="flex flex-col lg:flex-row text-text-primary">
       <div className="w-full lg:w-1/2 relative">
-        <img
-          src={image}
-          alt={title}
-          className="w-full aspect-square max-h-[calc(100vh-50px)] 2xl:max-h-[600px] object-cover object-top"
-        />
+        <div className="relative w-full aspect-square max-h-[calc(100vh-50px)] 2xl:max-h-[600px] overflow-hidden">
+          <Image
+            src={image}
+            alt={title}
+            fill
+            className="object-cover object-top"
+            sizes="(max-width: 1024px) 100vw, 50vw"
+          />
+        </div>
         <div className="absolute top-0 left-0 w-full h-full items-center justify-center hidden">
           <button onClick={button.onClick} className="bg-white/20 rounded-full cursor-pointer flex items-center justify-center w-20 h-20 hover:scale-110 transition-all duration-300">
             <IoMdPlay className="text-white text-4xl translate-x-0.5" />
