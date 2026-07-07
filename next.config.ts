@@ -1,6 +1,12 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  // Build autocontenido para desplegar en EC2: `next build` genera
+  // `.next/standalone` con un server.js mínimo y solo las dependencias
+  // trazadas. El artefacto se compila en GitHub Actions y se envía listo a la
+  // instancia (que nunca ejecuta `next build`, evitando el OOM de RAM).
+  // Netlify tolera esta opción sin cambios.
+  output: "standalone",
   images: {
     // Servir AVIF/WebP automáticamente (mucho más ligeros que jpg/png)
     formats: ["image/avif", "image/webp"],

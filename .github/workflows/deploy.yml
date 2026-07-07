@@ -1,0 +1,134 @@
+name: Deploy to EC2
+
+# Despliegue de azfa-web a AWS EC2 con el bundle standalone de Next.js.
+# El build corre en el runner de GitHub Actions (RAM de sobra) y a la EC2 solo
+# le llega el artefacto ya compilado: la instancia nunca ejecuta `next build`.
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch: # permite lanzarlo manualmente desde la pestaña Actions
+
+# Evita despliegues solapados: si llega otro push, espera a que termine el
+# actual (no lo cancela, para no dejar una release a medio aplicar).
+concurrency:
+  group: deploy-production
+  cancel-in-progress: false
+
+jobs:
+  # ---------------------------------------------------------------------------
+  # 1) BUILD — compila y arma el bundle standalone
+  # ---------------------------------------------------------------------------
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: npm
+
+      - name: Instalar dependencias
+        run: npm ci
+
+      # Recrea .env.prod SOLO con las variables necesarias en tiempo de build:
+      #  - NEXT_PUBLIC_*: se inlinean dentro del bundle JS al compilar.
+      #  - STRAPI_URL: se usa para hacer fetch al CMS durante el prerender.
+      # Ninguna es sensible (las públicas viajan al navegador; STRAPI_URL es una
+      # URL). Los secretos de servidor (RECAPTCHA_SECRET_KEY, REVALIDATION_SECRET,
+      # STRAPI_WEBHOOK_SECRET) NO van aquí: solo se usan en runtime y viven
+      # exclusivamente en la EC2 (shared/.env.production).
+      - name: Generar .env.prod para el build
+        run: |
+          cat > .env.prod <<EOF
+          NEXT_PUBLIC_STRAPI_URL=${{ secrets.NEXT_PUBLIC_STRAPI_URL }}
+          STRAPI_URL=${{ secrets.STRAPI_URL }}
+          NEXT_PUBLIC_GOOGLE_MAPS_API_KEY=${{ secrets.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY }}
+          NEXT_PUBLIC_RECAPTCHA_SITE_KEY=${{ secrets.NEXT_PUBLIC_RECAPTCHA_SITE_KEY }}
+          NEXT_PUBLIC_GOOGLE_TRANSLATE_API_KEY=${{ secrets.NEXT_PUBLIC_GOOGLE_TRANSLATE_API_KEY }}
+          NEXT_PUBLIC_GTM_ID=${{ secrets.NEXT_PUBLIC_GTM_ID }}
+          EOF
+
+      - name: Build (standalone)
+        run: npm run build:prod
+
+      # `output: "standalone"` NO copia .next/static ni public: hay que
+      # ensamblarlos manualmente junto al server.js.
+      - name: Ensamblar bundle standalone
+        run: |
+          mkdir -p deploy
+          cp -r .next/standalone/. deploy/
+          mkdir -p deploy/.next
+          cp -r .next/static deploy/.next/static
+          if [ -d public ]; then cp -r public deploy/public; fi
+          # PM2 config viaja dentro del bundle (se ejecuta desde la release).
+          cp ecosystem.config.js deploy/ecosystem.config.js
+
+      - name: Empaquetar tarball
+        run: tar -czf azfa-web.tar.gz -C deploy .
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: bundle
+          path: azfa-web.tar.gz
+          retention-days: 5
+
+  # ---------------------------------------------------------------------------
+  # 2) DEPLOY — envía el bundle a la EC2 y activa la nueva release
+  # ---------------------------------------------------------------------------
+  # Desactivado hasta que la EC2 esté lista: solo corre cuando la variable de
+  # repo DEPLOY_ENABLED == 'true' (Settings → Secrets and variables → Actions →
+  # Variables). Mientras tanto solo se ejecuta el job `build` (probar el build).
+  deploy:
+    needs: build
+    if: vars.DEPLOY_ENABLED == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: bundle
+
+      - name: Configurar SSH
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.EC2_SSH_KEY }}" > ~/.ssh/id_deploy
+          chmod 600 ~/.ssh/id_deploy
+          ssh-keyscan -H "${{ secrets.EC2_HOST }}" >> ~/.ssh/known_hosts
+
+      - name: Subir bundle
+        run: |
+          scp -i ~/.ssh/id_deploy azfa-web.tar.gz \
+            "${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }}:/tmp/azfa-web.tar.gz"
+
+      - name: Publicar release y recargar PM2
+        run: |
+          ssh -i ~/.ssh/id_deploy \
+            "${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }}" 'bash -s' <<'ENDSSH'
+          set -euo pipefail
+          APP_DIR=/var/www/azfa-web
+          REL="$APP_DIR/releases/$(date +%Y%m%d%H%M%S)"
+
+          # 1. Desempaquetar la nueva release
+          mkdir -p "$REL"
+          tar -xzf /tmp/azfa-web.tar.gz -C "$REL"
+          rm -f /tmp/azfa-web.tar.gz
+
+          # 2. Cargar el env de runtime persistente del servidor
+          #    (creado una sola vez en $APP_DIR/shared/.env.production;
+          #    NO lo pisa el deploy). Contiene las vars de servidor.
+          set -a
+          . "$APP_DIR/shared/.env.production"
+          set +a
+
+          # 3. Activar la release (symlink atómico) y arrancar/recargar
+          ln -sfn "$REL" "$APP_DIR/current"
+          cd "$APP_DIR/current"
+          pm2 startOrReload ecosystem.config.js --update-env
+          pm2 save
+
+          # 4. Conservar solo las últimas 5 releases (rollback rápido)
+          ls -1dt "$APP_DIR"/releases/*/ | tail -n +6 | xargs -r rm -rf
+
+          echo "Release activa: $REL"
+          ENDSSH

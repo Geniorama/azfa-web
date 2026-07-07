@@ -1,0 +1,8 @@
+# Forzar LF en archivos que se ejecutan en Linux (EC2 / runner de Actions).
+# Un CRLF de Windows rompería el script bash del deploy y los .conf de Nginx.
+*.sh              text eol=lf
+*.yml             text eol=lf
+*.yaml            text eol=lf
+deploy/**         text eol=lf
+.github/**        text eol=lf
+ecosystem.config.js text eol=lf
