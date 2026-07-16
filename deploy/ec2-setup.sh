@@ -64,6 +64,9 @@ if [ ! -f "$APP_DIR/shared/.env.production" ]; then
   cat > "$APP_DIR/shared/.env.production" <<'EOF'
 # Variables de SERVIDOR en runtime (NO públicas, NO viven en GitHub).
 # Rellena con los valores reales antes del primer deploy.
+# STRAPI_URL también hace falta en runtime: los server components (SSR/ISR)
+# hacen fetch con process.env.STRAPI_URL en cada request/revalidación.
+STRAPI_URL=https://azfacms.geniorama.co
 RECAPTCHA_SECRET_KEY=
 REVALIDATION_SECRET=
 STRAPI_WEBHOOK_SECRET=
