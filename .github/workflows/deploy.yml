@@ -127,7 +127,20 @@ jobs:
           pm2 startOrReload ecosystem.config.js --update-env
           pm2 save
 
-          # 4. Conservar solo las últimas 5 releases (rollback rápido)
+          # 4. Regenerar el contenido ISR con datos frescos del CMS.
+          #    El prerender del build puede venir incompleto: los fetch al CMS
+          #    desde el runner de GitHub a veces fallan (Cloudflare desafía IPs
+          #    de datacenter). El servidor sí llega bien al CMS, así que una
+          #    revalidación total tras el deploy garantiza contenido correcto.
+          sleep 5
+          curl -s -X POST http://127.0.0.1:3000/api/revalidate \
+            -H "Authorization: Bearer $REVALIDATION_SECRET" \
+            -H "Content-Type: application/json" \
+            -d '{"revalidateAll": true}' \
+            && echo "Revalidación total disparada" \
+            || echo "AVISO: fallo al revalidar (la app revalida sola por TTL)"
+
+          # 5. Conservar solo las últimas 5 releases (rollback rápido)
           ls -1dt "$APP_DIR"/releases/*/ | tail -n +6 | xargs -r rm -rf
 
           echo "Release activa: $REL"
