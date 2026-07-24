@@ -121,6 +121,24 @@ jobs:
           . "$APP_DIR/shared/.env.production"
           set +a
 
+          # 2b. Caché de imágenes optimizadas PERSISTENTE entre releases.
+          #     Next escribe las variantes AVIF/WebP en <distDir>/cache/images
+          #     (image-optimizer.js: join(distDir,'cache','images')). Como cada
+          #     release es un directorio nuevo, esa caché nacía VACÍA en cada
+          #     deploy y el t3.micro tenía que reoptimizar todo: medido, un MISS
+          #     cuesta 0,9 s (w=1200) a 2,1 s (w=3840) por imagen, frente a
+          #     ~0,25 s en HIT — con ~190 imágenes en el home eso satura los
+          #     créditos de CPU de la instancia durante horas tras cada deploy.
+          #     Enlazando el directorio a shared/ la caché sobrevive.
+          #     Solo se comparte `images` (contenido inmutable: los ficheros del
+          #     CMS llevan hash en el nombre). El resto de .next/cache —ISR,
+          #     fetch-cache— se deja por release a propósito: pertenece a esa
+          #     build concreta y compartirlo serviría HTML viejo.
+          mkdir -p "$APP_DIR/shared/next-image-cache"
+          mkdir -p "$REL/.next/cache"
+          rm -rf "$REL/.next/cache/images"
+          ln -sfn "$APP_DIR/shared/next-image-cache" "$REL/.next/cache/images"
+
           # 3. Activar la release (symlink atómico) y arrancar/recargar
           ln -sfn "$REL" "$APP_DIR/current"
           cd "$APP_DIR/current"

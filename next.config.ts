@@ -15,10 +15,15 @@ const nextConfig: NextConfig = {
     // contenido: es seguro cachearlas de forma prolongada.
     minimumCacheTTL: 31536000,
     // Hosts permitidos para next/image. El CMS Strapi sube los medios a un
-    // bucket S3; se usa comodín para tolerar cambios de nombre de bucket.
+    // bucket S3 (de donde salen hoy todas las imágenes); se usa comodín para
+    // tolerar cambios de nombre de bucket. El dominio del CMS se autoriza
+    // además por si algún medio se sirviera desde el propio Strapi: un host no
+    // listado aquí no da una imagen lenta, da un 400 del optimizador.
     remotePatterns: [
       { protocol: "https", hostname: "**.amazonaws.com" },
-      { protocol: "https", hostname: "azfacms.geniorama.co" },
+      // El CMS se movió de `azfacms.geniorama.co` (dominio ya muerto, retirado
+      // de esta lista) a su subdominio propio.
+      { protocol: "https", hostname: "cms.asociacionzonasfrancas.org" },
       // Servicio de imágenes placeholder usado como fallback en algunas cards
       { protocol: "https", hostname: "placehold.co" },
     ],
