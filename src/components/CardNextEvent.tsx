@@ -35,7 +35,7 @@ export default function CardNextEvent({ tag, title, date, location, address, ima
             <Image className='object-cover' src={image} alt={title} fill sizes="(max-width: 1024px) 100vw, 50vw" />
         </div>
 
-        <div className='w-full lg:w-1/2 lg:p-10 p-6 text-text-primary bg-white relative'>
+        <div className='w-full lg:w-1/2 lg:p-10 p-6 text-text-primary bg-white relative flex flex-col'>
             <span className='text-body2 mb-1 inline-block font-light'>{tag}</span>
             <h3 className='text-h3 font-light'>{title}</h3>
             <hr className='my-6 border-background-2' />
@@ -64,9 +64,19 @@ export default function CardNextEvent({ tag, title, date, location, address, ima
                 }
             </div>
 
-            <Button className='mt-10 lg:absolute bottom-10 left-10 z-10 w-full lg:w-auto justify-between' variant='secondary' icon onClick={button.onClick}>
-                {button.label || "Más información"}
-            </Button>
+            {/* El botón va EN EL FLUJO, empujado al fondo con `mt-auto`. Antes
+                era `lg:absolute bottom-10 left-10`: al estar fuera del flujo no
+                reservaba altura, así que en escritorio se montaba sobre el texto
+                en cuanto el título o la dirección crecían lo suficiente.
+                `lg:pt-10` mantiene la separación mínima cuando el contenido es
+                largo y ya no sobra espacio que repartir. La posición resultante
+                coincide con la anterior: el `lg:p-10` del contenedor da los
+                mismos 40 px que daban `bottom-10`/`left-10`. */}
+            <div className='mt-10 lg:mt-auto lg:pt-10'>
+                <Button className='w-full lg:w-auto justify-between' variant='secondary' icon onClick={button.onClick}>
+                    {button.label || "Más información"}
+                </Button>
+            </div>
         </div>
     </div>
   )
