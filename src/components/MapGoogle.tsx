@@ -16,6 +16,13 @@ export interface MapGoogleRef {
   selectMarkerByCoords: (lat: number, lng: number) => void;
 }
 
+// Vista por defecto del mapa, centrada en Colombia. El valor se usa en dos
+// sitios —la carga inicial y `resetZoom`, que se llama al deseleccionar un
+// país—, así que sale de aquí para que no puedan divergir: si solo se cambiara
+// uno, el mapa volvería a otro encuadre al quitar el filtro.
+const DEFAULT_CENTER = { lat: 4.570868, lng: -74.297332 };
+const DEFAULT_ZOOM = 3;
+
 // Función para crear el contenido HTML del marcador con tooltip personalizado
 const createMarkerContent = (iconUrl: string, title: string): HTMLElement => {
   const content = document.createElement('div');
@@ -97,8 +104,8 @@ const MapGoogle = forwardRef<MapGoogleRef, GoogleMapsProps>(({ markers, onMarker
   useImperativeHandle(ref, () => ({
     resetZoom: () => {
       if (mapInstanceRef.current) {
-        mapInstanceRef.current.setCenter({ lat: 4.570868, lng: -74.297332 });
-        mapInstanceRef.current.setZoom(2);
+        mapInstanceRef.current.setCenter(DEFAULT_CENTER);
+        mapInstanceRef.current.setZoom(DEFAULT_ZOOM);
       }
       
       // Limpiar selección de marcador
@@ -243,12 +250,9 @@ const MapGoogle = forwardRef<MapGoogleRef, GoogleMapsProps>(({ markers, onMarker
 
       const { Map } = await loader.importLibrary("maps");
 
-      // Location of Colombia
-      const location = { lat: 4.570868, lng: -74.297332 };
-
       const options: google.maps.MapOptions = {
-        center: location,
-        zoom: 2,
+        center: DEFAULT_CENTER,
+        zoom: DEFAULT_ZOOM,
         mapId: "map",
       }
 
