@@ -142,8 +142,28 @@ jobs:
           # 3. Activar la release (symlink atómico) y arrancar/recargar
           ln -sfn "$REL" "$APP_DIR/current"
           cd "$APP_DIR/current"
-          pm2 startOrReload ecosystem.config.js --update-env
+
+          # PM2 fija `pm_exec_path` al crear el proceso, resolviendo el symlink
+          # a la ruta FÍSICA de la release. `startOrReload` sobre un proceso ya
+          # existente reutiliza esa ruta y NO la reapunta a la release nueva:
+          # el sitio se quedó sirviendo la primera release del 16 jul mientras
+          # los deploys posteriores parecían correctos (release desempaquetada,
+          # symlink movido, workflow en verde). Recrear el proceso es la única
+          # forma fiable de que tome la release nueva; cuesta ~2 s de corte.
+          pm2 delete azfa-web >/dev/null 2>&1 || true
+          pm2 start ecosystem.config.js --update-env
           pm2 save
+
+          # Fallar el deploy si el proceso no quedó apuntando a esta release
+          # (antes esto pasaba en silencio).
+          sleep 3
+          # `|| true`: con `set -e` un grep sin coincidencias abortaría aquí y
+          # se perdería el mensaje de diagnóstico del `case`.
+          RUNNING=$(pm2 jlist | tr ',' '\n' | grep -m1 pm_exec_path | cut -d'"' -f4 || true)
+          case "$RUNNING" in
+            "$REL"/*) echo "PM2 sirviendo la release nueva: $RUNNING" ;;
+            *) echo "ERROR: PM2 sirve '$RUNNING', se esperaba algo en '$REL'"; exit 1 ;;
+          esac
 
           # 4. Regenerar el contenido ISR con datos frescos del CMS.
           #    El prerender del build puede venir incompleto: los fetch al CMS
@@ -158,8 +178,20 @@ jobs:
             && echo "Revalidación total disparada" \
             || echo "AVISO: fallo al revalidar (la app revalida sola por TTL)"
 
-          # 5. Conservar solo las últimas 5 releases (rollback rápido)
-          ls -1dt "$APP_DIR"/releases/*/ | tail -n +6 | xargs -r rm -rf
+          # 5. Conservar solo las últimas 5 releases (rollback rápido).
+          #    NUNCA borrar la release que el proceso está ejecutando: cuando
+          #    PM2 se quedó clavado en una release antigua, esa release llegó a
+          #    ser la 5.ª más reciente y la siguiente poda habría borrado en
+          #    caliente los ficheros del proceso vivo. El filtro es barato y
+          #    convierte ese fallo en inocuo.
+          RUNNING_REL=$(pm2 jlist | tr ',' '\n' | grep -m1 pm_exec_path | cut -d'"' -f4 | xargs -r dirname || true)
+          ls -1dt "$APP_DIR"/releases/*/ | tail -n +6 | while read -r old; do
+            if [ "${old%/}" = "$RUNNING_REL" ]; then
+              echo "AVISO: se omite la poda de $old — es la release en ejecución"
+            else
+              rm -rf "$old"
+            fi
+          done
 
           echo "Release activa: $REL"
           ENDSSH

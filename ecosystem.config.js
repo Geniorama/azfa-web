@@ -10,14 +10,21 @@
 // STRAPI_WEBHOOK_SECRET). Estas se inyectan al hacer `pm2 ... --update-env`
 // tras cargar `/var/www/azfa-web/shared/.env.production` en el shell del
 // deploy (ver el workflow de Actions).
-const path = require("path");
+// OJO con `cwd`: NO usar `path.resolve(__dirname)`. Como este archivo viaja
+// dentro de la release, `__dirname` resuelve a la ruta FÍSICA
+// (…/releases/2026…), que PM2 guarda de forma permanente en `pm_exec_path`.
+// Apuntando al symlink `current`, un `pm2 resurrect` tras un reinicio de la
+// máquina arranca la release activa en ese momento y no una congelada.
+// Aun así, el deploy recrea el proceso (delete + start) en cada release:
+// PM2 no reapunta el path de un proceso existente. Ver deploy.yml.
+const APP_CURRENT = "/var/www/azfa-web/current";
 
 module.exports = {
   apps: [
     {
       name: "azfa-web",
       script: "server.js",
-      cwd: path.resolve(__dirname),
+      cwd: APP_CURRENT,
       instances: 1,
       exec_mode: "fork",
       max_memory_restart: "512M",
