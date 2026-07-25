@@ -160,9 +160,13 @@ jobs:
           # `|| true`: con `set -e` un grep sin coincidencias abortaría aquí y
           # se perdería el mensaje de diagnóstico del `case`.
           RUNNING=$(pm2 jlist | tr ',' '\n' | grep -m1 pm_exec_path | cut -d'"' -f4 || true)
-          case "$RUNNING" in
-            "$REL"/*) echo "PM2 sirviendo la release nueva: $RUNNING" ;;
-            *) echo "ERROR: PM2 sirve '$RUNNING', se esperaba algo en '$REL'"; exit 1 ;;
+          # `pm_exec_path` es ahora `…/current/server.js` (el symlink), porque
+          # ecosystem.config.js usa `cwd: /var/www/azfa-web/current`. Hay que
+          # RESOLVERLO antes de comparar contra la ruta física de la release.
+          RUNNING_REAL=$(readlink -f "$RUNNING" 2>/dev/null || echo "$RUNNING")
+          case "$RUNNING_REAL" in
+            "$REL"/*) echo "PM2 sirviendo la release nueva: $RUNNING_REAL" ;;
+            *) echo "ERROR: PM2 sirve '$RUNNING_REAL', se esperaba algo en '$REL'"; exit 1 ;;
           esac
 
           # 4. Regenerar el contenido ISR con datos frescos del CMS.
@@ -184,7 +188,9 @@ jobs:
           #    ser la 5.ª más reciente y la siguiente poda habría borrado en
           #    caliente los ficheros del proceso vivo. El filtro es barato y
           #    convierte ese fallo en inocuo.
-          RUNNING_REL=$(pm2 jlist | tr ',' '\n' | grep -m1 pm_exec_path | cut -d'"' -f4 | xargs -r dirname || true)
+          #    Se resuelve el symlink (`pm_exec_path` apunta a `current/`) para
+          #    obtener la release FÍSICA en uso y poder compararla.
+          RUNNING_REL=$(readlink -f "$RUNNING" 2>/dev/null | xargs -r dirname || true)
           ls -1dt "$APP_DIR"/releases/*/ | tail -n +6 | while read -r old; do
             if [ "${old%/}" = "$RUNNING_REL" ]; then
               echo "AVISO: se omite la poda de $old — es la release en ejecución"
