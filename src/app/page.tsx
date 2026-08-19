@@ -38,7 +38,12 @@ const getHome = async () => {
 const getNews = async (): Promise<{ data: NewsType[] } | null> => {
   try {
     const response = await fetch(
-      `${process.env.STRAPI_URL}/api/press-rooms?filters[type][$eq]=news&populate[0]=thumbnail&populate[1]=category&pagination[pageSize]=2&sort=publishedAt:desc`,
+      // Mismo criterio que /sala-de-prensa/noticias: manda `publishDate`, la fecha
+      // editorial. Se piden 10 y no 2 porque el orden de Strapi no basta: las
+      // noticias sin `publishDate` salen primero (Postgres ordena NULLS FIRST en
+      // DESC) y las que comparten fecha quedan en orden arbitrario. El recorte a 2
+      // se hace abajo con la fecha efectiva.
+      `${process.env.STRAPI_URL}/api/press-rooms?filters[type][$eq]=news&populate[0]=thumbnail&populate[1]=category&pagination[pageSize]=10&sort[0]=publishDate:desc&sort[1]=publishedAt:desc`,
       {
         cache: "force-cache",
         next: { revalidate: 300 }, // Revalidar cada 5 minutos
@@ -50,7 +55,21 @@ const getNews = async (): Promise<{ data: NewsType[] } | null> => {
     }
 
     const data = await response.json();
-    return data;
+
+    if (!Array.isArray(data?.data)) {
+      return data;
+    }
+
+    // `publishDate` es opcional en el CMS; cuando falta se usa la fecha de
+    // publicación real para no mandar esa noticia al principio ni al final.
+    const effectiveDate = (item: NewsType) =>
+      new Date(item.publishDate || item.publishedAt).getTime() || 0;
+
+    const latest = [...data.data]
+      .sort((a: NewsType, b: NewsType) => effectiveDate(b) - effectiveDate(a))
+      .slice(0, 2);
+
+    return { ...data, data: latest };
   } catch (error) {
     console.error("Error fetching news:", error);
     return null;
