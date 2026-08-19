@@ -625,8 +625,11 @@ export default function Home({
                   <CardNews
                     key={newsItem.id}
                     image={
+                      // Strapi no genera `formats` para algunos archivos (los .avif,
+                      // por ejemplo, se suben sin derivados), así que se cae al original.
                       newsItem.thumbnail?.formats?.small?.url ||
-                      "https://testazfabucket.s3.us-east-2.amazonaws.com/noticias_3_adfc8dd1e2.png"
+                      newsItem.thumbnail?.url ||
+                      "https://placehold.co/800x450?text=AZFA"
                     }
                     title={newsItem.title}
                     category={"Noticia"}
