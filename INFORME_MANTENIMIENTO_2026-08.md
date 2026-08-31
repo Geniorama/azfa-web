@@ -21,8 +21,9 @@ Tres resultados destacan:
    un interruptor en el panel de Cloudflare.
 2. **Los documentos del Portal de Afiliados eran públicos.** *Estudios AZFA* y *Gestión
    AZFA* se leían y descargaban sin iniciar sesión, por las tres capas a la vez. **Dos de
-   las tres quedan cerradas** en el commit `591dae2`; la tercera, la de S3, resultó no ser
-   arreglable desde el código y necesita una decisión de arquitectura (punto 2.2).
+   las tres quedan cerradas**: la página valida la sesión en servidor y la API rechaza al
+   rol Public. La tercera, la de S3, resultó no ser arreglable desde el código y necesita
+   una decisión de arquitectura (punto 2.2).
 3. **Todas las tarjetas de noticias del home llevaban a un 404**, y cuando el CMS fallaba
    se mostraban noticias inventadas con imágenes rotas. Corregido.
 
@@ -37,7 +38,7 @@ falta de memoria en los logs.
 | # | Tarea | Estado |
 |---|---|---|
 | 1 | Certificados SSL | ✅ Edge y origen, con TLS extremo a extremo |
-| 2 | Escaneo de seguridad | 🔶 2 hallazgos críticos: **uno cerrado, otro a medias** |
+| 2 | Escaneo de seguridad | 🔶 2 críticos: uno cerrado, otro **a falta de S3** |
 | 3 | Actualización de dependencias | ✅ Hecho y desplegado |
 | 4 | Enlaces rotos y redirecciones | ✅ Hecho — 4 rotos encontrados |
 | 5 | Logs de error del servidor | ✅ Hecho |
@@ -184,12 +185,34 @@ Verificado con `next start` sobre el build de producción: las tres rutas respon
 `/auth/login` sin cookie**, el HTML servido ya no contiene ninguna URL de los PDF, y las
 siete rutas del portal pasan de estáticas (`○`) a dinámicas (`ƒ`) en la salida del build.
 
-**Paso manual que acompaña al despliegue.** En el panel de Strapi hay que quitar `find` y
-`findOne` del rol **Public** para `study`, `management` y
-`affiliate-portal-investment-statistics-page`, y asegurarse de que el rol **Authenticated**
-sí los tiene. Importante el orden: **hacerlo después de desplegar**, porque el frontend que
-hay hoy en producción pide esos endpoints sin token y dejaría de funcionar.
-`real-state-offers` y `publications` **no se tocan**: alimentan páginas públicas.
+**La API ya está cerrada.** Tras el despliegue se quitaron del rol **Public** los permisos
+de lectura de los content types del portal. Se cerraron cinco, no tres: al revisar la lista
+aparecieron dos *single types* más —`affiliate-portal` («Affiliate Portal / Statistics») y
+`management-portal` («Affiliate Portal / Management»)— igualmente abiertos y que **el
+frontend no usa en absoluto**, así que cerrarlos no tenía ningún riesgo.
+
+El orden importaba y se respetó: primero desplegar, después cerrar. Al revés, el frontend
+que había en producción —que pedía esos endpoints sin token— habría dejado de funcionar.
+
+Verificado:
+
+```
+cerrados (403)   /api/studies · /api/managements
+                 /api/affiliate-portal-investment-statistics-page
+                 /api/affiliate-portal · /api/management-portal
+
+siguen abiertos  press-rooms · events · affiliates · real-state-offers
+(200)            publications · homepage · global-setting · team-members · testimonials
+
+sitio público    9 rutas en 200, de 0,24 a 0,68 s
+portal           las 3 rutas en 307 a /auth/login, sin errores de servidor
+rol Authenticated  sus 7 permisos intactos · Public sin ninguno
+logs del front   sin un solo fallo de fetchAsUser
+```
+
+Que el rol **Authenticated** conserve sus permisos es lo que garantiza que los afiliados
+sigan viendo sus documentos: es el caso que este cambio podía romper y el único que no se
+ve desde fuera.
 
 ### La tercera capa no se puede cerrar desde el código
 
@@ -704,10 +727,10 @@ Con el respaldo del punto 17 ya tomado y en ventana de baja actividad.
 1. **Activar Authenticated Origin Pulls** en Cloudflare (SSL/TLS → Origin Server). Los dos
    orígenes ya están en `optional`, así que activarlo no cambia nada visible; después se
    pasa a `on` y queda cerrado el último resquicio del hallazgo 2.1.
-2. **Cerrar el rol Public en Strapi** para `study`, `management` y
-   `affiliate-portal-investment-statistics-page`, **justo después** de desplegar el commit
-   `591dae2` (antes no: el frontend actual los pide sin token). Y decidir la arquitectura
-   de la tercera capa, la de S3 — ver el punto 2.2.
+2. **Decidir la arquitectura de la tercera capa del portal, la de S3** — ver el punto 2.2.
+   Las dos primeras capas ya están cerradas: la página valida la sesión en servidor y la
+   API rechaza al rol Public. Pero **los PDF siguen siendo descargables de S3** por quien
+   tenga la URL, y eso no se arregla desde el código.
 3. **Volver a subir el PDF de la política de tratamiento de datos** y arreglar
    `/aviso-legal`. Es un requisito legal del formulario de contacto, y es lo único de este
    informe que sigue afectando a un visitante cualquiera.
