@@ -2,7 +2,7 @@
 
 **Fecha:** 31 de agosto de 2026
 **Alcance:** `azfa-web` (Next.js, EC2 + Cloudflare) y `cms-strapi-azfa` (Strapi 5, EC2 + RDS + S3)
-**Rama de trabajo:** `chore/mantenimiento-2026-08` en ambos repositorios
+**Ramas de trabajo:** `chore/mantenimiento-2026-08`, fusionadas a `main` y desplegadas
 
 ---
 
@@ -38,7 +38,7 @@ falta de memoria en los logs.
 |---|---|---|
 | 1 | Certificados SSL | ✅ Edge y origen, con TLS extremo a extremo |
 | 2 | Escaneo de seguridad | 🔶 2 hallazgos críticos: **uno cerrado, otro a medias** |
-| 3 | Actualización de dependencias | ✅ Hecho |
+| 3 | Actualización de dependencias | ✅ Hecho y desplegado |
 | 4 | Enlaces rotos y redirecciones | ✅ Hecho — 4 rotos encontrados |
 | 5 | Logs de error del servidor | ✅ Hecho |
 | 6 | Optimización de la base de datos | ✅ Hecho — no hacía falta optimizar |
@@ -48,7 +48,7 @@ falta de memoria en los logs.
 | 10 | Informe de rendimiento y velocidad | ✅ Hecho |
 | 11 | Optimización de caché | ✅ Hecho (1 mejora pendiente) |
 | 12 | Limpieza profunda de S3 con ahorro | ✅ Hecho — sin ahorro que reclamar |
-| 13 | Migración a versiones estables | 🔶 En rama, falta desplegar |
+| 13 | Migración a versiones estables | ✅ **Desplegado y verificado** |
 | 14 | Compatibilidad de plugins | ✅ Certificado |
 | 15 | Auditoría de seguridad final | ✅ Hecho |
 | 16 | Rotación de credenciales | ⛔ Sin autorizar |
@@ -58,9 +58,10 @@ falta de memoria en los logs.
 
 ## 2 · 15 · Seguridad
 
-### 2.1 Crítico — Cloudflare se puede saltar por la IP de origen
+### 2.1 Crítico — Cloudflare se podía saltar por la IP de origen
 
-Los dos servidores responden directamente a peticiones por IP, sin pasar por Cloudflare:
+**Así estaba al empezar.** Los dos servidores respondían directamente a peticiones por IP,
+sin pasar por Cloudflare:
 
 ```
 http://34.228.145.249/admin        (Host: cms…)  → 200   ← panel de Strapi, SIN cifrar
@@ -72,42 +73,23 @@ Puertos abiertos a Internet: **80 en el CMS** (no hay 443: el nginx del CMS solo
 en el 80) y **80 + 443 en el front**. El 1337 de Strapi y el 3000 de Next sí están
 filtrados por el security group, correctamente.
 
-Esto tiene tres consecuencias:
+Eso tenía tres consecuencias:
 
-- **El WAF, el rate limiting y cualquier regla de acceso de Cloudflare son opcionales**
-  para quien conozca la IP de origen — que es fácil de averiguar por histórico de DNS,
+- **El WAF, el rate limiting y cualquier regla de acceso de Cloudflare eran opcionales**
+  para quien conociera la IP de origen — fácil de averiguar por histórico de DNS,
   transparencia de certificados o el propio subdominio `origin.`.
-- **El panel de administración del CMS es accesible por HTTP en claro.** Las credenciales
-  de administrador viajan sin cifrar.
-- Como el origen del CMS no tiene TLS, la zona está en modo **Flexible** para
-  `cms.asociacionzonasfrancas.org`: incluso el tráfico legítimo va sin cifrar entre
+- **El panel de administración del CMS era accesible por HTTP en claro.** Las credenciales
+  de administrador viajaban sin cifrar.
+- Como el origen del CMS no tenía TLS, la zona estaba en modo **Flexible** para
+  `cms.asociacionzonasfrancas.org`: incluso el tráfico legítimo iba sin cifrar entre
   Cloudflare y el servidor.
 
-### Estado de la remediación
-
-**El TLS de origen del CMS ya está puesto — commit `3539c85`.** El nginx del CMS escucha
-ahora en 443 con un certificado **Cloudflare Origin CA**. Y hubo una sorpresa útil: el par
-de claves ya estaba en la instancia desde octubre de 2025
-(`/etc/ssl/cloudflare/origin.{crt,key}`, comodín `*.asociacionzonasfrancas.org` hasta 2040),
-junto a un site config preparado que nunca se activó porque apuntaba a rutas de Let's
-Encrypt inexistentes. No hizo falta mover ninguna clave privada entre máquinas.
-
-Verificado en producción tras la recarga:
-
-```
-por Cloudflare        /_health 204 · /api/affiliates 200 · /admin 200
-origen por HTTPS      /_health 204 · /api/affiliates 200
-certificado           CloudFlare Origin CA, *.asociacionzonasfrancas.org, hasta 2040
-TLS                   1.0 y 1.1 rechazados · 1.2 y 1.3 aceptados
-```
-
-De paso se añadieron las cabeceras de proxy que faltaban —`X-Real-IP` con el map de
-`CF-Connecting-IP`, `X-Forwarded-For` y `X-Forwarded-Proto`—, que Strapi necesita con
-`IS_PROXIED=true` y no estaba recibiendo; y se corrigieron los permisos de `origin.key`,
-que era **legible por cualquier usuario de la máquina** (644 → 600).
-
-**El puerto 80 sigue sirviendo a propósito:** el subdominio está aún en Flexible, así que
-redirigir ahora dejaría el CMS en un bucle.
+De paso, al poner el TLS de origen se añadieron las cabeceras de proxy que faltaban
+—`X-Real-IP` con el map de `CF-Connecting-IP`, `X-Forwarded-For` y `X-Forwarded-Proto`—,
+que Strapi necesita con `IS_PROXIED=true` y no estaba recibiendo; y se corrigieron los
+permisos de `origin.key`, que era **legible por cualquier usuario de la máquina** (644 →
+600). El certificado que quedó instalado es el comodín Origin CA válido hasta 2041, y el
+origen solo acepta TLS 1.2 y 1.3.
 
 ### Los seis pasos, y dónde quedaron
 
@@ -579,8 +561,53 @@ versiones contra la caché local en lugar del registro: `npm install @strapi/str
 fallaba con `ETARGET` pese a que la versión existe y, lo importante, **cualquier parche de
 seguridad publicado después del último install quedaba invisible**. Corregido.
 
-Ambas ramas están verificadas con `tsc --noEmit` limpio y build completo, pero **sin
-fusionar ni desplegar**.
+### Desplegado en producción el 31 de agosto
+
+Ambas ramas fusionadas a `main` y desplegadas. **No hay entorno de staging**, así que fue
+directo a producción con el respaldo verificado como red — se tomó uno específico antes de
+empezar (`backups/20260831-premigracion/`, con checksum y prueba de `pg_restore`).
+
+**Orden: primero el CMS, después el frontend.** El build del front, que corre en GitHub
+Actions, hace *fetch* al CMS para prerenderizar; con el CMS ya actualizado y verificado, el
+build parte de datos buenos. Al revés habrían coincidido dos problemas a la vez.
+
+**Prerequisito comprobado antes de tocar nada.** El portal ahora pide sus datos con el JWT
+del usuario, así que el rol **Authenticated** de Strapi tiene que poder leer `study`,
+`management` y `affiliate-portal-investment-statistics-page`. Se verificó en la base de
+datos que ya los tenía; si no, los afiliados habrían visto páginas vacías tras el
+despliegue.
+
+| | CMS | Frontend |
+|---|---|---|
+| Método | `git pull` + `npm ci` + `strapi build` + `pm2 restart` | Merge a `main` → GitHub Actions |
+| Duración | ~4 min (build del panel: 96 s) | 60 s hasta activar la release |
+| Versión | Strapi **5.52.2**, providers alineados | Next **16.3.3**, React **19.2.8** |
+| Release | en sitio | `20260831181541` |
+
+**Verificado tras el despliegue:**
+
+```
+CMS        /_health 204 · /admin 200 · 6 endpoints de API en 200
+           provider de S3 genera URLs correctas · plugin de upload montado (403)
+           log de arranque limpio, sin errores
+
+Frontend   10 rutas públicas en 200, de 0,33 a 1,31 s
+           sitemap.xml 200 con 214 URLs · robots.txt con la directiva Sitemap
+           portal: las 4 rutas en 307 a /auth/login sin sesión
+           sin URLs de PDF de estudios en el HTML servido
+           ninguna referencia a la ruta rota /noticias/
+           ISR HIT · revalidación 401 sin token · ficha de noticia 200
+           log de PM2 sin errores, 0 reinicios
+```
+
+**Un susto que no lo era:** al comprobar la versión desplegada apareció un `next@16.2.10`
+que hizo temer un despliegue incompleto. Resultó ser un `node_modules` huérfano de julio en
+`/var/www/azfa-web/`, fuera del esquema de releases. El que ejecuta la aplicación, dentro de
+`current/`, es **16.3.3**. Conviene borrar ese directorio para que no vuelva a confundir.
+
+**Aviso para el próximo mantenimiento:** el SDK de AWS v3 avisa de que las versiones
+publicadas después de enero de 2027 exigirán **Node ≥ 22**. Las dos instancias corren Node
+20.19.4.
 
 ---
 
@@ -687,11 +714,11 @@ Con el respaldo del punto 17 ya tomado y en ventana de baja actividad.
 
 **Esta semana**
 
-4. Desplegar las ramas de trabajo: dependencias, corrección de enlaces, portal y SEO.
-5. Aplicar las 10 actualizaciones de seguridad del CMS y **reiniciar ambos servidores**
+4. Aplicar las 10 actualizaciones de seguridad del CMS y **reiniciar ambos servidores**
    para activar los parches de kernel. Aprovechar para poner `HOST=127.0.0.1` en el `.env`
    del CMS: el defecto del código ya está cambiado (`92a0b32`), pero la variable gana.
-6. Mover el respaldo a almacenamiento externo.
+5. Mover el respaldo a almacenamiento externo.
+6. Borrar el `node_modules` huérfano de `/var/www/azfa-web/`, ajeno al esquema de releases.
 
 **Este mes**
 
@@ -744,9 +771,13 @@ Todo verificado, y en cada caso con el sitio comprobado antes y después:
    dos servidores.
 6. **El fix de caché `^~`**, que llevaba días escrito sin llegar al servidor.
 
+7. **La migración a versiones estables**: las dos ramas fusionadas a `main` y desplegadas
+   —Strapi 5.52.2 en el CMS y Next 16.3.3 con React 19.2.8 en el frontend—, con el CMS
+   primero para que el build del front partiera de datos buenos. Detalle y verificación en
+   el punto 3 · 13.
+
 Los cambios de panel —Full (strict) y los security groups— los aplicó el cliente; aquí solo
 se verificaron.
 
-Las ramas `chore/mantenimiento-2026-08` de ambos repositorios siguen **sin fusionar y sin
-desplegar**: todo lo aplicado en producción es configuración de servidor, no código de la
-aplicación.
+**Ya no queda nada sin desplegar.** Las ramas `chore/mantenimiento-2026-08` están fusionadas
+a `main` en los dos repositorios y en producción.
