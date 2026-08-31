@@ -378,7 +378,7 @@ export default function Home({
               <ServiceCard
                 title="POSICIONAMIENTO"
                 subtitle="Servicio"
-                image="https://testazfabucket.s3.us-east-2.amazonaws.com/1_posicionamiento_693973b4e2.webp"
+                image="https://placehold.co/800x450?text=AZFA"
                 button={{
                   label: "Ver más",
                   onClick: () => router.push("/servicio-1"),
@@ -387,7 +387,7 @@ export default function Home({
               <ServiceCard
                 title="PROMOCIÓN"
                 subtitle="Servicio"
-                image="https://testazfabucket.s3.us-east-2.amazonaws.com/2_promocion_731d85b7cd.webp"
+                image="https://placehold.co/800x450?text=AZFA"
                 button={{
                   label: "Ver más",
                   onClick: () => router.push("/servicio-2"),
@@ -396,7 +396,7 @@ export default function Home({
               <ServiceCard
                 title="INFORMACIÓN ESPECIALIZADA"
                 subtitle="Servicio"
-                image="https://testazfabucket.s3.us-east-2.amazonaws.com/3_informacion_7fa601f8f5.webp"
+                image="https://placehold.co/800x450?text=AZFA"
                 button={{
                   label: "Ver más",
                   onClick: () => router.push("/servicio-3"),
@@ -405,7 +405,7 @@ export default function Home({
               <ServiceCard
                 title="NEGOCIOS"
                 subtitle="Servicio"
-                image="https://testazfabucket.s3.us-east-2.amazonaws.com/4_negocios_7149dea41e.webp"
+                image="https://placehold.co/800x450?text=AZFA"
                 button={{
                   label: "Ver más",
                   onClick: () => router.push("/servicio-4"),
@@ -414,7 +414,7 @@ export default function Home({
               <ServiceCard
                 title="COMUNIDAD"
                 subtitle="Servicio"
-                image="https://testazfabucket.s3.us-east-2.amazonaws.com/5_Comunidad_14858a626f.webp"
+                image="https://placehold.co/800x450?text=AZFA"
                 button={{
                   label: "Ver más",
                   onClick: () => router.push("/servicio-5"),
@@ -610,7 +610,7 @@ export default function Home({
               </TitleDecorative>
               <Link
                 className="underline underline-offset-8 decoration-white hover:decoration-details transition-all duration-300"
-                href={newsSectionData?.viewAllLink?.url || "/noticias"}
+                href={newsSectionData?.viewAllLink?.url || "/sala-de-prensa/noticias"}
               >
                 {newsSectionData?.viewAllLink?.label || "Ver todas"}
               </Link>
@@ -640,46 +640,16 @@ export default function Home({
                         if (newsItem.externalLink) {
                           handleOpenNews(newsItem.externalLink);
                         } else {
-                          router.push(`/noticias/${newsItem.slug}`);
+                          // La ficha de una noticia vive bajo /sala-de-prensa/blog/,
+                          // igual que en BlogView y SingleBlogView. `/noticias/<slug>`
+                          // no existe como ruta y devolvía 404.
+                          router.push(`/sala-de-prensa/blog/${newsItem.slug}`);
                         }
                       },
                     }}
                   />
                 ))
-              ) : (
-                // Fallback cuando no hay datos de noticias
-                <>
-                  <CardNews
-                    image="https://testazfabucket.s3.us-east-2.amazonaws.com/noticias_3_adfc8dd1e2.png"
-                    title="Zonas francas: piden modernizar la ley y potenciar la competitividad en Argentina"
-                    category="Noticia"
-                    description={truncateText(
-                      "En el marco del Consejo Federal de Zonas Francas, representantes provinciales coincidieron en la necesidad de actualizar la normativa vigente y generar condiciones que permitan desarrollar plenamente su potencial exportador, logístico e industrial",
-                      100
-                    )}
-                    button={{
-                      label: "Ver más",
-                      onClick: () =>
-                        handleOpenNews(
-                          "https://www.elfinancierocr.com/economia-y-politica/economia-de-costa-rica-crece-46-en-julio-impulsada/NNWQX52JYZDOFKCHKUS3GKS7ZM/story/"
-                        ),
-                    }}
-                  />
-                  <CardNews
-                    image="https://testazfabucket.s3.us-east-2.amazonaws.com/657e7211_e1d3_43fc_a2ca_8dbc93648e0c_895fdc8714.jpg"
-                    title="Economía de Costa Rica crece 4,6% en julio, impulsada por las zonas francas, pero existen desafíos en sectores clave"
-                    category="Noticia"
-                    description={truncateText(
-                      "La producción nacional de Costa Rica, medida por la serie tendencia ciclo del Índice Mensual de Actividad Económica (IMAE), registró un crecimiento interanual del 4,6% en julio de 2025, según el más reciente informe publicado por el Banco Central de Costa Rica (BCCR)",
-                      100
-                    )}
-                    button={{
-                      label: "Ver más",
-                      onClick: () => router.push("/noticia-1"),
-                    }}
-                  />
-                </>
-              )}
+              ) : null}
             </div>
           </div>
           <div className="w-full lg:w-1/2">
@@ -711,7 +681,7 @@ export default function Home({
                     key={event.id}
                     image={
                       event.featuredImage?.url ||
-                      "https://testazfabucket.s3.us-east-2.amazonaws.com/img_evento_1a_World_FZO_af2dc47ee4.webp"
+                      "https://placehold.co/800x450?text=AZFA"
                     }
                     title={event.title}
                     category={"Evento"}
@@ -734,35 +704,7 @@ export default function Home({
                     hotel={event.address}
                   />
                 ))
-              ) : (
-                // Fallback cuando no hay datos de eventos
-                <>
-                  <CardEvent
-                    image="https://testazfabucket.s3.us-east-2.amazonaws.com/img_evento_1a_World_FZO_af2dc47ee4.webp"
-                    title="11º Congreso Mundial de la World FZO"
-                    category="Evento"
-                    date="2024-10-10"
-                    location="Hainan, China"
-                    button={{
-                      label: "Ver más",
-                      onClick: () => router.push("/eventos"),
-                    }}
-                    hotel="Centro Internacional de Conferencias y Exposiciones de Hainan"
-                  />
-                  <CardEvent
-                    image="https://testazfabucket.s3.us-east-2.amazonaws.com/img_evento_2_Iberoamerica_Free_Trade_Zone_Conference_95b385bcf7.webp"
-                    title="XXVIII Conferencia de Zonas Francas de Iberoamérica"
-                    category="Evento"
-                    date="2024-11-19"
-                    location="Punta del Este, Uruguay"
-                    button={{
-                      label: "Ver más",
-                      onClick: () => router.push("/eventos"),
-                    }}
-                    hotel="Hotel por confirmar"
-                  />
-                </>
-              )}
+              ) : null}
             </div>
           </div>
         </div>
@@ -809,7 +751,7 @@ export default function Home({
                     description={testimonial.testimonial}
                     image={
                       testimonial.coverImage?.url ||
-                      "https://testazfabucket.s3.us-east-2.amazonaws.com/img_Testimonio_1_Patricia_Figueroa_color_f9ca828652.jpg"
+                      "https://placehold.co/400x400?text=AZFA"
                     }
                     button={{
                       label: "Ver más",
@@ -827,7 +769,7 @@ export default function Home({
                     title="Patricia Figueroa"
                     description="CAMTEX forma parte de AZFA desde hace más de 10 años. Una decisión sumamente acertada dado que AZFA nos brinda un importante espacio de diálogo del más alto nivel donde se intercambian conocimientos y se establece una red de contactos con los otros miembros que nos permiten estar a la vanguardia de lo que acaece en el entorno internacional…"
                     image={
-                      "https://testazfabucket.s3.us-east-2.amazonaws.com/img_Testimonio_1_Patricia_Figueroa_color_f9ca828652.jpg"
+                      "https://placehold.co/400x400?text=AZFA"
                     }
                     button={{
                       label: "Ver más",
@@ -841,7 +783,7 @@ export default function Home({
                     title="Martín Ibarra"
                     description="Para mí es un gran honor ser miembro de AZFA y estoy vinculado a AZFA hace 26 años cuando se crió AZFA en República Dominicana y tuve el honor de ser su primer presidente. En estos 26 años de trabajo ininterrumpido, no hemos descansado en trabajar por la defensa del régimen franco en la región…"
                     image={
-                      "https://testazfabucket.s3.us-east-2.amazonaws.com/img_Testimonio_3_Martin_Ibarra_Negro_f01f8bdd75.jpg"
+                      "https://placehold.co/400x400?text=AZFA"
                     }
                     button={{
                       label: "Ver más",
@@ -855,7 +797,7 @@ export default function Home({
                     title="Fernando Carazo"
                     description="Somos miembros de azfa desde ya hace unos 5 años aproximadamente. El papel de AZFA nos parece importantísimo, la unificación de la voz de los stateholders de regimenes de zona franca y regímenes especiales no solo de la región sino del mundo nos parece muy importante que sea unificada por medio de AZFA…"
                     image={
-                      "https://testazfabucket.s3.us-east-2.amazonaws.com/img_Testimonio_2_Fernando_Carazo_negro_9d35c882c6.jpg"
+                      "https://placehold.co/400x400?text=AZFA"
                     }
                     button={{
                       label: "Ver más",

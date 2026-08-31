@@ -433,7 +433,7 @@ export default function EventosView({ eventsData, eventsPageData, isLoading = fa
                                   data-aos-delay={`${(index % 3) * 100}`}
                                 >
                                 <CardEvent
-                                    image={event.featuredImage?.url || "https://testazfabucket.s3.us-east-2.amazonaws.com/img_evento_1a_World_FZO_af2dc47ee4.webp"}
+                                    image={event.featuredImage?.url || "https://placehold.co/800x450?text=AZFA"}
                                     title={event.title}
                                     category={event.tag || "Evento"}
                                     date={formatDateRange(event.startDate, event.endDate)}

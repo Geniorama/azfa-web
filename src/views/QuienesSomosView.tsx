@@ -271,7 +271,7 @@ export default function JuntaDirectivaView({
   const formatMemberData = (member: TeamMemberType): CardTeamMemberProps => ({
     image:
       member.photo?.url ||
-      "https://testazfabucket.s3.us-east-2.amazonaws.com/leader_44b2499b_23e6f45b3b.png",
+      "https://placehold.co/400x400?text=AZFA",
     name: member.fullName,
     position: member.position,
     company: member.association,
@@ -558,7 +558,7 @@ export default function JuntaDirectivaView({
                                         key={index}
                                         image={
                                           leader.photo?.url ||
-                                          "https://testazfabucket.s3.us-east-2.amazonaws.com/leader_44b2499b_23e6f45b3b.png"
+                                          "https://placehold.co/400x400?text=AZFA"
                                         }
                                         alternativeText={
                                           leader.photo?.alternativeText ||
@@ -586,7 +586,7 @@ export default function JuntaDirectivaView({
                                       key={index}
                                       image={
                                         team.photo?.url ||
-                                        "https://testazfabucket.s3.us-east-2.amazonaws.com/leader_44b2499b_23e6f45b3b.png"
+                                        "https://placehold.co/400x400?text=AZFA"
                                       }
                                       alternativeText={
                                         team.photo?.alternativeText ||
@@ -608,7 +608,7 @@ export default function JuntaDirectivaView({
                           className="w-full h-full object-cover"
                           src={
                             comission.coverImage?.url ||
-                            "https://testazfabucket.s3.us-east-2.amazonaws.com/leader_44b2499b_23e6f45b3b.png"
+                            "https://placehold.co/400x400?text=AZFA"
                           }
                           alt={
                             comission.coverImage?.alternativeText ||
