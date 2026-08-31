@@ -136,7 +136,6 @@ Conviene hacerlo **en una sola pasada**, con alguien que tenga a mano IAM, Brevo
 | **Parches del sistema** | 10 actualizaciones de seguridad en el CMS y reinicio de ambos servidores, que nunca se han reiniciado | EC2 |
 | **Bind de Strapi** | Poner `HOST=127.0.0.1` en el `.env` de la EC2; el defecto del código ya está cambiado | EC2 |
 | **Respaldo externo** | Los respaldos verificados siguen en la máquina local; el punto 17 pide almacenamiento externo | — |
-
 | **`pg_stat_statements`** | Activarla en el *parameter group* de RDS para poder señalar consultas concretas | RDS |
 | **Cache Rule de HTML** | El HTML sale como `DYNAMIC`; una regla en Cloudflare descargaría la EC2 | Cloudflare |
 | **Registros huérfanos** | Cuatro filas de `press_rooms` sin tipo, una de ellas duplicado de `boletin-501-1` | CMS |
