@@ -13,12 +13,12 @@ credenciales, que no se autorizó en esta pasada.
 
 Tres resultados destacan:
 
-1. **Cloudflare se puede saltar por completo.** Los dos servidores de origen responden
-   directamente por su IP pública. El del CMS lo hacía **por HTTP sin cifrar, incluido
-   `/admin`**. Cualquiera que conozca la IP evita el WAF, el rate limiting y las reglas de
-   acceso. **El TLS de origen del CMS ya está instalado** (commit `3539c85`); lo que falta
-   para cerrarlo del todo son cuatro cambios de panel, con runbook en
-   `cms-strapi-azfa/deploy/CIERRE_ORIGEN.md`.
+1. **Cloudflare se podía saltar por completo — cerrado.** Los dos servidores de origen
+   respondían directamente por su IP pública, y el del CMS lo hacía **por HTTP sin cifrar,
+   incluido `/admin`**. **Cinco de los seis pasos de remediación están aplicados y
+   verificados**: el origen ya no es alcanzable por IP y el tramo edge→origen va cifrado.
+   Queda el sexto, Authenticated Origin Pulls, preparado en modo `optional` a la espera de
+   un interruptor en el panel de Cloudflare.
 2. **Los documentos del Portal de Afiliados eran públicos.** *Estudios AZFA* y *Gestión
    AZFA* se leían y descargaban sin iniciar sesión, por las tres capas a la vez. **Dos de
    las tres quedan cerradas** en el commit `591dae2`; la tercera, la de S3, resultó no ser
@@ -36,8 +36,8 @@ falta de memoria en los logs.
 
 | # | Tarea | Estado |
 |---|---|---|
-| 1 | Certificados SSL | ✅ Edge correcto; **TLS de origen del CMS instalado** |
-| 2 | Escaneo de seguridad | ⚠️ 2 hallazgos críticos, **remediación iniciada** |
+| 1 | Certificados SSL | ✅ Edge y origen, con TLS extremo a extremo |
+| 2 | Escaneo de seguridad | 🔶 2 hallazgos críticos: **uno cerrado, otro a medias** |
 | 3 | Actualización de dependencias | ✅ Hecho |
 | 4 | Enlaces rotos y redirecciones | ✅ Hecho — 4 rotos encontrados |
 | 5 | Logs de error del servidor | ✅ Hecho |
@@ -109,23 +109,57 @@ que era **legible por cualquier usuario de la máquina** (644 → 600).
 **El puerto 80 sigue sirviendo a propósito:** el subdominio está aún en Flexible, así que
 redirigir ahora dejaría el CMS en un bucle.
 
-### Lo que falta, y solo se puede hacer desde los paneles
+### Los seis pasos, y dónde quedaron
 
-1. **Cloudflare a Full (strict)** para `cms.asociacionzonasfrancas.org`, eliminando la
-   Configuration Rule de excepción a Flexible. Con esto el tramo edge→origen pasa a ir
-   cifrado.
-2. **Restringir el security group** de ambas instancias a los rangos publicados de
-   Cloudflare en 80 y 443. Es el cambio de mayor impacto y el más barato: mientras el
-   origen acepte conexiones de cualquier IP, el WAF es opcional para quien la conozca.
-3. **Redirección 80 → 443** en el CMS, ya escrita y comentada en la configuración. Solo
-   después del punto 1.
-4. **Authenticated Origin Pulls**, para que el origen exija el certificado cliente de
-   Cloudflare. Cierra el hueco que deja el punto 2 frente a quien tenga su propio sitio en
-   Cloudflare.
-5. **Bind de Strapi a `127.0.0.1:1337`** — el defecto del código ya está cambiado
-   (`92a0b32`), pero el `.env` de la EC2 fija `HOST=0.0.0.0` y la variable gana.
+| | Paso | Estado |
+|---|---|---|
+| 1 | TLS de origen en el nginx del CMS | ✅ `3539c85` |
+| 2 | Permisos de la clave privada, 644 → 600 | ✅ |
+| 3 | Cloudflare a Full (strict) | ✅ |
+| 4 | Redirección 80 → 443 en el CMS | ✅ `c21c1e6` |
+| 5 | Security groups a los rangos de Cloudflare | ✅ |
+| 6 | Authenticated Origin Pulls | 🔶 En `optional`, esperando el panel |
 
-El runbook completo, con los rangos de IP ya descargados y el orden entre pasos, está en
+**El origen ya no es alcanzable por IP.** Verificado desde fuera: los cuatro accesos
+directos —80 y 443 en las dos instancias— **agotan el tiempo de espera**, mientras el sitio,
+el CMS, el panel y el alias `origin.` siguen respondiendo por Cloudflare. Se comprobó
+también lo que no debía romperse: SSH a ambas máquinas, Strapi online, la conexión a RDS
+(el security group `ec2-rds-1` quedó intacto) y el endpoint de revalidación.
+
+Los ~350 escaneos diarios que buscaban `/.env` y backdoors de WordPress ya no llegan.
+
+**Queda el paso 6.** La CA de Origin Pull está instalada en las dos instancias y
+`ssl_verify_client` está en **`optional`**, que valida el certificado cliente si viene pero
+no rechaza a nadie, registrando el resultado en `/var/log/nginx/aop.log`. Falta activar
+Authenticated Origin Pulls en el panel de Cloudflare; después se pasa a `on`.
+
+Ese rodeo por `optional` no fue exceso de celo: el log muestra `client_verify=NONE` en los
+dos servidores, o sea que **Cloudflare todavía no envía certificado**. Poner `on`
+directamente —como decía la primera versión de este informe— habría tumbado los dos sitios
+a la vez.
+
+Sigue pendiente, y es independiente: **el bind de Strapi a `127.0.0.1:1337`**. El defecto
+del código ya está cambiado (`92a0b32`), pero el `.env` de la EC2 fija `HOST=0.0.0.0` y la
+variable gana; hay que cambiarlo allí y reiniciar.
+
+### Dos tropiezos por el camino, que conviene dejar escritos
+
+**Al activar Full (strict), el CMS devolvió 526 durante unos minutos.** La instancia tenía
+un Origin CA de octubre de 2025 y el front otro de julio de 2026; ambos comodines válidos
+del mismo dominio, ambos correctos a ojos de `openssl x509` —en vigor, SAN bueno, clave
+coincidente— pero **Cloudflare solo acepta el de julio**. Lo más probable es que el de
+octubre quedara revocado al emitirse el nuevo, y la revocación no se ve desde el origen. Se
+resolvió instalando el par del front, que estaba demostrando ser válido en ese mismo
+momento porque el sitio público funcionaba bajo Full (strict).
+
+**Al cerrar los security groups saltó *"maximum number of rules per security group has been
+reached"*.** AWS no cuenta una prefix list como una regla: cuenta su `Max entries`. Con 30
+entradas para IPv4 y 15 para IPv6 en dos puertos salían 90 reglas contra un tope de 60. Se
+resolvió bajando a `Max entries: 20` y **eliminando la lista IPv6 entera**: ninguna de las
+dos instancias tiene dirección IPv6 —comprobado por metadata, `/ipv6s` devuelve 404— así
+que Cloudflare solo las alcanza por IPv4 y esas reglas nunca habrían casado con nada.
+
+El runbook completo, con los rangos, el orden entre pasos y estas dos lecciones, está en
 `cms-strapi-azfa/deploy/CIERRE_ORIGEN.md`.
 
 ### 2.2 Crítico — los documentos de afiliados son públicos
@@ -233,6 +267,7 @@ además acumula 10 actualizaciones de seguridad sin instalar.
 | Listado anónimo del bucket S3 | ✅ Denegado (403) |
 | Endpoints de usuarios y upload de Strapi | ✅ 403 |
 | Puertos de aplicación (1337, 3000) | ✅ Filtrados por security group |
+| Puertos 80 y 443 del origen | ✅ **Filtrados a los rangos de Cloudflare** desde el 31 ago |
 | Intentos de acceso SSH fallidos (7 días) | ✅ 0 |
 | `/api/affiliates` (público) | ✅ Sin datos personales |
 | Cabeceras del front | ✅ HSTS con `preload`, CSP, X-Frame-Options, X-Content-Type-Options, Referrer-Policy, Permissions-Policy |
@@ -255,10 +290,22 @@ válido   3 ago 2026 → 1 nov 2026     62 días restantes
 emisor   Google Trust Services (WE1) · Cloudflare Universal SSL
 ```
 
-El de **origen** es otra historia: el front tiene su certificado Cloudflare Origin CA
-instalado y escucha en 443, pero **el nginx del CMS no escucha en 443 en absoluto** — solo
-en el 80. Ese subdominio funciona con la excepción Flexible en Cloudflare, con el tramo
-Cloudflare→origen sin cifrar. Es el punto 3 de la remediación de seguridad.
+El de **origen** era el problema: el front tenía el suyo y escuchaba en 443, pero **el nginx
+del CMS no escuchaba en 443 en absoluto**, solo en el 80, y ese subdominio funcionaba con
+una excepción Flexible en Cloudflare — el tramo edge→origen iba sin cifrar.
+
+**Resuelto.** Ahora los dos orígenes sirven HTTPS con certificado Cloudflare Origin CA
+(comodín, hasta 2041) y la zona entera está en **Full (strict)**. Verificado en el CMS:
+
+```
+certificado   CloudFlare Origin CA, *.asociacionzonasfrancas.org, hasta 2041
+TLS           1.0 y 1.1 rechazados · 1.2 y 1.3 aceptados
+puerto 80     301 a HTTPS, ya no sirve la aplicación
+conexiones    7 establecidas con el origen, todas en el 443
+```
+
+Con un aviso para el futuro, que costó unos minutos de caída: **había dos Origin CA
+distintos y solo uno servía**. Ver el detalle en el punto 2.1.
 
 ---
 
@@ -546,10 +593,23 @@ fusionar ni desplegar**.
 | Imágenes de `/public` | `max-age=2592000, s-w-r` | HIT |
 | HTML | `s-maxage=300, s-w-r` | **DYNAMIC** |
 
-**Corregido — commit `158fe05`.** Los SVG, PNG y WebP de `/_next/static/media/` salían con
-30 días en lugar del año inmutable que les corresponde: `location /_next/static/` es un
-prefijo sin `^~`, y nginx evalúa antes los `location` con expresión regular, así que los
-ficheros de imagen caían en el bloque pensado para `/public`.
+**Corregido y ya desplegado — commit `158fe05`.** Los SVG, PNG y WebP de
+`/_next/static/media/` salían con 30 días en lugar del año inmutable que les corresponde:
+`location /_next/static/` es un prefijo sin `^~`, y nginx evalúa antes los `location` con
+expresión regular, así que los ficheros de imagen caían en el bloque pensado para
+`/public`.
+
+La corrección llevaba días escrita pero **sin llegar al servidor**: el workflow de
+despliegue no toca `deploy/nginx/*`, hay que copiarlo a mano. Se aplicó al desplegar la
+configuración del paso 6. Verificado contra el origen, sin pasar por el edge:
+
+```
+antes   cache-control: public, max-age=2592000                 (30 días)
+ahora   cache-control: public, max-age=31536000, immutable     (1 año)
+```
+
+El edge sigue sirviendo copias cacheadas de antes del cambio —una tenía 28 días de
+antigüedad— que caducarán solas. Se puede forzar con una purga desde Cloudflare.
 
 **Pendiente:** el HTML sale como `DYNAMIC`, así que todas las visitas llegan al origen
 aunque el `Cache-Control` ya autorice 300 s de caché compartida. Una Cache Rule para HTML
@@ -614,38 +674,36 @@ Con el respaldo del punto 17 ya tomado y en ventana de baja actividad.
 
 **Ahora**
 
-1. **Pasar `cms.asociacionzonasfrancas.org` a Full (strict)** en Cloudflare, quitando la
-   Configuration Rule de excepción. El origen ya tiene su TLS listo esperando; hasta que se
-   haga, el panel sigue viajando en claro entre el edge y el servidor.
-2. **Restringir los security groups a los rangos de Cloudflare** y, después, activar
-   Authenticated Origin Pulls. Cierra el salto del WAF en ambos servidores. Rangos y orden
-   de pasos en `cms-strapi-azfa/deploy/CIERRE_ORIGEN.md`.
-3. **Cerrar el rol Public en Strapi** para `study`, `management` y
+1. **Activar Authenticated Origin Pulls** en Cloudflare (SSL/TLS → Origin Server). Los dos
+   orígenes ya están en `optional`, así que activarlo no cambia nada visible; después se
+   pasa a `on` y queda cerrado el último resquicio del hallazgo 2.1.
+2. **Cerrar el rol Public en Strapi** para `study`, `management` y
    `affiliate-portal-investment-statistics-page`, **justo después** de desplegar el commit
    `591dae2` (antes no: el frontend actual los pide sin token). Y decidir la arquitectura
    de la tercera capa, la de S3 — ver el punto 2.2.
-4. **Volver a subir el PDF de la política de tratamiento de datos** y arreglar
-   `/aviso-legal`. Es un requisito legal del formulario de contacto.
+3. **Volver a subir el PDF de la política de tratamiento de datos** y arreglar
+   `/aviso-legal`. Es un requisito legal del formulario de contacto, y es lo único de este
+   informe que sigue afectando a un visitante cualquiera.
 
 **Esta semana**
 
-5. Desplegar las ramas de trabajo: dependencias, corrección de enlaces y caché.
-6. Aplicar las 10 actualizaciones de seguridad del CMS y **reiniciar ambos servidores**
-   para activar los parches de kernel.
-7. Mover el respaldo a almacenamiento externo.
+4. Desplegar las ramas de trabajo: dependencias, corrección de enlaces, portal y SEO.
+5. Aplicar las 10 actualizaciones de seguridad del CMS y **reiniciar ambos servidores**
+   para activar los parches de kernel. Aprovechar para poner `HOST=127.0.0.1` en el `.env`
+   del CMS: el defecto del código ya está cambiado (`92a0b32`), pero la variable gana.
+6. Mover el respaldo a almacenamiento externo.
 
 **Este mes**
 
-8. Cache Rule de Cloudflare para HTML, con las exclusiones del portal.
-9. Activar `pg_stat_statements` en RDS para el informe del mes que viene.
-10. Poner `HOST=127.0.0.1` en el `.env` de la EC2 del CMS. El defecto del código ya está
-    cambiado (`92a0b32`), pero la variable de entorno gana; conviene aprovechar el reinicio
-    del punto 6.
-11. Rotación de credenciales.
+7. Cache Rule de Cloudflare para HTML, con las exclusiones del portal.
+8. Activar `pg_stat_statements` en RDS para el informe del mes que viene.
+9. Borrar las cuatro filas huérfanas de `press_rooms` desde el panel.
+10. Rotación de credenciales.
 
-Ya no hacen falta dos que estaban en esta lista: el **sitemap** y el `robots.txt` quedan
-publicados por la aplicación (commits `09b8c72` y `475fe68`), y la **sustitución de los
-plugins** resultó no ser urgente — ver la corrección en el punto 14.
+**Han salido de esta lista** el TLS de origen, el paso a Full (strict), la redirección
+80→443 y el cierre de los security groups —los cuatro aplicados y verificados—, más el
+sitemap y el `robots.txt`, ya publicados por la aplicación. Y la sustitución de los plugins,
+que resultó no ser urgente: ver la corrección en el punto 14.
 
 ---
 
@@ -663,15 +721,32 @@ plugins** resultó no ser urgente — ver la corrección en el punto 14.
 | cms-strapi-azfa | `286b7f7` | `.npmrc`: fuera `prefer-offline`, que ocultaba los parches |
 | cms-strapi-azfa | `92a0b32` | Strapi escuchaba en `0.0.0.0` en vez de en loopback |
 | cms-strapi-azfa | `b05b8ab` | Plan de sustitución de plugins, con la corrección sobre react-router |
-| cms-strapi-azfa | `3539c85` | TLS de origen en el nginx del CMS — **aplicado en producción** |
+| azfa-web | `5b337f4` | Prepara Authenticated Origin Pulls en el front — **en producción** |
+| cms-strapi-azfa | `3539c85` | TLS de origen en el nginx del CMS — **en producción** |
 | cms-strapi-azfa | `ae13ee2` | Runbook para cerrar el origen tras Cloudflare |
+| cms-strapi-azfa | `fe270d5` | El Origin CA de octubre estaba revocado y tumbó el CMS con 526 |
+| cms-strapi-azfa | `c21c1e6` | El puerto 80 del CMS ya solo redirige — **en producción** |
+| cms-strapi-azfa | `64ee290` | Procedimiento para cerrar los security groups |
+| cms-strapi-azfa | `ea4c1db` | El `max-entries` de la prefix list agotaba el límite de reglas |
+| cms-strapi-azfa | `6dc0cce` | Security groups cerrados y verificados |
+| cms-strapi-azfa | `a786de5` | Prepara Authenticated Origin Pulls en el CMS — **en producción** |
 
-**Aplicado en producción — tres cosas, todas verificadas:**
+### Lo aplicado en producción
 
-1. `VACUUM ANALYZE` sobre la base de datos: 1 957 tuplas muertas a 0.
-2. Los dos respaldos, pre y post, con checksum y prueba de restauración.
-3. El **TLS de origen del nginx del CMS**: recarga sin corte, con el CMS respondiendo igual
-   por Cloudflare antes y después, y los permisos de la clave privada corregidos.
+Todo verificado, y en cada caso con el sitio comprobado antes y después:
 
-Nada más se tocó. Las ramas `chore/mantenimiento-2026-08` de ambos repositorios siguen
-**sin fusionar y sin desplegar**.
+1. **`VACUUM ANALYZE`** sobre la base de datos: 1 957 tuplas muertas a 0.
+2. **Los dos respaldos**, pre y post, con checksum y prueba de restauración.
+3. **TLS de origen en el nginx del CMS**, con los permisos de la clave privada corregidos
+   (644 → 600) y el certificado sustituido tras el 526.
+4. **Redirección 80 → 443** en el CMS.
+5. **Authenticated Origin Pulls en modo `optional`** y su instrumentación de logs, en los
+   dos servidores.
+6. **El fix de caché `^~`**, que llevaba días escrito sin llegar al servidor.
+
+Los cambios de panel —Full (strict) y los security groups— los aplicó el cliente; aquí solo
+se verificaron.
+
+Las ramas `chore/mantenimiento-2026-08` de ambos repositorios siguen **sin fusionar y sin
+desplegar**: todo lo aplicado en producción es configuración de servidor, no código de la
+aplicación.
