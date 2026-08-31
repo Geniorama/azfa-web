@@ -24,6 +24,8 @@ function strapiBase(): string {
 interface SlugEntry {
   slug: string | null;
   updatedAt?: string;
+  /** Solo en press-rooms: noticia, blog, newsletter o podcast. */
+  type?: string | null;
 }
 
 /**
@@ -35,8 +37,15 @@ interface SlugEntry {
  *
  * Si el CMS falla se devuelve lo acumulado hasta ese momento: más vale un
  * sitemap incompleto que una ruta rota.
+ *
+ * @param conTipo Pedir y exigir el campo `type`. Solo para press-rooms: ahí un
+ *   `type` nulo señala registros abandonados —un par completamente vacío (ids
+ *   110/111) y un `boletin-501` que quedó huérfano al recrearse como
+ *   `boletin-501-1`, con ambos slugs resolviendo al mismo contenido—. En
+ *   colecciones sin ese campo NO debe activarse: Strapi devuelve `null` para un
+ *   campo que no existe y se descartarían todas las entradas.
  */
-async function getSlugs(collection: string): Promise<SlugEntry[]> {
+async function getSlugs(collection: string, conTipo = false): Promise<SlugEntry[]> {
   const base = strapiBase();
   if (!base) return [];
 
@@ -48,6 +57,7 @@ async function getSlugs(collection: string): Promise<SlugEntry[]> {
     for (let page = 1; page <= MAX_PAGES; page++) {
       const res = await fetch(
         `${base}/api/${collection}?fields[0]=slug&fields[1]=updatedAt` +
+          (conTipo ? "&fields[2]=type" : "") +
           `&pagination[page]=${page}&pagination[pageSize]=${PAGE_SIZE}`,
         { next: { revalidate: 3600 } }
       );
@@ -55,9 +65,9 @@ async function getSlugs(collection: string): Promise<SlugEntry[]> {
 
       const json = await res.json();
       const lote: SlugEntry[] = json.data ?? [];
-      // Se filtran los registros sin slug: hay al menos uno huérfano en
-      // press-rooms (id 111) que generaría una URL inválida.
-      entradas.push(...lote.filter((e) => e.slug));
+      entradas.push(
+        ...lote.filter((e) => e.slug && (!conTipo || e.type))
+      );
 
       const total = json.meta?.pagination?.pageCount ?? 1;
       if (page >= total || lote.length === 0) break;
@@ -103,7 +113,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   }));
 
   const [prensa, inmuebles] = await Promise.all([
-    getSlugs("press-rooms"),
+    getSlugs("press-rooms", true),
     getSlugs("real-state-offers"),
   ]);
 
