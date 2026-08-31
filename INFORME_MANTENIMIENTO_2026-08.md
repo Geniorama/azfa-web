@@ -276,12 +276,38 @@ El mismo formulario apunta a `/aviso-legal`, que tampoco existe.
 | Enlaces internos de la portada | 21 / 21 · HTTP 200 |
 | Páginas de detalle de blog y noticias | 12 / 12 · HTTP 200 |
 
-Sigue faltando el **sitemap**: `/sitemap.xml` devuelve 404 y el `robots.txt` —que genera
-Cloudflare— no declara la directiva `Sitemap:`. No es teórico: los logs del origen
-registran **24 peticiones a `/sitemap.xml` y 73 a `/robots.txt`** que acaban en 404. Se
-resuelve añadiendo `src/app/sitemap.ts` alimentado desde Strapi.
+**Resuelto — commits `09b8c72` y `475fe68`.** `/sitemap.xml` devolvía 404 y el `robots.txt`
+—que genera Cloudflare— no declaraba la directiva `Sitemap:`. No era teórico: los logs del
+origen registran **24 peticiones a `/sitemap.xml` y 73 a `/robots.txt`** acabando en 404.
 
-Y queda un registro huérfano en `press_rooms` con `slug` y `type` en `null` (id 111).
+Ahora los sirve la aplicación. El sitemap sale con **214 URLs**: 18 estáticas, 187 fichas de
+sala de prensa y 9 de oferta inmobiliaria, alimentadas desde Strapi. Quedan fuera el portal
+de afiliados, el dashboard, las rutas de autenticación, `/maintenance` y `/search-demo`, que
+además se declaran en `Disallow`. Cloudflare añade su bloque gestionado al `robots.txt` del
+origen en lugar de sustituirlo, así que sus reglas contra rastreadores de IA se conservan;
+conviene verificarlo en el edge tras desplegar.
+
+Dos detalles costaron una iteración cada uno, y ambos habrían pasado inadvertidos sin
+comprobar la salida real: Strapi tope el `pageSize` en 100, así que pedir 500 devolvía 100
+en silencio y se perdían 89 fichas; y el filtro por `type` nulo, necesario en press-rooms,
+descartaba las 9 fichas de inmuebles porque Strapi devuelve `null` para un campo que no
+existe en esa colección.
+
+### Los registros huérfanos, y por qué importaban
+
+Lo que la API mostraba como un registro huérfano eran en realidad **cuatro filas, dos
+parejas de borrador y publicado**:
+
+| ids | Contenido | Qué es |
+|---|---|---|
+| 110 · 111 | Sin título, sin slug, sin tipo | Basura de octubre de 2025 |
+| 456 · 457 | «Boletín # 501», slug `boletin-501`, **sin tipo** | Duplicado abandonado |
+
+El segundo no es basura inofensiva: existe también `boletin-501-1`, con su tipo correcto y
+listado en la página de newsletter. **Las dos URL resuelven con el mismo contenido**
+(44 387 y 44 391 bytes), así que el sitemap las anunciaba como páginas distintas. De ahí el
+segundo commit. El contenido no se ha perdido —el bueno es `boletin-501-1`— pero conviene
+borrar las cuatro filas desde el panel.
 
 ---
 
@@ -509,13 +535,26 @@ el edge desde el webhook de revalidación que ya existe.
 **Verificación funcional:** `strapi build` completa correctamente con ambos plugins y el
 panel compila sin advertencias de versión.
 
-**Riesgo identificado.** Llevan sin publicar 19 y 22 meses, y ambos fijan `react ^18.3.1`
-y `react-router-dom ^6.x`. El CMS **no puede subir a React 19** mientras dependa de ellos,
-y las vulnerabilidades *moderate* de react-router 6 —open redirect e inyección de
-constructor en la hidratación SSR— **quedan abiertas**, porque cerrarlas exige un `--force`
-que rompería el panel. Afectan solo al panel, no a la API pública ni al sitio, y requieren
-sesión de administrador: riesgo bajo, pero sin solución mientras no se actualicen. Merece
-la pena valorar sustituirlos por campos nativos de Strapi 5.
+**Riesgo identificado, y una corrección.** Llevan sin publicar 19 y 22 meses. Ambos
+declaran `react ^18.3.1` y `react-router-dom ^6.x`, y en una primera lectura les atribuí
+las vulnerabilidades *moderate* de react-router y el bloqueo de React 19. **Al verificar la
+cadena de dependencias con `npm ls`, resultó falso:** quien resuelve esas versiones es el
+propio Strapi —`@strapi/admin@5.52.2` trae `react@18.3.1` y `react-router-dom@6.30.6`, igual
+que `content-manager`, `content-releases` y `content-type-builder`—. Los plugins solo las
+declaran como *peers*.
+
+Es decir: **quitarlos no cerraría ninguna vulnerabilidad ni permitiría subir a React 19**.
+Eso depende de que Strapi migre su panel, río arriba.
+
+Lo que sí queda es riesgo de **abandono** de dos dependencias de terceros que corren dentro
+del panel, y que serían el bloqueo el día que Strapi sí migre. No es urgente. Merece la pena
+igualmente porque cuesta muy poco: comprobado contra la base de datos, la sustitución por
+campos nativos **no exige migrar ni una fila** —`country` ya es un `varchar` con el código
+ISO y los multi-select ya guardan un array JSON—. El plan detallado está en
+`cms-strapi-azfa/PLAN_SUSTITUCION_PLUGINS.md`.
+
+**Lo que sí conviene vigilar** son las 25 vulnerabilidades transitivas de `@strapi/*`, que
+solo se cierran cuando Strapi publique versiones con sus dependencias al día.
 
 ---
 
@@ -560,12 +599,16 @@ Con el respaldo del punto 17 ya tomado y en ventana de baja actividad.
 
 **Este mes**
 
-8. Publicar `sitemap.xml` y declararlo en `robots.txt` — hay demanda real en los logs.
-9. Cache Rule de Cloudflare para HTML, con las exclusiones del portal.
-10. Activar `pg_stat_statements` en RDS para el informe del mes que viene.
-11. Cambiar el bind de Strapi a `127.0.0.1`.
-12. Planificar la sustitución de los dos plugins sin mantenimiento.
-13. Rotación de credenciales.
+8. Cache Rule de Cloudflare para HTML, con las exclusiones del portal.
+9. Activar `pg_stat_statements` en RDS para el informe del mes que viene.
+10. Poner `HOST=127.0.0.1` en el `.env` de la EC2 del CMS. El defecto del código ya está
+    cambiado (`92a0b32`), pero la variable de entorno gana; conviene aprovechar el reinicio
+    del punto 6.
+11. Rotación de credenciales.
+
+Ya no hacen falta dos que estaban en esta lista: el **sitemap** y el `robots.txt` quedan
+publicados por la aplicación (commits `09b8c72` y `475fe68`), y la **sustitución de los
+plugins** resultó no ser urgente — ver la corrección en el punto 14.
 
 ---
 
@@ -577,8 +620,12 @@ Con el respaldo del punto 17 ya tomado y en ventana de baja actividad.
 | azfa-web | `158fe05` | nginx: `^~` en `/_next/static/`, assets con hash a 1 año |
 | azfa-web | `3338854` | Noticias del home a 404, contenido falso e imágenes muertas |
 | azfa-web | `591dae2` | Portal de afiliados: comprobación de sesión en servidor y render dinámico |
+| azfa-web | `09b8c72` | `sitemap.xml` y `robots.txt` servidos por la aplicación |
+| azfa-web | `475fe68` | El sitemap anunciaba contenido duplicado de sala de prensa |
 | cms-strapi-azfa | `d72e768` | Strapi 5.50.0 → 5.52.2 y providers alineados — 78 a 25 |
 | cms-strapi-azfa | `286b7f7` | `.npmrc`: fuera `prefer-offline`, que ocultaba los parches |
+| cms-strapi-azfa | `92a0b32` | Strapi escuchaba en `0.0.0.0` en vez de en loopback |
+| cms-strapi-azfa | `b05b8ab` | Plan de sustitución de plugins, con la corrección sobre react-router |
 
 **En producción:** `VACUUM ANALYZE` sobre la base de datos (1 957 tuplas muertas a 0) y los
 dos respaldos verificados. Nada más se tocó: las ramas siguen sin fusionar ni desplegar.
