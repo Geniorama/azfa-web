@@ -135,7 +135,7 @@ Conviene hacerlo **en una sola pasada**, con alguien que tenga a mano IAM, Brevo
 | **PDF de política de datos** | El formulario de contacto enlaza un PDF que devuelve 404, y `/aviso-legal` tampoco existe. Requisito legal | CMS, contenido |
 | **Parches del sistema** | 10 actualizaciones de seguridad en el CMS y reinicio de ambos servidores, que nunca se han reiniciado | EC2 |
 | **Bind de Strapi** | Poner `HOST=127.0.0.1` en el `.env` de la EC2; el defecto del código ya está cambiado | EC2 |
-| **Respaldo externo** | Los respaldos verificados siguen en la máquina local; el punto 17 pide almacenamiento externo | — |
+| **Contraseña del respaldo** | Copiarla al gestor de contraseñas y borrarla del servidor. Sin ella, los respaldos de Drive son ilegibles si se pierde la instancia | EC2 del CMS |
 | **`pg_stat_statements`** | Activarla en el *parameter group* de RDS para poder señalar consultas concretas | RDS |
 | **Cache Rule de HTML** | El HTML sale como `DYNAMIC`; una regla en Cloudflare descargaría la EC2 | Cloudflare |
 | **Registros huérfanos** | Cuatro filas de `press_rooms` sin tipo, una de ellas duplicado de `boletin-501-1` | CMS |

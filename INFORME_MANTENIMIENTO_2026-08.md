@@ -44,7 +44,7 @@ falta de memoria en los logs.
 | 5 | Logs de error del servidor | ✅ Hecho |
 | 6 | Optimización de la base de datos | ✅ Hecho — no hacía falta optimizar |
 | 7 | Limpieza de S3 | ✅ Hecho — 0 huérfanos |
-| 8 | Respaldo externo con checksum | ✅ Hecho — falta sacarlo de la máquina |
+| 8 | Respaldo externo con checksum | ✅ **Automatizado a Google Drive** |
 | 9 | Reporte de gestión mensual | ✅ Este documento |
 | 10 | Informe de rendimiento y velocidad | ✅ Hecho |
 | 11 | Optimización de caché | ✅ Hecho (1 mejora pendiente) |
@@ -540,9 +540,48 @@ backups/20260831-pre/                backups/20260831-post/
   (`git bundle verify`: *"records a complete history"*).
 - `sha256sum -c`: **OK** en los cuatro ficheros.
 
-**Falta un paso y es importante:** el respaldo está en la máquina local, y el punto 17 pide
-almacenamiento **externo**. Hay que moverlo a un destino fuera de este equipo y de la
-cuenta de AWS que respalda —disco cifrado, Drive, Glacier— para que cumpla su función.
+### Resuelto: respaldo automático y externo a Google Drive
+
+Los respaldos de arriba resolvían el momento, pero seguían en una máquina local. Se montó
+un **respaldo automático y cifrado** desde la instancia del CMS hacia una unidad compartida
+de Google Drive, que es lo que cierra de verdad los puntos 8 y 17.
+
+| Qué | Cuándo | Retención |
+|---|---|---|
+| Volcado de la base de datos | A diario, 03:15 UTC | 14 días |
+| Medios de S3 (2 397 objetos, 439 MB) | Semanal, incremental | Versiones anteriores 56 días |
+| Código de los repositorios | Semanal | 56 días |
+
+Tres decisiones que lo separan de «subir un fichero a la nube»:
+
+- **El espejo de medios usa `--backup-dir`.** Una sincronización a secas es un espejo, no un
+  respaldo: un borrado accidental en el CMS se propagaría y no quedaría nada. Así la versión
+  anterior se aparta a `medios-historico/<fecha>`.
+- **Cada subida se verifica** comparando el tamaño contra el destino. Que `rclone` no dé
+  error no significa que el fichero llegara completo.
+- **El volcado se valida con `pg_restore -l` antes de subirlo.** Un `pg_dump` truncado no da
+  error visible.
+
+Y una pieza que suele faltar: `deploy/backup-verificar.sh`, que corre los lunes y comprueba
+tres cosas que fallan de formas distintas — que el cron sigue vivo, que hay un fichero
+reciente **en Drive**, y que el último volcado **se descifra y es restaurable**.
+
+Primera ejecución, verificada contra Drive y no contra el log:
+
+```
+base de datos     1,2 MB · 2 155 objetos restaurables
+medios            2 397 objetos · 439,226 MiB — paridad exacta con S3
+código            bundle de 36 MB con todo el historial
+comprobador       las tres pruebas correctas
+```
+
+Documentación completa en `cms-strapi-azfa/deploy/BACKUP_DRIVE.md`.
+
+**Queda una acción, y es importante:** la contraseña de cifrado está en la misma instancia
+que se respalda. Hay que **copiarla al gestor de contraseñas del equipo y borrarla del
+servidor**; si se pierde esa máquina y la contraseña no está en otro sitio, los respaldos de
+Drive son ilegibles. También quedan fuera del respaldo, a propósito, los ficheros `.env`:
+subirlos trasladaría el problema en lugar de resolverlo, así que deben custodiarse aparte.
 
 Para restaurar:
 
@@ -740,7 +779,8 @@ Con el respaldo del punto 17 ya tomado y en ventana de baja actividad.
 4. Aplicar las 10 actualizaciones de seguridad del CMS y **reiniciar ambos servidores**
    para activar los parches de kernel. Aprovechar para poner `HOST=127.0.0.1` en el `.env`
    del CMS: el defecto del código ya está cambiado (`92a0b32`), pero la variable gana.
-5. Mover el respaldo a almacenamiento externo.
+5. Custodiar la contraseña de cifrado del respaldo en el gestor de contraseñas y borrarla
+   del servidor. Sin ella, los respaldos de Drive son ilegibles si se pierde la instancia.
 6. Borrar el `node_modules` huérfano de `/var/www/azfa-web/`, ajeno al esquema de releases.
 
 **Este mes**
