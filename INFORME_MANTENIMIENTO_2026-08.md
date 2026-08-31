@@ -17,8 +17,10 @@ Tres resultados destacan:
    directamente por su IP pública. El del CMS lo hace **por HTTP sin cifrar, incluido
    `/admin`**. Cualquiera que conozca la IP evita el WAF, el rate limiting y las reglas
    de acceso, y las credenciales del panel viajan en claro en el tramo Cloudflare→origen.
-2. **Los documentos del Portal de Afiliados son públicos.** *Estudios AZFA* y *Gestión
-   AZFA* se leen y descargan sin iniciar sesión, por las tres capas a la vez.
+2. **Los documentos del Portal de Afiliados eran públicos.** *Estudios AZFA* y *Gestión
+   AZFA* se leían y descargaban sin iniciar sesión, por las tres capas a la vez. **Dos de
+   las tres quedan cerradas** en el commit `591dae2`; la tercera, la de S3, resultó no ser
+   arreglable desde el código y necesita una decisión de arquitectura (punto 2.2).
 3. **Todas las tarjetas de noticias del home llevaban a un 404**, y cuando el CMS fallaba
    se mostraban noticias inventadas con imágenes rotas. Corregido.
 
@@ -115,13 +117,63 @@ prerenderizada, con los datos dentro, idéntica para todo el mundo. Verificado e
 producción: la URL de S3 aparece en el HTML de `/portal-afiliados/estudios-azfa` sin
 sesión iniciada.
 
-**Remediación,** las tres capas en este orden:
+### Estado de la remediación
 
-1. Quitar `find` y `findOne` del rol **Public** para `study` y `management`, y consumirlos
-   desde el servidor de Next con un API token de solo lectura.
-2. Cambiar el ACL del provider de upload a privado y servir los ficheros con URLs firmadas
-   de caducidad corta.
-3. Mover la comprobación de sesión al servidor y forzar renderizado dinámico en esas rutas.
+**Dos capas cerradas — commit `591dae2`.**
+
+- `src/lib/serverAuth.ts` lee el JWT de la cookie httpOnly con `cookies()` y lo valida
+  contra Strapi. El layout del portal pasa a Server Component: **redirige a
+  `/auth/login` antes de renderizar nada** y añade `dynamic = 'force-dynamic'`, así que
+  las rutas dejan de prerenderizarse. `ProtectedRoute` se mantiene por debajo para lo que
+  el servidor no ve: la sesión caducando con la pestaña abierta.
+- Las tres páginas del portal piden sus datos con el **JWT del usuario** en lugar de
+  anónimamente, así que la autorización la resuelve Strapi con el rol de quien mira.
+
+Verificado con `next start` sobre el build de producción: las tres rutas responden **307 a
+`/auth/login` sin cookie**, el HTML servido ya no contiene ninguna URL de los PDF, y las
+siete rutas del portal pasan de estáticas (`○`) a dinámicas (`ƒ`) en la salida del build.
+
+**Paso manual que acompaña al despliegue.** En el panel de Strapi hay que quitar `find` y
+`findOne` del rol **Public** para `study`, `management` y
+`affiliate-portal-investment-statistics-page`, y asegurarse de que el rol **Authenticated**
+sí los tiene. Importante el orden: **hacerlo después de desplegar**, porque el frontend que
+hay hoy en producción pide esos endpoints sin token y dejaría de funcionar.
+`real-state-offers` y `publications` **no se tocan**: alimentan páginas públicas.
+
+### La tercera capa no se puede cerrar desde el código
+
+Los ficheros de S3 siguen siendo descargables por cualquiera que conozca la URL. Y la causa
+no es la que parecía. Comprobado subiendo objetos de prueba al bucket (y borrándolos):
+
+```
+objeto SIN ACL           → descarga anónima: HTTP 200
+objeto con ACL private   → descarga anónima: HTTP 200
+```
+
+Un objeto marcado explícitamente como privado **sigue siendo público**. Es decir, la lectura
+abierta viene de una **política del bucket**, no de las ACL de los objetos. Eso tiene dos
+consecuencias que conviene tener claras antes de tocar nada:
+
+1. Poner `ACL: 'private'` en `config/plugins.ts` haría que Strapi emitiese URLs firmadas
+   —el provider solo las genera cuando `params.ACL === 'private'`, verificado en su
+   código—, pero **los ficheros seguirían siendo descargables** por su clave directa. Daría
+   sensación de seguridad sin darla.
+2. Además rompería el sitio público: la configuración del provider es del bucket entero, y
+   **ese mismo bucket sirve las imágenes de marketing**. Todas pasarían a URLs firmadas que
+   caducan, lo que echa por tierra el cacheo en el edge y en `next/image`.
+
+**El problema de fondo es que un único bucket mezcla imágenes públicas con documentos
+privados, y los permisos de S3 son del bucket.** Hay que elegir:
+
+| Opción | Qué implica |
+|---|---|
+| **(a) Segundo bucket privado** para los documentos de afiliados | Lo más limpio. Requiere mover los ficheros y servirlos desde una ruta de Next que valide la sesión y devuelva una URL firmada. Strapi 5 no admite dos providers de upload a la vez, así que esos documentos saldrían del flujo normal del CMS |
+| (b) Quitar la política pública y firmar todo | Modelo de permisos más simple, pero degrada el rendimiento de todas las imágenes públicas |
+| (c) Dejarlo como está y ocultar las URL | No es protección: la clave sigue siendo válida para quien la tenga |
+
+Recomiendo **(a)**. Es la única que cierra la exposición sin sacrificar el trabajo de
+rendimiento ya hecho, pero es una decisión de arquitectura con coste, así que queda
+planteada y no ejecutada.
 
 > Los ficheros ya publicados conservan su URL. Tras cerrar el acceso hay que **renombrar o
 > regenerar el hash** de los documentos sensibles, porque las URL actuales pueden estar ya
@@ -492,7 +544,10 @@ Con el respaldo del punto 17 ya tomado y en ventana de baja actividad.
    Origin Pulls. Cierra el salto del WAF en ambos servidores.
 2. **Instalar el certificado de origen en el nginx del CMS** y pasar ese subdominio a Full
    (strict). Hoy el panel de administración viaja en claro.
-3. **Cerrar el acceso público** a `/api/studies`, `/api/managements` y a sus ficheros de S3.
+3. **Cerrar el rol Public en Strapi** para `study`, `management` y
+   `affiliate-portal-investment-statistics-page`, **justo después** de desplegar el commit
+   `591dae2` (antes no: el frontend actual los pide sin token). Y decidir la arquitectura
+   de la tercera capa, la de S3 — ver el punto 2.2.
 4. **Volver a subir el PDF de la política de tratamiento de datos** y arreglar
    `/aviso-legal`. Es un requisito legal del formulario de contacto.
 
@@ -521,6 +576,7 @@ Con el respaldo del punto 17 ya tomado y en ventana de baja actividad.
 | azfa-web | `7cb1691` | Next 16.3.3, React 19.2.8 y toolchain — 4 *high* a 0 |
 | azfa-web | `158fe05` | nginx: `^~` en `/_next/static/`, assets con hash a 1 año |
 | azfa-web | `3338854` | Noticias del home a 404, contenido falso e imágenes muertas |
+| azfa-web | `591dae2` | Portal de afiliados: comprobación de sesión en servidor y render dinámico |
 | cms-strapi-azfa | `d72e768` | Strapi 5.50.0 → 5.52.2 y providers alineados — 78 a 25 |
 | cms-strapi-azfa | `286b7f7` | `.npmrc`: fuera `prefer-offline`, que ocultaba los parches |
 
