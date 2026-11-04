@@ -1,4 +1,5 @@
 "use client";
+import { optimizedImageUrl } from "@/utils/optimizedImage";
 
 import CiudadOfertaImg from "@/assets/img/ciudad-oferta-inmobiliaria.svg";
 import AdvancedSearchBar from "@/components/AdvancedSearchBar";
@@ -243,7 +244,7 @@ function OfertaInmobiliariaContent({ pageContent }: OfertaInmobiliariaViewProps)
           >
             <img
               className="w-full"
-              src={pageContent.coverImage?.url || CiudadOfertaImg.src}
+              src={optimizedImageUrl(pageContent.coverImage?.url, 1200) || CiudadOfertaImg.src}
               alt="Ciudad Oferta"
             />
           </div>
@@ -449,7 +450,7 @@ function OfertaInmobiliariaContent({ pageContent }: OfertaInmobiliariaViewProps)
                 <SwiperSlide key={supplier.id}>
                   <img
                     className="w-full h-24 object-contain max-w-fit mx-auto grayscale md:grayscale hover:grayscale-0 transition-all duration-300 swiper-slide-mobile"
-                    src={supplier.logo?.url}
+                    src={optimizedImageUrl(supplier.logo?.url, 256)}
                     alt={supplier.name || "Logo"}
                     onClick={() => {
                       if (supplier.url) {
@@ -509,7 +510,7 @@ function OfertaInmobiliariaContent({ pageContent }: OfertaInmobiliariaViewProps)
                     <SwiperSlide key={consultant.id}>
                       <img
                         className="w-full h-24 object-contain max-w-fit mx-auto grayscale md:grayscale hover:grayscale-0 transition-all duration-300 swiper-slide-mobile"
-                        src={consultant.logo?.url}
+                        src={optimizedImageUrl(consultant.logo?.url, 256)}
                         alt={consultant.name || "Logo"}
                         onClick={() => {
                           if (consultant.url) {

@@ -480,7 +480,7 @@ export default function Home({
                 className="flex items-center gap-6"
               >
                 <img
-                  src={statistic.icon?.customImage?.url || IconIberoamerica.src}
+                  src={optimizedImageUrl(statistic.icon?.customImage?.url, 64) || IconIberoamerica.src}
                   alt={statistic.label || "Icon Iberoamérica"}
                   className="w-16 h-16"
                 />
@@ -537,7 +537,7 @@ export default function Home({
                   }`}
               >
                 <img
-                  src={statistic.icon?.customImage?.url || IconIberoamerica.src}
+                  src={optimizedImageUrl(statistic.icon?.customImage?.url, 64) || IconIberoamerica.src}
                   alt={statistic.label || "Icon Iberoamérica"}
                   className="w-16 h-16"
                 />
@@ -902,9 +902,8 @@ export default function Home({
                   <SwiperSlide key={affiliate.id}>
                     <img
                       className="w-full h-24 object-contain max-w-fit mx-auto grayscale md:grayscale hover:grayscale-0 transition-all duration-300 swiper-slide-mobile"
-                      src={
-                        affiliate.logo?.url
-                      }
+                      src={optimizedImageUrl(affiliate.logo?.url, 256)}
+                      loading="lazy"
                       alt={affiliate.name || "Logo"}
                       onClick={() => {
                         if (affiliate.url) {
@@ -975,7 +974,7 @@ export default function Home({
                   <img
                     key={partner.id}
                     className="w-full max-w-fit max-h-16 object-contain"
-                    src={partner.logo?.url}
+                    src={optimizedImageUrl(partner.logo?.url, 256)} loading="lazy"
                     alt={partner.name || "Logo"}
                     onClick={() => {
                       if (partner.url) {
@@ -1043,7 +1042,7 @@ export default function Home({
                   <img
                     key={sponsor.id}
                     className="w-full max-w-fit max-h-16 object-contain"
-                    src={sponsor.logo?.url}
+                    src={optimizedImageUrl(sponsor.logo?.url, 256)} loading="lazy"
                     alt={sponsor.name || "Logo"}
                     onClick={() => {
                       if (sponsor.url) {

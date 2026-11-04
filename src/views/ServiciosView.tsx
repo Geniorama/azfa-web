@@ -1,4 +1,5 @@
 "use client";
+import { optimizedImageUrl } from "@/utils/optimizedImage";
 
 import HeadingPage from "@/components/HeadingPage";
 import IntroPage from "@/components/IntroPage";
@@ -80,7 +81,7 @@ export default function ServiciosView({ serviciosData }: ServiciosViewProps) {
                 {section.coverImage && (
                   <img
                     className="w-full"
-                    src={section.coverImage.url}
+                    src={optimizedImageUrl(section.coverImage.url, 1200)}
                     alt="Servicios"
                   />
                 )}

@@ -1,4 +1,5 @@
 "use client";
+import { optimizedImageUrl } from "@/utils/optimizedImage";
 
 import ArrowLeft from "@/assets/img/arrow-right-s-line.svg";
 import { useState, useEffect, useRef } from "react";
@@ -82,7 +83,7 @@ export default function FloatMenu({ socialMedia = [] }: FloatMenuProps) {
                             )}
                             {social.icon.type === "custom-image" && social.icon.customImage && (
                               <img 
-                                src={social.icon.customImage.url} 
+                                src={optimizedImageUrl(social.icon.customImage.url, 64)} 
                                 alt={social.icon.customImage.alternativeText || ""} 
                                 className="w-8 h-8 object-contain"
                               />

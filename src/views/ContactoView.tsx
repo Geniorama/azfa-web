@@ -1,4 +1,5 @@
 "use client"
+import { optimizedImageUrl } from "@/utils/optimizedImage";
 
 import HeadingPage from "@/components/HeadingPage"
 import BgContacto from "@/assets/img/bg-contacto.jpg"
@@ -162,7 +163,7 @@ export default function ContactoView({ contactPageData, contactInfoGlobal, socia
                         >
                           {social.icon.type === "custom" && social.icon.customImage ? (
                             <img 
-                              src={social.icon.customImage.url} 
+                              src={optimizedImageUrl(social.icon.customImage.url, 64)} 
                               alt={`icon-${social.platform}`} 
                               width={24}
                               height={24}

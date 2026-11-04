@@ -1,4 +1,5 @@
 "use client";
+import { optimizedImageUrl } from "@/utils/optimizedImage";
 
 import LogoAzfa from "../../public/logo-azfa.svg";
 import { FaAngleDown } from "react-icons/fa6";
@@ -210,7 +211,7 @@ export default function Header({ header }: { header: HeaderTypeData }) {
                         item.icon.type === "custom-image" &&
                         item.icon.customImage && (
                           <img
-                            src={item.icon.customImage.url}
+                            src={optimizedImageUrl(item.icon.customImage.url, 64)}
                             alt={item.icon.customImage.alternativeText || ""}
                             className="w-5 h-5"
                           />

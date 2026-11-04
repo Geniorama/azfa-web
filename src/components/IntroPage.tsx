@@ -1,3 +1,4 @@
+import { optimizedImageUrl } from "@/utils/optimizedImage";
 import rehypeRaw from "rehype-raw";
 import rehypeSanitize from "rehype-sanitize";
 import { cmsSanitizeSchema } from "@/lib/sanitizeSchema";
@@ -13,7 +14,7 @@ export default function IntroPage({ introData }: IntroPageProps) {
     <div className="flex flex-col lg:flex-row items-center justify-center text-text-primary lg:gap-16 gap-6 w-full lg:w-2/3 mx-auto">
       <img
         className="w-[109px] lg:w-60"
-        src={introData.icon?.url || ""}
+        src={optimizedImageUrl(introData.icon?.url, 128)}
         alt={
           introData.icon?.alternativeText || ""
         }

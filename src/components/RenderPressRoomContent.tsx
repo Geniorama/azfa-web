@@ -1,4 +1,5 @@
 "use client";
+import { optimizedImageUrl } from "@/utils/optimizedImage";
 
 import ReactMarkdown from "react-markdown";
 import rehypeRaw from "rehype-raw";
@@ -169,7 +170,7 @@ export default function RenderPressRoomContent({ componentName, content }: Rende
                 {content.item && Array.isArray(content.item) && content.item.map((item: LogoItem, index: number) => (
                   <div key={index} className="flex items-center justify-center">
                     <img 
-                      src={item.logo?.url || ''} 
+                      src={optimizedImageUrl(item.logo?.url, 256)} 
                       alt={item.name || "Image"} 
                       className="object-contain"
                     />
@@ -218,7 +219,7 @@ export default function RenderPressRoomContent({ componentName, content }: Rende
                   <SwiperSlide key={index}>
                     <div className="flex items-center justify-center">
                       <img 
-                        src={item.logo?.url || ''} 
+                        src={optimizedImageUrl(item.logo?.url, 256)} 
                         alt={item.name || "Image"} 
                         className="object-contain"
                       />
@@ -234,7 +235,7 @@ export default function RenderPressRoomContent({ componentName, content }: Rende
       return (
         <div className="flex items-center justify-center p-4 bg-gray-50 rounded-lg my-4">
           <img 
-            src={content.logo?.url || ''} 
+            src={optimizedImageUrl(content.logo?.url, 256)} 
             alt={content.name || "Logo"} 
             className="max-h-16 object-contain"
           />

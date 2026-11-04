@@ -1,4 +1,5 @@
 "use client";
+import { optimizedImageUrl } from "@/utils/optimizedImage";
 
 import HeadingPage from "@/components/HeadingPage";
 import TitleDecorative from "@/utils/TitleDecorative";
@@ -45,7 +46,7 @@ export default function InviertaEnZonasView({ pageContent }: InviertaEnZonasView
               className="w-full lg:w-1/2"
               data-aos="fade-left"
             >
-              <img className="w-full" src={pageContent.about.coverImage.url} alt="Servicios" />
+              <img className="w-full" src={optimizedImageUrl(pageContent.about.coverImage.url, 1200)} alt="Servicios" />
             </div>
           </div>
         </div>
@@ -73,7 +74,7 @@ export default function InviertaEnZonasView({ pageContent }: InviertaEnZonasView
               <div key={statistic.id || index} className="flex items-center gap-6">
                 {statistic.icon?.customImage?.url && (
                   <img
-                    src={statistic.icon.customImage.url}
+                    src={optimizedImageUrl(statistic.icon.customImage.url, 64)}
                     alt={statistic.label || "Estadística"}
                     className="w-16 h-16"
                   />
@@ -96,7 +97,7 @@ export default function InviertaEnZonasView({ pageContent }: InviertaEnZonasView
               <div key={statistic.id || index} className={`flex items-center gap-6 ${index === 0 ? 'mt-8 lg:mt-0' : ''}`}>
                 {statistic.icon?.customImage?.url && (
                   <img
-                    src={statistic.icon.customImage.url}
+                    src={optimizedImageUrl(statistic.icon.customImage.url, 64)}
                     alt={statistic.label || "Estadística"}
                     className="w-16 h-16"
                   />
@@ -130,7 +131,7 @@ export default function InviertaEnZonasView({ pageContent }: InviertaEnZonasView
                 className="w-full lg:w-1/2"
                 data-aos="fade-right"
               >
-                <img className="w-full" src={pageContent.about2.coverImage.url} alt="Inversión en Zonas Francas" />
+                <img className="w-full" src={optimizedImageUrl(pageContent.about2.coverImage.url, 1200)} alt="Inversión en Zonas Francas" />
               </div>
             )}
           </div>
@@ -153,7 +154,7 @@ export default function InviertaEnZonasView({ pageContent }: InviertaEnZonasView
               className="w-full lg:w-1/2"
               data-aos="fade-left"
             >
-              <img className="w-full" src={pageContent.benefits.coverImage.url} alt="Servicios" />
+              <img className="w-full" src={optimizedImageUrl(pageContent.benefits.coverImage.url, 1200)} alt="Servicios" />
             </div>
           </div>
         </div>
@@ -163,7 +164,7 @@ export default function InviertaEnZonasView({ pageContent }: InviertaEnZonasView
         <section className="bg-white py-10 lg:pt-16">
           <div className="container mx-auto px-4">
             <div data-aos="fade-up">
-              <img className="w-full" src={pageContent.bannerImage.url} alt={pageContent.bannerImage.alternativeText || "Inversión en Zonas Francas"} />
+              <img className="w-full" src={optimizedImageUrl(pageContent.bannerImage.url, 1200)} alt={pageContent.bannerImage.alternativeText || "Inversión en Zonas Francas"} />
             </div>
           </div>
         </section>
