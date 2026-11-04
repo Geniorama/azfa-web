@@ -1,3 +1,4 @@
+import { optimizedImageUrl } from "@/utils/optimizedImage";
 interface HeadingPageProps {
   title?: string;
   smallTitle?: string;
@@ -17,7 +18,7 @@ export default function HeadingPage({
 }: HeadingPageProps) {
   return (
     <div
-      style={{ backgroundImage: `url(${image || ""})` }}
+      style={{ backgroundImage: `url(${optimizedImageUrl(image, 1920)})` }}
       className={`bg-primary bg-cover bg-center bg-no-repeat py-16 relative flex flex-col justify-center ${
         textAlign === "left"
           ? "text-left items-start"

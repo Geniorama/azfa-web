@@ -1,4 +1,5 @@
 "use client";
+import { optimizedImageUrl } from "@/utils/optimizedImage";
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
@@ -29,7 +30,7 @@ export default function HeadingPageSalaPrensa({
 
   return (
     <div
-      style={{ backgroundImage: `url(${image || ""})` }}
+      style={{ backgroundImage: `url(${optimizedImageUrl(image, 1920)})` }}
       className={`bg-primary bg-cover bg-right lg:bg-center bg-no-repeat py-16 px-6 lg:px-12 relative flex flex-col items-center justify-center ${
         textAlign === "left"
           ? "text-left"

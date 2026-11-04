@@ -1,4 +1,5 @@
 "use client";
+import { optimizedImageUrl } from "@/utils/optimizedImage";
 
 import { useEffect, useState } from "react";
 import FooterImgTop from "@/assets/img/footer-img.svg";
@@ -107,7 +108,7 @@ export default function Footer({ showBanner = true, footer }: FooterProps) {
                               <span className="text-xl">{socialMedia.icon.reactIconName}</span>
                             )}
                             {socialMedia.icon.type === "custom-image" && socialMedia.icon.customImage && (
-                              <img src={socialMedia.icon.customImage.url} alt={socialMedia.icon.customImage.alternativeText || ""} className="w-10 h-10" />
+                              <img src={optimizedImageUrl(socialMedia.icon.customImage.url, 64)} alt={socialMedia.icon.customImage.alternativeText || ""} className="w-10 h-10" />
                             )}
                           </a>
                         </li>
@@ -145,7 +146,7 @@ export default function Footer({ showBanner = true, footer }: FooterProps) {
                     <span className="text-xl">{contactInfoGlobal?.emailIcon.reactIconName}</span>
                   )}
                   {contactInfoGlobal?.emailIcon?.type === "custom-image" && contactInfoGlobal?.emailIcon.customImage && (
-                    <img src={contactInfoGlobal?.emailIcon.customImage.url} alt={contactInfoGlobal?.emailIcon.customImage.alternativeText || ""} className="w-5 h-5" />
+                    <img src={optimizedImageUrl(contactInfoGlobal?.emailIcon.customImage.url, 64)} alt={contactInfoGlobal?.emailIcon.customImage.alternativeText || ""} className="w-5 h-5" />
                   )}
                   <span>{contactInfoGlobal?.email || "info@asociacionzonasfrancas.org"}</span>
                 </a>
@@ -159,7 +160,7 @@ export default function Footer({ showBanner = true, footer }: FooterProps) {
                     <span className="text-xl">{contactInfoGlobal?.phoneIcon.reactIconName}</span>
                   )}
                   {contactInfoGlobal?.phoneIcon?.type === "custom-image" && contactInfoGlobal?.phoneIcon.customImage && (
-                    <img src={contactInfoGlobal?.phoneIcon.customImage.url} alt={contactInfoGlobal?.phoneIcon.customImage.alternativeText || ""} className="w-5 h-5" />
+                    <img src={optimizedImageUrl(contactInfoGlobal?.phoneIcon.customImage.url, 64)} alt={contactInfoGlobal?.phoneIcon.customImage.alternativeText || ""} className="w-5 h-5" />
                   )}
                   <span>{contactInfoGlobal?.phone || "+57 314 8724979"}</span>
                 </a>

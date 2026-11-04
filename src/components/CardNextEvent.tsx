@@ -1,3 +1,4 @@
+import { optimizedImageUrl } from "@/utils/optimizedImage";
 import React from 'react'
 import Image from 'next/image'
 import { GoCalendar, GoHome, GoZap } from 'react-icons/go'
@@ -23,7 +24,7 @@ interface CardNextEventProps {
 // Helper function to render icon
 const renderIcon = (iconData: EventIconType | undefined, fallbackIcon: React.ReactNode) => {
   if (iconData?.customImage?.url) {
-    return <img src={iconData.customImage.url} alt="icon" className="w-5 h-5" />;
+    return <img src={optimizedImageUrl(iconData.customImage.url, 64)} alt="icon" className="w-5 h-5" />;
   }
   return fallbackIcon;
 };

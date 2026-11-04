@@ -1,3 +1,4 @@
+import { optimizedImageUrl } from "@/utils/optimizedImage";
 export interface AvatarPersonProps {
   image: string;
   alternativeText?: string;
@@ -12,7 +13,7 @@ export default function AvatarPerson({ image, alternativeText, name }: AvatarPer
             <span className="w-2 h-2 bg-black rotate-45 absolute -bottom-1 left-1/2 transform -translate-x-1/2"></span>
             <p>{name}</p>
         </div>
-        <img className="w-10 h-10 rounded-full overflow-hidden object-cover mt-1" src={image} alt={alternativeText} />
+        <img className="w-10 h-10 rounded-full overflow-hidden object-cover mt-1" src={optimizedImageUrl(image, 96)} alt={alternativeText} />
     </div>
   )
 }

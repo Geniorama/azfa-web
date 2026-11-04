@@ -1,3 +1,4 @@
+import { optimizedImageUrl } from "@/utils/optimizedImage";
 import Image from "next/image";
 import { GoCalendar, GoHome } from "react-icons/go";
 import ArrowRightGreen from "@/assets/img/btn-arrow-green.svg";
@@ -23,7 +24,7 @@ interface CardEventProps {
 // Helper function to render icon
 const renderIcon = (iconData: EventIconType | undefined, fallbackIcon: React.ReactNode) => {
   if (iconData?.customImage?.url) {
-    return <img src={iconData.customImage.url} alt="icon" className="w-5 h-5" />;
+    return <img src={optimizedImageUrl(iconData.customImage.url, 64)} alt="icon" className="w-5 h-5" />;
   }
   return fallbackIcon;
 };

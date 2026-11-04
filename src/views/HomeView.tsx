@@ -1,4 +1,5 @@
 "use client";
+import { optimizedImageUrl } from "@/utils/optimizedImage";
 
 import { useRouter } from "next/navigation";
 import { Swiper, SwiperSlide } from "swiper/react";
@@ -212,7 +213,7 @@ export default function Home({
                   style={
                     index === 0
                       ? undefined
-                      : { backgroundImage: `url(${heroUrl})` }
+                      : { backgroundImage: `url(${optimizedImageUrl(heroUrl, 1920)})` }
                   }
                   key={slide.id}
                   className="relative isolate bg-text-primary lg:py-24 py-16 bg-cover bg-right"

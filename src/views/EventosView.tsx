@@ -1,4 +1,5 @@
 "use client"
+import { optimizedImageUrl } from "@/utils/optimizedImage";
 
 import CardEventsMonth from '@/components/CardEventsMonth'
 import CardEvent from '@/components/CardEvent'
@@ -319,7 +320,7 @@ export default function EventosView({ eventsData, eventsPageData, isLoading = fa
   return (
     <div>
         <section style={{
-            backgroundImage: `url(${eventsPageData?.headingSection?.backgroundImg?.url || BackgroundEventos.src})`
+            backgroundImage: `url(${optimizedImageUrl(eventsPageData?.headingSection?.backgroundImg?.url, 1920) || BackgroundEventos.src})`
         }} className={`pt-16 bg-primary bg-cover bg-center bg-no-repeat text-center text-white ${nextEvent ? 'pb-16 lg:pb-40' : 'pb-16'}`}>
             <div className="container mx-auto px-4">
                 <h1 className='text-h1'>{eventsPageData?.headingSection?.title || "Eventos"}</h1>
