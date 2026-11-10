@@ -45,6 +45,7 @@ import { cmsSanitizeSchema } from "@/lib/sanitizeSchema";
 import { formatYouTubeUrl } from "@/utils/formatYouTubeUrl";
 import WidgetInstagram from "@/components/WidgetInstagram";
 import WidgetLinkedIn from "@/components/WidgetLinkedIn";
+import LazyOnView from "@/components/LazyOnView";
 
 // Construye la URL del optimizador de imágenes de Next para servir una versión
 // liviana. Se usa SOLO en móvil (dentro de un <picture>): en desktop se sirve
@@ -856,9 +857,8 @@ export default function Home({
             {affiliatesSectionData?.title}
           </TitleDecorative>
 
+          <LazyOnView minHeight={136}>
           <Swiper
-            data-aos="fade-up"
-            data-aos-delay="200"
             modules={[Autoplay, Navigation]}
             spaceBetween={30}
             slidesPerView={affiliatesSectionData?.logos?.length || 1}
@@ -916,6 +916,7 @@ export default function Home({
                 ))
               )}
           </Swiper>
+</LazyOnView>
         </div>
       </section>
 
