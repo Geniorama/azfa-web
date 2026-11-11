@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { fetchStrapiMe } from '@/lib/strapiMe'
 import { setAuthCookie } from '@/lib/authCookie'
 
 const STRAPI_URL = process.env.NEXT_PUBLIC_STRAPI_URL
@@ -105,16 +106,10 @@ export async function POST(request: NextRequest) {
       // propio usuario). Antes se pedía /users/:id tres veces, y en producción
       // respondía 400 (visible en los logs de PM2), con lo que el login perdía
       // affiliateCompany, role, isEditor e isPropertiesEditor.
-      const meUrl = `${baseUrl}/api/users/me?populate[affiliateCompany][fields][0]=id&populate[affiliateCompany][fields][1]=documentId&populate[affiliateCompany][fields][2]=title&populate[affiliateCompany][fields][3]=propertiesLimit&populate=role`
+      const me = await fetchStrapiMe(baseUrl as string, jwt)
 
-      const meResponse = await fetch(meUrl, {
-        headers: {
-          'Authorization': `Bearer ${jwt}`,
-        },
-      })
-
-      if (meResponse.ok) {
-        const userDetails = await meResponse.json()
+      if (me.ok) {
+        const userDetails = me.user
 
         // Actualizar el objeto user con la información completa
         Object.assign(user, {
@@ -124,7 +119,7 @@ export async function POST(request: NextRequest) {
           isPropertiesEditor: userDetails.isPropertiesEditor === true,
         })
       } else {
-        console.error('Error al obtener detalles del usuario:', meResponse.status)
+        console.error('Error al obtener detalles del usuario:', me.status)
         user.isEditor = false
         user.isPropertiesEditor = false
       }

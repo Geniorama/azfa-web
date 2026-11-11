@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { fetchStrapiMe } from "@/lib/strapiMe";
 import { getAuthToken } from "@/lib/authCookie";
 
 const STRAPI_URL = process.env.NEXT_PUBLIC_STRAPI_URL;
@@ -27,27 +28,22 @@ export async function GET(request: NextRequest) {
       ? STRAPI_URL.slice(0, -4)
       : STRAPI_URL;
 
-    const meUrl = `${baseUrl}/api/users/me?populate[affiliateCompany][fields][0]=id&populate[affiliateCompany][fields][1]=documentId&populate[affiliateCompany][fields][2]=title&populate[affiliateCompany][fields][3]=propertiesLimit&populate=role`;
+    const me = await fetchStrapiMe(baseUrl, token);
 
-    const meResponse = await fetch(meUrl, {
-      headers: { Authorization: `Bearer ${token}` },
-    });
-
-    if (meResponse.status === 401) {
-      return NextResponse.json(
-        { error: "Token inválido o expirado" },
-        { status: 401 }
-      );
-    }
-
-    if (!meResponse.ok) {
+    if (!me.ok) {
+      if (me.status === 401) {
+        return NextResponse.json(
+          { error: "Token inválido o expirado" },
+          { status: 401 }
+        );
+      }
       return NextResponse.json(
         { error: "Error al obtener el usuario" },
         { status: 500 }
       );
     }
 
-    const u = await meResponse.json();
+    const u = me.user;
 
     if (u.blocked) {
       return NextResponse.json(
