@@ -101,60 +101,34 @@ export async function POST(request: NextRequest) {
       // Normalizar STRAPI_URL (remover /api si ya está incluido)
       const baseUrl = STRAPI_URL?.endsWith('/api') ? STRAPI_URL.slice(0, -4) : STRAPI_URL
       
-      // Primero obtener solo el campo isEditor
-      const isEditorUrl = `${baseUrl}/api/users/${user.id}?fields[0]=isEditor`
-      
-      const isEditorResponse = await fetch(isEditorUrl, {
-        headers: {
-          'Authorization': `Bearer ${jwt}`,
-        },
-      })
-      
-      let isEditorValue = false
-      if (isEditorResponse.ok) {
-        const isEditorData = await isEditorResponse.json()
-        isEditorValue = isEditorData.isEditor || false
-      }
-      
-      // Obtener el campo isPropertiesEditor
-      const isPropertiesEditorUrl = `${baseUrl}/api/users/${user.id}?fields[0]=isPropertiesEditor`
-      const isPropertiesEditorResponse = await fetch(isPropertiesEditorUrl, {
-        headers: {
-          'Authorization': `Bearer ${jwt}`,
-        },
-      })
-      
-      let isPropertiesEditorValue = false
-      if (isPropertiesEditorResponse.ok) {
-        const isPropertiesEditorData = await isPropertiesEditorResponse.json()
-        isPropertiesEditorValue = isPropertiesEditorData.isPropertiesEditor || false
-      }
+      // Una sola consulta a /users/me con el JWT recién emitido (devuelve solo al
+      // propio usuario). Antes se pedía /users/:id tres veces, y en producción
+      // respondía 400 (visible en los logs de PM2), con lo que el login perdía
+      // affiliateCompany, role, isEditor e isPropertiesEditor.
+      const meUrl = `${baseUrl}/api/users/me?populate[affiliateCompany][fields][0]=id&populate[affiliateCompany][fields][1]=documentId&populate[affiliateCompany][fields][2]=title&populate[affiliateCompany][fields][3]=propertiesLimit&populate=role`
 
-      // Luego obtener los otros campos
-      const userDetailsUrl = `${baseUrl}/api/users/${user.id}?populate[affiliateCompany][fields][0]=id&populate[affiliateCompany][fields][1]=documentId&populate[affiliateCompany][fields][2]=title&populate[affiliateCompany][fields][3]=propertiesLimit&populate=role`
-      
-      const userDetailsResponse = await fetch(userDetailsUrl, {
+      const meResponse = await fetch(meUrl, {
         headers: {
           'Authorization': `Bearer ${jwt}`,
         },
       })
 
-      if (userDetailsResponse.ok) {
-        const userDetails = await userDetailsResponse.json()
-        
+      if (meResponse.ok) {
+        const userDetails = await meResponse.json()
+
         // Actualizar el objeto user con la información completa
         Object.assign(user, {
           affiliateCompany: userDetails.affiliateCompany,
           role: userDetails.role,
-          isEditor: isEditorValue,
-          isPropertiesEditor: isPropertiesEditorValue,
+          isEditor: userDetails.isEditor === true,
+          isPropertiesEditor: userDetails.isPropertiesEditor === true,
         })
       } else {
-        console.error('Error al obtener detalles del usuario:', userDetailsResponse.status)
-        // Aún así, asignar los valores que ya obtuvimos
-        user.isEditor = isEditorValue
-        user.isPropertiesEditor = isPropertiesEditorValue
+        console.error('Error al obtener detalles del usuario:', meResponse.status)
+        user.isEditor = false
+        user.isPropertiesEditor = false
       }
+
     } catch (userDetailsError) {
       console.error('Error al obtener detalles del usuario:', userDetailsError instanceof Error ? userDetailsError.message : userDetailsError)
       // Continuar sin la información adicional
