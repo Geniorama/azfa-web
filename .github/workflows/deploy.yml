@@ -84,10 +84,42 @@ jobs:
     needs: build
     if: vars.DEPLOY_ENABLED == 'true'
     runs-on: ubuntu-latest
+    # id-token: para asumir el rol de AWS por OIDC (sin claves fijas en GitHub).
+    permissions:
+      id-token: write
+      contents: read
     steps:
       - uses: actions/download-artifact@v4
         with:
           name: bundle
+
+      # -----------------------------------------------------------------------
+      # SSH abierto solo durante el deploy (AZF-23, auditoría de seguridad).
+      # El puerto 22 del front deja de estar abierto a Internet: este job añade
+      # la IP del runner al security group, despliega y la quita al final, haya
+      # ido bien o mal. Se activa al definir la variable AWS_DEPLOY_ROLE_ARN;
+      # sin ella el deploy funciona como antes (22 abierto).
+      # -----------------------------------------------------------------------
+      - name: Credenciales AWS (OIDC)
+        if: vars.AWS_DEPLOY_ROLE_ARN != ''
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ vars.AWS_DEPLOY_ROLE_ARN }}
+          aws-region: us-east-1
+
+      - name: Abrir el 22 para este runner
+        if: vars.AWS_DEPLOY_ROLE_ARN != ''
+        run: |
+          IP=$(curl -s --fail https://checkip.amazonaws.com | tr -d '[:space:]')
+          echo "RUNNER_IP=$IP" >> "$GITHUB_ENV"
+          aws ec2 authorize-security-group-ingress --group-id "${{ vars.EC2_SG_ID }}" \
+            --ip-permissions "IpProtocol=tcp,FromPort=22,ToPort=22,IpRanges=[{CidrIp=$IP/32,Description=gha-${{ github.run_id }}}]" \
+            || echo "La regla ya existía (re-ejecución)"
+          # La regla tarda unos segundos en aplicarse.
+          for i in $(seq 1 12); do
+            if timeout 5 bash -c "echo > /dev/tcp/${{ secrets.EC2_HOST }}/22" 2>/dev/null; then echo "22 alcanzable"; break; fi
+            sleep 5
+          done
 
       - name: Configurar SSH
         run: |
@@ -201,3 +233,10 @@ jobs:
 
           echo "Release activa: $REL"
           ENDSSH
+
+      - name: Cerrar el 22
+        if: always() && vars.AWS_DEPLOY_ROLE_ARN != '' && env.RUNNER_IP != ''
+        run: |
+          aws ec2 revoke-security-group-ingress --group-id "${{ vars.EC2_SG_ID }}" \
+            --protocol tcp --port 22 --cidr "$RUNNER_IP/32"
+          echo "Regla temporal retirada ($RUNNER_IP/32)"
