@@ -111,15 +111,20 @@ jobs:
         if: vars.AWS_DEPLOY_ROLE_ARN != ''
         run: |
           IP=$(curl -s --fail https://checkip.amazonaws.com | tr -d '[:space:]')
+          [ -n "$IP" ] || { echo "No se pudo obtener la IP del runner"; exit 1; }
+          [ -n "${{ vars.EC2_SG_ID }}" ] || { echo "Falta la variable EC2_SG_ID"; exit 1; }
           echo "RUNNER_IP=$IP" >> "$GITHUB_ENV"
-          aws ec2 authorize-security-group-ingress --group-id "${{ vars.EC2_SG_ID }}" \
-            --ip-permissions "IpProtocol=tcp,FromPort=22,ToPort=22,IpRanges=[{CidrIp=$IP/32,Description=gha-${{ github.run_id }}}]" \
-            || echo "La regla ya existía (re-ejecución)"
+          if ! OUT=$(aws ec2 authorize-security-group-ingress --group-id "${{ vars.EC2_SG_ID }}" \
+                --ip-permissions "IpProtocol=tcp,FromPort=22,ToPort=22,IpRanges=[{CidrIp=$IP/32,Description=gha-${{ github.run_id }}}]" 2>&1); then
+            echo "$OUT" | grep -q InvalidPermission.Duplicate || { echo "$OUT"; exit 1; }
+            echo "La regla ya existía (re-ejecución)"
+          fi
           # La regla tarda unos segundos en aplicarse.
           for i in $(seq 1 12); do
-            if timeout 5 bash -c "echo > /dev/tcp/${{ secrets.EC2_HOST }}/22" 2>/dev/null; then echo "22 alcanzable"; break; fi
+            if timeout 5 bash -c "echo > /dev/tcp/${{ secrets.EC2_HOST }}/22" 2>/dev/null; then echo "22 alcanzable"; exit 0; fi
             sleep 5
           done
+          echo "El 22 no responde tras abrirlo"; exit 1
 
       - name: Configurar SSH
         run: |
